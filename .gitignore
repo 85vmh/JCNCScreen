@@ -4,6 +4,7 @@
 *.o
 *.log
 *~
+*.hprof
 backup*
 build/*
 exHdr/*
@@ -15,5 +16,9 @@ rednose
 unused*
 bin*
 native/libLinuxCNC.so
-lib/LCExportHandler.jar
+app/lib/LCExportHandler.jar
 JCNCScreen-bin.zip
+.gradle/
+.idea/
+app/build/
+compose/build/
