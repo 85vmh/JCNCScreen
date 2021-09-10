@@ -29,7 +29,7 @@ package de.schwarzrot.system;
 import java.util.TimerTask;
 
 public class SysUpdater extends TimerTask {
-   public SysUpdater(StatusReader statusReader) {
+   public SysUpdater(CncStatusReader1 statusReader) {
       this.statusReader = statusReader;
    }
    
@@ -38,5 +38,5 @@ public class SysUpdater extends TimerTask {
       statusReader.update();      
    }
    
-   private StatusReader statusReader;
+   private CncStatusReader1 statusReader;
 }

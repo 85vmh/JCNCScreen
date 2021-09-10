@@ -64,6 +64,8 @@ import javax.swing.UIManager;
 
 import com.jme3.util.JmeFormatter;
 
+import com.mindovercnc.linuxcnc.Initializer;
+import com.mindovercnc.linuxcnc.SystemMessage;
 import de.schwarzrot.bean.AppSetup;
 import de.schwarzrot.bean.LCStatus;
 import de.schwarzrot.bean.themes.UITheme;
@@ -76,16 +78,8 @@ import de.schwarzrot.gui.PaneStack;
 import de.schwarzrot.jar.JarInfo;
 import de.schwarzrot.model.GCodeInfo;
 import de.schwarzrot.model.ValueModel;
-import de.schwarzrot.nml.BufferDescriptor;
-import de.schwarzrot.system.CncCommandWriter;
-import de.schwarzrot.system.ConfigHolder;
-import de.schwarzrot.system.CncErrorReader;
-import de.schwarzrot.system.ISysTickStarter;
-import de.schwarzrot.system.RS274Reader;
-import de.schwarzrot.system.StatusReader;
-import de.schwarzrot.system.SysTick;
-import de.schwarzrot.system.SysUpdater;
-import de.schwarzrot.system.SystemMessage;
+import com.mindovercnc.linuxcnc.nml.BufferDescriptor;
+import de.schwarzrot.system.*;
 import de.schwarzrot.util.DatabaseUtils;
 import de.schwarzrot.util.Preview3DCreator;
 
@@ -118,10 +112,11 @@ public class LinuxCNCClient extends JFrame implements Runnable {
    @SuppressWarnings("unchecked")
    public LinuxCNCClient(String[] args) {
       super(LCStatus.getStatus().lm("AppTitle"));
+      Initializer.INSTANCE.loadLibraries();
       this.iniFile      = determineIniFile(args);
       this.errorLog     = new BasicEventList<SystemMessage>();
       this.errorReader  = new CncErrorReader(errorLog);
-      this.statusReader = new StatusReader(errorReader, new BufferDescriptor());
+      this.statusReader = new CncStatusReader1(errorReader, new BufferDescriptor());
       this.cmdWriter    = new CncCommandWriter(errorLog, statusReader);
       this.errorActive  = LCStatus.getStatus().getModel("errorActive");
       this.errorReader.setErrorSignal(errorActive);
@@ -515,14 +510,14 @@ public class LinuxCNCClient extends JFrame implements Runnable {
          if (arg.startsWith("-") || arg.startsWith("/"))
             arg = args[i].substring(1);
 
-         if ("checkBuffer".compareToIgnoreCase(arg) == 0) {
-            String cbDir = ".";
-
-            if (args.length > i + 1)
-               cbDir = args[i + 1];
-            new de.schwarzrot.nml.CheckBufferDescriptor(cbDir).run();
-            System.exit(0);
-         }
+//         if ("checkBuffer".compareToIgnoreCase(arg) == 0) {
+//            String cbDir = ".";
+//
+//            if (args.length > i + 1)
+//               cbDir = args[i + 1];
+//            new com.mindovercnc.linuxcnc.nml.CheckBufferDescriptor(cbDir).run();
+//            System.exit(0);
+//         }
          if ("portrait".compareToIgnoreCase(arg) == 0) {
             portraitMode = true;
          }
@@ -540,7 +535,7 @@ public class LinuxCNCClient extends JFrame implements Runnable {
    }
 
 
-   private final StatusReader statusReader;
+   private final CncStatusReader1 statusReader;
    @SuppressWarnings("unused")
    private SysTick               sysTick;
    private final CncCommandWriter cmdWriter;

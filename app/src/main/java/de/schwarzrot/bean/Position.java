@@ -36,4 +36,19 @@ public class Position {
    public double u;
    public double v;
    public double w;
+
+   @Override
+   public String toString() {
+      return "Position{" +
+              "x=" + x +
+              ", y=" + y +
+              ", z=" + z +
+              ", a=" + a +
+              ", b=" + b +
+              ", c=" + c +
+              ", u=" + u +
+              ", v=" + v +
+              ", w=" + w +
+              '}';
+   }
 }

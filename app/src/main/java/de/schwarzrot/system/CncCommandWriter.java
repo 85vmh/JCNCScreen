@@ -34,14 +34,16 @@ import java.util.List;
 
 import javax.swing.Timer;
 
+import com.mindovercnc.linuxcnc.CommandWriter;
+import com.mindovercnc.linuxcnc.SystemMessage;
 import de.schwarzrot.app.ApplicationMode;
 import de.schwarzrot.bean.LCStatus;
 import de.schwarzrot.model.ValueModel;
-import de.schwarzrot.nml.InterpState;
-import de.schwarzrot.nml.SpindleDirection;
-import de.schwarzrot.nml.TaskAutoMode;
-import de.schwarzrot.nml.TaskMode;
-import de.schwarzrot.nml.TaskState;
+import com.mindovercnc.linuxcnc.nml.InterpState;
+import com.mindovercnc.linuxcnc.nml.SpindleDirection;
+import com.mindovercnc.linuxcnc.nml.TaskAutoMode;
+import com.mindovercnc.linuxcnc.nml.TaskMode;
+import com.mindovercnc.linuxcnc.nml.TaskState;
 
 
 public class CncCommandWriter {
@@ -51,7 +53,7 @@ public class CncCommandWriter {
    }
 
 
-   public CncCommandWriter(List<SystemMessage> log, StatusReader statusReader) {
+   public CncCommandWriter(List<SystemMessage> log, CncStatusReader1 statusReader) {
       this.log          = log;
       this.statusReader = statusReader;
       this.nativeCommandWriter = new CommandWriter();
@@ -413,7 +415,7 @@ public class CncCommandWriter {
 
    private final CommandWriter nativeCommandWriter;
    private final List<SystemMessage> log;
-   private final StatusReader statusReader;
+   private final CncStatusReader1 statusReader;
    private static final String       OffsetMASK  = "G92 X%.3f Y%.3f Z%.3f A%.3f B%.3f C%.3f U%.3f V%.3f W%.3f";
    private static final String       FixtureMASK = "G10 L2 P%d X%.3f Y%.3f Z%.3f A%.3f B%.3f C%.3f U%.3f V%.3f W%.3f";
 }

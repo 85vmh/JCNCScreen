@@ -30,7 +30,7 @@ import java.text.DateFormat;
 
 import ca.odell.glazedlists.gui.TableFormat;
 import de.schwarzrot.bean.LCStatus;
-import de.schwarzrot.system.SystemMessage;
+import com.mindovercnc.linuxcnc.SystemMessage;
 
 
 public class MessageTableFormat implements TableFormat<SystemMessage> {

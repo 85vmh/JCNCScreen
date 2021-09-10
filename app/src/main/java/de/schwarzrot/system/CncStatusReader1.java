@@ -29,6 +29,8 @@ package de.schwarzrot.system;
  */
 
 import ca.odell.glazedlists.EventList;
+import com.mindovercnc.linuxcnc.StatusReader;
+import com.mindovercnc.linuxcnc.SystemMessage;
 import de.schwarzrot.bean.LCStatus;
 import de.schwarzrot.bean.Position;
 import de.schwarzrot.bean.ToolEntry;
@@ -36,9 +38,9 @@ import de.schwarzrot.model.ActiveCodes;
 import de.schwarzrot.model.SpeedInfo;
 import de.schwarzrot.model.ToolInfo;
 import de.schwarzrot.model.ValueModel;
-import de.schwarzrot.nml.BufferDescriptor;
-import de.schwarzrot.nml.BufferEntry;
-import de.schwarzrot.nml.IBufferDescriptor;
+import com.mindovercnc.linuxcnc.nml.BufferDescriptor;
+import com.mindovercnc.linuxcnc.nml.BufferEntry;
+import com.mindovercnc.linuxcnc.nml.IBufferDescriptor;
 
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -51,10 +53,11 @@ import java.util.logging.Logger;
 
 
 public class CncStatusReader1 {
-   private NStatusReader nativeStatusReader;
-   private NStatusReader.StatusUpdateListener updateListener = new NStatusReader.StatusUpdateListener() {
+   private StatusReader nativeStatusReader;
+   private StatusReader.StatusUpdateListener updateListener = new StatusReader.StatusUpdateListener() {
       @Override
       public void onInitialStatus(ByteBuffer bb) {
+         System.out.println("--------------Initial status buffer received");
          statusBuffer = bb;
          status = LCStatus.getStatus();
          //      checkBuffer();
@@ -67,12 +70,20 @@ public class CncStatusReader1 {
       public void onStatusUpdated(ByteBuffer bb) {
          statusBuffer = bb;
          handlePosition();
-         handleGCodeFile();
+         testKtCode();
+         //handleGCodeFile();
          handleSignals();
          handleActiveCodes();
          handleSpeed();
          handleStates();
          handleToolChange();
+
+         System.out.println();
+         System.out.println(LCStatus.getStatus().getModel("taskState"));
+         System.out.println(LCStatus.getStatus().getModel("taskMode"));
+         System.out.println(LCStatus.getStatus().getModel("execState"));
+         System.out.println(LCStatus.getStatus().getModel("interpState"));
+         System.out.println(LCStatus.getStatus().getModel("applicationMode"));
       }
    };
 
@@ -86,7 +97,7 @@ public class CncStatusReader1 {
       this.g5xO                    = new Position();
       this.tO                      = new Position();
       this.g92O                    = new Position();
-      this.nativeStatusReader = new NStatusReader(updateListener);
+      this.nativeStatusReader = new StatusReader(updateListener);
    }
 
 
@@ -238,6 +249,22 @@ public class CncStatusReader1 {
       }
    }
 
+   protected void testKtCode(){
+       Pos absPos = Pos.Companion.fromOffset(statusBuffer, bufDesc.get(BufferDescriptor.AbsPosX));
+       Pos g5xPos = Pos.Companion.fromOffset(statusBuffer, bufDesc.get(BufferDescriptor.G5xOffsX));
+       Pos toolPos = Pos.Companion.fromOffset(statusBuffer, bufDesc.get(BufferDescriptor.ToolOffsX));
+       Pos g92Pos = Pos.Companion.fromOffset(statusBuffer, bufDesc.get(BufferDescriptor.G92OffsX));
+
+      System.out.println("---absPos" + absPos);
+      System.out.println("---g5xPos" + g5xPos);
+      System.out.println("---toolPos" + toolPos);
+      System.out.println("---g92Pos" + g92Pos);
+
+      ActCodes gCodes = ActCodes.Companion.fromOffset(statusBuffer, bufDesc.get(BufferDescriptor.ActiveGCodes));
+      ActCodes mCodes = ActCodes.Companion.fromOffset(statusBuffer, bufDesc.get(BufferDescriptor.ActiveMCodes));
+      System.out.println("----gcodes" + gCodes);
+      System.out.println("----mcodes" + mCodes);
+   }
 
    protected void handlePosition() {
       e      = bufDesc.get(BufferDescriptor.AbsPosX);
@@ -252,7 +279,7 @@ public class CncStatusReader1 {
       p.v    = statusBuffer.getDouble(e.getOffset() + 56);
       p.w    = statusBuffer.getDouble(e.getOffset() + 64);
 
-      //      l.log(Level.INFO, "pos: " + p);
+      System.out.println("-------pos: " + p);
 
       e      = bufDesc.get(BufferDescriptor.G5xOffsX);
       g5xO.x = statusBuffer.getDouble(e.getOffset());
@@ -264,7 +291,7 @@ public class CncStatusReader1 {
       g5xO.u = statusBuffer.getDouble(e.getOffset() + 48);
       g5xO.v = statusBuffer.getDouble(e.getOffset() + 56);
       g5xO.w = statusBuffer.getDouble(e.getOffset() + 64);
-      // System.out.println("g5x Offset: " + g5xO);
+      System.out.println("--------g5x Offset: " + g5xO);
 
       e      = bufDesc.get(BufferDescriptor.ToolOffsX);
       tO.x   = statusBuffer.getDouble(e.getOffset());
@@ -276,7 +303,7 @@ public class CncStatusReader1 {
       tO.u   = statusBuffer.getDouble(e.getOffset() + 48);
       tO.v   = statusBuffer.getDouble(e.getOffset() + 56);
       tO.w   = statusBuffer.getDouble(e.getOffset() + 64);
-      //      System.out.println("toolOffset: " + tO);
+      System.out.println("toolOffset: " + tO);
 
       e      = bufDesc.get(BufferDescriptor.G92OffsX);
       g92O.x = statusBuffer.getDouble(e.getOffset());
@@ -288,7 +315,7 @@ public class CncStatusReader1 {
       g92O.u = statusBuffer.getDouble(e.getOffset() + 48);
       g92O.v = statusBuffer.getDouble(e.getOffset() + 56);
       g92O.w = statusBuffer.getDouble(e.getOffset() + 64);
-      // System.out.println("g92 Offset: " + g92O);
+      System.out.println("g92 Offset: " + g92O);
 
       e      = bufDesc.get(BufferDescriptor.RotationXY);
       dv     = statusBuffer.getDouble(e.getOffset());

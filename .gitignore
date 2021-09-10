@@ -15,7 +15,7 @@ rednose
 .prjInfo
 unused*
 bin*
-native/libLinuxCNC.so
+libcnc/native/libLinuxCNC.so
 app/lib/LCExportHandler.jar
 JCNCScreen-bin.zip
 .gradle/

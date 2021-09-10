@@ -40,7 +40,7 @@ import javax.swing.table.TableModel;
 
 import de.schwarzrot.bean.themes.UITheme;
 import de.schwarzrot.format.MessageTableFormat;
-import de.schwarzrot.system.SystemMessage;
+import com.mindovercnc.linuxcnc.SystemMessage;
 
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.SortedList;
