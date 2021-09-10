@@ -1,3 +1,5 @@
+package com.mindovercnc.linuxcnc.data
+
 import com.mindovercnc.linuxcnc.nml.BufferEntry
 import java.nio.ByteBuffer
 

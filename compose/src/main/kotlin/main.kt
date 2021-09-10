@@ -10,13 +10,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import com.mindovercnc.linuxcnc.Initializer
+import com.mindovercnc.linuxcnc.PosStateMapper
 import com.mindovercnc.linuxcnc.StatusReader
+import com.mindovercnc.linuxcnc.data.Pos
+import com.mindovercnc.linuxcnc.data.PositionState
+import com.mindovercnc.linuxcnc.mapUsing
 import com.mindovercnc.linuxcnc.nml.BufferDescriptor
-import com.mindovercnc.linuxcnc.nml.IBufferDescriptor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.shareIn
 import java.nio.ByteBuffer
 
 fun main() {
@@ -25,48 +28,52 @@ fun main() {
 
     application {
         Window(onCloseRequest = ::exitApplication, title = "KtCnc") {
-            var statusBuffer : ByteBuffer? = null
-            val statusReader = StatusReader(object: StatusReader.StatusUpdateListener{
+            //var statusBuffer : ByteBuffer? = null
+
+            val statusReader = StatusReader(object : StatusReader.StatusUpdateListener {
                 override fun onInitialStatus(initialStatusBuffer: ByteBuffer?) {
 
                 }
 
                 override fun onStatusUpdated(updatedStatusBuffer: ByteBuffer) {
-                    statusBuffer = updatedStatusBuffer
-                    println("new status buffer: ${System.currentTimeMillis()}")
-                    val bufDesc = BufferDescriptor()
-
-                    val absPos: Pos = Pos.fromOffset(statusBuffer!!, bufDesc[IBufferDescriptor.AbsPosX]!!)
-                    val g5xPos: Pos = Pos.fromOffset(statusBuffer!!, bufDesc[IBufferDescriptor.G5xOffsX]!!)
-                    val toolPos: Pos = Pos.fromOffset(statusBuffer!!, bufDesc[IBufferDescriptor.ToolOffsX]!!)
-                    val g92Pos: Pos = Pos.fromOffset(statusBuffer!!, bufDesc[IBufferDescriptor.G92OffsX]!!)
-
-                    println("---absPos$absPos")
-                    println("---g5xPos$g5xPos")
-                    println("---toolPos$toolPos")
-                    println("---g92Pos$g92Pos")
+//                    statusBuffer = updatedStatusBuffer
+//                    println("new status buffer: ${System.currentTimeMillis()}")
+//                    val bufDesc = BufferDescriptor()
+//
+//                    val absPos: Pos = Pos.fromOffset(statusBuffer!!, bufDesc[IBufferDescriptor.AbsPosX]!!)
+//                    val g5xPos: Pos = Pos.fromOffset(statusBuffer!!, bufDesc[IBufferDescriptor.G5xOffsX]!!)
+//                    val toolPos: Pos = Pos.fromOffset(statusBuffer!!, bufDesc[IBufferDescriptor.ToolOffsX]!!)
+//                    val g92Pos: Pos = Pos.fromOffset(statusBuffer!!, bufDesc[IBufferDescriptor.G92OffsX]!!)
+//
+//                    println("---absPos$absPos")
+//                    println("---g5xPos$g5xPos")
+//                    println("---toolPos$toolPos")
+//                    println("---g92Pos$g92Pos")
                 }
 
             })
-            CoroutineScope(Dispatchers.IO).launch {
-                statusReader.launch()
-            }
+            val descriptor = BufferDescriptor()
+            val sharedFlow = statusReader.launch(descriptor).shareIn(CoroutineScope(Dispatchers.IO), SharingStarted.Eagerly)
+            val mapper = PosStateMapper(descriptor)
+            val xx by sharedFlow.mapUsing(mapper).collectAsState(null)
+
+            val posState by statusReader.posState.collectAsState()
 
             //val statusBuffer by statusReader.status.collectAsState(null)
             MaterialTheme {
-                Content(statusBuffer)
+                Content(posState, xx)
             }
         }
     }
 }
 
 @Composable
-fun Content(statusBuffer: ByteBuffer?) {
+fun Content(posState: PositionState?, xx: PositionState?) {
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
-        if (statusBuffer != null) {
-            displaySomething(statusBuffer)
+        if (posState != null) {
+            displaySomething(posState)
         }
 
         Row(
@@ -88,18 +95,23 @@ fun Content(statusBuffer: ByteBuffer?) {
                 Text("Position")
             }
         }
+
+        if (xx != null) {
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = xx.toString()
+            )
+        }
     }
 }
 
 @Composable
 @Preview
-fun displaySomething(statusBuffer: ByteBuffer) {
-    val bufDesc = BufferDescriptor()
-
-    val absPos: Pos = Pos.fromOffset(statusBuffer, bufDesc[IBufferDescriptor.AbsPosX]!!)
-    val g5xPos: Pos = Pos.fromOffset(statusBuffer, bufDesc[IBufferDescriptor.G5xOffsX]!!)
-    val toolPos: Pos = Pos.fromOffset(statusBuffer, bufDesc[IBufferDescriptor.ToolOffsX]!!)
-    val g92Pos: Pos = Pos.fromOffset(statusBuffer, bufDesc[IBufferDescriptor.G92OffsX]!!)
+fun displaySomething(posState: PositionState) {
+    val absPos: Pos = posState.absPos
+    val g5xPos: Pos = posState.g5xPos
+    val toolPos: Pos = posState.toolPos
+    val g92Pos: Pos = posState.g92Pos
 
     println("---absPos$absPos")
     println("---g5xPos$g5xPos")
