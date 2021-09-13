@@ -1,6 +1,6 @@
-package com.mindovercnc.linuxcnc.nml
+package com.mindovercnc.base.nml
 
-import com.mindovercnc.linuxcnc.nml.BufferEntry.BufferEntryType
+import com.mindovercnc.base.nml.BufferEntry.BufferEntryType
 import kotlin.collections.HashMap
 
 /*

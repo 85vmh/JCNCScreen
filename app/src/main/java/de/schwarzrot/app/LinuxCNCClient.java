@@ -64,7 +64,7 @@ import javax.swing.UIManager;
 
 import com.jme3.util.JmeFormatter;
 
-import com.mindovercnc.linuxcnc.Initializer;
+import com.mindovercnc.linuxcnc.CncInitializer;
 import com.mindovercnc.linuxcnc.SystemMessage;
 import de.schwarzrot.bean.AppSetup;
 import de.schwarzrot.bean.LCStatus;
@@ -78,7 +78,7 @@ import de.schwarzrot.gui.PaneStack;
 import de.schwarzrot.jar.JarInfo;
 import de.schwarzrot.model.GCodeInfo;
 import de.schwarzrot.model.ValueModel;
-import com.mindovercnc.linuxcnc.nml.BufferDescriptor;
+import com.mindovercnc.base.nml.BufferDescriptor;
 import de.schwarzrot.system.*;
 import de.schwarzrot.util.DatabaseUtils;
 import de.schwarzrot.util.Preview3DCreator;
@@ -112,7 +112,7 @@ public class LinuxCNCClient extends JFrame implements Runnable {
    @SuppressWarnings("unchecked")
    public LinuxCNCClient(String[] args) {
       super(LCStatus.getStatus().lm("AppTitle"));
-      Initializer.INSTANCE.loadLibraries();
+      CncInitializer.INSTANCE.loadLibraries();
       this.iniFile      = determineIniFile(args);
       this.errorLog     = new BasicEventList<SystemMessage>();
       this.errorReader  = new CncErrorReader(errorLog);
@@ -515,7 +515,7 @@ public class LinuxCNCClient extends JFrame implements Runnable {
 //
 //            if (args.length > i + 1)
 //               cbDir = args[i + 1];
-//            new com.mindovercnc.linuxcnc.nml.CheckBufferDescriptor(cbDir).run();
+//            new com.mindovercnc.base.nml.CheckBufferDescriptor(cbDir).run();
 //            System.exit(0);
 //         }
          if ("portrait".compareToIgnoreCase(arg) == 0) {

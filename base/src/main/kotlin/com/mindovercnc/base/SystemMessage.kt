@@ -1,4 +1,4 @@
-package com.mindovercnc.linuxcnc
+package com.mindovercnc.base
 
 import java.lang.StringBuilder
 import java.util.*

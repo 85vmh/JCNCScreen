@@ -1,79 +1,73 @@
 // Copyright 2000-2021 JetBrains s.r.o. and contributors. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
+@file:Suppress("FunctionName")
+
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
-import com.mindovercnc.linuxcnc.Initializer
-import com.mindovercnc.linuxcnc.PosStateMapper
-import com.mindovercnc.linuxcnc.StatusReader
-import com.mindovercnc.linuxcnc.data.Pos
-import com.mindovercnc.linuxcnc.data.PositionState
-import com.mindovercnc.linuxcnc.mapUsing
-import com.mindovercnc.linuxcnc.nml.BufferDescriptor
+import com.mindovercnc.base.IStatusReader
+import com.mindovercnc.base.Initializer
+import com.mindovercnc.base.PosStateMapper
+import com.mindovercnc.base.data.Pos
+import com.mindovercnc.base.data.PositionState
+import com.mindovercnc.base.mapUsing
+import com.mindovercnc.base.nml.BufferDescriptor
+import di.DummyModule
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.shareIn
+import org.kodein.di.compose.localDI
+import org.kodein.di.compose.withDI
+import org.kodein.di.instance
 import java.nio.ByteBuffer
 
 fun main() {
-    Initializer.loadLibraries()
-
-
     application {
-        Window(onCloseRequest = ::exitApplication, title = "KtCnc") {
-            //var statusBuffer : ByteBuffer? = null
+        MyWindow(this::exitApplication)
+    }
+}
 
-            val statusReader = StatusReader(object : StatusReader.StatusUpdateListener {
-                override fun onInitialStatus(initialStatusBuffer: ByteBuffer?) {
+@Composable
+fun MyWindow(onCloseRequest: () -> Unit) = Window(onCloseRequest = onCloseRequest, title = "KtCnc") {
 
-                }
+    //withDI(CncModule) {
+    withDI(DummyModule) {
+        val di = localDI()
+        val initializer by di.instance<Initializer>()
+        initializer.initialize()
 
-                override fun onStatusUpdated(updatedStatusBuffer: ByteBuffer) {
-//                    statusBuffer = updatedStatusBuffer
-//                    println("new status buffer: ${System.currentTimeMillis()}")
-//                    val bufDesc = BufferDescriptor()
-//
-//                    val absPos: Pos = Pos.fromOffset(statusBuffer!!, bufDesc[IBufferDescriptor.AbsPosX]!!)
-//                    val g5xPos: Pos = Pos.fromOffset(statusBuffer!!, bufDesc[IBufferDescriptor.G5xOffsX]!!)
-//                    val toolPos: Pos = Pos.fromOffset(statusBuffer!!, bufDesc[IBufferDescriptor.ToolOffsX]!!)
-//                    val g92Pos: Pos = Pos.fromOffset(statusBuffer!!, bufDesc[IBufferDescriptor.G92OffsX]!!)
-//
-//                    println("---absPos$absPos")
-//                    println("---g5xPos$g5xPos")
-//                    println("---toolPos$toolPos")
-//                    println("---g92Pos$g92Pos")
-                }
+        val statusReader by di.instance<IStatusReader>()
 
-            })
-            val descriptor = BufferDescriptor()
-            val sharedFlow = statusReader.launch(descriptor).shareIn(CoroutineScope(Dispatchers.IO), SharingStarted.Eagerly)
-            val mapper = PosStateMapper(descriptor)
-            val xx by sharedFlow.mapUsing(mapper).collectAsState(null)
+        val descriptor = BufferDescriptor()
+        val sharedFlow: SharedFlow<ByteBuffer?> =
+            statusReader.launch().shareIn(CoroutineScope(Dispatchers.IO), SharingStarted.Eagerly)
+        val mapper = PosStateMapper(descriptor)
+        val xx by sharedFlow.mapUsing(mapper).collectAsState(null)
 
-            val posState by statusReader.posState.collectAsState()
-
-            //val statusBuffer by statusReader.status.collectAsState(null)
-            MaterialTheme {
-                Content(posState, xx)
-            }
+        //val statusBuffer by statusReader.status.collectAsState(null)
+        MaterialTheme {
+            Content(xx)
         }
     }
 }
 
 @Composable
-fun Content(posState: PositionState?, xx: PositionState?) {
+fun Content(xx: PositionState?) {
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
-        if (posState != null) {
-            displaySomething(posState)
+        if (xx != null) {
+            displaySomething(xx)
         }
 
         Row(
@@ -94,13 +88,6 @@ fun Content(posState: PositionState?, xx: PositionState?) {
             Button(onClick = {}) {
                 Text("Position")
             }
-        }
-
-        if (xx != null) {
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = xx.toString()
-            )
         }
     }
 }

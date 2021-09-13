@@ -29,7 +29,7 @@ package de.schwarzrot.model;
 
 import java.beans.PropertyChangeEvent;
 
-import com.mindovercnc.linuxcnc.nml.LengthUnit;
+import com.mindovercnc.base.nml.LengthUnit;
 
 
 public class SpeedInfo extends AbstractModel {

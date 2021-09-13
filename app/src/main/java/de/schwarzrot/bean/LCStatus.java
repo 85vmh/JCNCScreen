@@ -42,9 +42,9 @@ import de.schwarzrot.model.GCodeInfo;
 import de.schwarzrot.model.SpeedInfo;
 import de.schwarzrot.model.ToolInfo;
 import de.schwarzrot.model.ValueModel;
-import com.mindovercnc.linuxcnc.nml.BufferDescriptor;
-import com.mindovercnc.linuxcnc.nml.TaskMode;
-import com.mindovercnc.linuxcnc.nml.TaskState;
+import com.mindovercnc.base.nml.BufferDescriptor;
+import com.mindovercnc.base.nml.TaskMode;
+import com.mindovercnc.base.nml.TaskState;
 import de.schwarzrot.util.PositionCalculator;
 
 import ca.odell.glazedlists.BasicEventList;

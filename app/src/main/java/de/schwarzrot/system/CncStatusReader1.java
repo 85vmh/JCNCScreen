@@ -38,9 +38,9 @@ import de.schwarzrot.model.ActiveCodes;
 import de.schwarzrot.model.SpeedInfo;
 import de.schwarzrot.model.ToolInfo;
 import de.schwarzrot.model.ValueModel;
-import com.mindovercnc.linuxcnc.nml.BufferDescriptor;
-import com.mindovercnc.linuxcnc.nml.BufferEntry;
-import com.mindovercnc.linuxcnc.nml.IBufferDescriptor;
+import com.mindovercnc.base.nml.BufferDescriptor;
+import com.mindovercnc.base.nml.BufferEntry;
+import com.mindovercnc.base.nml.IBufferDescriptor;
 
 import java.net.DatagramSocket;
 import java.net.InetAddress;

@@ -1,7 +1,9 @@
 package com.mindovercnc.linuxcnc
 
-object Initializer {
-    fun loadLibraries() {
+import com.mindovercnc.base.Initializer
+
+object CncInitializer : Initializer{
+    override fun initialize() {
         //System.loadLibrary("linuxcncini");
         System.loadLibrary("nml")
         System.loadLibrary("linuxcnchal")

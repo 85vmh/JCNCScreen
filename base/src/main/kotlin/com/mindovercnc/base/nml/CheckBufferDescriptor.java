@@ -1,4 +1,4 @@
-package com.mindovercnc.linuxcnc.nml;
+package com.mindovercnc.base.nml;
 
 
 import java.io.BufferedReader;

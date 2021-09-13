@@ -2,8 +2,8 @@ package de.schwarzrot.app
 
 import com.mindovercnc.linuxcnc.StatusReader
 import de.schwarzrot.bean.Position
-import com.mindovercnc.linuxcnc.nml.BufferDescriptor
-import com.mindovercnc.linuxcnc.nml.IBufferDescriptor
+import com.mindovercnc.base.nml.BufferDescriptor
+import com.mindovercnc.base.nml.IBufferDescriptor
 import java.nio.ByteBuffer
 import java.util.*
 

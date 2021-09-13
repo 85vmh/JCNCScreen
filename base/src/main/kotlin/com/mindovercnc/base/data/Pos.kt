@@ -1,6 +1,6 @@
-package com.mindovercnc.linuxcnc.data
+package com.mindovercnc.base.data
 
-import com.mindovercnc.linuxcnc.nml.BufferEntry
+import com.mindovercnc.base.nml.BufferEntry
 import java.nio.ByteBuffer
 
 data class Pos(

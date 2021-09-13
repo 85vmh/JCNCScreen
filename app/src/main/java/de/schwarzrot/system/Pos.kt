@@ -1,6 +1,6 @@
 package de.schwarzrot.system
 
-import com.mindovercnc.linuxcnc.nml.BufferEntry
+import com.mindovercnc.base.nml.BufferEntry
 import java.nio.ByteBuffer
 
 data class Pos(

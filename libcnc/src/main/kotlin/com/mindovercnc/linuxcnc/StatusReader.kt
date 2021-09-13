@@ -1,14 +1,10 @@
 package com.mindovercnc.linuxcnc
 
-import com.mindovercnc.linuxcnc.data.PositionState
-import com.mindovercnc.linuxcnc.nml.BufferDescriptor
-import com.mindovercnc.linuxcnc.nml.IBufferDescriptor
+import com.mindovercnc.base.IStatusReader
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
-import java.util.*
-import javax.swing.text.Position
 
 /*
  * **************************************************************************
@@ -36,10 +32,8 @@ import javax.swing.text.Position
  *
  * **************************************************************************
  */
-class StatusReader(private val updateListener: StatusUpdateListener? = null) {
+class StatusReader(private val updateListener: StatusUpdateListener? = null) : IStatusReader {
     private val statusBuffer: ByteBuffer?
-    private val _posState = MutableStateFlow<PositionState?>(null)
-    val posState = _posState.asStateFlow()
 
     init {
         statusBuffer = init()
@@ -47,18 +41,12 @@ class StatusReader(private val updateListener: StatusUpdateListener? = null) {
         updateListener?.onInitialStatus(statusBuffer)
     }
 
-    fun launch(bufferDescriptor: IBufferDescriptor) = flow{
+    override fun launch() = flow{
         while (true){
-            refreshData(bufferDescriptor)
+            update()
             emit(statusBuffer)
             delay(100L)
         }
-    }
-
-    private suspend fun refreshData(bufferDescriptor: IBufferDescriptor) {
-        update()
-        _posState.value = statusBuffer?.let { PositionState(it, bufferDescriptor) }
-        //println("Emitted new status buffer: ${System.currentTimeMillis()}")
     }
 
     fun update() {

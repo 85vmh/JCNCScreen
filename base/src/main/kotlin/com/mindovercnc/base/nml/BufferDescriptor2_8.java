@@ -1,4 +1,4 @@
-package com.mindovercnc.linuxcnc.nml;
+package com.mindovercnc.base.nml;
 /*
  * **************************************************************************
  *
@@ -31,7 +31,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import com.mindovercnc.linuxcnc.nml.BufferEntry.BufferEntryType;
+import com.mindovercnc.base.nml.BufferEntry.BufferEntryType;
 
 
 /**

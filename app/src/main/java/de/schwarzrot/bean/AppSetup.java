@@ -36,7 +36,7 @@ import java.util.Map;
 import javax.swing.SwingUtilities;
 
 import de.schwarzrot.model.ValueModel;
-import com.mindovercnc.linuxcnc.nml.LengthUnit;
+import com.mindovercnc.base.nml.LengthUnit;
 import de.schwarzrot.util.ConfigParser;
 
 import ca.odell.glazedlists.BasicEventList;

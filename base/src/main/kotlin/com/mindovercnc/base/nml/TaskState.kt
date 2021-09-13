@@ -1,9 +1,9 @@
-package com.mindovercnc.linuxcnc.nml
+package com.mindovercnc.base.nml
 
 /* 
  * **************************************************************************
  * 
- *  file:       TaskMode.java
+ *  file:       TaskState.java
  *  project:    GUI for linuxcnc
  *  subproject: graphical application frontend
  *  purpose:    create a smart application, that assists in managing
@@ -26,7 +26,7 @@ package com.mindovercnc.linuxcnc.nml
  * 
  * **************************************************************************
  */
-enum class TaskMode(val mode: Int) {
-    TaskModeManual(1), TaskModeAuto(2), TaskModeMDI(3);
+enum class TaskState(val stateNum: Int) {
+    EStop(1), EStopReset(2), MachineOff(3), MachineOn(4);
 
 }

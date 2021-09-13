@@ -1,6 +1,6 @@
-package com.mindovercnc.linuxcnc.data
+package com.mindovercnc.base.data
 
-import com.mindovercnc.linuxcnc.nml.IBufferDescriptor
+import com.mindovercnc.base.nml.IBufferDescriptor
 import java.nio.ByteBuffer
 
 data class PositionState(

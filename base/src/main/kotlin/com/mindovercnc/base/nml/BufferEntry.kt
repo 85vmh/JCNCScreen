@@ -1,14 +1,14 @@
-package com.mindovercnc.linuxcnc.nml
+package com.mindovercnc.base.nml
 
-/* 
+/*
  * **************************************************************************
  * 
- *  file:       TaskAutoMode.java
+ *  file:       BufferEntry.java
  *  project:    GUI for linuxcnc
  *  subproject: graphical application frontend
  *  purpose:    create a smart application, that assists in managing
  *              control of cnc-machines                           
- *  created:    22.9.2019 by Django Reinhard
+ *  created:    28.10.2019 by Django Reinhard
  *  copyright:  all rights reserved
  * 
  *  This program is free software: you can redistribute it and/or modify 
@@ -26,6 +26,8 @@ package com.mindovercnc.linuxcnc.nml
  * 
  * **************************************************************************
  */
-enum class TaskAutoMode {
-    AutoRun, AutoPause, AutoResume, AutoStep, AutoReverse, AutoForward
+data class BufferEntry(val name: String, val offset: Int, val size: Int, val type: BufferEntryType) {
+    enum class BufferEntryType {
+        unknown, Logical, Byte, Short, Integer, Long, Double, String
+    }
 }

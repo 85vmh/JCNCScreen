@@ -39,11 +39,11 @@ import com.mindovercnc.linuxcnc.SystemMessage;
 import de.schwarzrot.app.ApplicationMode;
 import de.schwarzrot.bean.LCStatus;
 import de.schwarzrot.model.ValueModel;
-import com.mindovercnc.linuxcnc.nml.InterpState;
-import com.mindovercnc.linuxcnc.nml.SpindleDirection;
-import com.mindovercnc.linuxcnc.nml.TaskAutoMode;
-import com.mindovercnc.linuxcnc.nml.TaskMode;
-import com.mindovercnc.linuxcnc.nml.TaskState;
+import com.mindovercnc.base.nml.InterpState;
+import com.mindovercnc.base.nml.SpindleDirection;
+import com.mindovercnc.base.nml.TaskAutoMode;
+import com.mindovercnc.base.nml.TaskMode;
+import com.mindovercnc.base.nml.TaskState;
 
 
 public class CncCommandWriter {

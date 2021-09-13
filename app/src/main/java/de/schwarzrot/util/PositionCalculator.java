@@ -31,7 +31,7 @@ import de.schwarzrot.bean.LCStatus;
 import de.schwarzrot.bean.Position;
 import de.schwarzrot.model.CanonPosition;
 import de.schwarzrot.model.ValueModel;
-import com.mindovercnc.linuxcnc.nml.LengthUnit;
+import com.mindovercnc.base.nml.LengthUnit;
 
 
 public class PositionCalculator {

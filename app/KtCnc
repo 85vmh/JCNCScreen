@@ -1,2 +1,2 @@
 #!/bin/bash
-java -Djava.library.path=/home/cnc/Work/JCNCScreen/libcnc/native:/home/cnc/Work/JCNCScreen/libcnc/native/lc/lib -jar app-all.jar -base ./lib
+java -Djava.library.path=/home/vasimihalca/Work/JCNCScreen/libcnc/native:/home/vasimihalca/Work/JCNCScreen/libcnc/native/lc/lib -jar app-all.jar -base ./lib

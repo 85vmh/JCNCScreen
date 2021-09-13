@@ -1,14 +1,14 @@
-package com.mindovercnc.linuxcnc.nml
+package com.mindovercnc.base.nml
 
 /* 
  * **************************************************************************
  * 
- *  file:       TaskState.java
+ *  file:       TaskAutoMode.java
  *  project:    GUI for linuxcnc
  *  subproject: graphical application frontend
  *  purpose:    create a smart application, that assists in managing
  *              control of cnc-machines                           
- *  created:    21.9.2019 by Django Reinhard
+ *  created:    22.9.2019 by Django Reinhard
  *  copyright:  all rights reserved
  * 
  *  This program is free software: you can redistribute it and/or modify 
@@ -26,7 +26,6 @@ package com.mindovercnc.linuxcnc.nml
  * 
  * **************************************************************************
  */
-enum class TaskState(val stateNum: Int) {
-    EStop(1), EStopReset(2), MachineOff(3), MachineOn(4);
-
+enum class TaskAutoMode {
+    AutoRun, AutoPause, AutoResume, AutoStep, AutoReverse, AutoForward
 }
