@@ -3,7 +3,7 @@ package com.mindovercnc.base.data
 import com.mindovercnc.base.nml.BufferEntry
 import java.nio.ByteBuffer
 
-data class Pos(
+data class Position(
     val x: Double = 0.0,
     val y: Double = 0.0,
     val z: Double = 0.0,
@@ -15,8 +15,8 @@ data class Pos(
     val w: Double = 0.0,
 ) {
     companion object {
-        fun fromOffset(statusBuffer: ByteBuffer, entry: BufferEntry): Pos {
-            return Pos(
+        fun fromOffset(statusBuffer: ByteBuffer, entry: BufferEntry): Position {
+            return Position(
                 x = statusBuffer.getDouble(entry.offset),
                 y = statusBuffer.getDouble(entry.offset + 8),
                 z = statusBuffer.getDouble(entry.offset + 16),

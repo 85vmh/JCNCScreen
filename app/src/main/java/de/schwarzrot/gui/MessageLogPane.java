@@ -27,24 +27,18 @@ package de.schwarzrot.gui;
  */
 
 
-import java.awt.event.MouseEvent;
-import java.util.List;
-
-import javax.swing.BoxLayout;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableModel;
-
-import de.schwarzrot.bean.themes.UITheme;
-import de.schwarzrot.format.MessageTableFormat;
-import com.mindovercnc.linuxcnc.SystemMessage;
-
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.SortedList;
 import ca.odell.glazedlists.swing.DefaultEventTableModel;
+import com.mindovercnc.base.nml.SystemMessage;
+import de.schwarzrot.bean.themes.UITheme;
+import de.schwarzrot.format.MessageTableFormat;
+
+import javax.swing.*;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableModel;
+import java.awt.event.MouseEvent;
+import java.util.List;
 
 
 public class MessageLogPane extends JPanel {

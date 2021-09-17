@@ -40,6 +40,7 @@ java -Djava.library.path=$nativePath:$nativePath/lc/lib -jar app-all.jar -base .
 
 dependencies {
     implementation(project(":libcnc"))
+    implementation(project(":base"))
     implementation(fileTree(mapOf("dir" to "lib", "include" to listOf("*.jar"))))
     //implementation fileTree(dir: 'lib', include: ['*.jar'])
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.0")

@@ -41,11 +41,11 @@ class StatusReader(private val updateListener: StatusUpdateListener? = null) : I
         updateListener?.onInitialStatus(statusBuffer)
     }
 
-    override fun launch() = flow{
+    override fun refresh(interval: Long) = flow{
         while (true){
-            update()
+            readStatus()
             emit(statusBuffer)
-            delay(100L)
+            delay(interval)
         }
     }
 

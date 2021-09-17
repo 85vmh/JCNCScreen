@@ -26,9 +26,9 @@ package de.schwarzrot.util;
  * **************************************************************************
  */
 
-import java.util.Comparator;
+import com.mindovercnc.base.nml.SystemMessage;
 
-import com.mindovercnc.linuxcnc.SystemMessage;
+import java.util.Comparator;
 
 public class SystemMessageComparator implements Comparator<SystemMessage> {
    @Override

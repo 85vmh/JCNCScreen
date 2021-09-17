@@ -64,8 +64,8 @@ import javax.swing.UIManager;
 
 import com.jme3.util.JmeFormatter;
 
+import com.mindovercnc.base.nml.SystemMessage;
 import com.mindovercnc.linuxcnc.CncInitializer;
-import com.mindovercnc.linuxcnc.SystemMessage;
 import de.schwarzrot.bean.AppSetup;
 import de.schwarzrot.bean.LCStatus;
 import de.schwarzrot.bean.themes.UITheme;
@@ -112,7 +112,7 @@ public class LinuxCNCClient extends JFrame implements Runnable {
    @SuppressWarnings("unchecked")
    public LinuxCNCClient(String[] args) {
       super(LCStatus.getStatus().lm("AppTitle"));
-      CncInitializer.INSTANCE.loadLibraries();
+      CncInitializer.INSTANCE.initialize();
       this.iniFile      = determineIniFile(args);
       this.errorLog     = new BasicEventList<SystemMessage>();
       this.errorReader  = new CncErrorReader(errorLog);

@@ -58,7 +58,7 @@ import de.schwarzrot.logic.OrCondition;
 import de.schwarzrot.logic.SmallerCondition;
 import de.schwarzrot.model.ValueModel;
 import com.mindovercnc.base.nml.BufferDescriptor;
-import com.mindovercnc.base.nml.InterpState;
+import com.mindovercnc.base.nml.InterpreterState;
 import com.mindovercnc.base.nml.TaskExecState;
 import com.mindovercnc.base.nml.TaskMode;
 import com.mindovercnc.base.nml.TaskState;
@@ -271,7 +271,7 @@ public abstract class AbstractMainPane extends JDesktopPane
                   new EqualCondition<Boolean>(errorActive, false) }),
             new OrCondition(new GreaterCondition<Double>(status.getModel(LCStatus.MN_DTG), 0.0),
                   new GreaterCondition<Integer>(status.getModel(LCStatus.MN_InterpState),
-                        InterpState.Reading.getStateNum())));
+                        InterpreterState.Reading.getStateNum())));
       sb.addActionListener(new ActionListener() {
          @Override
          public void actionPerformed(ActionEvent ae) {

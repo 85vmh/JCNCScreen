@@ -1,4 +1,4 @@
-package di
+package com.mindovercnc.base.di
 
 import com.mindovercnc.base.IStatusReader
 import com.mindovercnc.base.Initializer

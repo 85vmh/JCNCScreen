@@ -27,25 +27,17 @@ package de.schwarzrot.system;
  */
 
 
-import java.awt.Color;
-import java.awt.Font;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
-import java.util.List;
-import java.util.Properties;
-
 import com.jme3.app.SimpleApplication;
-
-import com.mindovercnc.linuxcnc.SystemMessage;
+import com.mindovercnc.base.nml.SystemMessage;
 import de.schwarzrot.bean.GCodeLine;
 import de.schwarzrot.bean.LCStatus;
 import de.schwarzrot.bean.themes.UITheme;
 import de.schwarzrot.gui.PaneStack;
+
+import java.awt.*;
+import java.io.*;
+import java.util.List;
+import java.util.Properties;
 
 
 public class ConfigHolder {

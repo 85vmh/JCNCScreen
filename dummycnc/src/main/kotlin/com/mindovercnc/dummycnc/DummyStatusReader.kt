@@ -7,7 +7,7 @@ import java.nio.ByteBuffer
 class DummyStatusReader(
     private val flow: Flow<ByteBuffer?>
 ) : IStatusReader {
-    override fun launch(): Flow<ByteBuffer?> {
+    override fun refresh(interval: Long): Flow<ByteBuffer?> {
         return flow
     }
 }

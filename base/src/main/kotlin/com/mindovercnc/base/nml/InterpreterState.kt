@@ -28,7 +28,7 @@ package com.mindovercnc.base.nml
  */ /*
  * keep in sync with linuxcnc-dev/src/emc/nml_intf/emc.hh
  */
-enum class InterpState(val stateNum: Int) {
+enum class InterpreterState(val stateNum: Int) {
     Idle(1), Reading(2), Paused(3), Waiting(4);
 
 }

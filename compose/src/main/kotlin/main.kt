@@ -16,11 +16,11 @@ import androidx.compose.ui.window.application
 import com.mindovercnc.base.IStatusReader
 import com.mindovercnc.base.Initializer
 import com.mindovercnc.base.PosStateMapper
-import com.mindovercnc.base.data.Pos
+import com.mindovercnc.base.data.Position
 import com.mindovercnc.base.data.PositionState
 import com.mindovercnc.base.mapUsing
 import com.mindovercnc.base.nml.BufferDescriptor
-import di.DummyModule
+import com.mindovercnc.base.di.DummyModule
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharedFlow
@@ -50,7 +50,7 @@ fun MyWindow(onCloseRequest: () -> Unit) = Window(onCloseRequest = onCloseReques
 
         val descriptor = BufferDescriptor()
         val sharedFlow: SharedFlow<ByteBuffer?> =
-            statusReader.launch().shareIn(CoroutineScope(Dispatchers.IO), SharingStarted.Eagerly)
+            statusReader.refresh(100L).shareIn(CoroutineScope(Dispatchers.IO), SharingStarted.Eagerly)
         val mapper = PosStateMapper(descriptor)
         val xx by sharedFlow.mapUsing(mapper).collectAsState(null)
 
@@ -95,10 +95,10 @@ fun Content(xx: PositionState?) {
 @Composable
 @Preview
 fun displaySomething(posState: PositionState) {
-    val absPos: Pos = posState.absPos
-    val g5xPos: Pos = posState.g5xPos
-    val toolPos: Pos = posState.toolPos
-    val g92Pos: Pos = posState.g92Pos
+    val absPos: Position = posState.absPos
+    val g5xPos: Position = posState.g5xPos
+    val toolPos: Position = posState.toolPos
+    val g92Pos: Position = posState.g92Pos
 
     println("---absPos$absPos")
     println("---g5xPos$g5xPos")

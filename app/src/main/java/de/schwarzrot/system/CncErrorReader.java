@@ -36,8 +36,8 @@ import javax.swing.JButton;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
+import com.mindovercnc.base.nml.SystemMessage;
 import com.mindovercnc.linuxcnc.ErrorReader;
-import com.mindovercnc.linuxcnc.SystemMessage;
 import de.schwarzrot.model.ValueModel;
 
 import ca.odell.glazedlists.EventList;

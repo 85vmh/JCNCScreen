@@ -27,23 +27,18 @@ package de.schwarzrot.system;
  */
 
 
+import com.mindovercnc.base.nml.SystemMessage;
+import com.mindovercnc.base.nml.*;
+import com.mindovercnc.linuxcnc.CommandWriter;
+import de.schwarzrot.app.ApplicationMode;
+import de.schwarzrot.bean.LCStatus;
+import de.schwarzrot.model.ValueModel;
+
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.List;
-
-import javax.swing.Timer;
-
-import com.mindovercnc.linuxcnc.CommandWriter;
-import com.mindovercnc.linuxcnc.SystemMessage;
-import de.schwarzrot.app.ApplicationMode;
-import de.schwarzrot.bean.LCStatus;
-import de.schwarzrot.model.ValueModel;
-import com.mindovercnc.base.nml.InterpState;
-import com.mindovercnc.base.nml.SpindleDirection;
-import com.mindovercnc.base.nml.TaskAutoMode;
-import com.mindovercnc.base.nml.TaskMode;
-import com.mindovercnc.base.nml.TaskState;
 
 
 public class CncCommandWriter {
@@ -123,7 +118,7 @@ public class CncCommandWriter {
          setAuto(TaskAutoMode.AutoStep);
       } else {
          if (LCStatus.getStatus().getModel("interpState").getValue()
-               .equals(InterpState.Paused.getStateNum())) {
+               .equals(InterpreterState.Paused.getStateNum())) {
             resumeGCodeExecution();
          } else {
             log.add(new SystemMessage(LCStatus.getStatus().lm("cmdExecAutoRun")));

@@ -26,11 +26,11 @@ package de.schwarzrot.format;
  * **************************************************************************
  */
 
-import java.text.DateFormat;
-
 import ca.odell.glazedlists.gui.TableFormat;
+import com.mindovercnc.base.nml.SystemMessage;
 import de.schwarzrot.bean.LCStatus;
-import com.mindovercnc.linuxcnc.SystemMessage;
+
+import java.text.DateFormat;
 
 
 public class MessageTableFormat implements TableFormat<SystemMessage> {

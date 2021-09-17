@@ -28,14 +28,11 @@ package de.schwarzrot.system;
  * **************************************************************************
  */
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.util.Date;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import com.mindovercnc.linuxcnc.SystemMessage;
+import ca.odell.glazedlists.EventList;
+import com.mindovercnc.base.nml.SystemMessage;
+import com.mindovercnc.base.nml.BufferDescriptor;
+import com.mindovercnc.base.nml.BufferEntry;
+import com.mindovercnc.base.nml.IBufferDescriptor;
 import de.schwarzrot.bean.LCStatus;
 import de.schwarzrot.bean.Position;
 import de.schwarzrot.bean.ToolEntry;
@@ -43,11 +40,13 @@ import de.schwarzrot.model.ActiveCodes;
 import de.schwarzrot.model.SpeedInfo;
 import de.schwarzrot.model.ToolInfo;
 import de.schwarzrot.model.ValueModel;
-import com.mindovercnc.base.nml.BufferDescriptor;
-import com.mindovercnc.base.nml.BufferEntry;
-import com.mindovercnc.base.nml.IBufferDescriptor;
 
-import ca.odell.glazedlists.EventList;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.util.Date;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 public class CncStatusReader0 {
