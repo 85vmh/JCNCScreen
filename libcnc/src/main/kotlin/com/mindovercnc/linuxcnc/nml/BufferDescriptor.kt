@@ -45,6 +45,8 @@ class BufferDescriptor : IBufferDescriptor {
         private const val nmlHasToolTable = false
 
         init {
+
+
             bufferEntries[IBufferDescriptor.AbsPosX] = BufferEntry(IBufferDescriptor.AbsPosX, 1480, 8, BufferEntryType.Double)
             bufferEntries[IBufferDescriptor.RelPosX] = BufferEntry(IBufferDescriptor.RelPosX, 1552, 8, BufferEntryType.Double)
             bufferEntries[IBufferDescriptor.G5xOffsX] = BufferEntry(IBufferDescriptor.G5xOffsX, 760, 8, BufferEntryType.Double)
