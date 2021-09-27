@@ -28,7 +28,7 @@ package de.schwarzrot.system;
 
 
 import com.jme3.app.SimpleApplication;
-import com.mindovercnc.base.nml.SystemMessage;
+import com.mindovercnc.base.data.SystemMessage;
 import de.schwarzrot.bean.GCodeLine;
 import de.schwarzrot.bean.LCStatus;
 import de.schwarzrot.bean.themes.UITheme;

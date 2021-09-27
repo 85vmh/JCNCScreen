@@ -27,45 +27,11 @@ package de.schwarzrot.app;
  */
 
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
-import java.awt.SplashScreen;
-import java.awt.Toolkit;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.jar.Attributes;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
-import java.util.jar.Manifest;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.Handler;
-import java.util.logging.Logger;
-
-import javax.swing.JComponent;
-import javax.swing.JDesktopPane;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JPopupMenu;
-import javax.swing.SwingUtilities;
-import javax.swing.ToolTipManager;
-import javax.swing.UIManager;
-
+import ca.odell.glazedlists.BasicEventList;
 import com.jme3.util.JmeFormatter;
-
-import com.mindovercnc.base.nml.SystemMessage;
+import com.mindovercnc.base.data.SystemMessage;
 import com.mindovercnc.linuxcnc.CncInitializer;
+import com.mindovercnc.linuxcnc.nml.BufferDescriptor;
 import de.schwarzrot.bean.AppSetup;
 import de.schwarzrot.bean.LCStatus;
 import de.schwarzrot.bean.themes.UITheme;
@@ -78,12 +44,26 @@ import de.schwarzrot.gui.PaneStack;
 import de.schwarzrot.jar.JarInfo;
 import de.schwarzrot.model.GCodeInfo;
 import de.schwarzrot.model.ValueModel;
-import com.mindovercnc.base.nml.BufferDescriptor;
 import de.schwarzrot.system.*;
 import de.schwarzrot.util.DatabaseUtils;
 import de.schwarzrot.util.Preview3DCreator;
 
-import ca.odell.glazedlists.BasicEventList;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.*;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.jar.Attributes;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
+import java.util.jar.Manifest;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Handler;
+import java.util.logging.Logger;
 
 
 public class LinuxCNCClient extends JFrame implements Runnable {

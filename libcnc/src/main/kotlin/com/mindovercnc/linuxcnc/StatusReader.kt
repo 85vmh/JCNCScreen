@@ -1,8 +1,7 @@
 package com.mindovercnc.linuxcnc
 
-import com.mindovercnc.base.IStatusReader
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.flow
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
@@ -32,7 +31,7 @@ import java.nio.ByteOrder
  *
  * **************************************************************************
  */
-class StatusReader(private val updateListener: StatusUpdateListener? = null) : IStatusReader {
+class StatusReader(private val updateListener: StatusUpdateListener? = null) {
     private val statusBuffer: ByteBuffer?
 
     init {
@@ -41,7 +40,7 @@ class StatusReader(private val updateListener: StatusUpdateListener? = null) : I
         updateListener?.onInitialStatus(statusBuffer)
     }
 
-    override fun refresh(interval: Long) = flow{
+    fun refresh(interval: Long) = flow{
         while (true){
             readStatus()
             emit(statusBuffer)

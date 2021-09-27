@@ -31,7 +31,7 @@ import de.schwarzrot.bean.LCStatus;
 import de.schwarzrot.bean.Position;
 import de.schwarzrot.model.CanonPosition;
 import de.schwarzrot.model.ValueModel;
-import com.mindovercnc.base.nml.LengthUnit;
+import com.mindovercnc.base.data.LengthUnit;
 
 
 public class PositionCalculator {
@@ -175,7 +175,7 @@ public class PositionCalculator {
 
    protected double convertUnit(double v) {
       switch (unit) {
-         case Inch:
+         case IN:
             return v * 25.40;
          case CM:
             return v * 10;

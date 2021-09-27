@@ -1,14 +1,14 @@
-package com.mindovercnc.base.nml
+package com.mindovercnc.base.data
 
 /* 
  * **************************************************************************
  * 
- *  file:       TaskExecState.java
+ *  file:       TaskMode.java
  *  project:    GUI for linuxcnc
  *  subproject: graphical application frontend
  *  purpose:    create a smart application, that assists in managing
  *              control of cnc-machines                           
- *  created:    19.10.2019 by Django Reinhard
+ *  created:    21.9.2019 by Django Reinhard
  *  copyright:  all rights reserved
  * 
  *  This program is free software: you can redistribute it and/or modify 
@@ -25,18 +25,13 @@ package com.mindovercnc.base.nml
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  * 
  * **************************************************************************
- */ /*
- * keep in sync with linuxcnc-dev/src/emc/nml_intf/emc.hh
  */
-enum class TaskExecState(val stateNum: Int) {
-    TaskExecError(1),
-    TaskExecDone(2),
-    TaskExecWait4Motion(3),
-    TaskExecWait4MotionQueue(4),
-    TaskExecWait4IO(5),
-    TaskExecWait4MotionAndIO(7),
-    TaskExecWait4Delay(8),
-    TaskExecWait4SystemCMD(9),
-    TaskExecWait4SpindleOrientation(10);
+enum class TaskMode(val mode: Int) {
+    TaskModeManual(1), TaskModeAuto(2), TaskModeMDI(3);
+
+    companion object {
+        private val map = values().associateBy(TaskMode::mode)
+        fun fromInt(type: Int) = map[type]
+    }
 
 }

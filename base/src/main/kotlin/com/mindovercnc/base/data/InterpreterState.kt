@@ -1,14 +1,14 @@
-package com.mindovercnc.base.nml
+package com.mindovercnc.base.data
 
 /* 
  * **************************************************************************
  * 
- *  file:       LengthUnit.java
+ *  file:       InterpState.java
  *  project:    GUI for linuxcnc
  *  subproject: graphical application frontend
  *  purpose:    create a smart application, that assists in managing
  *              control of cnc-machines                           
- *  created:    29.9.2019 by Django Reinhard
+ *  created:    19.10.2019 by Django Reinhard
  *  copyright:  all rights reserved
  * 
  *  This program is free software: you can redistribute it and/or modify 
@@ -25,8 +25,10 @@ package com.mindovercnc.base.nml
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  * 
  * **************************************************************************
+ */ /*
+ * keep in sync with linuxcnc-dev/src/emc/nml_intf/emc.hh
  */
-enum class LengthUnit(val id: Int) {
-    Inch(1), MM(2), CM(3);
+enum class InterpreterState(val stateNum: Int) {
+    Idle(1), Reading(2), Paused(3), Waiting(4);
 
 }

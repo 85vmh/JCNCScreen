@@ -27,7 +27,7 @@ package de.schwarzrot.format;
  */
 
 import ca.odell.glazedlists.gui.TableFormat;
-import com.mindovercnc.base.nml.SystemMessage;
+import com.mindovercnc.base.data.SystemMessage;
 import de.schwarzrot.bean.LCStatus;
 
 import java.text.DateFormat;

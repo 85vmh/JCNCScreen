@@ -30,7 +30,7 @@ package de.schwarzrot.gui;
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.SortedList;
 import ca.odell.glazedlists.swing.DefaultEventTableModel;
-import com.mindovercnc.base.nml.SystemMessage;
+import com.mindovercnc.base.data.SystemMessage;
 import de.schwarzrot.bean.themes.UITheme;
 import de.schwarzrot.format.MessageTableFormat;
 

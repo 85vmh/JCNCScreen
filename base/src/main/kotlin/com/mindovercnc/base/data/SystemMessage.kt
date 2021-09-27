@@ -1,4 +1,4 @@
-package com.mindovercnc.base.nml
+package com.mindovercnc.base.data
 
 import java.lang.StringBuilder
 import java.util.*
@@ -7,7 +7,7 @@ import java.util.regex.Pattern
 /*
  * **************************************************************************
  *
- *  file:       com.mindovercnc.base.nml.SystemMessage.java
+ *  file:       com.mindovercnc.base.data.SystemMessage.java
  *  project:    GUI for linuxcnc
  *  subproject: graphical application frontend
  *  purpose:    create a smart application, that assists in managing

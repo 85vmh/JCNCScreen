@@ -29,13 +29,13 @@ package de.schwarzrot.model;
 
 import java.beans.PropertyChangeEvent;
 
-import com.mindovercnc.base.nml.LengthUnit;
+import com.mindovercnc.base.data.LengthUnit;
 
 
 public class SpeedInfo extends AbstractModel {
    public SpeedInfo(LengthUnit lu) {
       switch (lu) {
-         case Inch:
+         case IN:
             jogSpeed = 39.37;
             break;
          case MM:

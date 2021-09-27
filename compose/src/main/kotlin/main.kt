@@ -6,30 +6,25 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
-import com.mindovercnc.base.IStatusReader
-import com.mindovercnc.base.Initializer
-import com.mindovercnc.base.PosStateMapper
-import com.mindovercnc.base.data.Position
-import com.mindovercnc.base.data.PositionState
-import com.mindovercnc.base.mapUsing
+import com.mindovercnc.base.CncStatusRepository
+import com.mindovercnc.base.data.*
 import com.mindovercnc.base.nml.BufferDescriptor
-import com.mindovercnc.base.di.DummyModule
+import com.mindovercnc.dummycnc.PositionMock
+import di.RepositoryModule
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.shareIn
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import org.kodein.di.compose.localDI
 import org.kodein.di.compose.withDI
 import org.kodein.di.instance
-import java.nio.ByteBuffer
+import java.util.*
 
 fun main() {
     application {
@@ -41,18 +36,35 @@ fun main() {
 fun MyWindow(onCloseRequest: () -> Unit) = Window(onCloseRequest = onCloseRequest, title = "KtCnc") {
 
     //withDI(CncModule) {
-    withDI(DummyModule) {
+    withDI(RepositoryModule) {
         val di = localDI()
-        val initializer by di.instance<Initializer>()
-        initializer.initialize()
+        val scope = rememberCoroutineScope {
+            Dispatchers.Main
+        }
 
-        val statusReader by di.instance<IStatusReader>()
+        val flow by di.instance<MutableStateFlow<CncStatus>>("dummy")
 
-        val descriptor = BufferDescriptor()
-        val sharedFlow: SharedFlow<ByteBuffer?> =
-            statusReader.refresh(100L).shareIn(CoroutineScope(Dispatchers.IO), SharingStarted.Eagerly)
-        val mapper = PosStateMapper(descriptor)
-        val xx by sharedFlow.mapUsing(mapper).collectAsState(null)
+        remember {
+            val scanner = Scanner(
+                System.`in`
+            )
+
+            scope.launch {
+                while (true) {
+                    if (scanner.hasNext()) {
+                        val x = scanner.nextLine()
+                        flow.value = CncStatus(StatusState(PositionMock.mock(x.toDouble())), ErrorState(null))
+                    }
+                    delay(50L)
+                }
+            }
+        }
+        val statusRepository by di.instance<CncStatusRepository>()
+
+        val sharedFlow: Flow<CncStatus> = remember { statusRepository.cncStatusFlow() }
+        val xx by sharedFlow.map {
+            it.statusState.positionState
+        }.collectAsState(null)
 
         //val statusBuffer by statusReader.status.collectAsState(null)
         MaterialTheme {

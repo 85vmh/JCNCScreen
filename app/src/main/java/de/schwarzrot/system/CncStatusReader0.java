@@ -29,10 +29,10 @@ package de.schwarzrot.system;
  */
 
 import ca.odell.glazedlists.EventList;
-import com.mindovercnc.base.nml.SystemMessage;
-import com.mindovercnc.base.nml.BufferDescriptor;
-import com.mindovercnc.base.nml.BufferEntry;
-import com.mindovercnc.base.nml.IBufferDescriptor;
+import com.mindovercnc.base.data.SystemMessage;
+import com.mindovercnc.linuxcnc.nml.BufferDescriptor;
+import com.mindovercnc.linuxcnc.nml.BufferEntry;
+import com.mindovercnc.linuxcnc.nml.IBufferDescriptor;
 import de.schwarzrot.bean.LCStatus;
 import de.schwarzrot.bean.Position;
 import de.schwarzrot.bean.ToolEntry;
@@ -407,10 +407,11 @@ public class CncStatusReader0 {
 
     protected void handleStates() {
         BufferEntry e = bufDesc.get(BufferDescriptor.TaskMode);
-
         status.setTaskMode(statusBuffer.getInt(e.getOffset()));
+
         e = bufDesc.get(BufferDescriptor.TaskState);
         status.setTaskState(statusBuffer.getInt(e.getOffset()));
+
         e = bufDesc.get(BufferDescriptor.ExecState);
         status.setExecState(statusBuffer.getInt(e.getOffset()));
         e = bufDesc.get(BufferDescriptor.InterpState);

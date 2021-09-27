@@ -27,28 +27,17 @@ package de.schwarzrot.bean;
  */
 
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
-
-import de.schwarzrot.app.ApplicationMode;
-import de.schwarzrot.app.LinuxCNCClient;
-import de.schwarzrot.model.ActiveCodes;
-import de.schwarzrot.model.CanonPosition;
-import de.schwarzrot.model.GCodeInfo;
-import de.schwarzrot.model.SpeedInfo;
-import de.schwarzrot.model.ToolInfo;
-import de.schwarzrot.model.ValueModel;
-import com.mindovercnc.base.nml.BufferDescriptor;
-import com.mindovercnc.base.nml.TaskMode;
-import com.mindovercnc.base.nml.TaskState;
-import de.schwarzrot.util.PositionCalculator;
-
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
+import com.mindovercnc.base.data.TaskMode;
+import com.mindovercnc.base.data.TaskState;
+import com.mindovercnc.linuxcnc.nml.BufferDescriptor;
+import de.schwarzrot.app.ApplicationMode;
+import de.schwarzrot.app.LinuxCNCClient;
+import de.schwarzrot.model.*;
+import de.schwarzrot.util.PositionCalculator;
+
+import java.util.*;
 
 
 public class LCStatus {

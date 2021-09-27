@@ -1,14 +1,14 @@
-package com.mindovercnc.base.nml
+package com.mindovercnc.base.data
 
-/*
+/* 
  * **************************************************************************
  * 
- *  file:       BufferEntry.java
+ *  file:       LengthUnit.java
  *  project:    GUI for linuxcnc
  *  subproject: graphical application frontend
  *  purpose:    create a smart application, that assists in managing
  *              control of cnc-machines                           
- *  created:    28.10.2019 by Django Reinhard
+ *  created:    29.9.2019 by Django Reinhard
  *  copyright:  all rights reserved
  * 
  *  This program is free software: you can redistribute it and/or modify 
@@ -26,8 +26,7 @@ package com.mindovercnc.base.nml
  * 
  * **************************************************************************
  */
-data class BufferEntry(val name: String, val offset: Int, val size: Int, val type: BufferEntryType) {
-    enum class BufferEntryType {
-        unknown, Logical, Byte, Short, Integer, Long, Double, String
-    }
+enum class LengthUnit(val id: Int) {
+    IN(1), MM(2), CM(3);
+
 }

@@ -1,4 +1,4 @@
-package com.mindovercnc.base.nml;
+package com.mindovercnc.base.data;
 /*
  * **************************************************************************
  *

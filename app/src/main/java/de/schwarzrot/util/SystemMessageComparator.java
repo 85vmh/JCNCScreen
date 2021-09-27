@@ -26,7 +26,7 @@ package de.schwarzrot.util;
  * **************************************************************************
  */
 
-import com.mindovercnc.base.nml.SystemMessage;
+import com.mindovercnc.base.data.SystemMessage;
 
 import java.util.Comparator;
 

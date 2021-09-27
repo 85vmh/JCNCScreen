@@ -27,8 +27,8 @@ package de.schwarzrot.system;
  */
 
 
-import com.mindovercnc.base.nml.SystemMessage;
-import com.mindovercnc.base.nml.*;
+import com.mindovercnc.base.data.*;
+import com.mindovercnc.base.data.SystemMessage;
 import com.mindovercnc.linuxcnc.CommandWriter;
 import de.schwarzrot.app.ApplicationMode;
 import de.schwarzrot.bean.LCStatus;

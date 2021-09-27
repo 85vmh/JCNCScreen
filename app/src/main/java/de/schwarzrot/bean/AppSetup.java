@@ -36,7 +36,7 @@ import java.util.Map;
 import javax.swing.SwingUtilities;
 
 import de.schwarzrot.model.ValueModel;
-import com.mindovercnc.base.nml.LengthUnit;
+import com.mindovercnc.base.data.LengthUnit;
 import de.schwarzrot.util.ConfigParser;
 
 import ca.odell.glazedlists.BasicEventList;
@@ -361,7 +361,7 @@ public class AppSetup implements PropertyChangeListener, IAxisMask {
    public void setUnit(int unitID) {
       switch (unitID) {
          case 1:
-            this.unit = LengthUnit.Inch;
+            this.unit = LengthUnit.IN;
             break;
          case 3:
             this.unit = LengthUnit.CM;
@@ -404,7 +404,7 @@ public class AppSetup implements PropertyChangeListener, IAxisMask {
       sb.append(getNumberOfSpindles());
       sb.append("\nlength units: ");
       switch (unit) {
-         case Inch:
+         case IN:
             sb.append("inches");
             break;
          case MM:

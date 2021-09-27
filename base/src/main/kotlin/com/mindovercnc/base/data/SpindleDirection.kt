@@ -1,9 +1,9 @@
-package com.mindovercnc.base.nml
+package com.mindovercnc.base.data
 
 /* 
  * **************************************************************************
  * 
- *  file:       TaskAutoMode.java
+ *  file:       SpindleDirection.java
  *  project:    GUI for linuxcnc
  *  subproject: graphical application frontend
  *  purpose:    create a smart application, that assists in managing
@@ -26,6 +26,7 @@ package com.mindovercnc.base.nml
  * 
  * **************************************************************************
  */
-enum class TaskAutoMode {
-    AutoRun, AutoPause, AutoResume, AutoStep, AutoReverse, AutoForward
+enum class SpindleDirection(val direction: Int) {
+    SpindleClockwise(1), SpindleCounterClockwise(-1);
+
 }

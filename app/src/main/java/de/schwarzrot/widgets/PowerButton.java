@@ -38,7 +38,7 @@ import javax.swing.border.EmptyBorder;
 
 import de.schwarzrot.bean.LCStatus;
 import de.schwarzrot.bean.themes.UITheme;
-import com.mindovercnc.base.nml.TaskState;
+import com.mindovercnc.base.data.TaskState;
 
 
 public class PowerButton extends JButton implements PropertyChangeListener {

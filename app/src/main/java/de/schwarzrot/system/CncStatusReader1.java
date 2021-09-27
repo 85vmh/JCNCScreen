@@ -29,11 +29,11 @@ package de.schwarzrot.system;
  */
 
 import ca.odell.glazedlists.EventList;
-import com.mindovercnc.base.nml.SystemMessage;
-import com.mindovercnc.base.nml.BufferDescriptor;
-import com.mindovercnc.base.nml.BufferEntry;
-import com.mindovercnc.base.nml.IBufferDescriptor;
+import com.mindovercnc.base.data.SystemMessage;
 import com.mindovercnc.linuxcnc.StatusReader;
+import com.mindovercnc.linuxcnc.nml.BufferDescriptor;
+import com.mindovercnc.linuxcnc.nml.BufferEntry;
+import com.mindovercnc.linuxcnc.nml.IBufferDescriptor;
 import de.schwarzrot.bean.LCStatus;
 import de.schwarzrot.bean.Position;
 import de.schwarzrot.bean.ToolEntry;
@@ -70,7 +70,6 @@ public class CncStatusReader1 {
       public void onStatusUpdated(ByteBuffer bb) {
          statusBuffer = bb;
          handlePosition();
-         testKtCode();
          //handleGCodeFile();
          handleSignals();
          handleActiveCodes();
@@ -247,23 +246,6 @@ public class CncStatusReader1 {
 
          oldMotionLine = remoteLine;
       }
-   }
-
-   protected void testKtCode(){
-       Pos absPos = Pos.Companion.fromOffset(statusBuffer, bufDesc.get(BufferDescriptor.AbsPosX));
-       Pos g5xPos = Pos.Companion.fromOffset(statusBuffer, bufDesc.get(BufferDescriptor.G5xOffsX));
-       Pos toolPos = Pos.Companion.fromOffset(statusBuffer, bufDesc.get(BufferDescriptor.ToolOffsX));
-       Pos g92Pos = Pos.Companion.fromOffset(statusBuffer, bufDesc.get(BufferDescriptor.G92OffsX));
-
-      System.out.println("---absPos" + absPos);
-      System.out.println("---g5xPos" + g5xPos);
-      System.out.println("---toolPos" + toolPos);
-      System.out.println("---g92Pos" + g92Pos);
-
-      ActCodes gCodes = ActCodes.Companion.fromOffset(statusBuffer, bufDesc.get(BufferDescriptor.ActiveGCodes));
-      ActCodes mCodes = ActCodes.Companion.fromOffset(statusBuffer, bufDesc.get(BufferDescriptor.ActiveMCodes));
-      System.out.println("----gcodes" + gCodes);
-      System.out.println("----mcodes" + mCodes);
    }
 
    protected void handlePosition() {
@@ -609,7 +591,7 @@ public class CncStatusReader1 {
    //   private byte[]                  sendBuf;
    //   private ByteBuffer              sendBuffer;
    private InetAddress             address;
-   private BufferEntry             e;
+   private BufferEntry e;
    private Position                p;
    private Position                g5xO;
    private Position                tO;
