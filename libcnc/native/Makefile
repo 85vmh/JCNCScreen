@@ -34,13 +34,14 @@ LC_OBJS = $(abspath lc/src/objects/emc/nml_intf/emc.o) \
  $(abspath lc/src/objects/emc/tooldata/tooldata_mmap.o) \
  $(abspath lc/src/objects/emc/tooldata/tooldata_db.o)
 
-all: 	libLinuxCNC.so DumpBufDesc
+all: 	libLinuxCNC.so DumpBufDesc DumpBufferContents
 
 clean:
 	rm *.o
 	rm *.d
 	rm *.so
 	rm DumpBufDesc
+	rm DumpBufferContents
 
 headers:
 	javac -h . -cp .:../src:$(JLIBS) ../src/de/schwarzrot/system/CommandWriter.java
@@ -54,6 +55,9 @@ libLinuxCNC.so: $(O_NML) $(LC_OBJS)
 	$(GCC) -shared $(LC_FLAGS) -o $@ $^
 
 DumpBufDesc:	dumpBufDesc.o
+	$(GCC) $(LC_FLAGS) -o $@ $^
+
+DumpBufferContents:	DumpBufferContents.o
 	$(GCC) $(LC_FLAGS) -o $@ $^
 
 TestNML:	TestNML.o $(LC_OBJS)

@@ -32,27 +32,35 @@ static MemberDef StatusMembers[] = {
     {"execState",           O(task.execState)},
     {"interpState",         O(task.interpState)},
     {"call_level",          O(task.callLevel)},
-    {"readLine",            O(task.readLine)},
     {"motionLine",          O(task.motionLine)},
     {"currentLine",         O(task.currentLine)},
-    {"file",                O(task.file)},
-    {"command",             O(task.command)},
-    {"programUnits",        O(task.programUnits)},
-    {"interpreter_errcode", O(task.interpreter_errcode)},
+    {"readLine",            O(task.readLine)},
     {"optional_stop",       O(task.optional_stop_state)},
     {"block_delete",        O(task.block_delete_state)},
-    {"task_paused",         O(task.task_paused)},
     {"input_timeout",       O(task.input_timeout)},
+    {"file",                O(task.file)},
+    {"command",             O(task.command)},
+    {"g5xOffsX",            O(task.g5x_offset.tran.x)},
+    {"g5x_index",           O(task.g5x_index)},
+    {"g92OffsX",            O(task.g92_offset.tran.x)},
     {"rotationXY",          O(task.rotation_xy)},
+    {"toolOffsX",           O(task.toolOffset.tran.x)},
+    {"activeGCodes",        O(task.activeGCodes)},
+    {"activeMCodes",        O(task.activeMCodes)},
+    {"activeSettings",      O(task.activeSettings)},
+    {"programUnits",        O(task.programUnits)},
+    {"interpreter_errcode", O(task.interpreter_errcode)},
+    {"task_paused",         O(task.task_paused)},
     {"delay_left",          O(task.delayLeft)},
     {"queued_mdi_commands", O(task.queuedMDIcommands), "Number of MDI commands queued waiting to run." },
-// motion
+
+// motion trajectory
 //   EMC_TRAJ_STAT traj
     {"linear_units",        O(motion.traj.linearUnits)},
     {"angular_units",       O(motion.traj.angularUnits)},
     {"cycle_time",          O(motion.traj.cycleTime)},
     {"joints",              O(motion.traj.joints)},
-    {"spindles",            O(motion.spindle)},
+    {"spindles",            O(motion.traj.spindles)},
     {"axisMask",            O(motion.traj.axis_mask)},
     {"motion_mode",         O(motion.traj.mode)
       , "The current mode of the Motion controller.  One of TRAJ_MODE_FREE,\n"
@@ -65,14 +73,16 @@ static MemberDef StatusMembers[] = {
     {"id",                  O(motion.traj.id)},
     {"paused",              O(motion.traj.paused)},
     {"feedrate",            O(motion.traj.scale)},
-    {"rapidrate",           O(motion.traj.rapid_scale)},
-    {"velocityT",           O(motion.traj.velocity)},
-    {"velocityA",           O(motion.axis[0].velocity)},
-    {"velocityJ",           O(motion.joint[0].velocity)},
-    {"acceleration",        O(motion.traj.acceleration)},
+    {"traj_rapid_scale",    O(motion.traj.rapid_scale)},
+
+    {"commandedPosX",       O(motion.traj.position.tran.x)},
+    {"actualPosX",          O(motion.traj.actualPosition.tran.x)},
+    {"traj_velocity",       O(motion.traj.velocity)},
+    {"traj_acceleration",   O(motion.traj.acceleration)},
     {"max_velocity",        O(motion.traj.maxVelocity)},
     {"max_acceleration",    O(motion.traj.maxAcceleration)},
 
+    {"probedPosX",          O(motion.traj.probedPosition.tran.x)},
     {"probe_tripped",       O(motion.traj.probe_tripped)},
     {"probing",             O(motion.traj.probing)},
     {"probe_val",           O(motion.traj.probeval)},
@@ -83,22 +93,19 @@ static MemberDef StatusMembers[] = {
         "MOTION_TYPE_PROBING, or MOTION_TYPE_INDEXROTARY), or 0 if no motion is\n"
         "currently taking place."},
     {"distance2Go",           O(motion.traj.distance_to_go)},
+    {"dtgX",                  O(motion.traj.dtg.tran.x)},
     {"current_vel",           O(motion.traj.current_vel)},
     {"feed_override_enabled", O(motion.traj.feed_override_enabled)},
     {"adaptive_feed_enabled", O(motion.traj.adaptive_feed_enabled)},
     {"feed_hold_enabled",     O(motion.traj.feed_hold_enabled)},
+
+// motion trajectory
+
+    {"velocityA",           O(motion.axis[0].velocity)},
+    {"velocityJ",           O(motion.joint[0].velocity)},
+    {"spindles",            O(motion.spindle)},
+
 //axis end
-
-    {"activeGCodes",   O(task.activeGCodes)},
-    {"activeMCodes",   O(task.activeMCodes)},
-    {"activeSettings", O(task.activeSettings)},
-
-    {"absPosX",     O(motion.traj.position.tran.x)},
-    {"relPosX",     O(motion.traj.actualPosition.tran.x)},
-    {"dtgX",        O(motion.traj.dtg.tran.x)},
-    {"g5xOffsX",    O(task.g5x_offset.tran.x)},
-    {"g92OffsX",    O(task.g92_offset.tran.x)},
-    {"toolOffsX",   O(task.toolOffset.tran.x)},
 
     {"joint_0_enabled", O(motion.joint[0].enabled)},
     {"joint_1_enabled", O(motion.joint[1].enabled)},
