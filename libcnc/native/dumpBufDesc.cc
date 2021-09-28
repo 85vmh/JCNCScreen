@@ -22,49 +22,48 @@ struct MemberDef {
 static MemberDef StatusMembers[] = {
 // start like axis
 // stat
-//    {"echo_serial_number",  O(echo_serial_number)},
-//    {"echo_serial_number",  O(echo_serial_number)},
-//    {"state",               O(status)},
+    {"echo_serial_number",  O(echo_serial_number)},
+    {"echo_serial_number",  O(echo_serial_number)},
+    {"state",               O(status)},
 
 // task
     {"taskMode",            O(task.mode)},
     {"taskState",           O(task.state)},
     {"execState",           O(task.execState)},
     {"interpState",         O(task.interpState)},
-//    {"call_level",          O(task.callLevel)},
+    {"call_level",          O(task.callLevel)},
     {"readLine",            O(task.readLine)},
     {"motionLine",          O(task.motionLine)},
     {"currentLine",         O(task.currentLine)},
     {"file",                O(task.file)},
-//    {"command",             O(task.command)},
+    {"command",             O(task.command)},
     {"programUnits",        O(task.programUnits)},
-//    {"interpreter_errcode", O(task.interpreter_errcode)},
-//    {"optional_stop",       O(task.optional_stop_state)},
-//    {"block_delete",        O(task.block_delete_state)},
-//    {"task_paused",         O(task.task_paused)},
-//    {"input_timeout",       O(task.input_timeout)},
+    {"interpreter_errcode", O(task.interpreter_errcode)},
+    {"optional_stop",       O(task.optional_stop_state)},
+    {"block_delete",        O(task.block_delete_state)},
+    {"task_paused",         O(task.task_paused)},
+    {"input_timeout",       O(task.input_timeout)},
     {"rotationXY",          O(task.rotation_xy)},
-//    {"delay_left",          O(task.delayLeft)},
-//    {"queued_mdi_commands", O(task.queuedMDIcommands)
-//      , "Number of MDI commands queued waiting to run." },
+    {"delay_left",          O(task.delayLeft)},
+    {"queued_mdi_commands", O(task.queuedMDIcommands), "Number of MDI commands queued waiting to run." },
 // motion
 //   EMC_TRAJ_STAT traj
-//    {"linear_units",        O(motion.traj.linearUnits)},
-//    {"angular_units",       O(motion.traj.angularUnits)},
-//    {"cycle_time",          O(motion.traj.cycleTime)},
+    {"linear_units",        O(motion.traj.linearUnits)},
+    {"angular_units",       O(motion.traj.angularUnits)},
+    {"cycle_time",          O(motion.traj.cycleTime)},
     {"joints",              O(motion.traj.joints)},
     {"spindles",            O(motion.spindle)},
     {"axisMask",            O(motion.traj.axis_mask)},
-//    {"motion_mode",         O(motion.traj.mode)
-//      , "The current mode of the Motion controller.  One of TRAJ_MODE_FREE,\n"
-//        "TRAJ_MODE_COORD, or TRAJ_MODE_TELEOP." },
-//    {"enabled",             O(motion.traj.enabled)},
-//    {"inpos",               O(motion.traj.inpos)},
-//    {"queue",               O(motion.traj.queue)},
-//    {"active_queue",        O(motion.traj.activeQueue)},
-//    {"queue_full",          O(motion.traj.queueFull)},
-//    {"id",                  O(motion.traj.id)},
-//    {"paused",              O(motion.traj.paused)},
+    {"motion_mode",         O(motion.traj.mode)
+      , "The current mode of the Motion controller.  One of TRAJ_MODE_FREE,\n"
+        "TRAJ_MODE_COORD, or TRAJ_MODE_TELEOP." },
+    {"enabled",             O(motion.traj.enabled)},
+    {"inpos",               O(motion.traj.inpos)},
+    {"queue",               O(motion.traj.queue)},
+    {"active_queue",        O(motion.traj.activeQueue)},
+    {"queue_full",          O(motion.traj.queueFull)},
+    {"id",                  O(motion.traj.id)},
+    {"paused",              O(motion.traj.paused)},
     {"feedrate",            O(motion.traj.scale)},
     {"rapidrate",           O(motion.traj.rapid_scale)},
     {"velocityT",           O(motion.traj.velocity)},
@@ -74,15 +73,15 @@ static MemberDef StatusMembers[] = {
     {"max_velocity",        O(motion.traj.maxVelocity)},
     {"max_acceleration",    O(motion.traj.maxAcceleration)},
 
-//    {"probe_tripped",       O(motion.traj.probe_tripped)},
-//    {"probing",             O(motion.traj.probing)},
-//    {"probe_val",           O(motion.traj.probeval)},
-//    {"kinematics_type",     O(motion.traj.kinematics_type)},
-//    {"motion_type",         O(motion.traj.motion_type)
-//      , "The type of the currently executing motion (one of MOTION_TYPE_TRAVERSE,\n"
-//        "MOTION_TYPE_FEED, MOTION_TYPE_ARC, MOTION_TYPE_TOOLCHANGE,\n"
-//        "MOTION_TYPE_PROBING, or MOTION_TYPE_INDEXROTARY), or 0 if no motion is\n"
-//        "currently taking place."},
+    {"probe_tripped",       O(motion.traj.probe_tripped)},
+    {"probing",             O(motion.traj.probing)},
+    {"probe_val",           O(motion.traj.probeval)},
+    {"kinematics_type",     O(motion.traj.kinematics_type)},
+    {"motion_type",         O(motion.traj.motion_type)
+      , "The type of the currently executing motion (one of MOTION_TYPE_TRAVERSE,\n"
+        "MOTION_TYPE_FEED, MOTION_TYPE_ARC, MOTION_TYPE_TOOLCHANGE,\n"
+        "MOTION_TYPE_PROBING, or MOTION_TYPE_INDEXROTARY), or 0 if no motion is\n"
+        "currently taking place."},
     {"distance2Go",           O(motion.traj.distance_to_go)},
     {"current_vel",           O(motion.traj.current_vel)},
     {"feed_override_enabled", O(motion.traj.feed_override_enabled)},
@@ -125,14 +124,14 @@ static MemberDef StatusMembers[] = {
 // EMC_SPINDLE_STAT motion.spindle
     {"spindleSpeed",             O(motion.spindle[0].speed)},
     {"spindleScale",             O(motion.spindle[0].spindle_scale)},
-//    {"Spindle[0]css_max",        O(motion.spindle[0].css_maximum)},
-//    {"Spindle[0]css_fak",        O(motion.spindle[0].css_factor)},
+    {"Spindle[0]css_max",        O(motion.spindle[0].css_maximum)},
+    {"Spindle[0]css_fak",        O(motion.spindle[0].css_factor)},
     {"spindleDir",               O(motion.spindle[0].direction)},
-//    {"Spindle[0]brake",          O(motion.spindle[0].brake)},
+    {"Spindle[0]brake",          O(motion.spindle[0].brake)},
     {"spindleIncreasing",        O(motion.spindle[0].increasing)},
     {"spindleEnable",            O(motion.spindle[0].enabled)},
-//    {"Spindle[0]orient_state",   O(motion.spindle[0].orient_state)},
-//    {"Spindle[0]orient_fault",   O(motion.spindle[0].orient_fault)},
+    {"Spindle[0]orient_state",   O(motion.spindle[0].orient_state)},
+    {"Spindle[0]orient_fault",   O(motion.spindle[0].orient_fault)},
     {"spindleOverrideEnable",    O(motion.spindle[0].spindle_override_enabled)},
     {"spindleHomed",             O(motion.spindle[0].homed)},
 // io
@@ -158,7 +157,7 @@ static MemberDef StatusMembers[] = {
 
 // EMC_LUBE_STAT    io.lube
     {"lube",       O(io.lube.on)},
-//    {"lube_level", O(io.lube.level)},
+    {"lube_level", O(io.lube.level)},
 
     {"debug",      O(debug)},
     {NULL}

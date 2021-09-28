@@ -2,6 +2,7 @@ package com.mindovercnc.linuxcnc
 
 import com.mindovercnc.base.CncStatusRepository
 import com.mindovercnc.base.data.CncStatus
+import com.mindovercnc.linuxcnc.parsing.CncStatusFactory
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
