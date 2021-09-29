@@ -1,9 +1,8 @@
 package com.mindovercnc.linuxcnc.parsing
 
 import com.mindovercnc.base.data.*
-import com.mindovercnc.linuxcnc.StatusReader
-import com.mindovercnc.linuxcnc.nml.BufferEntry
-import com.mindovercnc.linuxcnc.nml.IBufferDescriptor
+import com.mindovercnc.linuxcnc.nml.BuffDescriptor
+import com.mindovercnc.linuxcnc.nml.Key
 import java.nio.ByteBuffer
 
 internal enum class ActiveCodeType(val maxCodes: Int, val divideBy: Float) {
@@ -12,55 +11,48 @@ internal enum class ActiveCodeType(val maxCodes: Int, val divideBy: Float) {
 }
 
 class TaskStatusFactory(
-    descriptor: IBufferDescriptor,
-    private val statusReader: StatusReader,
+    private val descriptor: BuffDescriptor,
     private val positionFactory: PositionFactory,
 ) : ParsingFactory<TaskStatus>(descriptor) {
 
     override fun parse(byteBuffer: ByteBuffer) = TaskStatus(
-        taskMode = TaskMode.values()[byteBuffer.getIntForKey(IBufferDescriptor.TaskState)],
-        taskState = TaskState.values()[byteBuffer.getIntForKey(IBufferDescriptor.TaskState)],
-        execState = TaskExecState.values()[(byteBuffer.getIntForKey(IBufferDescriptor.ExecState))],
-        interpreterState = InterpreterState.values()[(byteBuffer.getIntForKey(IBufferDescriptor.InterpState))],
-        callLevel = 0,
-        motionLine = byteBuffer.getIntForKey(IBufferDescriptor.MotionLine),
-        readLine = byteBuffer.getIntForKey(IBufferDescriptor.ReadLine),
-        isOptionalStopEnabled = false,
-        isBlockDeleteEnabled = false,
-        isDigitalInputTimeout = false,
-        loadedFile = readString(statusReader, IBufferDescriptor.File),
-        command = null,
+        taskMode = TaskMode.values()[byteBuffer.getIntForKey(Key.TaskMode)!!],
+        taskState = TaskState.values()[byteBuffer.getIntForKey(Key.TaskState)!!],
+        execState = TaskExecState.values()[byteBuffer.getIntForKey(Key.ExecState)!!],
+        interpreterState = InterpreterState.values()[byteBuffer.getIntForKey(Key.InterpreterState)!!],
+        subroutineCallLevel = byteBuffer.getIntForKey(Key.SubroutineCallLevel)!!,
+        motionLine = byteBuffer.getIntForKey(Key.MotionLine)!!,
+        readLine = byteBuffer.getIntForKey(Key.ReadLine)!!,
+        isOptionalStopEnabled = byteBuffer.getBooleanForKey(Key.IsOptionalStop)!!,
+        isBlockDeleteEnabled = byteBuffer.getBooleanForKey(Key.IsBlockDelete)!!,
+        isDigitalInputTimeout = byteBuffer.getBooleanForKey(Key.IsDigitalInTimeout)!!,
+        loadedFile = byteBuffer.getStringForKey(Key.LoadedFilePath),
+        command = byteBuffer.getStringForKey(Key.Command),
         g5xOffset = positionFactory.parse(byteBuffer, PositionFactory.PositionType.G5X_OFFSET),
-        g5xIndex = -1,
+        g5xIndex = byteBuffer.getIntForKey(Key.G5xActiveIndex)!!,
         g92Offset = positionFactory.parse(byteBuffer, PositionFactory.PositionType.G92_OFFSET),
-        rotationXY = byteBuffer.getDoubleForKey(IBufferDescriptor.RotationXY),
+        rotationXY = byteBuffer.getDoubleForKey(Key.RotationXY)!!,
         toolOffset = positionFactory.parse(byteBuffer, PositionFactory.PositionType.TOOL_OFFSET),
         activeCodes = ActiveCodes(
-            gCodes = parseActiveCodes(byteBuffer, descriptor[IBufferDescriptor.ActiveGCodes]!!, ActiveCodeType.G_CODE),
-            mCodes = parseActiveCodes(byteBuffer, descriptor[IBufferDescriptor.ActiveMCodes]!!, ActiveCodeType.M_CODE),
+            gCodes = parseActiveCodes(byteBuffer, descriptor.entries[Key.ActiveGCodes]!!.startOffset, ActiveCodeType.G_CODE),
+            mCodes = parseActiveCodes(byteBuffer, descriptor.entries[Key.ActiveMCodes]!!.startOffset, ActiveCodeType.M_CODE),
         ),
         activeSettings = -0.0,
-        programUnits = LengthUnit.values()[byteBuffer.getIntForKey(IBufferDescriptor.ProgramUnits)],
-        intepreterErrorCode = -1,
-        isTaskPaused = false,
-        delayLeft = -1.0,
-        mdiInputQueue = -1
+        programUnits = LengthUnit.values()[byteBuffer.getIntForKey(Key.ProgramUnits)!!],
+        intepreterErrorCode = byteBuffer.getIntForKey(Key.InterpreterErrorCode)!!,
+        isTaskPaused = byteBuffer.getBooleanForKey(Key.TaskPaused)!!,
+        delayLeft = byteBuffer.getDoubleForKey(Key.DelayLeft)!!,
+        mdiInputQueue = byteBuffer.getIntForKey(Key.QueuedMdiCommands)!!
     )
 
-    private fun parseActiveCodes(statusBuffer: ByteBuffer, entry: BufferEntry, activeCodeType: ActiveCodeType): List<Float> {
+    private fun parseActiveCodes(statusBuffer: ByteBuffer, offset: Int, activeCodeType: ActiveCodeType): List<Float> {
         val result = mutableListOf<Float>()
         for (i in 0..activeCodeType.maxCodes) {
-            val code = statusBuffer.getInt(entry.offset + 4 * i)
+            val code = statusBuffer.getInt(offset + 4 * i)
             if (code > 0) {
                 result.add(code / activeCodeType.divideBy)
             }
         }
         return result
-    }
-
-    private fun readString(statusReader: StatusReader, key: String): String? {
-        return descriptor[key]?.let {
-            statusReader.getString(it.offset, it.size)
-        }
     }
 }

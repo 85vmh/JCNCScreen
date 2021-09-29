@@ -2,23 +2,24 @@ package com.mindovercnc.linuxcnc.parsing
 
 import com.mindovercnc.base.data.IoStatus
 import com.mindovercnc.base.data.ToolStatus
-import com.mindovercnc.linuxcnc.nml.IBufferDescriptor
+import com.mindovercnc.linuxcnc.nml.BuffDescriptor
+import com.mindovercnc.linuxcnc.nml.Key
 import java.nio.ByteBuffer
 
-class IoStatusFactory(descriptor: IBufferDescriptor) : ParsingFactory<IoStatus>(descriptor) {
+class IoStatusFactory(descriptor: BuffDescriptor) : ParsingFactory<IoStatus>(descriptor) {
 
     override fun parse(byteBuffer: ByteBuffer) = IoStatus(
-        cycleTime = 0.0,
-        reason = -1,
-        isM6Fault = false,
+        cycleTime = byteBuffer.getDoubleForKey(Key.IoCycleTime)!!,
+        reason = byteBuffer.getIntForKey(Key.IoReason)!!,
+        isM6Fault = byteBuffer.getBooleanForKey(Key.IoFaultDuringM6)!!,
         toolStatus = ToolStatus(
-            pocketPrepared = byteBuffer.getIntForKey(IBufferDescriptor.PocketPrepared),
-            currentLoadedTool = byteBuffer.getIntForKey(IBufferDescriptor.ToolInSpindle)
+            pocketPrepared = byteBuffer.getIntForKey(Key.IoPocketPrepared)!!,
+            currentLoadedTool = byteBuffer.getIntForKey(Key.IoLoadedTool)!!
         ),
-        isMistOn = byteBuffer.getBooleanForKey(IBufferDescriptor.CoolMist),
-        isFloodOn = byteBuffer.getBooleanForKey(IBufferDescriptor.CoolFlood),
-        isEstopActive = byteBuffer.getBooleanForKey(IBufferDescriptor.Estop),
-        isLubePumpOn = byteBuffer.getBooleanForKey(IBufferDescriptor.Lube),
-        isLubeLevelOk = false
+        isMistOn = byteBuffer.getBooleanForKey(Key.IoCoolantMist)!!,
+        isFloodOn = byteBuffer.getBooleanForKey(Key.IoCoolantFlood)!!,
+        isEstopActive = byteBuffer.getBooleanForKey(Key.IoAuxEstop)!!,
+        isLubePumpOn = byteBuffer.getBooleanForKey(Key.IoAuxLubeOn)!!,
+        isLubeLevelOk = byteBuffer.getBooleanForKey(Key.IoAuxLubeLevelOk)!!
     )
 }

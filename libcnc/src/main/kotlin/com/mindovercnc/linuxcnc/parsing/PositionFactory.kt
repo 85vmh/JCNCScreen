@@ -1,32 +1,36 @@
 package com.mindovercnc.linuxcnc.parsing
 
 import com.mindovercnc.base.data.Position
-import com.mindovercnc.linuxcnc.nml.IBufferDescriptor
+import com.mindovercnc.linuxcnc.nml.BuffDescriptor
+import com.mindovercnc.linuxcnc.nml.Key
 import java.nio.ByteBuffer
 
-class PositionFactory(private val descriptor: IBufferDescriptor) {
+class PositionFactory(private val descriptor: BuffDescriptor) {
 
     fun parse(statusBuffer: ByteBuffer, positionType: PositionType): Position {
-        val entry = descriptor[positionType.descriptorKey]!!
+        val startOffset = descriptor.entries[positionType.descriptorKey]!!.startOffset
         return Position(
-            x = statusBuffer.getDouble(entry.offset),
-            y = statusBuffer.getDouble(entry.offset + 8),
-            z = statusBuffer.getDouble(entry.offset + 16),
-            a = statusBuffer.getDouble(entry.offset + 24),
-            b = statusBuffer.getDouble(entry.offset + 32),
-            c = statusBuffer.getDouble(entry.offset + 40),
-            u = statusBuffer.getDouble(entry.offset + 48),
-            v = statusBuffer.getDouble(entry.offset + 56),
-            w = statusBuffer.getDouble(entry.offset + 64),
+            x = statusBuffer.getDouble(startOffset),
+            y = statusBuffer.getDouble(startOffset + 8),
+            z = statusBuffer.getDouble(startOffset + 16),
+            a = statusBuffer.getDouble(startOffset + 24),
+            b = statusBuffer.getDouble(startOffset + 32),
+            c = statusBuffer.getDouble(startOffset + 40),
+            u = statusBuffer.getDouble(startOffset + 48),
+            v = statusBuffer.getDouble(startOffset + 56),
+            w = statusBuffer.getDouble(startOffset + 64),
         )
     }
 
-    enum class PositionType(val descriptorKey: String) {
-        G5X_OFFSET(IBufferDescriptor.G5xOffsX),
-        G92_OFFSET(IBufferDescriptor.G92OffsX),
-        TOOL_OFFSET(IBufferDescriptor.ToolOffsX),
-        ABS_POSITION(IBufferDescriptor.AbsPosX),
-        DTG(IBufferDescriptor.DtgX),
-        EXTERNAL_OFFSETS(""),
+    enum class PositionType(val descriptorKey: Key) {
+        G5X_OFFSET(Key.G5xOffsetXStart),
+        G92_OFFSET(Key.G92OffsetXStart),
+        TOOL_OFFSET(Key.ToolOffsetXStart),
+        CURRENT_COMMANDED(Key.CommandedPositionXStart),
+        CURRENT_ACTUAL(Key.ActualPositionXStart),
+        ABS_POSITION(Key.ActualPositionXStart), //TODO: check this
+        DTG(Key.DtgPositionXStart),
+        PROBED(Key.ProbedPositionXStart),
+        EXTERNAL_OFFSETS(Key.ExternalOffsetsPositionXStart),
     }
 }

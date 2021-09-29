@@ -7,7 +7,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
 
-object CncStatusRepositoryImpl : CncStatusRepository {
+class CncStatusRepositoryImpl constructor(
+    private val cncStatusFactory: CncStatusFactory
+) : CncStatusRepository {
     private val statusReader: StatusReader
     private val errorReader: ErrorReader
 
@@ -22,7 +24,7 @@ object CncStatusRepositoryImpl : CncStatusRepository {
             statusReader.refresh(100L).filterNotNull(),
             errorReader.refresh(100L).filterNotNull()
         ) { byteBuffer, error ->
-            CncStatusFactory.parse(byteBuffer, statusReader)
+            cncStatusFactory.parse(byteBuffer)
         }
     }
 }

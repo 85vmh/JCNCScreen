@@ -455,7 +455,7 @@ public class CncStatusReader0 {
         e = bufDesc.get(BufferDescriptor.AxisMask);
         int axisMask = statusBuffer.getInt(e.getOffset());
 
-        e = bufDesc.get(BufferDescriptor.Joints);
+        e = bufDesc.get(BufferDescriptor.NumJoints);
         int numJoints = statusBuffer.getInt(e.getOffset());
 
         //      System.out.println("SETUP: axis mask is " + String.format("0x%X", axisMask));
@@ -465,7 +465,7 @@ public class CncStatusReader0 {
         e = bufDesc.get(BufferDescriptor.ProgramUnits);
         status.getSetup().setUnit(statusBuffer.getInt(e.getOffset()));
 
-        e = bufDesc.get(BufferDescriptor.Spindles);
+        e = bufDesc.get(BufferDescriptor.NumSpindles);
         int numSpindles = statusBuffer.getInt(e.getOffset());
 
         status.getSetup().setNumSpindles(numSpindles);

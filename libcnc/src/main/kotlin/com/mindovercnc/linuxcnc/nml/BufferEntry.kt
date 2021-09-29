@@ -27,7 +27,8 @@ package com.mindovercnc.linuxcnc.nml
  * **************************************************************************
  */
 data class BufferEntry(val name: String, val offset: Int, val size: Int, val type: BufferEntryType) {
+
     enum class BufferEntryType {
-        unknown, Logical, Byte, Short, Integer, Long, Double, String
+        Byte, Short, Integer, Double, String
     }
 }

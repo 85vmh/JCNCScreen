@@ -3,7 +3,7 @@ package com.mindovercnc.base.data
 /**
  * Types for motion control
  */
-enum class TrajectoryMode(value: Int) {
+enum class MotionMode(value: Int) {
     /**
      * Independent axis motion
      */

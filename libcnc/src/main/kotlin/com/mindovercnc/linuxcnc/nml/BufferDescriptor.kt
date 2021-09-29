@@ -45,19 +45,57 @@ class BufferDescriptor : IBufferDescriptor {
         private const val nmlHasToolTable = false
 
         init {
-
-
-            bufferEntries[IBufferDescriptor.AbsPosX] = BufferEntry(IBufferDescriptor.AbsPosX, 1480, 8, BufferEntryType.Double)
-            bufferEntries[IBufferDescriptor.RelPosX] = BufferEntry(IBufferDescriptor.RelPosX, 1552, 8, BufferEntryType.Double)
-            bufferEntries[IBufferDescriptor.G5xOffsX] = BufferEntry(IBufferDescriptor.G5xOffsX, 760, 8, BufferEntryType.Double)
-            bufferEntries[IBufferDescriptor.G92OffsX] = BufferEntry(IBufferDescriptor.G92OffsX, 840, 8, BufferEntryType.Double)
-            bufferEntries[IBufferDescriptor.ToolOffsX] = BufferEntry(IBufferDescriptor.ToolOffsX, 920, 8, BufferEntryType.Double)
-            bufferEntries[IBufferDescriptor.DtgX] = BufferEntry(IBufferDescriptor.DtgX, 1752, 8, BufferEntryType.Double)
-            bufferEntries[IBufferDescriptor.RotationXY] = BufferEntry(IBufferDescriptor.RotationXY, 912, 8, BufferEntryType.Double)
-            bufferEntries[IBufferDescriptor.File] = BufferEntry(IBufferDescriptor.File, 247, 255, BufferEntryType.String)
-            bufferEntries[IBufferDescriptor.ReadLine] = BufferEntry(IBufferDescriptor.ReadLine, 240, 4, BufferEntryType.Integer)
+            //The equivalent of EMC_TASK_STAT
+            bufferEntries[IBufferDescriptor.TaskMode] = BufferEntry(IBufferDescriptor.TaskMode, 212, 4, BufferEntryType.Integer)
+            bufferEntries[IBufferDescriptor.TaskState] = BufferEntry(IBufferDescriptor.TaskState, 216, 4, BufferEntryType.Integer)
+            bufferEntries[IBufferDescriptor.ExecState] = BufferEntry(IBufferDescriptor.ExecState, 220, 4, BufferEntryType.Integer)
+            bufferEntries[IBufferDescriptor.InterpState] = BufferEntry(IBufferDescriptor.InterpState, 224, 4, BufferEntryType.Integer)
+            bufferEntries[IBufferDescriptor.CallLevel] = BufferEntry(IBufferDescriptor.CallLevel, 228, 4, BufferEntryType.Integer)
             bufferEntries[IBufferDescriptor.MotionLine] = BufferEntry(IBufferDescriptor.MotionLine, 232, 4, BufferEntryType.Integer)
             bufferEntries[IBufferDescriptor.CurrentLine] = BufferEntry(IBufferDescriptor.CurrentLine, 236, 4, BufferEntryType.Integer)
+            bufferEntries[IBufferDescriptor.ReadLine] = BufferEntry(IBufferDescriptor.ReadLine, 240, 4, BufferEntryType.Integer)
+            bufferEntries[IBufferDescriptor.OptionalStop] = BufferEntry(IBufferDescriptor.OptionalStop, 244, 1, BufferEntryType.Byte)
+            bufferEntries[IBufferDescriptor.BlockDelete] = BufferEntry(IBufferDescriptor.BlockDelete, 245, 1, BufferEntryType.Byte)
+            bufferEntries[IBufferDescriptor.DigitalInputTimeout] = BufferEntry(IBufferDescriptor.DigitalInputTimeout, 246, 1, BufferEntryType.Byte)
+            bufferEntries[IBufferDescriptor.File] = BufferEntry(IBufferDescriptor.File, 247, 255, BufferEntryType.String)
+            bufferEntries[IBufferDescriptor.Command] = BufferEntry(IBufferDescriptor.Command, 502, 255, BufferEntryType.String)
+            bufferEntries[IBufferDescriptor.G5xOffsX] = BufferEntry(IBufferDescriptor.G5xOffsX, 760, 8, BufferEntryType.Double)
+            bufferEntries[IBufferDescriptor.G5xIndex] = BufferEntry(IBufferDescriptor.G5xIndex, 832, 8, BufferEntryType.Double)
+            bufferEntries[IBufferDescriptor.G92OffsX] = BufferEntry(IBufferDescriptor.G92OffsX, 840, 8, BufferEntryType.Double)
+            bufferEntries[IBufferDescriptor.RotationXY] = BufferEntry(IBufferDescriptor.RotationXY, 912, 8, BufferEntryType.Double)
+            bufferEntries[IBufferDescriptor.ToolOffsX] = BufferEntry(IBufferDescriptor.ToolOffsX, 920, 8, BufferEntryType.Double)
+            bufferEntries[IBufferDescriptor.ActiveGCodes] = BufferEntry(IBufferDescriptor.ActiveGCodes, 992, 1, BufferEntryType.Byte)
+            bufferEntries[IBufferDescriptor.ActiveMCodes] = BufferEntry(IBufferDescriptor.ActiveMCodes, 1060, 1, BufferEntryType.Byte)
+            bufferEntries[IBufferDescriptor.ActiveSettings] = BufferEntry(IBufferDescriptor.ActiveSettings, 1104, 5, BufferEntryType.Double)
+            bufferEntries[IBufferDescriptor.ProgramUnits] = BufferEntry(IBufferDescriptor.ProgramUnits, 1144, 1, BufferEntryType.Byte)
+            bufferEntries[IBufferDescriptor.IntepreterErrorCode] = BufferEntry(IBufferDescriptor.IntepreterErrorCode, 1148, 4, BufferEntryType.Integer)
+            bufferEntries[IBufferDescriptor.TaskPaused] = BufferEntry(IBufferDescriptor.TaskPaused, 1152, 8, BufferEntryType.Integer) //TODO: check type here
+            bufferEntries[IBufferDescriptor.DelayLeft] = BufferEntry(IBufferDescriptor.DelayLeft, 1160, 8, BufferEntryType.Double)
+            bufferEntries[IBufferDescriptor.QueuedMdiCommands] = BufferEntry(IBufferDescriptor.QueuedMdiCommands, 1168, 8, BufferEntryType.Double)
+
+            //The equivalent of EMC_MOTION_STAT
+
+            bufferEntries[IBufferDescriptor.LinearUnits] = BufferEntry(IBufferDescriptor.LinearUnits, 1392, 8, BufferEntryType.Double)
+            bufferEntries[IBufferDescriptor.AngularUnits] = BufferEntry(IBufferDescriptor.AngularUnits, 1400, 8, BufferEntryType.Double)
+            bufferEntries[IBufferDescriptor.CycleTime] = BufferEntry(IBufferDescriptor.CycleTime, 1408, 8, BufferEntryType.Double)
+            bufferEntries[IBufferDescriptor.NumJoints] = BufferEntry(IBufferDescriptor.NumJoints, 1416, 4, BufferEntryType.Integer)
+            bufferEntries[IBufferDescriptor.NumSpindles] = BufferEntry(IBufferDescriptor.NumSpindles, 1420, 4, BufferEntryType.Integer)
+            bufferEntries[IBufferDescriptor.AxisMask] = BufferEntry(IBufferDescriptor.AxisMask, 1428, 4, BufferEntryType.Integer)
+            bufferEntries[IBufferDescriptor.MotionMode] = BufferEntry(IBufferDescriptor.MotionMode, 1432, 4, BufferEntryType.Integer)
+            bufferEntries[IBufferDescriptor.Enabled] = BufferEntry(IBufferDescriptor.Enabled, 1436, 1, BufferEntryType.Byte)
+            bufferEntries[IBufferDescriptor.InPosition] = BufferEntry(IBufferDescriptor.InPosition, 1437, 1, BufferEntryType.Byte)
+            bufferEntries[IBufferDescriptor.PendingMotionQueue] = BufferEntry(IBufferDescriptor.PendingMotionQueue, 1440, 4, BufferEntryType.Integer)
+            bufferEntries[IBufferDescriptor.ActiveMotionQueue] = BufferEntry(IBufferDescriptor.ActiveMotionQueue, 1444, 4, BufferEntryType.Integer)
+            bufferEntries[IBufferDescriptor.MotionQueueFull] = BufferEntry(IBufferDescriptor.MotionQueueFull, 1448, 1, BufferEntryType.Byte)
+            bufferEntries[IBufferDescriptor.MotionId] = BufferEntry(IBufferDescriptor.MotionId, 1452, 4, BufferEntryType.Integer)
+            bufferEntries[IBufferDescriptor.MotionPaused] = BufferEntry(IBufferDescriptor.MotionPaused, 1456, 1, BufferEntryType.Byte) //TODO: Check this against the dump
+
+
+
+            bufferEntries[IBufferDescriptor.RelPosX] = BufferEntry(IBufferDescriptor.RelPosX, 1552, 8, BufferEntryType.Double)
+            bufferEntries[IBufferDescriptor.AbsPosX] = BufferEntry(IBufferDescriptor.AbsPosX, 1480, 8, BufferEntryType.Double)
+            bufferEntries[IBufferDescriptor.DtgX] = BufferEntry(IBufferDescriptor.DtgX, 1752, 8, BufferEntryType.Double)
+
             bufferEntries[IBufferDescriptor.Joint_0_enabled] = BufferEntry(IBufferDescriptor.Joint_0_enabled, 2116, 1, BufferEntryType.Byte)
             bufferEntries[IBufferDescriptor.Joint_1_enabled] = BufferEntry(IBufferDescriptor.Joint_1_enabled, 2332, 1, BufferEntryType.Byte)
             bufferEntries[IBufferDescriptor.Joint_2_enabled] = BufferEntry(IBufferDescriptor.Joint_2_enabled, 2548, 1, BufferEntryType.Byte)
@@ -76,11 +114,8 @@ class BufferDescriptor : IBufferDescriptor {
             bufferEntries[IBufferDescriptor.Joint_6_homed] = BufferEntry(IBufferDescriptor.Joint_6_homed, 3410, 1, BufferEntryType.Byte)
             bufferEntries[IBufferDescriptor.Joint_7_homed] = BufferEntry(IBufferDescriptor.Joint_7_homed, 3626, 1, BufferEntryType.Byte)
             bufferEntries[IBufferDescriptor.Joint_8_homed] = BufferEntry(IBufferDescriptor.Joint_8_homed, 3842, 1, BufferEntryType.Byte)
-            bufferEntries[IBufferDescriptor.ActiveGCodes] = BufferEntry(IBufferDescriptor.ActiveGCodes, 992, 1, BufferEntryType.Byte)
-            bufferEntries[IBufferDescriptor.ActiveMCodes] = BufferEntry(IBufferDescriptor.ActiveMCodes, 1060, 1, BufferEntryType.Byte)
-            bufferEntries[IBufferDescriptor.AxisMask] = BufferEntry(IBufferDescriptor.AxisMask, 1428, 1, BufferEntryType.Byte)
-            bufferEntries[IBufferDescriptor.Joints] = BufferEntry(IBufferDescriptor.Joints, 1416, 1, BufferEntryType.Byte)
-            bufferEntries[IBufferDescriptor.Spindles] = BufferEntry(IBufferDescriptor.Spindles, 6592, 1, BufferEntryType.Byte)
+
+
             bufferEntries[IBufferDescriptor.SpindleSpeed] = BufferEntry(IBufferDescriptor.SpindleSpeed, 6696, 1, BufferEntryType.Byte)
             bufferEntries[IBufferDescriptor.SpindleScale] = BufferEntry(IBufferDescriptor.SpindleScale, 6704, 1, BufferEntryType.Byte)
             bufferEntries[IBufferDescriptor.SpindleDir] = BufferEntry(IBufferDescriptor.SpindleDir, 6732, 1, BufferEntryType.Byte)
@@ -98,13 +133,8 @@ class BufferDescriptor : IBufferDescriptor {
             bufferEntries[IBufferDescriptor.Max_acceleration] = BufferEntry(IBufferDescriptor.Max_acceleration, 1648, 1, BufferEntryType.Byte)
             bufferEntries[IBufferDescriptor.ToolInSpindle] = BufferEntry(IBufferDescriptor.ToolInSpindle, 9812, 1, BufferEntryType.Byte)
             bufferEntries[IBufferDescriptor.PocketPrepared] = BufferEntry(IBufferDescriptor.PocketPrepared, 9808, 1, BufferEntryType.Byte)
-            bufferEntries[IBufferDescriptor.TaskMode] = BufferEntry(IBufferDescriptor.TaskMode, 212, 1, BufferEntryType.Byte)
-            bufferEntries[IBufferDescriptor.TaskState] = BufferEntry(IBufferDescriptor.TaskState, 216, 1, BufferEntryType.Byte)
-            bufferEntries[IBufferDescriptor.ExecState] = BufferEntry(IBufferDescriptor.ExecState, 220, 1, BufferEntryType.Byte)
-            bufferEntries[IBufferDescriptor.InterpState] = BufferEntry(IBufferDescriptor.InterpState, 224, 1, BufferEntryType.Byte)
-            bufferEntries[IBufferDescriptor.ProgramUnits] = BufferEntry(IBufferDescriptor.ProgramUnits, 1144, 1, BufferEntryType.Byte)
             bufferEntries[IBufferDescriptor.Distance2Go] = BufferEntry(IBufferDescriptor.Distance2Go, 1744, 1, BufferEntryType.Byte)
-            bufferEntries[IBufferDescriptor.ActiveSettings] = BufferEntry(IBufferDescriptor.ActiveSettings, 1104, 3, BufferEntryType.Double)
+
             bufferEntries[IBufferDescriptor.Current_vel] = BufferEntry(IBufferDescriptor.Current_vel, 1824, 1, BufferEntryType.Byte)
             bufferEntries[IBufferDescriptor.Feed_override_enabled] = BufferEntry(IBufferDescriptor.Feed_override_enabled, 1832, 1, BufferEntryType.Byte)
             bufferEntries[IBufferDescriptor.Adaptive_feed_enabled] = BufferEntry(IBufferDescriptor.Adaptive_feed_enabled, 1833, 1, BufferEntryType.Byte)

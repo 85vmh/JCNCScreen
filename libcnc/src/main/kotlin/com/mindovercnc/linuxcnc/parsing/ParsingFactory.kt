@@ -1,20 +1,51 @@
 package com.mindovercnc.linuxcnc.parsing
 
-import com.mindovercnc.linuxcnc.nml.IBufferDescriptor
+import com.mindovercnc.linuxcnc.nml.BuffDescriptor
+import com.mindovercnc.linuxcnc.nml.DecodingInfo
+import com.mindovercnc.linuxcnc.nml.Key
 import java.nio.ByteBuffer
 
-abstract class ParsingFactory<T>(val descriptor: IBufferDescriptor) {
+abstract class ParsingFactory<T>(private val buffDescriptor: BuffDescriptor) {
     abstract fun parse(byteBuffer: ByteBuffer): T
 
-    internal fun ByteBuffer.getIntForKey(key: String, additionalOffset: Int = 0): Int {
-        return this.getInt(descriptor[key]!!.offset + additionalOffset)
+    internal fun ByteBuffer.getIntForKey(key: Key, extraOffset: Int = 0): Int? {
+        return buffDescriptor.entries[key]?.let {
+            when (it.dataType) {
+                DecodingInfo.DataType.Integer -> this.getInt(it.startOffset + extraOffset)
+                else -> null
+            }
+        }
     }
 
-    internal fun ByteBuffer.getDoubleForKey(key: String, additionalOffset: Int = 0): Double {
-        return this.getDouble(descriptor[key]!!.offset + additionalOffset)
+    internal fun ByteBuffer.getDoubleForKey(key: Key, extraOffset: Int = 0): Double? {
+        return buffDescriptor.entries[key]?.let {
+            when (it.dataType) {
+                DecodingInfo.DataType.Double -> this.getDouble(it.startOffset + extraOffset)
+                else -> null
+            }
+        }
     }
 
-    internal fun ByteBuffer.getBooleanForKey(key: String, additionalOffset: Int = 0): Boolean {
-        return this.getInt(descriptor[key]!!.offset + additionalOffset) != 0
+    internal fun ByteBuffer.getBooleanForKey(key: Key, extraOffset: Int = 0): Boolean? {
+        return buffDescriptor.entries[key]?.let {
+            when (it.dataType) {
+                DecodingInfo.DataType.Byte -> this.getInt(it.startOffset + extraOffset) != 0
+                DecodingInfo.DataType.Integer -> this.getInt(it.startOffset + extraOffset) != 0
+                else -> null
+            }
+        }
+    }
+
+    internal fun ByteBuffer.getStringForKey(key: Key): String? {
+        return buffDescriptor.entries[key]?.let {
+            when (it.dataType) {
+                DecodingInfo.DataType.String -> {
+//                    val byteArray = ByteArray()
+//                    this.get(byteArray, it.startOffset, 255)
+                    ""
+                }
+                else -> null
+            }
+        }
     }
 }

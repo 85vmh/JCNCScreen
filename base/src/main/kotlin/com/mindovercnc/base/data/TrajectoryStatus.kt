@@ -7,7 +7,7 @@ data class TrajectoryStatus(
     val numJoints: Int,
     val numSpindles: Int,
     val axisMask: Int,
-    val trajectoryMode: TrajectoryMode,
+    val motionMode: MotionMode,
     val isEnabled: Boolean,
     val isInPosition: Boolean,
     /**
@@ -31,8 +31,8 @@ data class TrajectoryStatus(
     val rapidScale: Double,
     val currentCommandedPosition: Position,
     val currentActualPosition: Position,
-    val velocity: Double,
-    val acceleration: Double,
+    val systemVelocity: Double,
+    val systemAcceleration: Double,
     val maxVelocity: Double,
     val maxAcceleration: Double,
 

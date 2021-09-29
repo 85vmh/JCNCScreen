@@ -9,7 +9,7 @@ data class TaskStatus(
      * Current subroutine level
      * 0 - if not in a subroutine, > 0 otherwise
      */
-    val callLevel: Int,
+    val subroutineCallLevel: Int,
     /**
      * The line motion is executing (may lag)
      */

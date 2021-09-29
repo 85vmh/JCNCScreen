@@ -4,13 +4,13 @@ data class JointStatus(
     /**
      * EMC_JOINT_LINEAR, EMC_JOINT_ANGULAR
      */
-    val joinType: Char,
+    val jointType: Boolean,
     /**
      * Units per mm - linear, or degrees - angular
      */
     val units: Double,
     val backlash: Double,
-    val mimPositionLimit: Double,
+    val minPositionLimit: Double,
     val maxPositionLimit: Double,
     val minFollowingError: Double,
     val maxFollowingError: Double,
