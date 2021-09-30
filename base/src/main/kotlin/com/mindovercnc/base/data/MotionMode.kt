@@ -3,7 +3,7 @@ package com.mindovercnc.base.data
 /**
  * Types for motion control
  */
-enum class MotionMode(value: Int) {
+enum class MotionMode(val value: Int) {
     /**
      * Independent axis motion
      */
@@ -17,6 +17,10 @@ enum class MotionMode(value: Int) {
     /**
      * Velocity based world coordinates motion
      */
-    MODE_TELEOP(3)
+    MODE_TELEOP(3);
 
+    companion object {
+        private val map = values().associateBy(MotionMode::value)
+        fun fromInt(type: Int) = map[type]
+    }
 }

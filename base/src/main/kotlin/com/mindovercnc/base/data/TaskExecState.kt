@@ -39,4 +39,8 @@ enum class TaskExecState(val stateNum: Int) {
     TaskExecWait4SystemCMD(9),
     TaskExecWait4SpindleOrientation(10);
 
+    companion object {
+        private val map = values().associateBy(TaskExecState::stateNum)
+        fun fromInt(type: Int) = map[type]
+    }
 }

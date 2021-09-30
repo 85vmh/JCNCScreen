@@ -40,7 +40,12 @@ fun MyWindow(onCloseRequest: () -> Unit) = Window(onCloseRequest = onCloseReques
 
         val sharedFlow: Flow<CncStatus> = remember { statusRepository.cncStatusFlow() }
         val xx by sharedFlow.map {
-            PositionMock.mock()
+            PositionState(
+                it.motionStatus.trajectoryStatus.currentCommandedPosition,
+                it.motionStatus.trajectoryStatus.currentActualPosition,
+                it.taskStatus.g5xOffset,
+                it.taskStatus.toolOffset
+            )
         }.collectAsState(null)
 
         //val statusBuffer by statusReader.status.collectAsState(null)

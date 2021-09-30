@@ -29,4 +29,8 @@ package com.mindovercnc.base.data
 enum class LengthUnit(val id: Int) {
     IN(1), MM(2), CM(3);
 
+    companion object {
+        private val map = values().associateBy(LengthUnit::id)
+        fun fromInt(id: Int) = map[id]
+    }
 }

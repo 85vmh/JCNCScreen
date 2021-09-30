@@ -20,7 +20,7 @@ class TrajectoryStatusFactory(
             numJoints = byteBuffer.getIntForKey(Key.JointsCount)!!,
             numSpindles = byteBuffer.getIntForKey(Key.SpindlesCount)!!,
             axisMask = byteBuffer.getIntForKey(Key.AxisMask)!!,
-            motionMode = MotionMode.values()[byteBuffer.getIntForKey(Key.MotionMode)!!],
+            motionMode = MotionMode.fromInt(byteBuffer.getIntForKey(Key.MotionMode)!!)!!,
             isEnabled = byteBuffer.getBooleanForKey(Key.IsEnabled)!!,
             isInPosition = byteBuffer.getBooleanForKey(Key.IsInPosition)!!,
             motionQueue = byteBuffer.getIntForKey(Key.PendingMotions)!!,

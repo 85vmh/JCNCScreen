@@ -34,7 +34,7 @@ class MotionStatusFactory(
     private fun parseDigitalIO(byteBuffer: ByteBuffer, key: Key): List<Int> {
         val result = mutableListOf<Int>()
         for (ioIndex in 0 until IO_NUMBER) {
-            val offset = ioIndex + 4 // 4 bytes for int
+            val offset = ioIndex * 4 // 4 bytes for int
             result.add(byteBuffer.getIntForKey(key, offset)!!)
         }
         return result
@@ -43,7 +43,7 @@ class MotionStatusFactory(
     private fun parseAnalogIO(byteBuffer: ByteBuffer, key: Key): List<Double> {
         val result = mutableListOf<Double>()
         for (ioIndex in 0 until IO_NUMBER) {
-            val offset = ioIndex + 8 // 8 bytes for double
+            val offset = ioIndex * 8 // 8 bytes for double
             result.add(byteBuffer.getDoubleForKey(key, offset)!!)
         }
         return result

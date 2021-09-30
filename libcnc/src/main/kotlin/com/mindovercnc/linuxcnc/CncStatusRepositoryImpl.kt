@@ -6,6 +6,7 @@ import com.mindovercnc.linuxcnc.parsing.CncStatusFactory
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.map
 
 class CncStatusRepositoryImpl constructor(
     private val cncStatusFactory: CncStatusFactory
@@ -20,11 +21,15 @@ class CncStatusRepositoryImpl constructor(
     }
 
     override fun cncStatusFlow(): Flow<CncStatus> {
-        return combine(
-            statusReader.refresh(100L).filterNotNull(),
-            errorReader.refresh(100L).filterNotNull()
-        ) { byteBuffer, error ->
-            cncStatusFactory.parse(byteBuffer)
-        }
+        return statusReader.refresh(100L)
+            .filterNotNull()
+            .map { cncStatusFactory.parse(it) }
+//
+//        return combine(
+//            statusReader.refresh(100L).filterNotNull(),
+//            errorReader.refresh(100L).filterNotNull()
+//        ) { byteBuffer, error ->
+//            cncStatusFactory.parse(byteBuffer)
+//        }
     }
 }

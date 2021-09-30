@@ -11,7 +11,8 @@ abstract class ParsingFactory<T>(private val buffDescriptor: BuffDescriptor) {
     internal fun ByteBuffer.getIntForKey(key: Key, extraOffset: Int = 0): Int? {
         return buffDescriptor.entries[key]?.let {
             when (it.dataType) {
-                DecodingInfo.DataType.Integer -> this.getInt(it.startOffset + extraOffset)
+                DecodingInfo.DataType.Integer,
+                DecodingInfo.DataType.Object -> this.getInt(it.startOffset + extraOffset)
                 else -> null
             }
         }
@@ -20,7 +21,8 @@ abstract class ParsingFactory<T>(private val buffDescriptor: BuffDescriptor) {
     internal fun ByteBuffer.getDoubleForKey(key: Key, extraOffset: Int = 0): Double? {
         return buffDescriptor.entries[key]?.let {
             when (it.dataType) {
-                DecodingInfo.DataType.Double -> this.getDouble(it.startOffset + extraOffset)
+                DecodingInfo.DataType.Double,
+                DecodingInfo.DataType.Object -> this.getDouble(it.startOffset + extraOffset)
                 else -> null
             }
         }
@@ -29,7 +31,7 @@ abstract class ParsingFactory<T>(private val buffDescriptor: BuffDescriptor) {
     internal fun ByteBuffer.getBooleanForKey(key: Key, extraOffset: Int = 0): Boolean? {
         return buffDescriptor.entries[key]?.let {
             when (it.dataType) {
-                DecodingInfo.DataType.Byte -> this.getInt(it.startOffset + extraOffset) != 0
+                DecodingInfo.DataType.Byte -> this.get(it.startOffset + extraOffset) != 0.toByte()
                 DecodingInfo.DataType.Integer -> this.getInt(it.startOffset + extraOffset) != 0
                 else -> null
             }

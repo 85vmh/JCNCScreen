@@ -31,4 +31,9 @@ package com.mindovercnc.base.data
 enum class InterpreterState(val stateNum: Int) {
     Idle(1), Reading(2), Paused(3), Waiting(4);
 
+    companion object {
+        private val map = values().associateBy(InterpreterState::stateNum)
+        fun fromInt(type: Int) = map[type]
+    }
+
 }

@@ -11,10 +11,10 @@ class TaskStatusFactory(
 ) : ParsingFactory<TaskStatus>(descriptor) {
 
     override fun parse(byteBuffer: ByteBuffer) = TaskStatus(
-        taskMode = TaskMode.values()[byteBuffer.getIntForKey(Key.TaskMode)!!],
-        taskState = TaskState.values()[byteBuffer.getIntForKey(Key.TaskState)!!],
-        execState = TaskExecState.values()[byteBuffer.getIntForKey(Key.ExecState)!!],
-        interpreterState = InterpreterState.values()[byteBuffer.getIntForKey(Key.InterpreterState)!!],
+        taskMode = TaskMode.fromInt(byteBuffer.getIntForKey(Key.TaskMode)!!)!!,
+        taskState = TaskState.fromInt(byteBuffer.getIntForKey(Key.TaskState)!!)!!,
+        execState = TaskExecState.fromInt(byteBuffer.getIntForKey(Key.ExecState)!!)!!,
+        interpreterState = InterpreterState.fromInt(byteBuffer.getIntForKey(Key.InterpreterState)!!)!!,
         subroutineCallLevel = byteBuffer.getIntForKey(Key.SubroutineCallLevel)!!,
         motionLine = byteBuffer.getIntForKey(Key.MotionLine)!!,
         readLine = byteBuffer.getIntForKey(Key.ReadLine)!!,
@@ -33,7 +33,7 @@ class TaskStatusFactory(
             mCodes = parseActiveCodes(byteBuffer, descriptor.entries[Key.ActiveMCodes]!!.startOffset, ActiveCodeType.M_CODE),
         ),
         activeSettings = -0.0,
-        programUnits = LengthUnit.values()[byteBuffer.getIntForKey(Key.ProgramUnits)!!],
+        programUnits = LengthUnit.fromInt(byteBuffer.getIntForKey(Key.ProgramUnits)!!)!!,
         intepreterErrorCode = byteBuffer.getIntForKey(Key.InterpreterErrorCode)!!,
         isTaskPaused = byteBuffer.getBooleanForKey(Key.TaskPaused)!!,
         delayLeft = byteBuffer.getDoubleForKey(Key.DelayLeft)!!,
@@ -42,7 +42,7 @@ class TaskStatusFactory(
 
     private fun parseActiveCodes(statusBuffer: ByteBuffer, offset: Int, activeCodeType: ActiveCodeType): List<Float> {
         val result = mutableListOf<Float>()
-        for (i in 0..activeCodeType.maxCodes) {
+        for (i in 0 until activeCodeType.maxCodes) {
             val code = statusBuffer.getInt(offset + 4 * i)
             if (code > 0) {
                 result.add(code / activeCodeType.divideBy)

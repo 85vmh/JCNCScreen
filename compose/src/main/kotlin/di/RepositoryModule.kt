@@ -21,8 +21,8 @@ val RepositoryModule = DI.Module("repository") {
         emptyFlow<CncStatus>()
     }
 
-    bindSingleton<CncStatusRepository> { DummyStatusRepository(instance("dummy")) }
-    //bindSingleton<CncStatusRepository> { CncStatusRepositoryImpl(instance()) }
+    //bindSingleton<CncStatusRepository> { DummyStatusRepository(instance("dummy")) }
+    bindSingleton<CncStatusRepository> { CncStatusRepositoryImpl(instance()) }
 
 }
 

@@ -6,17 +6,17 @@ import com.mindovercnc.linuxcnc.nml.Key
 import java.nio.ByteBuffer
 
 class SpindleStatusFactory(
-    descriptor: BuffDescriptor
+    private val descriptor: BuffDescriptor
 ) : ParsingFactory<List<SpindleStatus>>(descriptor) {
 
     override fun parse(byteBuffer: ByteBuffer): List<SpindleStatus> {
         val numSpindles = byteBuffer.getIntForKey(Key.SpindlesCount)!!
 
-        val spindle0Offset = byteBuffer.getIntForKey(Key.Spindle0)!!
-        val spindle1Offset = byteBuffer.getIntForKey(Key.Spindle1)!!
+        val spindle0Offset = descriptor.entries[Key.Spindle0]!!.startOffset
+        val spindle1Offset = descriptor.entries[Key.Spindle1]!!.startOffset
 
         val result = mutableListOf<SpindleStatus>()
-        for (spindleNo in 0..numSpindles) {
+        for (spindleNo in 0 until numSpindles) {
             val spindleOffset = spindleNo * (spindle1Offset - spindle0Offset)
 
             result.add(

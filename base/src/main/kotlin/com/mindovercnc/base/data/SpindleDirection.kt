@@ -29,4 +29,8 @@ package com.mindovercnc.base.data
 enum class SpindleDirection(val direction: Int) {
     SpindleClockwise(1), SpindleCounterClockwise(-1);
 
+    companion object {
+        private val map = values().associateBy(SpindleDirection::direction)
+        fun fromInt(direction: Int) = map[direction]
+    }
 }

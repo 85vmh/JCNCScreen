@@ -6,17 +6,17 @@ import com.mindovercnc.linuxcnc.nml.Key
 import java.nio.ByteBuffer
 
 class JointStatusFactory(
-    descriptor: BuffDescriptor
+    private val descriptor: BuffDescriptor
 ) : ParsingFactory<List<JointStatus>>(descriptor) {
 
     override fun parse(byteBuffer: ByteBuffer): List<JointStatus> {
         val numJoints = byteBuffer.getIntForKey(Key.JointsCount)!!
 
-        val joint0Offset = byteBuffer.getIntForKey(Key.Joint0)!!
-        val joint1Offset = byteBuffer.getIntForKey(Key.Joint1)!!
+        val joint0Offset = descriptor.entries[Key.Joint0]!!.startOffset
+        val joint1Offset = descriptor.entries[Key.Joint1]!!.startOffset
 
         val result = mutableListOf<JointStatus>()
-        for (jointNo in 0..numJoints) {
+        for (jointNo in 0 until numJoints) {
             val jointOffset = jointNo * (joint1Offset - joint0Offset)
 
             result.add(
