@@ -25,16 +25,26 @@ data class SpindleStatus(
     val orientFault: Int
 
 
-){
-    enum class Direction(value: Int){
+) {
+    enum class Direction(private val value: Int) {
         STOPPED(0),
         FORWARD(1),
-        REVERSE(-1)
+        REVERSE(-1);
+
+        companion object {
+            private val map = values().associateBy(Direction::value)
+            fun fromInt(value: Int) = map[value]
+        }
     }
 
-    enum class Increasing(value: Int){
+    enum class Increasing(private val value: Int) {
         NONE(0),
         INCREASING(1),
-        DECREASING(-1)
+        DECREASING(-1);
+
+        companion object {
+            private val map = values().associateBy(Increasing::value)
+            fun fromInt(value: Int) = map[value]
+        }
     }
 }

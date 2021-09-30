@@ -13,7 +13,6 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import com.mindovercnc.base.CncStatusRepository
 import com.mindovercnc.base.data.*
-import com.mindovercnc.dummycnc.PositionMock
 import di.BuffDescriptorModule
 import di.ParseFactoryModule
 import di.RepositoryModule
@@ -21,7 +20,6 @@ import kotlinx.coroutines.flow.*
 import org.kodein.di.compose.localDI
 import org.kodein.di.compose.withDI
 import org.kodein.di.instance
-import java.util.*
 
 fun main() {
     application {
@@ -38,8 +36,10 @@ fun MyWindow(onCloseRequest: () -> Unit) = Window(onCloseRequest = onCloseReques
 
         val statusRepository by di.instance<CncStatusRepository>()
 
-        val sharedFlow: Flow<CncStatus> = remember { statusRepository.cncStatusFlow() }
-        val xx by sharedFlow.map {
+        val cncStatusSharedFlow: Flow<CncStatus> = remember { statusRepository.cncStatusFlow() }
+        val errorsSharedFlow: Flow<SystemMessage> = remember { statusRepository.errorFlow() }
+
+        val cncStatus by cncStatusSharedFlow.map {
             PositionState(
                 it.motionStatus.trajectoryStatus.currentCommandedPosition,
                 it.motionStatus.trajectoryStatus.currentActualPosition,
@@ -48,20 +48,29 @@ fun MyWindow(onCloseRequest: () -> Unit) = Window(onCloseRequest = onCloseReques
             )
         }.collectAsState(null)
 
+        val errors by errorsSharedFlow.collectAsState(null)
+
         //val statusBuffer by statusReader.status.collectAsState(null)
         MaterialTheme {
-            Content(xx)
+            Content(cncStatus, errors)
         }
     }
 }
 
 @Composable
-fun Content(xx: PositionState?) {
+fun Content(xx: PositionState?, errors: SystemMessage?) {
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
         if (xx != null) {
             displaySomething(xx)
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        if (errors != null) {
+            println("----errors: $errors")
+            displayError(errors)
         }
 
         Row(
@@ -94,10 +103,10 @@ fun displaySomething(posState: PositionState) {
     val toolPos: Position = posState.toolPos
     val g92Pos: Position = posState.g92Pos
 
-    println("---absPos$absPos")
-    println("---g5xPos$g5xPos")
-    println("---toolPos$toolPos")
-    println("---g92Pos$g92Pos")
+//    println("---absPos$absPos")
+//    println("---g5xPos$g5xPos")
+//    println("---toolPos$toolPos")
+//    println("---g92Pos$g92Pos")
 
     Spacer(modifier = Modifier.height(16.dp))
     Text(
@@ -120,4 +129,13 @@ fun displaySomething(posState: PositionState) {
         text = "X: ${g92Pos.x} Y: ${g92Pos.y} Z: ${g92Pos.z}"
     )
     Spacer(modifier = Modifier.height(16.dp))
+}
+
+@Composable
+@Preview
+fun displayError(systemMessage: SystemMessage) {
+    Text(
+        modifier = Modifier.fillMaxWidth(),
+        text = "Time: ${systemMessage.time.toInstant().toEpochMilli()} Type: ${systemMessage.type} Message: ${systemMessage.message}"
+    )
 }

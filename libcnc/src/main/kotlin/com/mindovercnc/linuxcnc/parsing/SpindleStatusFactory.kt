@@ -26,8 +26,8 @@ class SpindleStatusFactory(
                     cssMaximum = byteBuffer.getDoubleForKey(Key.Spindle0CssMaximum, spindleOffset)!!,
                     cssFactor = byteBuffer.getDoubleForKey(Key.Spindle0CssFactor, spindleOffset)!!, //TODO: maybe *100
                     state = byteBuffer.getIntForKey(Key.Spindle0State, spindleOffset)!!,
-                    direction = SpindleStatus.Direction.values()[byteBuffer.getIntForKey(Key.Spindle0Direction, spindleOffset)!!],
-                    increasing = SpindleStatus.Increasing.values()[byteBuffer.getIntForKey(Key.Spindle0Increasing, spindleOffset)!!],
+                    direction = SpindleStatus.Direction.fromInt(byteBuffer.getIntForKey(Key.Spindle0Direction, spindleOffset)!!)!!,
+                    increasing = SpindleStatus.Increasing.fromInt(byteBuffer.getIntForKey(Key.Spindle0Increasing, spindleOffset)!!)!!,
                     isBrakeEngaged = byteBuffer.getBooleanForKey(Key.Spindle0Brake, spindleOffset)!!,
                     isEnabled = byteBuffer.getBooleanForKey(Key.Spindle0Enabled, spindleOffset)!!,
                     isOverrideEnabled = byteBuffer.getBooleanForKey(Key.Spindle0OverrideEnabled, spindleOffset)!!,

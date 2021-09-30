@@ -2,6 +2,7 @@ package com.mindovercnc.linuxcnc
 
 import com.mindovercnc.base.CncStatusRepository
 import com.mindovercnc.base.data.CncStatus
+import com.mindovercnc.base.data.SystemMessage
 import com.mindovercnc.linuxcnc.parsing.CncStatusFactory
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
@@ -24,12 +25,9 @@ class CncStatusRepositoryImpl constructor(
         return statusReader.refresh(100L)
             .filterNotNull()
             .map { cncStatusFactory.parse(it) }
-//
-//        return combine(
-//            statusReader.refresh(100L).filterNotNull(),
-//            errorReader.refresh(100L).filterNotNull()
-//        ) { byteBuffer, error ->
-//            cncStatusFactory.parse(byteBuffer)
-//        }
+    }
+
+    override fun errorFlow(): Flow<SystemMessage> {
+        return errorReader.refresh(10L).filterNotNull()
     }
 }

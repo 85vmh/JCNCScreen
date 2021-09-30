@@ -1,6 +1,5 @@
 package com.mindovercnc.base.data
 
-import java.lang.StringBuilder
 import java.util.*
 import java.util.regex.Pattern
 
@@ -51,16 +50,6 @@ data class SystemMessage @JvmOverloads constructor(
             time.time -> other.type.compareTo(type)
             else -> other.time.compareTo(time)
         }
-    }
-
-    override fun toString(): String {
-        val sb = StringBuilder()
-        sb.append(type.typeNum)
-        sb.append(" ")
-        sb.append(time.time)
-        sb.append(" ")
-        sb.append(message)
-        return sb.toString()
     }
 
     companion object {
