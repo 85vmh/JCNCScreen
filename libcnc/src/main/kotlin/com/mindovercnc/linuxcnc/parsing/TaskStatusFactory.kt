@@ -5,11 +5,6 @@ import com.mindovercnc.linuxcnc.nml.BuffDescriptor
 import com.mindovercnc.linuxcnc.nml.Key
 import java.nio.ByteBuffer
 
-internal enum class ActiveCodeType(val maxCodes: Int, val divideBy: Float) {
-    G_CODE(16, 10f),
-    M_CODE(10, 1f)
-}
-
 class TaskStatusFactory(
     private val descriptor: BuffDescriptor,
     private val positionFactory: PositionFactory,
@@ -54,5 +49,10 @@ class TaskStatusFactory(
             }
         }
         return result
+    }
+
+    internal enum class ActiveCodeType(val maxCodes: Int, val divideBy: Float) {
+        G_CODE(16, 10f),
+        M_CODE(10, 1f)
     }
 }

@@ -31,6 +31,7 @@ import kotlin.collections.HashMap
  */ /**
  * Buffer descriptor for NML buffer of linuxcnc 2.9ff
  */
+@Deprecated("Use the new BuffDescriptor")
 class BufferDescriptor : IBufferDescriptor {
     override fun get(key: String): BufferEntry? {
         return bufferEntries[key]

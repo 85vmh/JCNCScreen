@@ -14,7 +14,7 @@ dependencies {
     implementation(compose.desktop.currentOs)
     implementation(compose.uiTooling)
     implementation(fileTree(mapOf("dir" to "lib", "include" to listOf("*.jar"))))
-    //implementation(project(":libcnc"))
+    implementation(project(":libcnc"))
     implementation(project(":base"))
     implementation(project(":dummycnc"))
     implementation("org.kodein.di:kodein-di-framework-compose:7.8.0")

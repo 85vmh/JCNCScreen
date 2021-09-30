@@ -13,14 +13,11 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import com.mindovercnc.base.CncStatusRepository
 import com.mindovercnc.base.data.*
-import com.mindovercnc.base.nml.BufferDescriptor
 import com.mindovercnc.dummycnc.PositionMock
+import di.BuffDescriptorModule
+import di.ParseFactoryModule
 import di.RepositoryModule
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 import org.kodein.di.compose.localDI
 import org.kodein.di.compose.withDI
 import org.kodein.di.instance
@@ -36,34 +33,14 @@ fun main() {
 fun MyWindow(onCloseRequest: () -> Unit) = Window(onCloseRequest = onCloseRequest, title = "KtCnc") {
 
     //withDI(CncModule) {
-    withDI(RepositoryModule) {
+    withDI(RepositoryModule, ParseFactoryModule, BuffDescriptorModule) {
         val di = localDI()
-        val scope = rememberCoroutineScope {
-            Dispatchers.Main
-        }
 
-        val flow by di.instance<MutableStateFlow<CncStatus>>("dummy")
-
-        remember {
-            val scanner = Scanner(
-                System.`in`
-            )
-
-            scope.launch {
-                while (true) {
-                    if (scanner.hasNext()) {
-                        val x = scanner.nextLine()
-                        flow.value = CncStatus(StatusState(PositionMock.mock(x.toDouble())), ErrorState(null))
-                    }
-                    delay(50L)
-                }
-            }
-        }
         val statusRepository by di.instance<CncStatusRepository>()
 
         val sharedFlow: Flow<CncStatus> = remember { statusRepository.cncStatusFlow() }
         val xx by sharedFlow.map {
-            it.statusState.positionState
+            PositionMock.mock()
         }.collectAsState(null)
 
         //val statusBuffer by statusReader.status.collectAsState(null)

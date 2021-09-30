@@ -36,6 +36,7 @@ import com.mindovercnc.linuxcnc.nml.BufferEntry.BufferEntryType;
 /**
  * Buffer descriptor for NML buffer of linuxcnc 2.9ff
  */
+@Deprecated
 public class BufferDescriptor2_8 implements IBufferDescriptor {
    @Override
    public BufferEntry get(String key) {

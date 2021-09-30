@@ -26,6 +26,7 @@ package com.mindovercnc.linuxcnc.nml
  * 
  * **************************************************************************
  */
+@Deprecated("Use the new DecodingInfo")
 data class BufferEntry(val name: String, val offset: Int, val size: Int, val type: BufferEntryType) {
 
     enum class BufferEntryType {

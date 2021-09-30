@@ -26,6 +26,7 @@ package com.mindovercnc.linuxcnc.nml
  *
  * **************************************************************************
  */
+@Deprecated("Use the new BuffDescriptor")
 interface IBufferDescriptor {
     operator fun get(key: String): BufferEntry?
     fun keySet(): Set<String>?
