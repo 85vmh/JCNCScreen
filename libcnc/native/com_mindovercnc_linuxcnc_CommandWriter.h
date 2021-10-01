@@ -7,45 +7,43 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-/*
- * Class:     com_mindovercnc_linuxcnc_CommandWriter
- * Method:    homeAxis
- * Signature: (I)V
- */
-JNIEXPORT void JNICALL Java_com_mindovercnc_linuxcnc_CommandWriter_homeAxis
-  (JNIEnv *, jobject, jint);
 
-/*
- * Class:     com_mindovercnc_linuxcnc_CommandWriter
- * Method:    init
- * Signature: ()I
- */
 JNIEXPORT jint JNICALL Java_com_mindovercnc_linuxcnc_CommandWriter_init
   (JNIEnv *, jobject);
 
-/*
- * Class:     com_mindovercnc_linuxcnc_CommandWriter
- * Method:    jogStart
- * Signature: (ID)V
- */
-JNIEXPORT void JNICALL Java_com_mindovercnc_linuxcnc_CommandWriter_jogStart
-  (JNIEnv *, jobject, jint, jdouble);
-
-/*
- * Class:     com_mindovercnc_linuxcnc_CommandWriter
- * Method:    jogStep
- * Signature: (IDD)V
- */
-JNIEXPORT void JNICALL Java_com_mindovercnc_linuxcnc_CommandWriter_jogStep
-  (JNIEnv *, jobject, jint, jdouble, jdouble);
-
-/*
- * Class:     com_mindovercnc_linuxcnc_CommandWriter
- * Method:    jogStop
- * Signature: (I)V
- */
-JNIEXPORT void JNICALL Java_com_mindovercnc_linuxcnc_CommandWriter_jogStop
+JNIEXPORT void JNICALL Java_com_mindovercnc_linuxcnc_CommandWriter_homeAxis
   (JNIEnv *, jobject, jint);
+
+JNIEXPORT void JNICALL Java_com_mindovercnc_linuxcnc_CommandWriter_unHomeAxis
+  (JNIEnv *, jobject, jint);
+
+JNIEXPORT void JNICALL Java_com_mindovercnc_linuxcnc_CommandWriter_overrideLimits
+  (JNIEnv *, jobject, jint);
+
+JNIEXPORT void JNICALL Java_com_mindovercnc_linuxcnc_CommandWriter_jogContinuous
+  (JNIEnv *, jobject, jint, jint, jdouble);
+
+JNIEXPORT void JNICALL Java_com_mindovercnc_linuxcnc_CommandWriter_jogIncremental
+  (JNIEnv *, jobject, jint, jint, jdouble, jdouble);
+
+
+JNIEXPORT void JNICALL Java_com_mindovercnc_linuxcnc_CommandWriter_jogAbsolute
+  (JNIEnv *, jobject, jint, jint, jdouble, jdouble);
+
+
+JNIEXPORT void JNICALL Java_com_mindovercnc_linuxcnc_CommandWriter_jogStop
+  (JNIEnv *, jobject, jint, jint);
+
+
+JNIEXPORT void JNICALL Java_com_mindovercnc_linuxcnc_CommandWriter_setBacklash
+  (JNIEnv*, jobject, jint, jdouble);
+
+JNIEXPORT void JNICALL Java_com_mindovercnc_linuxcnc_CommandWriter_setMinPositionLimit
+  (JNIEnv*, jobject, jint, jdouble);
+
+
+JNIEXPORT void JNICALL Java_com_mindovercnc_linuxcnc_CommandWriter_setMaxPositionLimit
+  (JNIEnv*, jobject, jint, jdouble);
 
 /*
  * Class:     com_mindovercnc_linuxcnc_CommandWriter

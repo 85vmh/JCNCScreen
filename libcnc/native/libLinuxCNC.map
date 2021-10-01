@@ -1,28 +1,24 @@
 Archive member included to satisfy reference by file (symbol)
 
-/usr/lib/x86_64-linux-gnu/libc_nonshared.a(elf-init.oS)
-                              /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/Scrt1.o (__libc_csu_init)
-
-As-needed library included to satisfy reference by file (symbol)
-
-libc.so.6                     DumpBufferContents.o (stdout@@GLIBC_2.2.5)
+//usr/lib/x86_64-linux-gnu/libc_nonshared.a(elf-init.oS)
+                              /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o (__libc_csu_init)
 
 Discarded input sections
 
  .note.GNU-stack
-                0x0000000000000000        0x0 /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/Scrt1.o
+                0x0000000000000000        0x0 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o
  .note.GNU-stack
-                0x0000000000000000        0x0 /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/crti.o
+                0x0000000000000000        0x0 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/crti.o
  .note.GNU-stack
-                0x0000000000000000        0x0 /usr/lib/gcc/x86_64-linux-gnu/10/crtbeginS.o
+                0x0000000000000000        0x0 /usr/lib/gcc/x86_64-linux-gnu/8/crtbeginS.o
  .note.GNU-stack
                 0x0000000000000000        0x0 DumpBufferContents.o
  .note.GNU-stack
-                0x0000000000000000        0x0 /usr/lib/x86_64-linux-gnu/libc_nonshared.a(elf-init.oS)
+                0x0000000000000000        0x0 //usr/lib/x86_64-linux-gnu/libc_nonshared.a(elf-init.oS)
  .note.GNU-stack
-                0x0000000000000000        0x0 /usr/lib/gcc/x86_64-linux-gnu/10/crtendS.o
+                0x0000000000000000        0x0 /usr/lib/gcc/x86_64-linux-gnu/8/crtendS.o
  .note.GNU-stack
-                0x0000000000000000        0x0 /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/crtn.o
+                0x0000000000000000        0x0 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/crtn.o
 
 Memory Configuration
 
@@ -31,135 +27,138 @@ Name             Origin             Length             Attributes
 
 Linker script and memory map
 
-LOAD /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/Scrt1.o
-LOAD /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/crti.o
-LOAD /usr/lib/gcc/x86_64-linux-gnu/10/crtbeginS.o
-LOAD /home/vasimihalca/Work/JCNCScreen/libcnc/native/lc/lib/libnml.so.0
-LOAD /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/libGL.so
+LOAD /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o
+LOAD /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/crti.o
+LOAD /usr/lib/gcc/x86_64-linux-gnu/8/crtbeginS.o
+LOAD /home/cnc/Work/JCNCScreen/libcnc/native/lc/lib/libnml.so.0
+LOAD /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/libGL.so
 LOAD DumpBufferContents.o
-LOAD /usr/lib/gcc/x86_64-linux-gnu/10/libstdc++.so
-LOAD /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/libm.so
+LOAD /usr/lib/gcc/x86_64-linux-gnu/8/libstdc++.so
+LOAD /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/libm.so
 START GROUP
-LOAD /lib/x86_64-linux-gnu/libm.so.6
-LOAD /lib/x86_64-linux-gnu/libmvec.so.1
+LOAD //lib/x86_64-linux-gnu/libm.so.6
+LOAD //usr/lib/x86_64-linux-gnu/libmvec_nonshared.a
+LOAD //lib/x86_64-linux-gnu/libmvec.so.1
 END GROUP
-LOAD /usr/lib/gcc/x86_64-linux-gnu/10/libgcc_s.so
+LOAD /usr/lib/gcc/x86_64-linux-gnu/8/libgcc_s.so
 START GROUP
-LOAD /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/libgcc_s.so.1
-LOAD /usr/lib/gcc/x86_64-linux-gnu/10/libgcc.a
+LOAD /usr/lib/gcc/x86_64-linux-gnu/8/libgcc_s.so.1
+LOAD /usr/lib/gcc/x86_64-linux-gnu/8/libgcc.a
 END GROUP
-LOAD /usr/lib/gcc/x86_64-linux-gnu/10/libgcc.a
-LOAD /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/libc.so
+LOAD /usr/lib/gcc/x86_64-linux-gnu/8/libgcc.a
+LOAD /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/libc.so
 START GROUP
-LOAD /lib/x86_64-linux-gnu/libc.so.6
-LOAD /usr/lib/x86_64-linux-gnu/libc_nonshared.a
-LOAD /lib64/ld-linux-x86-64.so.2
+LOAD //lib/x86_64-linux-gnu/libc.so.6
+LOAD //usr/lib/x86_64-linux-gnu/libc_nonshared.a
+LOAD //lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
 END GROUP
-LOAD /usr/lib/gcc/x86_64-linux-gnu/10/libgcc_s.so
+LOAD /usr/lib/gcc/x86_64-linux-gnu/8/libgcc_s.so
 START GROUP
-LOAD /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/libgcc_s.so.1
-LOAD /usr/lib/gcc/x86_64-linux-gnu/10/libgcc.a
+LOAD /usr/lib/gcc/x86_64-linux-gnu/8/libgcc_s.so.1
+LOAD /usr/lib/gcc/x86_64-linux-gnu/8/libgcc.a
 END GROUP
-LOAD /usr/lib/gcc/x86_64-linux-gnu/10/libgcc.a
-LOAD /usr/lib/gcc/x86_64-linux-gnu/10/crtendS.o
-LOAD /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/crtn.o
+LOAD /usr/lib/gcc/x86_64-linux-gnu/8/libgcc.a
+LOAD /usr/lib/gcc/x86_64-linux-gnu/8/crtendS.o
+LOAD /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/crtn.o
                 [!provide]                        PROVIDE (__executable_start = SEGMENT_START ("text-segment", 0x0))
                 0x00000000000002a8                . = (SEGMENT_START ("text-segment", 0x0) + SIZEOF_HEADERS)
 
 .interp         0x00000000000002a8       0x1c
  *(.interp)
- .interp        0x00000000000002a8       0x1c /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/Scrt1.o
+ .interp        0x00000000000002a8       0x1c /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o
+
+.note.ABI-tag   0x00000000000002c4       0x20
+ .note.ABI-tag  0x00000000000002c4       0x20 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o
 
 .note.gnu.build-id
-                0x00000000000002c4       0x24
+                0x00000000000002e4       0x24
  *(.note.gnu.build-id)
  .note.gnu.build-id
-                0x00000000000002c4       0x24 /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/Scrt1.o
-
-.note.ABI-tag   0x00000000000002e8       0x20
- .note.ABI-tag  0x00000000000002e8       0x20 /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/Scrt1.o
+                0x00000000000002e4       0x24 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o
 
 .hash
  *(.hash)
 
-.gnu.hash       0x0000000000000308       0x28
+.gnu.hash       0x0000000000000308       0x38
  *(.gnu.hash)
- .gnu.hash      0x0000000000000308       0x28 /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/Scrt1.o
+ .gnu.hash      0x0000000000000308       0x38 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o
 
-.dynsym         0x0000000000000330       0xc0
+.dynsym         0x0000000000000340      0x108
  *(.dynsym)
- .dynsym        0x0000000000000330       0xc0 /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/Scrt1.o
+ .dynsym        0x0000000000000340      0x108 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o
 
-.dynstr         0x00000000000003f0       0xc3
+.dynstr         0x0000000000000448      0x111
  *(.dynstr)
- .dynstr        0x00000000000003f0       0xc3 /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/Scrt1.o
+ .dynstr        0x0000000000000448      0x111 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o
 
-.gnu.version    0x00000000000004b4       0x10
+.gnu.version    0x000000000000055a       0x16
  *(.gnu.version)
- .gnu.version   0x00000000000004b4       0x10 /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/Scrt1.o
+ .gnu.version   0x000000000000055a       0x16 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o
 
-.gnu.version_d  0x00000000000004c8        0x0
+.gnu.version_d  0x0000000000000570        0x0
  *(.gnu.version_d)
  .gnu.version_d
-                0x00000000000004c8        0x0 /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/Scrt1.o
+                0x0000000000000570        0x0 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o
 
-.gnu.version_r  0x00000000000004c8       0x20
+.gnu.version_r  0x0000000000000570       0x20
  *(.gnu.version_r)
  .gnu.version_r
-                0x00000000000004c8       0x20 /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/Scrt1.o
+                0x0000000000000570       0x20 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o
 
-.rela.dyn       0x00000000000004e8      0x348
+.rela.dyn       0x0000000000000590      0x348
  *(.rela.init)
  *(.rela.text .rela.text.* .rela.gnu.linkonce.t.*)
  .rela.text.startup
-                0x00000000000004e8        0x0 /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/Scrt1.o
- .rela.text     0x00000000000004e8        0x0 /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/Scrt1.o
+                0x0000000000000590        0x0 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o
+ .rela.text     0x0000000000000590        0x0 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o
  *(.rela.fini)
  *(.rela.rodata .rela.rodata.* .rela.gnu.linkonce.r.*)
  *(.rela.data .rela.data.* .rela.gnu.linkonce.d.*)
  .rela.data.rel.ro
-                0x00000000000004e8        0x0 /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/Scrt1.o
+                0x0000000000000590        0x0 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o
  .rela.data.rel.local
-                0x00000000000004e8      0x288 /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/Scrt1.o
+                0x0000000000000590      0x288 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o
  *(.rela.tdata .rela.tdata.* .rela.gnu.linkonce.td.*)
  *(.rela.tbss .rela.tbss.* .rela.gnu.linkonce.tb.*)
  *(.rela.ctors)
  *(.rela.dtors)
  *(.rela.got)
- .rela.got      0x0000000000000770       0x78 /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/Scrt1.o
+ .rela.got      0x0000000000000818       0x78 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o
  *(.rela.bss .rela.bss.* .rela.gnu.linkonce.b.*)
- .rela.bss      0x00000000000007e8       0x18 /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/Scrt1.o
+ .rela.bss      0x0000000000000890       0x18 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o
  *(.rela.ldata .rela.ldata.* .rela.gnu.linkonce.l.*)
  *(.rela.lbss .rela.lbss.* .rela.gnu.linkonce.lb.*)
  *(.rela.lrodata .rela.lrodata.* .rela.gnu.linkonce.lr.*)
  *(.rela.ifunc)
- .rela.ifunc    0x0000000000000800        0x0 /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/Scrt1.o
+ .rela.ifunc    0x00000000000008a8        0x0 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o
  .rela.fini_array
-                0x0000000000000800       0x18 /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/Scrt1.o
+                0x00000000000008a8       0x18 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o
  .rela.init_array
-                0x0000000000000818       0x18 /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/Scrt1.o
+                0x00000000000008c0       0x18 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o
 
-.rela.plt       0x0000000000000830       0x18
+.rela.plt       0x00000000000008d8       0x18
  *(.rela.plt)
- .rela.plt      0x0000000000000830       0x18 /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/Scrt1.o
+ .rela.plt      0x00000000000008d8       0x18 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o
+                [!provide]                        PROVIDE (__rela_iplt_start = .)
  *(.rela.iplt)
+                [!provide]                        PROVIDE (__rela_iplt_end = .)
                 0x0000000000001000                . = ALIGN (CONSTANT (MAXPAGESIZE))
 
 .init           0x0000000000001000       0x17
  *(SORT_NONE(.init))
- .init          0x0000000000001000       0x12 /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/crti.o
+ .init          0x0000000000001000       0x12 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/crti.o
                 0x0000000000001000                _init
- .init          0x0000000000001012        0x5 /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/crtn.o
+ .init          0x0000000000001012        0x5 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/crtn.o
 
 .plt            0x0000000000001020       0x20
  *(.plt)
- .plt           0x0000000000001020       0x20 /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/Scrt1.o
+ .plt           0x0000000000001020       0x20 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o
                 0x0000000000001030                fprintf@@GLIBC_2.2.5
  *(.iplt)
 
 .plt.got        0x0000000000001040        0x8
  *(.plt.got)
- .plt.got       0x0000000000001040        0x8 /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/Scrt1.o
+ .plt.got       0x0000000000001040        0x8 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o
                 0x0000000000001040                __cxa_finalize@@GLIBC_2.2.5
 
 .plt.sec
@@ -172,28 +171,27 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/crtn.o
  .text.startup  0x0000000000001050       0x3a DumpBufferContents.o
                 0x0000000000001050                main
  *(.text.hot .text.hot.*)
- *(SORT_BY_NAME(.text.sorted.*))
  *(.text .stub .text.* .gnu.linkonce.t.*)
  *fill*         0x000000000000108a        0x6 
- .text          0x0000000000001090       0x2b /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/Scrt1.o
+ .text          0x0000000000001090       0x2b /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o
                 0x0000000000001090                _start
- .text          0x00000000000010bb        0x0 /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/crti.o
+ .text          0x00000000000010bb        0x0 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/crti.o
  *fill*         0x00000000000010bb        0x5 
- .text          0x00000000000010c0       0xb5 /usr/lib/gcc/x86_64-linux-gnu/10/crtbeginS.o
+ .text          0x00000000000010c0       0xb5 /usr/lib/gcc/x86_64-linux-gnu/8/crtbeginS.o
  .text          0x0000000000001175        0x0 DumpBufferContents.o
  *fill*         0x0000000000001175        0xb 
- .text          0x0000000000001180       0x61 /usr/lib/x86_64-linux-gnu/libc_nonshared.a(elf-init.oS)
+ .text          0x0000000000001180       0x61 //usr/lib/x86_64-linux-gnu/libc_nonshared.a(elf-init.oS)
                 0x0000000000001180                __libc_csu_init
                 0x00000000000011e0                __libc_csu_fini
- .text          0x00000000000011e1        0x0 /usr/lib/gcc/x86_64-linux-gnu/10/crtendS.o
- .text          0x00000000000011e1        0x0 /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/crtn.o
+ .text          0x00000000000011e1        0x0 /usr/lib/gcc/x86_64-linux-gnu/8/crtendS.o
+ .text          0x00000000000011e1        0x0 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/crtn.o
  *(.gnu.warning)
 
 .fini           0x00000000000011e4        0x9
  *(SORT_NONE(.fini))
- .fini          0x00000000000011e4        0x4 /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/crti.o
+ .fini          0x00000000000011e4        0x4 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/crti.o
                 0x00000000000011e4                _fini
- .fini          0x00000000000011e8        0x5 /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/crtn.o
+ .fini          0x00000000000011e8        0x5 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/crtn.o
                 [!provide]                        PROVIDE (__etext = .)
                 [!provide]                        PROVIDE (_etext = .)
                 [!provide]                        PROVIDE (etext = .)
@@ -202,7 +200,7 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/crtn.o
 
 .rodata         0x0000000000002000      0x13f
  *(.rodata .rodata.* .gnu.linkonce.r.*)
- .rodata.cst4   0x0000000000002000        0x4 /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/Scrt1.o
+ .rodata.cst4   0x0000000000002000        0x4 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o
                 0x0000000000002000                _IO_stdin_used
  .rodata.str1.1
                 0x0000000000002004      0x13b DumpBufferContents.o
@@ -212,23 +210,23 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/crtn.o
 
 .eh_frame_hdr   0x0000000000002140       0x3c
  *(.eh_frame_hdr)
- .eh_frame_hdr  0x0000000000002140       0x3c /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/Scrt1.o
+ .eh_frame_hdr  0x0000000000002140       0x3c /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o
                 0x0000000000002140                __GNU_EH_FRAME_HDR
  *(.eh_frame_entry .eh_frame_entry.*)
 
 .eh_frame       0x0000000000002180      0x110
  *(.eh_frame)
- .eh_frame      0x0000000000002180       0x30 /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/Scrt1.o
+ .eh_frame      0x0000000000002180       0x30 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o
                                          0x2c (size before relaxing)
  *fill*         0x00000000000021b0        0x0 
- .eh_frame      0x00000000000021b0       0x40 /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/Scrt1.o
- .eh_frame      0x00000000000021f0       0x18 /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/Scrt1.o
+ .eh_frame      0x00000000000021b0       0x40 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o
+ .eh_frame      0x00000000000021f0       0x18 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o
                                          0x30 (size before relaxing)
  .eh_frame      0x0000000000002208       0x28 DumpBufferContents.o
                                          0x40 (size before relaxing)
- .eh_frame      0x0000000000002230       0x5c /usr/lib/x86_64-linux-gnu/libc_nonshared.a(elf-init.oS)
+ .eh_frame      0x0000000000002230       0x5c //usr/lib/x86_64-linux-gnu/libc_nonshared.a(elf-init.oS)
                                          0x78 (size before relaxing)
- .eh_frame      0x000000000000228c        0x4 /usr/lib/gcc/x86_64-linux-gnu/10/crtendS.o
+ .eh_frame      0x000000000000228c        0x4 /usr/lib/gcc/x86_64-linux-gnu/8/crtendS.o
  *(.eh_frame.*)
 
 .gcc_except_table
@@ -238,8 +236,8 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/crtn.o
  *(.gnu_extab*)
 
 .exception_ranges
- *(.exception_ranges*)
-                0x0000000000003dd8                . = DATA_SEGMENT_ALIGN (CONSTANT (MAXPAGESIZE), CONSTANT (COMMONPAGESIZE))
+ *(.exception_ranges .exception_ranges*)
+                0x0000000000003d88                . = DATA_SEGMENT_ALIGN (CONSTANT (MAXPAGESIZE), CONSTANT (COMMONPAGESIZE))
 
 .eh_frame
  *(.eh_frame)
@@ -252,9 +250,9 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/crtn.o
  *(.gcc_except_table .gcc_except_table.*)
 
 .exception_ranges
- *(.exception_ranges*)
+ *(.exception_ranges .exception_ranges*)
 
-.tdata          0x0000000000003dd8        0x0
+.tdata          0x0000000000003d88        0x0
                 [!provide]                        PROVIDE (__tdata_start = .)
  *(.tdata .tdata.* .gnu.linkonce.td.*)
 
@@ -262,23 +260,23 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/crtn.o
  *(.tbss .tbss.* .gnu.linkonce.tb.*)
  *(.tcommon)
 
-.preinit_array  0x0000000000003dd8        0x0
+.preinit_array  0x0000000000003d88        0x0
                 [!provide]                        PROVIDE (__preinit_array_start = .)
  *(.preinit_array)
                 [!provide]                        PROVIDE (__preinit_array_end = .)
 
-.init_array     0x0000000000003dd8        0x8
-                0x0000000000003dd8                PROVIDE (__init_array_start = .)
+.init_array     0x0000000000003d88        0x8
+                0x0000000000003d88                PROVIDE (__init_array_start = .)
  *(SORT_BY_INIT_PRIORITY(.init_array.*) SORT_BY_INIT_PRIORITY(.ctors.*))
  *(.init_array EXCLUDE_FILE(*crtend?.o *crtend.o *crtbegin?.o *crtbegin.o) .ctors)
- .init_array    0x0000000000003dd8        0x8 /usr/lib/gcc/x86_64-linux-gnu/10/crtbeginS.o
-                0x0000000000003de0                PROVIDE (__init_array_end = .)
+ .init_array    0x0000000000003d88        0x8 /usr/lib/gcc/x86_64-linux-gnu/8/crtbeginS.o
+                0x0000000000003d90                PROVIDE (__init_array_end = .)
 
-.fini_array     0x0000000000003de0        0x8
+.fini_array     0x0000000000003d90        0x8
                 [!provide]                        PROVIDE (__fini_array_start = .)
  *(SORT_BY_INIT_PRIORITY(.fini_array.*) SORT_BY_INIT_PRIORITY(.dtors.*))
  *(.fini_array EXCLUDE_FILE(*crtend?.o *crtend.o *crtbegin?.o *crtbegin.o) .dtors)
- .fini_array    0x0000000000003de0        0x8 /usr/lib/gcc/x86_64-linux-gnu/10/crtbeginS.o
+ .fini_array    0x0000000000003d90        0x8 /usr/lib/gcc/x86_64-linux-gnu/8/crtbeginS.o
                 [!provide]                        PROVIDE (__fini_array_end = .)
 
 .ctors
@@ -298,53 +296,53 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/crtn.o
 .jcr
  *(.jcr)
 
-.data.rel.ro    0x0000000000003de8        0x0
+.data.rel.ro    0x0000000000003d98        0x0
  *(.data.rel.ro.local* .gnu.linkonce.d.rel.ro.local.*)
  *(.data.rel.ro .data.rel.ro.* .gnu.linkonce.d.rel.ro.*)
- .data.rel.ro   0x0000000000003de8        0x0 /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/Scrt1.o
+ .data.rel.ro   0x0000000000003d98        0x0 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o
 
-.dynamic        0x0000000000003de8      0x1f0
+.dynamic        0x0000000000003d98      0x240
  *(.dynamic)
- .dynamic       0x0000000000003de8      0x1f0 /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/Scrt1.o
-                0x0000000000003de8                _DYNAMIC
+ .dynamic       0x0000000000003d98      0x240 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o
+                0x0000000000003d98                _DYNAMIC
 
 .got            0x0000000000003fd8       0x28
  *(.got)
- .got           0x0000000000003fd8       0x28 /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/Scrt1.o
+ .got           0x0000000000003fd8       0x28 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o
  *(.igot)
                 0x0000000000004fe8                . = DATA_SEGMENT_RELRO_END (., (SIZEOF (.got.plt) >= 0x18)?0x18:0x0)
 
 .got.plt        0x0000000000004000       0x20
  *(.got.plt)
- .got.plt       0x0000000000004000       0x20 /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/Scrt1.o
+ .got.plt       0x0000000000004000       0x20 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o
                 0x0000000000004000                _GLOBAL_OFFSET_TABLE_
  *(.igot.plt)
 
 .data           0x0000000000004020      0x290
  *(.data .data.* .gnu.linkonce.d.*)
- .data          0x0000000000004020        0x4 /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/Scrt1.o
+ .data          0x0000000000004020        0x4 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o
                 0x0000000000004020                data_start
                 0x0000000000004020                __data_start
- .data          0x0000000000004024        0x0 /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/crti.o
- .data          0x0000000000004024        0x0 /usr/lib/gcc/x86_64-linux-gnu/10/crtbeginS.o
+ .data          0x0000000000004024        0x0 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/crti.o
+ .data          0x0000000000004024        0x0 /usr/lib/gcc/x86_64-linux-gnu/8/crtbeginS.o
  *fill*         0x0000000000004024        0x4 
  .data.rel.local
-                0x0000000000004028        0x8 /usr/lib/gcc/x86_64-linux-gnu/10/crtbeginS.o
+                0x0000000000004028        0x8 /usr/lib/gcc/x86_64-linux-gnu/8/crtbeginS.o
                 0x0000000000004028                __dso_handle
  .data          0x0000000000004030        0x0 DumpBufferContents.o
  *fill*         0x0000000000004030       0x10 
  .data.rel.local
                 0x0000000000004040      0x270 DumpBufferContents.o
- .data          0x00000000000042b0        0x0 /usr/lib/x86_64-linux-gnu/libc_nonshared.a(elf-init.oS)
- .data          0x00000000000042b0        0x0 /usr/lib/gcc/x86_64-linux-gnu/10/crtendS.o
- .data          0x00000000000042b0        0x0 /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/crtn.o
+ .data          0x00000000000042b0        0x0 //usr/lib/x86_64-linux-gnu/libc_nonshared.a(elf-init.oS)
+ .data          0x00000000000042b0        0x0 /usr/lib/gcc/x86_64-linux-gnu/8/crtendS.o
+ .data          0x00000000000042b0        0x0 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/crtn.o
 
 .tm_clone_table
                 0x00000000000042b0        0x0
  .tm_clone_table
-                0x00000000000042b0        0x0 /usr/lib/gcc/x86_64-linux-gnu/10/crtbeginS.o
+                0x00000000000042b0        0x0 /usr/lib/gcc/x86_64-linux-gnu/8/crtbeginS.o
  .tm_clone_table
-                0x00000000000042b0        0x0 /usr/lib/gcc/x86_64-linux-gnu/10/crtendS.o
+                0x00000000000042b0        0x0 /usr/lib/gcc/x86_64-linux-gnu/8/crtendS.o
 
 .data1
  *(.data1)
@@ -355,16 +353,16 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/crtn.o
 
 .bss            0x00000000000042b0       0x10
  *(.dynbss)
- .dynbss        0x00000000000042b0        0x8 /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/Scrt1.o
+ .dynbss        0x00000000000042b0        0x8 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o
                 0x00000000000042b0                stdout@@GLIBC_2.2.5
  *(.bss .bss.* .gnu.linkonce.b.*)
- .bss           0x00000000000042b8        0x0 /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/Scrt1.o
- .bss           0x00000000000042b8        0x0 /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/crti.o
- .bss           0x00000000000042b8        0x1 /usr/lib/gcc/x86_64-linux-gnu/10/crtbeginS.o
+ .bss           0x00000000000042b8        0x0 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o
+ .bss           0x00000000000042b8        0x0 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/crti.o
+ .bss           0x00000000000042b8        0x1 /usr/lib/gcc/x86_64-linux-gnu/8/crtbeginS.o
  .bss           0x00000000000042b9        0x0 DumpBufferContents.o
- .bss           0x00000000000042b9        0x0 /usr/lib/x86_64-linux-gnu/libc_nonshared.a(elf-init.oS)
- .bss           0x00000000000042b9        0x0 /usr/lib/gcc/x86_64-linux-gnu/10/crtendS.o
- .bss           0x00000000000042b9        0x0 /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/crtn.o
+ .bss           0x00000000000042b9        0x0 //usr/lib/x86_64-linux-gnu/libc_nonshared.a(elf-init.oS)
+ .bss           0x00000000000042b9        0x0 /usr/lib/gcc/x86_64-linux-gnu/8/crtendS.o
+ .bss           0x00000000000042b9        0x0 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/crtn.o
  *(COMMON)
                 0x00000000000042c0                . = ALIGN ((. != 0x0)?0x8:0x1)
  *fill*         0x00000000000042b9        0x7 
@@ -383,7 +381,7 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/crtn.o
  *(.ldata .ldata.* .gnu.linkonce.l.*)
                 0x00000000000062c0                . = ALIGN ((. != 0x0)?0x8:0x1)
                 0x00000000000062c0                . = ALIGN (0x8)
-                0x00000000000042c0                _end = .
+                0x00000000000062c0                _end = .
                 [!provide]                        PROVIDE (end = .)
                 0x00000000000062c0                . = DATA_SEGMENT_END (.)
 
@@ -405,15 +403,12 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/crtn.o
 .stab.indexstr
  *(.stab.indexstr)
 
-.comment        0x0000000000000000       0x27
+.comment        0x0000000000000000       0x1c
  *(.comment)
- .comment       0x0000000000000000       0x27 /usr/lib/gcc/x86_64-linux-gnu/10/crtbeginS.o
-                                         0x28 (size before relaxing)
- .comment       0x0000000000000027       0x28 DumpBufferContents.o
- .comment       0x0000000000000027       0x28 /usr/lib/gcc/x86_64-linux-gnu/10/crtendS.o
-
-.gnu.build.attributes
- *(.gnu.build.attributes .gnu.build.attributes.*)
+ .comment       0x0000000000000000       0x1c /usr/lib/gcc/x86_64-linux-gnu/8/crtbeginS.o
+                                         0x1d (size before relaxing)
+ .comment       0x000000000000001c       0x1d DumpBufferContents.o
+ .comment       0x000000000000001c       0x1d /usr/lib/gcc/x86_64-linux-gnu/8/crtendS.o
 
 .debug
  *(.debug)
@@ -435,25 +430,25 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/crtn.o
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x0000000000000000     0x2227
+.debug_info     0x0000000000000000     0x6e20
  *(.debug_info .gnu.linkonce.wi.*)
- .debug_info    0x0000000000000000     0x2227 DumpBufferContents.o
+ .debug_info    0x0000000000000000     0x6e20 DumpBufferContents.o
 
-.debug_abbrev   0x0000000000000000      0x4b8
+.debug_abbrev   0x0000000000000000      0x868
  *(.debug_abbrev)
- .debug_abbrev  0x0000000000000000      0x4b8 DumpBufferContents.o
+ .debug_abbrev  0x0000000000000000      0x868 DumpBufferContents.o
 
-.debug_line     0x0000000000000000      0x376
+.debug_line     0x0000000000000000      0x568
  *(.debug_line .debug_line.* .debug_line_end)
- .debug_line    0x0000000000000000      0x376 DumpBufferContents.o
+ .debug_line    0x0000000000000000      0x568 DumpBufferContents.o
 
 .debug_frame
  *(.debug_frame)
 
-.debug_str      0x0000000000000000      0xe75
+.debug_str      0x0000000000000000     0x7646
  *(.debug_str)
- .debug_str     0x0000000000000000      0xe75 DumpBufferContents.o
-                                       0x1135 (size before relaxing)
+ .debug_str     0x0000000000000000     0x7646 DumpBufferContents.o
+                                       0x7af6 (size before relaxing)
 
 .debug_loc      0x0000000000000000       0xe9
  *(.debug_loc)

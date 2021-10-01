@@ -99,6 +99,16 @@ fun Content(xx: PositionState?, errors: SystemMessage?, commandRepository: CncCo
             }) {
                 Text("Machine OFF")
             }
+            Button(onClick = {
+                commandRepository.homeAll()
+            }) {
+                Text("Home All")
+            }
+            Button(onClick = {
+                commandRepository.unHomeAll()
+            }) {
+                Text("UnHome All")
+            }
         }
     }
 }

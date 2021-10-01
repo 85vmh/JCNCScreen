@@ -31,9 +31,31 @@ class CommandWriter {
     external fun setTaskState(state: Int)
     external fun taskAbort()
     external fun homeAxis(jointNum: Int)
-    external fun jogStart(axis: Int, speed: Double)
-    external fun jogStep(axis: Int, stepSize: Double, speed: Double)
-    external fun jogStop(axis: Int)
+    external fun unHomeAxis(jointNum: Int)
+    external fun overrideLimits(jointNum: Int)
+
+    /**
+     * jogMode = 0 - jog axis
+     * jogMode = 1 - jog joint
+     */
+    external fun jogContinuous(jogMode: Int, axisOrJoint: Int, speed: Double)
+
+    /**
+     * jogMode = 0 - jog axis
+     * jogMode = 1 - jog joint
+     */
+    external fun jogIncremental(jogMode: Int, axisOrJoint: Int, stepSize: Double, speed: Double)
+    /**
+     * jogMode = 0 - jog axis
+     * jogMode = 1 - jog joint
+     */
+    external fun jogAbsolute(jogMode: Int, axisOrJoint: Int, position: Double, speed: Double)
+    external fun jogStop(jogMode: Int, axisOrJoint: Int)
+
+    external fun setMinPositionLimit(jointNum: Int, limit: Double)
+    external fun setMaxPositionLimit(jointNum: Int, limit: Double)
+    external fun setBacklash(jointNum: Int, backlash: Double)
+
     external fun loadTaskPlan(fileName: String?)
     external fun loadToolTable(fileName: String?)
     external fun sendMDICommand(command: String?)

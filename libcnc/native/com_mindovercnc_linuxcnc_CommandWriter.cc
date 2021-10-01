@@ -97,65 +97,64 @@ JNIEXPORT jint JNICALL Java_com_mindovercnc_linuxcnc_CommandWriter_init(JNIEnv* 
   }
 
 
-/*
- * Class:     com_mindovercnc_linuxcnc_CommandWriter
- * Method:    jogStep
- * Signature: (DD)V
- */
-JNIEXPORT void JNICALL Java_com_mindovercnc_linuxcnc_CommandWriter_jogStep(JNIEnv *env
-                                                                     , jobject thisObject
-                                                                     , jint    axis
-                                                                     , jdouble stepSize
-                                                                     , jdouble speed) {
-  EMC_JOG_INCR ji;
-
-  ji.joint_or_axis = axis;
-  ji.incr          = stepSize;
-  ji.vel           = speed;
-  ji.jjogmode      = 0;
-  sendCommand(ji);
-  }
-
-
-/*
- * Class:     com_mindovercnc_linuxcnc_CommandWriter
- * Method:    jogStart
- * Signature: (D)V
- */
-JNIEXPORT void JNICALL Java_com_mindovercnc_linuxcnc_CommandWriter_jogStart(JNIEnv *env
+JNIEXPORT void JNICALL Java_com_mindovercnc_linuxcnc_CommandWriter_jogContinuous(JNIEnv *env
                                                                       , jobject thisObject
-                                                                      , jint    axis
+                                                                      , jint    jogMode
+                                                                      , jint    axisOrJoint
                                                                       , jdouble speed) {
   EMC_JOG_CONT jc;
 
-  jc.joint_or_axis = axis;
+  jc.jjogmode      = jogMode;
+  jc.joint_or_axis = axisOrJoint;
   jc.vel           = speed;
-  jc.jjogmode      = 0;
   sendCommand(jc);
   }
 
 
-/*
- * Class:     com_mindovercnc_linuxcnc_CommandWriter
- * Method:    jogStop
- * Signature: ()V
- */
+JNIEXPORT void JNICALL Java_com_mindovercnc_linuxcnc_CommandWriter_jogIncremental(JNIEnv *env
+                                                                     , jobject thisObject
+                                                                     , jint    jogMode
+                                                                     , jint    axisOrJoint
+                                                                     , jdouble stepSize
+                                                                     , jdouble speed) {
+  EMC_JOG_INCR ji;
+
+  ji.jjogmode      = jogMode;
+  ji.joint_or_axis = axisOrJoint;
+  ji.incr          = stepSize;
+  ji.vel           = speed;
+  sendCommand(ji);
+  }
+
+
+JNIEXPORT void JNICALL Java_com_mindovercnc_linuxcnc_CommandWriter_jogAbsolute(JNIEnv *env
+                                                                     , jobject thisObject
+                                                                     , jint    jogMode
+                                                                     , jint    axisOrJoint
+                                                                     , jdouble position
+                                                                     , jdouble speed) {
+  EMC_JOG_ABS ja;
+
+  ja.jjogmode      = jogMode;
+  ja.joint_or_axis = axisOrJoint;
+  ja.pos           = position;
+  ja.vel           = speed;
+  sendCommand(ja);
+  }
+
+
 JNIEXPORT void JNICALL Java_com_mindovercnc_linuxcnc_CommandWriter_jogStop(JNIEnv *env
                                                                      , jobject thisObject
-                                                                     , jint    axis) {
+                                                                     , jint    jogMode
+                                                                     , jint    axisOrJoint) {
   EMC_JOG_STOP js;
 
-  js.joint_or_axis = axis;
-  js.jjogmode      = 0;
+  js.jjogmode      = jogMode;
+  js.joint_or_axis = axisOrJoint;
   sendCommand(js);
   }
 
 
-/*
- * Class:     com_mindovercnc_linuxcnc_CommandWriter
- * Method:    homeAxis
- * Signature: (I)V
- */
 JNIEXPORT void JNICALL Java_com_mindovercnc_linuxcnc_CommandWriter_homeAxis(JNIEnv* env
                                                                       , jobject thisObject
                                                                       , jint    jointNum) {
@@ -166,11 +165,59 @@ JNIEXPORT void JNICALL Java_com_mindovercnc_linuxcnc_CommandWriter_homeAxis(JNIE
   }
 
 
-/*
- * Class:     com_mindovercnc_linuxcnc_CommandWriter
- * Method:    loadTaskPlan
- * Signature: (Ljava/lang/String;)V
- */
+JNIEXPORT void JNICALL Java_com_mindovercnc_linuxcnc_CommandWriter_unHomeAxis(JNIEnv* env
+                                                                      , jobject thisObject
+                                                                      , jint    jointNum) {
+  EMC_JOINT_UNHOME juh;
+
+  juh.joint = jointNum;
+  sendCommand(juh);
+  }
+
+JNIEXPORT void JNICALL Java_com_mindovercnc_linuxcnc_CommandWriter_overrideLimits(JNIEnv* env
+                                                                      , jobject thisObject
+                                                                      , jint    jointNum) {
+  EMC_JOINT_OVERRIDE_LIMITS ovl;
+
+  ovl.joint = jointNum;
+  sendCommand(ovl);
+  }
+
+
+JNIEXPORT void JNICALL Java_com_mindovercnc_linuxcnc_CommandWriter_setBacklash(JNIEnv* env
+                                                                      , jobject thisObject
+                                                                      , jint    jointNum
+                                                                      , jdouble  backlash) {
+  EMC_JOINT_SET_BACKLASH bkl;
+
+  bkl.joint = jointNum;
+  bkl.backlash = backlash;
+  sendCommand(bkl);
+  }
+
+
+JNIEXPORT void JNICALL Java_com_mindovercnc_linuxcnc_CommandWriter_setMinPositionLimit(JNIEnv* env
+                                                                      , jobject thisObject
+                                                                      , jint    jointNum
+                                                                      , jdouble    limit) {
+  EMC_JOINT_SET_MIN_POSITION_LIMIT minPosLim;
+
+  minPosLim.joint = jointNum;
+  minPosLim.limit = limit;
+  sendCommand(minPosLim);
+  }
+
+JNIEXPORT void JNICALL Java_com_mindovercnc_linuxcnc_CommandWriter_setMaxPositionLimit(JNIEnv* env
+                                                                      , jobject thisObject
+                                                                      , jint    jointNum
+                                                                      , jdouble    limit) {
+  EMC_JOINT_SET_MAX_POSITION_LIMIT maxPosLim;
+
+  maxPosLim.joint = jointNum;
+  maxPosLim.limit = limit;
+  sendCommand(maxPosLim);
+  }
+
 JNIEXPORT void JNICALL Java_com_mindovercnc_linuxcnc_CommandWriter_loadTaskPlan(JNIEnv* env
                                                                           , jobject thisObject
                                                                           , jstring gcodeFile) {
