@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
+import com.mindovercnc.base.CncCommandRepository
 import com.mindovercnc.base.CncStatusRepository
 import com.mindovercnc.base.data.*
 import di.BuffDescriptorModule
@@ -35,6 +36,7 @@ fun MyWindow(onCloseRequest: () -> Unit) = Window(onCloseRequest = onCloseReques
         val di = localDI()
 
         val statusRepository by di.instance<CncStatusRepository>()
+        val commandRepository by di.instance<CncCommandRepository>()
 
         val cncStatusSharedFlow: Flow<CncStatus> = remember { statusRepository.cncStatusFlow() }
         val errorsSharedFlow: Flow<SystemMessage> = remember { statusRepository.errorFlow() }
@@ -52,13 +54,13 @@ fun MyWindow(onCloseRequest: () -> Unit) = Window(onCloseRequest = onCloseReques
 
         //val statusBuffer by statusReader.status.collectAsState(null)
         MaterialTheme {
-            Content(cncStatus, errors)
+            Content(cncStatus, errors, commandRepository)
         }
     }
 }
 
 @Composable
-fun Content(xx: PositionState?, errors: SystemMessage?) {
+fun Content(xx: PositionState?, errors: SystemMessage?, commandRepository: CncCommandRepository) {
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -78,18 +80,24 @@ fun Content(xx: PositionState?, errors: SystemMessage?) {
             modifier = Modifier.fillMaxWidth().padding(8.dp)
         ) {
             Button(onClick = {
-
+                commandRepository.setTaskState(TaskState.EStop)
             }) {
-                Text("Spindle")
+                Text("E-Stop Activate")
             }
-            Button(onClick = {}) {
-                Text("Feed Rate")
+            Button(onClick = {
+                commandRepository.setTaskState(TaskState.EStopReset)
+            }) {
+                Text("E-Stop Reset")
             }
-            Button(onClick = {}) {
-                Text("Tools")
+            Button(onClick = {
+                commandRepository.setTaskState(TaskState.MachineOn)
+            }) {
+                Text("Machine ON")
             }
-            Button(onClick = {}) {
-                Text("Position")
+            Button(onClick = {
+                commandRepository.setTaskState(TaskState.MachineOff)
+            }) {
+                Text("Machine OFF")
             }
         }
     }

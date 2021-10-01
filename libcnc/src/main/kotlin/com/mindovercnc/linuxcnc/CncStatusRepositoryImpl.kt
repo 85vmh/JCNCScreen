@@ -5,7 +5,6 @@ import com.mindovercnc.base.data.CncStatus
 import com.mindovercnc.base.data.SystemMessage
 import com.mindovercnc.linuxcnc.parsing.CncStatusFactory
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
 

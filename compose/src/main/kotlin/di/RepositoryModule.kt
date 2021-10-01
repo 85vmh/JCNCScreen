@@ -1,9 +1,11 @@
 package di
 
+import com.mindovercnc.base.CncCommandRepository
 import com.mindovercnc.base.CncStatusRepository
 import com.mindovercnc.base.data.CncStatus
 import com.mindovercnc.dummycnc.DummyStatusRepository
 import com.mindovercnc.dummycnc.PositionMock
+import com.mindovercnc.linuxcnc.CncCommandRepositoryImpl
 import com.mindovercnc.linuxcnc.CncStatusRepositoryImpl
 import com.mindovercnc.linuxcnc.nml.BuffDescriptor
 import com.mindovercnc.linuxcnc.nml.BuffDescriptorV29
@@ -23,6 +25,7 @@ val RepositoryModule = DI.Module("repository") {
 
     //bindSingleton<CncStatusRepository> { DummyStatusRepository(instance("dummy")) }
     bindSingleton<CncStatusRepository> { CncStatusRepositoryImpl(instance()) }
+    bindSingleton<CncCommandRepository> { CncCommandRepositoryImpl() }
 
 }
 
