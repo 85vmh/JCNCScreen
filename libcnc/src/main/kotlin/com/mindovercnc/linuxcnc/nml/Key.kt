@@ -8,7 +8,7 @@ enum class Key(val textDescription: String) {
     TaskMode("task.mode"),
     TaskState("task.state"),
     ExecState("task.execState"),
-    InterpreterState("task.intepreterState"),
+    InterpreterState("task.interpreterState"),
     SubroutineCallLevel("task.callLevel"),
     MotionLine("task.motionLine"),
     CurrentLine("task.currentLine"),
@@ -19,8 +19,8 @@ enum class Key(val textDescription: String) {
     LoadedFilePath("task.loadedFilePath"),
     Command("task.command"),
     G5xOffsetXStart("task.g5xOffsetXStart"),
-    G5xActiveIndex("task.g5XActiveIndex"),
-    G92OffsetXStart("task.g920OffsetXStart"),
+    G5xActiveIndex("task.g5xActiveIndex"),
+    G92OffsetXStart("task.g92OffsetXStart"),
     RotationXY("task.rotationXY"),
     ToolOffsetXStart("task.toolOffsetXStart"),
     ActiveGCodes("task.activeGCodes"),
@@ -155,5 +155,10 @@ enum class Key(val textDescription: String) {
     IoCoolantFlood("io.coolant.flood"),
     IoAuxEstop("io.aux.estop"),
     IoAuxLubeOn("io.aux.lubeOn"),
-    IoAuxLubeLevelOk("io.aux.lubeLevelOk"),
+    IoAuxLubeLevelOk("io.aux.lubeLevelOk");
+
+    companion object {
+        private val map = values().associateBy(Key::textDescription)
+        fun fromString(text: String) = map[text]
+    }
 }

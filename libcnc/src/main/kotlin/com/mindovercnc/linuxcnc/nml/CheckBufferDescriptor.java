@@ -14,9 +14,6 @@ import java.util.regex.Pattern;
 
 import javax.swing.SwingUtilities;
 
-import ca.odell.glazedlists.GlazedLists;
-import ca.odell.glazedlists.SortedList;
-
 
 public class CheckBufferDescriptor implements Runnable {
    public CheckBufferDescriptor(String arg) {

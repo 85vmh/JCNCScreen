@@ -93,8 +93,6 @@ static MemberDef StatusMembers[] = {
 
 // EMC_JOINT_STAT joint
 
-    {"motion.joint",                         O(motion.joint)},
-
     {"motion.joint0",                        O(motion.joint[0])},
     {"motion.joint1",                        O(motion.joint[1])},
 
@@ -122,32 +120,7 @@ static MemberDef StatusMembers[] = {
     {"motion.joint0.maxHardLimit",           O(motion.joint[0].maxHardLimit)},
     {"motion.joint0.overrideLimits",         O(motion.joint[0].overrideLimits)},
 
-    {"motion.joint1.jointType",              O(motion.joint[1].jointType)},
-    {"motion.joint1.units",                  O(motion.joint[1].units)},
-    {"motion.joint1.backlash",               O(motion.joint[1].backlash)},
-    {"motion.joint1.minPositionLimit",       O(motion.joint[1].minPositionLimit)},
-    {"motion.joint1.maxPositionLimit",       O(motion.joint[1].maxPositionLimit)},
-    {"motion.joint1.maxPositionLimit",       O(motion.joint[1].maxPositionLimit)},
-    {"motion.joint1.maxFollowingError",      O(motion.joint[1].maxFerror)},
-    {"motion.joint1.minFollowingError",      O(motion.joint[1].minFerror)},
-    {"motion.joint1.followingErrorCurrent",  O(motion.joint[1].ferrorCurrent)},
-    {"motion.joint1.followingErrorHighMark", O(motion.joint[1].ferrorHighMark)},
-    {"motion.joint1.output",                 O(motion.joint[1].output)},
-    {"motion.joint1.input",                  O(motion.joint[1].input)},
-    {"motion.joint1.velocity",               O(motion.joint[1].velocity)},
-    {"motion.joint1.inPosition",             O(motion.joint[1].inpos)},
-    {"motion.joint1.homing",                 O(motion.joint[1].homing)},
-    {"motion.joint1.homed",                  O(motion.joint[1].homed)},
-    {"motion.joint1.fault",                  O(motion.joint[1].fault)},
-    {"motion.joint1.enabled",                O(motion.joint[1].enabled)},
-    {"motion.joint1.minSoftLimit",           O(motion.joint[1].minSoftLimit)},
-    {"motion.joint1.maxSoftLimit",           O(motion.joint[1].maxSoftLimit)},
-    {"motion.joint1.minHardLimit",           O(motion.joint[1].minHardLimit)},
-    {"motion.joint1.maxHardLimit",           O(motion.joint[1].maxHardLimit)},
-    {"motion.joint1.overrideLimits",         O(motion.joint[1].overrideLimits)},
-
 // EMC_AXIS_STAT axis
-    {"motion.axis",                        O(motion.axis)},
 
     {"motion.axis0",                        O(motion.axis[0])},
     {"motion.axis1",                        O(motion.axis[1])},
@@ -156,13 +129,8 @@ static MemberDef StatusMembers[] = {
     {"motion.axis0.maxPositionLimit",       O(motion.axis[0].maxPositionLimit)},
     {"motion.axis0.velocity",               O(motion.axis[0].velocity)},
 
-    {"motion.axis1.minPositionLimit",       O(motion.axis[1].minPositionLimit)},
-    {"motion.axis1.maxPositionLimit",       O(motion.axis[1].maxPositionLimit)},
-    {"motion.axis1.velocity",               O(motion.axis[1].velocity)},
-
 
 // EMC_SPINDLE_STAT motion.spindle
-    {"motion.spindle",                     O(motion.spindle)},
     {"motion.spindle0",                    O(motion.spindle[0])},
     {"motion.spindle1",                    O(motion.spindle[1])},
 
@@ -180,19 +148,6 @@ static MemberDef StatusMembers[] = {
     {"motion.spindle0.overrideEnabled",     O(motion.spindle[0].spindle_override_enabled)},
     {"motion.spindle0.homed",               O(motion.spindle[0].homed)},
 
-    {"motion.spindle1.speed",               O(motion.spindle[1].speed)},
-    {"motion.spindle1.scale",               O(motion.spindle[1].spindle_scale)},
-    {"motion.spindle1.cssMaximum",          O(motion.spindle[1].css_maximum)},
-    {"motion.spindle1.cssFactor",           O(motion.spindle[1].css_factor)},
-    {"motion.spindle1.state",               O(motion.spindle[1].state)},
-    {"motion.spindle1.direction",           O(motion.spindle[1].direction)},
-    {"motion.spindle1.brake",               O(motion.spindle[1].brake)},
-    {"motion.spindle1.increasing",          O(motion.spindle[1].increasing)},
-    {"motion.spindle1.enabled",             O(motion.spindle[1].enabled)},
-    {"motion.spindle1.orientState",         O(motion.spindle[1].orient_state)},
-    {"motion.spindle1.orientFault",         O(motion.spindle[1].orient_fault)},
-    {"motion.spindle1.overrideEnabled",     O(motion.spindle[1].spindle_override_enabled)},
-    {"motion.spindle1.homed",               O(motion.spindle[1].homed)},
 
     {"motion.digitalInputsInt",             O(motion.synch_di)},
     {"motion.digitalOutputsInt",            O(motion.synch_do)},
