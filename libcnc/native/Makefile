@@ -32,7 +32,8 @@ LC_OBJS = $(abspath lc/src/objects/emc/nml_intf/emc.o) \
  $(abspath lc/src/objects/emc/rs274ngc/modal_state.o) \
  $(abspath lc/src/objects/emc/tooldata/tooldata_common.o) \
  $(abspath lc/src/objects/emc/tooldata/tooldata_mmap.o) \
- $(abspath lc/src/objects/emc/tooldata/tooldata_db.o)
+ $(abspath lc/src/objects/emc/tooldata/tooldata_db.o) \
+ $(abspath lc/lib/libnml.so.0)
 
 all: 	libLinuxCNC.so DumpBufDesc
 

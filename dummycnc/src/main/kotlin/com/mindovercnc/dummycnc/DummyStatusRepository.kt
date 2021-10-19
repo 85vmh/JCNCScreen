@@ -7,7 +7,8 @@ import kotlinx.coroutines.flow.Flow
 import java.nio.ByteBuffer
 
 class DummyStatusRepository(
-    private val flow: Flow<CncStatus>
+    private val flow: Flow<CncStatus>,
+    private val systemMessage: Flow<SystemMessage>
 ) : CncStatusRepository {
 
     override fun cncStatusFlow(): Flow<CncStatus> {
@@ -15,6 +16,6 @@ class DummyStatusRepository(
     }
 
     override fun errorFlow(): Flow<SystemMessage> {
-        TODO("Not yet implemented")
+        return systemMessage
     }
 }

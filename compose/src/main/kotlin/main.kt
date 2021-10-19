@@ -2,34 +2,51 @@
 @file:Suppress("FunctionName")
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Window
-import androidx.compose.ui.window.application
+import androidx.compose.ui.window.*
 import com.mindovercnc.base.CncCommandRepository
 import com.mindovercnc.base.CncStatusRepository
 import com.mindovercnc.base.data.*
 import di.BuffDescriptorModule
 import di.ParseFactoryModule
 import di.RepositoryModule
-import kotlinx.coroutines.flow.*
+import di.VisualTurning
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import org.kodein.di.compose.localDI
 import org.kodein.di.compose.withDI
 import org.kodein.di.instance
+import screen.RootScreenView
+import screen.composables.NumPadKey
+import screen.composables.NumPadView
 
 fun main() {
     application {
-        MyWindow(this::exitApplication)
+        val windowState = rememberWindowState(size = WindowSize(1024.dp, 768.dp))
+        MyWindow(windowState, this::exitApplication)
     }
 }
 
 @Composable
-fun MyWindow(onCloseRequest: () -> Unit) = Window(onCloseRequest = onCloseRequest, title = "KtCnc") {
+fun MyWindow(
+    windowState: WindowState,
+    onCloseRequest: () -> Unit
+) = Window(
+    onCloseRequest = onCloseRequest,
+    title = "KtCnc",
+    state = windowState
+) {
 
     //withDI(CncModule) {
     withDI(RepositoryModule, ParseFactoryModule, BuffDescriptorModule) {
@@ -54,7 +71,10 @@ fun MyWindow(onCloseRequest: () -> Unit) = Window(onCloseRequest = onCloseReques
 
         //val statusBuffer by statusReader.status.collectAsState(null)
         MaterialTheme {
+            //RootScreenView()
+
             Content(cncStatus, errors, commandRepository)
+            //VisualTurning()
         }
     }
 }
@@ -64,8 +84,14 @@ fun Content(xx: PositionState?, errors: SystemMessage?, commandRepository: CncCo
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
-        if (xx != null) {
-            displaySomething(xx)
+        Box(modifier = Modifier.fillMaxWidth().weight(1f).background(Color.LightGray)) {
+            Row(modifier = Modifier.fillMaxSize()) {
+                if (xx != null) {
+                    displaySomething(xx, Modifier.weight(1f).fillMaxHeight())
+                }
+                Spacer(modifier = Modifier.fillMaxHeight().width(1.dp).background(color = Color.Black))
+                NumPadView(modifier = Modifier.fillMaxHeight())
+            }
         }
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -115,38 +141,36 @@ fun Content(xx: PositionState?, errors: SystemMessage?, commandRepository: CncCo
 
 @Composable
 @Preview
-fun displaySomething(posState: PositionState) {
+fun displaySomething(posState: PositionState, modifier: Modifier) {
     val absPos: Position = posState.absPos
     val g5xPos: Position = posState.g5xPos
     val toolPos: Position = posState.toolPos
     val g92Pos: Position = posState.g92Pos
 
-//    println("---absPos$absPos")
-//    println("---g5xPos$g5xPos")
-//    println("---toolPos$toolPos")
-//    println("---g92Pos$g92Pos")
+    Column(modifier = modifier) {
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            modifier = Modifier.fillMaxWidth(),
+            text = "X: ${absPos.x} Y: ${absPos.y} Z: ${absPos.z}"
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            modifier = Modifier.fillMaxWidth(),
+            text = "X: ${g5xPos.x} Y: ${g5xPos.y} Z: ${g5xPos.z}"
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            modifier = Modifier.fillMaxWidth(),
+            text = "X: ${toolPos.x} Y: ${toolPos.y} Z: ${toolPos.z}"
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            modifier = Modifier.fillMaxWidth(),
+            text = "X: ${g92Pos.x} Y: ${g92Pos.y} Z: ${g92Pos.z}"
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+    }
 
-    Spacer(modifier = Modifier.height(16.dp))
-    Text(
-        modifier = Modifier.fillMaxWidth(),
-        text = "X: ${absPos.x} Y: ${absPos.y} Z: ${absPos.z}"
-    )
-    Spacer(modifier = Modifier.height(16.dp))
-    Text(
-        modifier = Modifier.fillMaxWidth(),
-        text = "X: ${g5xPos.x} Y: ${g5xPos.y} Z: ${g5xPos.z}"
-    )
-    Spacer(modifier = Modifier.height(16.dp))
-    Text(
-        modifier = Modifier.fillMaxWidth(),
-        text = "X: ${toolPos.x} Y: ${toolPos.y} Z: ${toolPos.z}"
-    )
-    Spacer(modifier = Modifier.height(16.dp))
-    Text(
-        modifier = Modifier.fillMaxWidth(),
-        text = "X: ${g92Pos.x} Y: ${g92Pos.y} Z: ${g92Pos.z}"
-    )
-    Spacer(modifier = Modifier.height(16.dp))
 }
 
 @Composable
@@ -154,6 +178,8 @@ fun displaySomething(posState: PositionState) {
 fun displayError(systemMessage: SystemMessage) {
     Text(
         modifier = Modifier.fillMaxWidth(),
-        text = "Time: ${systemMessage.time.toInstant().toEpochMilli()} Type: ${systemMessage.type} Message: ${systemMessage.message}"
+        text = "Time: ${
+            systemMessage.time.toInstant().toEpochMilli()
+        } Type: ${systemMessage.type} Message: ${systemMessage.message}"
     )
 }

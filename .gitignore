@@ -22,6 +22,6 @@ JCNCScreen-bin.zip
 .idea/
 app/build/
 compose/build/
-base/build/
+repository/build/
 libcnc/build/
 dummycnc/build/
