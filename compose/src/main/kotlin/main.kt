@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.*
 import com.mindovercnc.base.CncCommandRepository
 import com.mindovercnc.base.CncStatusRepository
+import com.mindovercnc.base.HalRepository
 import com.mindovercnc.base.data.*
 import di.BuffDescriptorModule
 import di.ParseFactoryModule
@@ -54,6 +55,7 @@ fun MyWindow(
 
         val statusRepository by di.instance<CncStatusRepository>()
         val commandRepository by di.instance<CncCommandRepository>()
+        val halRepository by di.instance<HalRepository>()
 
         val cncStatusSharedFlow: Flow<CncStatus> = remember { statusRepository.cncStatusFlow() }
         val errorsSharedFlow: Flow<SystemMessage> = remember { statusRepository.errorFlow() }
@@ -73,14 +75,19 @@ fun MyWindow(
         MaterialTheme {
             //RootScreenView()
 
-            Content(cncStatus, errors, commandRepository)
+            Content(cncStatus, errors, commandRepository, halRepository)
             //VisualTurning()
         }
     }
 }
 
 @Composable
-fun Content(xx: PositionState?, errors: SystemMessage?, commandRepository: CncCommandRepository) {
+fun Content(
+    xx: PositionState?,
+    errors: SystemMessage?,
+    commandRepository: CncCommandRepository,
+    halRepository: HalRepository
+) {
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -131,9 +138,10 @@ fun Content(xx: PositionState?, errors: SystemMessage?, commandRepository: CncCo
                 Text("Home All")
             }
             Button(onClick = {
-                commandRepository.unHomeAll()
+                val xx = halRepository.createComponent("KtCncComponent")
+                println("----from jni= $xx")
             }) {
-                Text("UnHome All")
+                Text("Test New JNI")
             }
         }
     }

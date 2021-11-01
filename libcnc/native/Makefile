@@ -7,7 +7,8 @@ endif
 O_HAL   = de_schwarzrot_hal_ItemList.new.o
 O_NML   = com_mindovercnc_linuxcnc_CommandWriter.o \
  com_mindovercnc_linuxcnc_ErrorReader.o \
- com_mindovercnc_linuxcnc_StatusReader.o
+ com_mindovercnc_linuxcnc_StatusReader.o \
+ com_mindovercnc_linuxcnc_HalHandler.o
 INCLUDES=-I. \
  -I$(abspath lc/src) \
  -I$(abspath lc/include) \
@@ -25,8 +26,11 @@ LC_FLAGS = -DLOCALE_DIR=\"/usr/share/locale\" \
  -Wl,-rpath,$(abspath lc/lib) \
  -Xlinker -Map=libLinuxCNC.map \
  -L/usr/X11R6/lib -lm -lGL
+
 GCC = g++
+
 JLIBS = ../lib/derby.jar:../lib/derbyshared.jar:../lib/derbytools.jar:../lib/glazedlists-1.11.0.jar:../lib/jme3-core.jar:../lib/jme3-desktop.jar:../lib/jme3-lwjgl.jar:../lib/LCExportHandler.jar:../lib/lwjgl.jar:../lib/lwjgl-platform-natives-linux.jar
+
 LC_OBJS = $(abspath lc/src/objects/emc/nml_intf/emc.o) \
  $(abspath lc/src/objects/emc/nml_intf/emcops.o) \
  $(abspath lc/src/objects/emc/rs274ngc/modal_state.o) \
