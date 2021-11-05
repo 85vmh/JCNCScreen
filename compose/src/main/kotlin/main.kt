@@ -19,6 +19,7 @@ import com.mindovercnc.base.CncCommandRepository
 import com.mindovercnc.base.CncStatusRepository
 import com.mindovercnc.base.HalRepository
 import com.mindovercnc.base.data.*
+import com.mindovercnc.linuxcnc.CncInitializer
 import di.BuffDescriptorModule
 import di.ParseFactoryModule
 import di.RepositoryModule
@@ -34,6 +35,7 @@ import screen.composables.NumPadView
 
 fun main() {
     application {
+        CncInitializer.initialize()
         val windowState = rememberWindowState(size = WindowSize(1024.dp, 768.dp))
         MyWindow(windowState, this::exitApplication)
     }
@@ -56,6 +58,21 @@ fun MyWindow(
         val statusRepository by di.instance<CncStatusRepository>()
         val commandRepository by di.instance<CncCommandRepository>()
         val halRepository by di.instance<HalRepository>()
+
+        halRepository.createComponent("KtCnc")?.apply {
+            println(this)
+            val pins = listOf(
+                HalPin.bit("inputPin", HalPin.Dir.IN),
+                HalPin.bit("outputPin", HalPin.Dir.OUT),
+                HalPin.float("floatPin", HalPin.Dir.IN),
+                HalPin.s32("s32Pin", HalPin.Dir.OUT)
+            )
+
+            pins.forEachIndexed { index, halPin ->
+                println("PinId$index is: $halPin")
+                addPin(halPin)
+            }
+        }
 
         val cncStatusSharedFlow: Flow<CncStatus> = remember { statusRepository.cncStatusFlow() }
         val errorsSharedFlow: Flow<SystemMessage> = remember { statusRepository.errorFlow() }
@@ -138,8 +155,13 @@ fun Content(
                 Text("Home All")
             }
             Button(onClick = {
-                val xx = halRepository.createComponent("KtCncComponent")
-                println("----from jni= $xx")
+//                halRepository.createComponent("KtCnc${System.currentTimeMillis()}")?.apply {
+//                    val pinId1 = addPin(HalPin("inputPin", HalPin.Type.BIT, HalPin.Dir.IN))
+//                    val pinId2 = addPin(HalPin("outputPin", HalPin.Type.BIT, HalPin.Dir.OUT))
+//                    println("PinId1 is: $pinId1")
+//                    println("PinId2 is: $pinId2")
+//                    println(this)
+//                }
             }) {
                 Text("Test New JNI")
             }

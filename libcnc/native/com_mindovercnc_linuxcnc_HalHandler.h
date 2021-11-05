@@ -10,34 +10,10 @@ extern "C" {
 /*
  * Class:     com_mindovercnc_linuxcnc_HalHandler
  * Method:    createComponent
- * Signature: (Ljava/lang/String;)I
+ * Signature: (Ljava/lang/String;)Lcom/mindovercnc/linuxcnc/HalComponent;
  */
-JNIEXPORT jint JNICALL Java_com_mindovercnc_linuxcnc_HalHandler_createComponent
+JNIEXPORT jobject JNICALL Java_com_mindovercnc_linuxcnc_HalHandler_createComponent
   (JNIEnv *, jobject, jstring);
-
-/*
- * Class:     com_mindovercnc_linuxcnc_HalHandler
- * Method:    addPin
- * Signature: (Lcom/mindovercnc/linuxcnc/HalHandler/Pin;I)V
- */
-JNIEXPORT void JNICALL Java_com_mindovercnc_linuxcnc_HalHandler_addPin
-  (JNIEnv *, jobject, jobject, jint);
-
-/*
- * Class:     com_mindovercnc_linuxcnc_HalHandler
- * Method:    getPin
- * Signature: (Ljava/lang/String;I)Lcom/mindovercnc/linuxcnc/HalHandler/Pin;
- */
-JNIEXPORT jobject JNICALL Java_com_mindovercnc_linuxcnc_HalHandler_getPin
-  (JNIEnv *, jobject, jstring, jint);
-
-/*
- * Class:     com_mindovercnc_linuxcnc_HalHandler
- * Method:    setReady
- * Signature: (I)V
- */
-JNIEXPORT void JNICALL Java_com_mindovercnc_linuxcnc_HalHandler_setReady
-  (JNIEnv *, jobject, jint);
 
 #ifdef __cplusplus
 }

@@ -34,6 +34,7 @@ Linker script and memory map
 LOAD /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/Scrt1.o
 LOAD /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/crti.o
 LOAD /usr/lib/gcc/x86_64-linux-gnu/10/crtbeginS.o
+LOAD /home/vasimihalca/Work/JCNCScreen/libcnc/native/lc/lib/libnml.so.0
 LOAD /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/libGL.so
 LOAD dumpBufDesc.o
 LOAD /usr/lib/gcc/x86_64-linux-gnu/10/libstdc++.so

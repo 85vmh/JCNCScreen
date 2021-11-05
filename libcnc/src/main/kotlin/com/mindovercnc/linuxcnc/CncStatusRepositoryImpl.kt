@@ -15,7 +15,7 @@ class CncStatusRepositoryImpl constructor(
     private val errorReader: ErrorReader
 
     init {
-        CncInitializer.initialize()
+        //CncInitializer.initialize()
         statusReader = StatusReader()
         errorReader = ErrorReader()
     }
