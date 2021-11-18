@@ -32,7 +32,7 @@ class TaskStatusFactory(
             gCodes = parseActiveCodes(byteBuffer, descriptor.entries[Key.ActiveGCodes]!!.startOffset, ActiveCodeType.G_CODE),
             mCodes = parseActiveCodes(byteBuffer, descriptor.entries[Key.ActiveMCodes]!!.startOffset, ActiveCodeType.M_CODE),
         ),
-        activeSettings = -0.0,
+        activeSettings = parseActiveSettings(byteBuffer),
         programUnits = LengthUnit.fromInt(byteBuffer.getIntForKey(Key.ProgramUnits)!!)!!,
         intepreterErrorCode = byteBuffer.getIntForKey(Key.InterpreterErrorCode)!!,
         isTaskPaused = byteBuffer.getBooleanForKey(Key.TaskPaused)!!,
@@ -47,6 +47,14 @@ class TaskStatusFactory(
             if (code > 0) {
                 result.add(code / activeCodeType.divideBy)
             }
+        }
+        return result
+    }
+
+    private fun parseActiveSettings(statusBuffer: ByteBuffer): List<Double?> {
+        val result = mutableListOf<Double?>()
+        for (i in 0 until 5) {
+            result.add(statusBuffer.getDoubleForKey(Key.ActiveSettings, 8 * i))
         }
         return result
     }

@@ -1,0 +1,2 @@
+#!/bin/bash
+java -Djava.library.path=/home/vasimihalca/Work/JCNCScreen/libcnc/native:/home/vasimihalca/Work/JCNCScreen/libcnc/native/lc/lib -jar compose-all.jar -base ./lib

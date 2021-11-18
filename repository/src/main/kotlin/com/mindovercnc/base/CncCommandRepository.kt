@@ -35,4 +35,6 @@ interface CncCommandRepository {
     fun setMaxPositionLimit(jointNumber: Int, limit: Double)
 
     fun setBacklash(jointNumber: Int, backlash: Double)
+
+    fun executeMdiCommand(command: String)
 }

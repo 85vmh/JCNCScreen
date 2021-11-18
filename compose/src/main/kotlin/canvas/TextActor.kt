@@ -4,15 +4,15 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
-import org.jetbrains.skija.Font
-import org.jetbrains.skija.Paint
-import org.jetbrains.skija.TextLine
-import themes.Fonts
+import org.jetbrains.skia.Font
+import org.jetbrains.skia.Paint
+import org.jetbrains.skia.TextLine
+import themes.SkiKoFonts
 
 class TextActor(
     private val text: String,
     private val offset: Offset,
-    private val font: Font = Fonts.default,
+    private val font: Font = SkiKoFonts.default,
     private val paint: Paint = Paint()
 ) : CanvasActor {
     override fun drawInto(drawScope: DrawScope) {

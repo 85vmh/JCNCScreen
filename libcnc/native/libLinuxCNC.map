@@ -82,9 +82,9 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/crtn.o
 .hash
  *(.hash)
 
-.gnu.hash       0x0000000000000308       0x28
+.gnu.hash       0x0000000000000308       0x24
  *(.gnu.hash)
- .gnu.hash      0x0000000000000308       0x28 /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/Scrt1.o
+ .gnu.hash      0x0000000000000308       0x24 /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/Scrt1.o
 
 .dynsym         0x0000000000000330       0xc0
  *(.dynsym)
@@ -111,8 +111,6 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/crtn.o
 .rela.dyn       0x00000000000004e8      0xd98
  *(.rela.init)
  *(.rela.text .rela.text.* .rela.gnu.linkonce.t.*)
- .rela.text.startup
-                0x00000000000004e8        0x0 /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/Scrt1.o
  .rela.text     0x00000000000004e8        0x0 /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/Scrt1.o
  *(.rela.fini)
  *(.rela.rodata .rela.rodata.* .rela.gnu.linkonce.r.*)
@@ -126,9 +124,9 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/crtn.o
  *(.rela.ctors)
  *(.rela.dtors)
  *(.rela.got)
- .rela.got      0x00000000000011c0       0x78 /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/Scrt1.o
+ .rela.got      0x00000000000011c0       0x90 /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/Scrt1.o
  *(.rela.bss .rela.bss.* .rela.gnu.linkonce.b.*)
- .rela.bss      0x0000000000001238       0x18 /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/Scrt1.o
+ .rela.bss      0x0000000000001250        0x0 /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/Scrt1.o
  *(.rela.ldata .rela.ldata.* .rela.gnu.linkonce.l.*)
  *(.rela.lbss .rela.lbss.* .rela.gnu.linkonce.lb.*)
  *(.rela.lrodata .rela.lrodata.* .rela.gnu.linkonce.lr.*)
@@ -169,12 +167,12 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/crtn.o
  *(.text.unlikely .text.*_unlikely .text.unlikely.*)
  *(.text.exit .text.exit.*)
  *(.text.startup .text.startup.*)
- .text.startup  0x0000000000002050       0x3a dumpBufDesc.o
+ .text.startup  0x0000000000002050       0x3d dumpBufDesc.o
                 0x0000000000002050                main
  *(.text.hot .text.hot.*)
  *(SORT_BY_NAME(.text.sorted.*))
  *(.text .stub .text.* .gnu.linkonce.t.*)
- *fill*         0x000000000000208a        0x6 
+ *fill*         0x000000000000208d        0x3 
  .text          0x0000000000002090       0x2b /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/Scrt1.o
                 0x0000000000002090                _start
  .text          0x00000000000020bb        0x0 /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/crti.o
@@ -239,7 +237,7 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/crtn.o
 
 .exception_ranges
  *(.exception_ranges*)
-                0x0000000000005dd8                . = DATA_SEGMENT_ALIGN (CONSTANT (MAXPAGESIZE), CONSTANT (COMMONPAGESIZE))
+                0x0000000000005dd0                . = DATA_SEGMENT_ALIGN (CONSTANT (MAXPAGESIZE), CONSTANT (COMMONPAGESIZE))
 
 .eh_frame
  *(.eh_frame)
@@ -254,7 +252,7 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/crtn.o
 .exception_ranges
  *(.exception_ranges*)
 
-.tdata          0x0000000000005dd8        0x0
+.tdata          0x0000000000005dd0        0x0
                 [!provide]                        PROVIDE (__tdata_start = .)
  *(.tdata .tdata.* .gnu.linkonce.td.*)
 
@@ -262,23 +260,23 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/crtn.o
  *(.tbss .tbss.* .gnu.linkonce.tb.*)
  *(.tcommon)
 
-.preinit_array  0x0000000000005dd8        0x0
+.preinit_array  0x0000000000005dd0        0x0
                 [!provide]                        PROVIDE (__preinit_array_start = .)
  *(.preinit_array)
                 [!provide]                        PROVIDE (__preinit_array_end = .)
 
-.init_array     0x0000000000005dd8        0x8
-                0x0000000000005dd8                PROVIDE (__init_array_start = .)
+.init_array     0x0000000000005dd0        0x8
+                0x0000000000005dd0                PROVIDE (__init_array_start = .)
  *(SORT_BY_INIT_PRIORITY(.init_array.*) SORT_BY_INIT_PRIORITY(.ctors.*))
  *(.init_array EXCLUDE_FILE(*crtend?.o *crtend.o *crtbegin?.o *crtbegin.o) .ctors)
- .init_array    0x0000000000005dd8        0x8 /usr/lib/gcc/x86_64-linux-gnu/10/crtbeginS.o
-                0x0000000000005de0                PROVIDE (__init_array_end = .)
+ .init_array    0x0000000000005dd0        0x8 /usr/lib/gcc/x86_64-linux-gnu/10/crtbeginS.o
+                0x0000000000005dd8                PROVIDE (__init_array_end = .)
 
-.fini_array     0x0000000000005de0        0x8
+.fini_array     0x0000000000005dd8        0x8
                 [!provide]                        PROVIDE (__fini_array_start = .)
  *(SORT_BY_INIT_PRIORITY(.fini_array.*) SORT_BY_INIT_PRIORITY(.dtors.*))
  *(.fini_array EXCLUDE_FILE(*crtend?.o *crtend.o *crtbegin?.o *crtbegin.o) .dtors)
- .fini_array    0x0000000000005de0        0x8 /usr/lib/gcc/x86_64-linux-gnu/10/crtbeginS.o
+ .fini_array    0x0000000000005dd8        0x8 /usr/lib/gcc/x86_64-linux-gnu/10/crtbeginS.o
                 [!provide]                        PROVIDE (__fini_array_end = .)
 
 .ctors
@@ -298,19 +296,19 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/crtn.o
 .jcr
  *(.jcr)
 
-.data.rel.ro    0x0000000000005de8        0x0
+.data.rel.ro    0x0000000000005de0        0x0
  *(.data.rel.ro.local* .gnu.linkonce.d.rel.ro.local.*)
  *(.data.rel.ro .data.rel.ro.* .gnu.linkonce.d.rel.ro.*)
- .data.rel.ro   0x0000000000005de8        0x0 /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/Scrt1.o
+ .data.rel.ro   0x0000000000005de0        0x0 /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/Scrt1.o
 
-.dynamic        0x0000000000005de8      0x1f0
+.dynamic        0x0000000000005de0      0x1f0
  *(.dynamic)
- .dynamic       0x0000000000005de8      0x1f0 /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/Scrt1.o
-                0x0000000000005de8                _DYNAMIC
+ .dynamic       0x0000000000005de0      0x1f0 /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/Scrt1.o
+                0x0000000000005de0                _DYNAMIC
 
-.got            0x0000000000005fd8       0x28
+.got            0x0000000000005fd0       0x30
  *(.got)
- .got           0x0000000000005fd8       0x28 /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/Scrt1.o
+ .got           0x0000000000005fd0       0x30 /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/Scrt1.o
  *(.igot)
                 0x0000000000006fe8                . = DATA_SEGMENT_RELRO_END (., (SIZEOF (.got.plt) >= 0x18)?0x18:0x0)
 
@@ -353,39 +351,38 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/crtn.o
                 0x0000000000006c10                . = .
                 0x0000000000006c10                __bss_start = .
 
-.bss            0x0000000000006c10       0x10
+.bss            0x0000000000006c10        0x8
  *(.dynbss)
- .dynbss        0x0000000000006c10        0x8 /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/Scrt1.o
-                0x0000000000006c10                stdout@@GLIBC_2.2.5
+ .dynbss        0x0000000000006c10        0x0 /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/Scrt1.o
  *(.bss .bss.* .gnu.linkonce.b.*)
- .bss           0x0000000000006c18        0x0 /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/Scrt1.o
- .bss           0x0000000000006c18        0x0 /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/crti.o
- .bss           0x0000000000006c18        0x1 /usr/lib/gcc/x86_64-linux-gnu/10/crtbeginS.o
- .bss           0x0000000000006c19        0x0 dumpBufDesc.o
- .bss           0x0000000000006c19        0x0 /usr/lib/x86_64-linux-gnu/libc_nonshared.a(elf-init.oS)
- .bss           0x0000000000006c19        0x0 /usr/lib/gcc/x86_64-linux-gnu/10/crtendS.o
- .bss           0x0000000000006c19        0x0 /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/crtn.o
+ .bss           0x0000000000006c10        0x0 /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/Scrt1.o
+ .bss           0x0000000000006c10        0x0 /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/crti.o
+ .bss           0x0000000000006c10        0x1 /usr/lib/gcc/x86_64-linux-gnu/10/crtbeginS.o
+ .bss           0x0000000000006c11        0x0 dumpBufDesc.o
+ .bss           0x0000000000006c11        0x0 /usr/lib/x86_64-linux-gnu/libc_nonshared.a(elf-init.oS)
+ .bss           0x0000000000006c11        0x0 /usr/lib/gcc/x86_64-linux-gnu/10/crtendS.o
+ .bss           0x0000000000006c11        0x0 /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/crtn.o
  *(COMMON)
-                0x0000000000006c20                . = ALIGN ((. != 0x0)?0x8:0x1)
- *fill*         0x0000000000006c19        0x7 
+                0x0000000000006c18                . = ALIGN ((. != 0x0)?0x8:0x1)
+ *fill*         0x0000000000006c11        0x7 
 
 .lbss
  *(.dynlbss)
  *(.lbss .lbss.* .gnu.linkonce.lb.*)
  *(LARGE_COMMON)
-                0x0000000000006c20                . = ALIGN (0x8)
-                0x0000000000006c20                . = SEGMENT_START ("ldata-segment", .)
+                0x0000000000006c18                . = ALIGN (0x8)
+                0x0000000000006c18                . = SEGMENT_START ("ldata-segment", .)
 
 .lrodata
  *(.lrodata .lrodata.* .gnu.linkonce.lr.*)
 
-.ldata          0x0000000000008c20        0x0
+.ldata          0x0000000000008c18        0x0
  *(.ldata .ldata.* .gnu.linkonce.l.*)
-                0x0000000000008c20                . = ALIGN ((. != 0x0)?0x8:0x1)
-                0x0000000000008c20                . = ALIGN (0x8)
-                0x0000000000006c20                _end = .
+                0x0000000000008c18                . = ALIGN ((. != 0x0)?0x8:0x1)
+                0x0000000000008c18                . = ALIGN (0x8)
+                0x0000000000006c18                _end = .
                 [!provide]                        PROVIDE (end = .)
-                0x0000000000008c20                . = DATA_SEGMENT_END (.)
+                0x0000000000008c18                . = DATA_SEGMENT_END (.)
 
 .stab
  *(.stab)
@@ -450,10 +447,10 @@ LOAD /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/crtn.o
 .debug_frame
  *(.debug_frame)
 
-.debug_str      0x0000000000000000      0xe6e
+.debug_str      0x0000000000000000      0xe74
  *(.debug_str)
- .debug_str     0x0000000000000000      0xe6e dumpBufDesc.o
-                                       0x112e (size before relaxing)
+ .debug_str     0x0000000000000000      0xe74 dumpBufDesc.o
+                                       0x1134 (size before relaxing)
 
 .debug_loc      0x0000000000000000       0xe9
  *(.debug_loc)

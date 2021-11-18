@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Button
 import androidx.compose.material.Text
+import androidx.compose.material.TextField
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -18,19 +19,37 @@ import java.lang.StringBuilder
 @Composable
 @Preview
 private fun NumPadViewPreview() {
-    NumPadView(modifier = Modifier.fillMaxSize())
+    NumPadView(modifier = Modifier.fillMaxSize(), initialValue = "") {}
 }
 
 @Composable
-fun NumPadView(modifier: Modifier) {
-    var string by remember { mutableStateOf("") }
-    Column(modifier = modifier) {
+fun NumPadView(
+    initialValue: String,
+    modifier: Modifier = Modifier,
+    onSubmit: (String) -> Unit
+) {
+    var string by remember { mutableStateOf(initialValue) }
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+
+        TextField(string, onValueChange = {
+            string = it
+        })
+
         NumPadRow("1", "2", "3") { string += it }
         NumPadRow("4", "5", "6") { string += it }
         NumPadRow("7", "8", "9") { string += it }
         NumPadRow("+/-", "0", ".") { string += it }
 
-        Text(string)
+        Button(
+            onClick = {
+                onSubmit(string)
+            }
+        ) {
+            Text("Submit")
+        }
     }
 }
 

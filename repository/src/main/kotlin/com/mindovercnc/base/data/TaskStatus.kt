@@ -1,5 +1,8 @@
 package com.mindovercnc.base.data
 
+private const val SETTING_FEED_RATE_INDEX = 1
+private const val SETTING_SPINDLE_SPEED_INDEX = 2
+
 data class TaskStatus(
     val taskMode: TaskMode,
     val taskState: TaskState,
@@ -44,7 +47,8 @@ data class TaskStatus(
     /**
      * Not sure how to interpret this double
      */
-    val activeSettings: Double,
+    val activeSettings: List<Double?>,
+
     val programUnits: LengthUnit,
 
     /**
@@ -60,4 +64,14 @@ data class TaskStatus(
      * Current length of the MDI input queue.
      */
     val mdiInputQueue: Int,
-)
+) {
+    /**
+     * The set feed rate, obtained from active settings
+     */
+    val setFeedRate: Double? = activeSettings[SETTING_FEED_RATE_INDEX]
+
+    /**
+     * The set spindle speed, obtained from active settings
+     */
+    val setSpindleSpeed: Double? = activeSettings[SETTING_SPINDLE_SPEED_INDEX]
+}

@@ -12,16 +12,8 @@ extern "C" {
  * Method:    addPin
  * Signature: (Lcom/mindovercnc/base/data/HalPin;)I
  */
-JNIEXPORT jint JNICALL Java_com_mindovercnc_base_data_HalComponent_addPin
-  (JNIEnv *, jobject, jobject);
-
-/*
- * Class:     com_mindovercnc_linuxcnc_HalComponent
- * Method:    getPin
- * Signature: (Ljava/lang/String;)Lcom/mindovercnc/base/data/HalPin;
- */
-JNIEXPORT jobject JNICALL Java_com_mindovercnc_base_data_HalComponent_getPin
-  (JNIEnv *, jobject, jstring);
+JNIEXPORT jobject JNICALL Java_com_mindovercnc_base_data_HalComponent_addPin
+  (JNIEnv *, jobject, jstring, jobject, jobject);
 
 #ifdef __cplusplus
 }

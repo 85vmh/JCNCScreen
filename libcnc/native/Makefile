@@ -17,7 +17,7 @@ INCLUDES=-I. \
 CC_FLAGS=$(INCLUDES) \
  -DULAPI -g -Wall -Os -fwrapv -Woverloaded-virtual \
  -D_GNU_SOURCE $(TOOL_NML_FLAG) -Wno-psabi -std=gnu++11 \
- -MP -MD
+ -MP -MD -fPIC
 LC_FLAGS = -DLOCALE_DIR=\"/usr/share/locale\" \
  -DPACKAGE=\"linuxcnc\" \
  $(TOOL_NML_FLAG) \

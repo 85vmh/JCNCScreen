@@ -4,7 +4,11 @@
 #include <string>
 #include <com_mindovercnc_linuxcnc_HalHandler.h>
 #include <com_mindovercnc_linuxcnc_HalComponent.h>
-
+#include <com_mindovercnc_linuxcnc_BitHalPin.h>
+#include <com_mindovercnc_linuxcnc_FloatHalPin.h>
+#include <com_mindovercnc_linuxcnc_IntHalPin.h>
+#include <string.h>
+using namespace std;
 
 union paramunion {
     hal_bit_t b;
@@ -48,10 +52,31 @@ typedef std::map<std::string, struct halitem> itemmap;
 typedef struct halobject {
     int hal_id;
     char *name;
-    char *prefix;
-    itemmap *items;
+    itemmap items;
 } halobject;
 
+map<string, halobject> componentMap;
+
+// Call the static method from kotlin that created the halPin with boolean type
+jobject createBitPin(JNIEnv *env, jstring compName, jstring name, jobject dir){
+    jclass clHalPin  = env->FindClass("com/mindovercnc/base/data/HalPin");
+    jmethodID myMethod = env->GetStaticMethodID(clHalPin, "bit", "(Ljava/lang/String;Ljava/lang/String;Lcom/mindovercnc/base/data/HalPin$Dir;)Lcom/mindovercnc/base/data/BitHalPin;");
+    return env->CallStaticObjectMethod(clHalPin, myMethod, compName, name, dir);
+}
+
+// Call the static method from kotlin that created the halPin with float type
+jobject createFloatPin(JNIEnv *env, jstring compName, jstring name, jobject dir){
+    jclass clHalPin  = env->FindClass("com/mindovercnc/base/data/HalPin");
+    jmethodID myMethod = env->GetStaticMethodID(clHalPin, "float", "(Ljava/lang/String;Ljava/lang/String;Lcom/mindovercnc/base/data/HalPin$Dir;)Lcom/mindovercnc/base/data/FloatHalPin;");
+    return env->CallStaticObjectMethod(clHalPin, myMethod, compName, name, dir);
+}
+
+// Call the static method from kotlin that created the halPin with s32 type
+jobject createS32Pin(JNIEnv *env, jstring compName, jstring name, jobject dir){
+    jclass clHalPin  = env->FindClass("com/mindovercnc/base/data/HalPin");
+    jmethodID myMethod = env->GetStaticMethodID(clHalPin, "s32", "(Ljava/lang/String;Ljava/lang/String;Lcom/mindovercnc/base/data/HalPin$Dir;)Lcom/mindovercnc/base/data/IntHalPin;");
+    return env->CallStaticObjectMethod(clHalPin, myMethod, compName, name, dir);
+}
 
 /*
  * Class:     com_mindovercnc_linuxcnc_HalHandler
@@ -60,18 +85,27 @@ typedef struct halobject {
  */
 JNIEXPORT jobject JNICALL Java_com_mindovercnc_linuxcnc_HalHandler_createComponent
   (JNIEnv *env, jobject thisObject, jstring componentName){
-    const char * compName = env->GetStringUTFChars(componentName, NULL);
+    const char* compName = env->GetStringUTFChars(componentName, NULL);
     int result =  hal_init(compName);
     env->ReleaseStringUTFChars(componentName, compName);
 
     if(result > 0){
-        jclass clHalComp  = env->FindClass("com/mindovercnc/base/data/HalComponent");
-        jfieldID fName    = env->GetFieldID(clHalComp, "name", "Ljava/lang/String;");
-        jfieldID fCompId  = env->GetFieldID(clHalComp, "componentId", "I");
+        jclass halCompClass  = env->FindClass("com/mindovercnc/base/data/HalComponent");
+        jfieldID fCompName   = env->GetFieldID(halCompClass, "name", "Ljava/lang/String;");
+        jfieldID fCompId     = env->GetFieldID(halCompClass, "componentId", "I");
 
-        jobject newHalComp = env->AllocObject(clHalComp);
-        env->SetObjectField(newHalComp, fName, componentName);
+        jobject newHalComp = env->AllocObject(halCompClass);
+        env->SetObjectField(newHalComp, fCompName, componentName);
         env->SetIntField(newHalComp, fCompId, result);
+
+        char* copy = (char*)malloc(strlen(compName) + 1);
+        strcpy(copy, compName);
+
+        //store in the halobject the componentId and the componentName
+        halobject aComp{ result, copy };
+
+        //store in a map<componentName, halobject>
+        componentMap[compName] = aComp;
 
         return newHalComp;
     }
@@ -83,48 +117,32 @@ JNIEXPORT jobject JNICALL Java_com_mindovercnc_linuxcnc_HalHandler_createCompone
  * Method:    addPin
  * Signature: (Lcom/mindovercnc/base/data/HalPin;)I
  */
-JNIEXPORT jint JNICALL Java_com_mindovercnc_base_data_HalComponent_addPin
-  (JNIEnv *env, jobject thisObject, jobject halPin){
+JNIEXPORT jobject JNICALL Java_com_mindovercnc_base_data_HalComponent_addPin
+  (JNIEnv *env, jobject thisObject, jstring pinName, jobject pinTypeObj, jobject pinDirObj){
 
-    jclass clHalComp  = env->FindClass("com/mindovercnc/base/data/HalComponent");
-    jfieldID fName    = env->GetFieldID(clHalComp, "name", "Ljava/lang/String;");
-    jfieldID intCompIdField = env->GetFieldID(clHalComp, "componentId", "I");
-    int componentId = env->GetIntField(thisObject, intCompIdField);
-    jobject compNameObject = env->GetObjectField(thisObject, fName);
-    jstring compName = (jstring)compNameObject;
-    const char* compNameChars = env -> GetStringUTFChars(compName, 0);
-
+    jclass halCompClass  = env->FindClass("com/mindovercnc/base/data/HalComponent");
     jclass clHalPin  = env->FindClass("com/mindovercnc/base/data/HalPin");
     jclass clPinType  = env->FindClass("com/mindovercnc/base/data/HalPin$Type");
     jclass clPinDir  = env->FindClass("com/mindovercnc/base/data/HalPin$Dir");
 
-    jfieldID pinNameField  = env->GetFieldID(clHalPin, "name", "Ljava/lang/String;");
-    jobject pinNameObj   = env->GetObjectField(halPin, pinNameField);
-    jstring pinName = (jstring)pinNameObj;
+    //Get details of the component object
+    jfieldID fCompName    = env->GetFieldID(halCompClass, "name", "Ljava/lang/String;");
+    jfieldID fCompId = env->GetFieldID(halCompClass, "componentId", "I");
+    int componentId = env->GetIntField(thisObject, fCompId);
+
+    jstring compName = (jstring) env->GetObjectField(thisObject, fCompName);
+    const char* compNameChars = env -> GetStringUTFChars(compName, 0);
     const char* pinNameChars = env -> GetStringUTFChars(pinName, 0);
-
-    rtapi_print_msg(RTAPI_MSG_ERR, "pinName is: (%s)\n", pinNameChars);
-
-
-    jfieldID pinTypeField = env->GetFieldID(clHalPin, "type", "Lcom/mindovercnc/base/data/HalPin$Type;");
-    jobject pinTypeObj  = env->GetObjectField(halPin, pinTypeField);
 
     jmethodID pinTypeValueMethod = env->GetMethodID(clPinType, "getValue", "()I");
     jint typeValue = env->CallIntMethod(pinTypeObj, pinTypeValueMethod);
 
-    rtapi_print_msg(RTAPI_MSG_ERR, "type is: (%i)\n", typeValue);
-    
-    
-    
-    jfieldID pinDirField = env->GetFieldID(clHalPin, "dir", "Lcom/mindovercnc/base/data/HalPin$Dir;");
-    jobject pinDirObj  = env->GetObjectField(halPin, pinDirField);
-
     jmethodID pinDirValueMethod = env->GetMethodID(clPinDir, "getValue", "()I");
     jint dirValue = env->CallIntMethod(pinDirObj, pinDirValueMethod);
 
-    rtapi_print_msg(RTAPI_MSG_ERR, "dir is: (%i)\n", dirValue);
+    //rtapi_print_msg(RTAPI_MSG_ERR, "dir is: (%i)\n", dirValue);
     
-    
+    //Copy of the logic from halmodule.cc
     char pin_name[HAL_NAME_LEN+1];
     int result;
 
@@ -141,11 +159,81 @@ JNIEXPORT jint JNICALL Java_com_mindovercnc_base_data_HalComponent_addPin
     }
 
     result = hal_pin_new(pin_name, pin.type, pin.dir.pindir, (void**)pin.u, componentId);
-    if(result) return result;
+    if(result) return NULL;
 
-    rtapi_print_msg(RTAPI_MSG_ERR, "pinName with prefix is: (%s)\n", pin_name);
+    //in the componentMap, find the component, then update its map of items with:
+    // items[pinNameWithoutPrefix] = pin
+    // later when we need the pin, we don't wanna need the prefix (which is the component name)
+    componentMap[compNameChars].items[pinNameChars] = pin;
 
-    return result;
+    //rtapi_print_msg(RTAPI_MSG_ERR, "pinName with prefix is: (%s)\n", pin_name);
+
+    switch(pin.type){
+        case HAL_BIT:
+            return createBitPin(env, compName, pinName, pinDirObj);
+            break;
+        case HAL_FLOAT:
+            return createFloatPin(env, compName, pinName, pinDirObj);
+            break;
+        case HAL_S32:
+            return createS32Pin(env, compName, pinName, pinDirObj);
+            break;
+    }
+    return NULL;
+  }
+
+JNIEXPORT void JNICALL Java_com_mindovercnc_base_data_BitHalPin_setPinValue
+  (JNIEnv *env, jobject thisObject, jboolean value){
+
+    jclass clHalPin     = env->FindClass("com/mindovercnc/base/data/BitHalPin");
+    jfieldID fCompName   = env->GetFieldID(clHalPin, "componentName", "Ljava/lang/String;");
+    jfieldID fPinName   = env->GetFieldID(clHalPin, "name", "Ljava/lang/String;");
+
+    jstring compName = (jstring) env->GetObjectField(thisObject, fCompName);
+    jstring pinName = (jstring) env->GetObjectField(thisObject, fPinName);
+
+    const char* compNameChars = env -> GetStringUTFChars(compName, 0);
+    const char* pinNameChars = env -> GetStringUTFChars(pinName, 0);
+
+    halitem pin = componentMap[compNameChars].items[pinNameChars];
+    *(pin.u->pin.b) = value;
+    //rtapi_print_msg(RTAPI_MSG_ERR, "pinName setPinValue is: (%b)\n", value);
+  }
+
+JNIEXPORT void JNICALL Java_com_mindovercnc_base_data_FloatHalPin_setPinValue
+  (JNIEnv *env, jobject thisObject, jfloat value){
+
+    jclass clHalPin     = env->FindClass("com/mindovercnc/base/data/FloatHalPin");
+    jfieldID fCompName   = env->GetFieldID(clHalPin, "componentName", "Ljava/lang/String;");
+    jfieldID fPinName   = env->GetFieldID(clHalPin, "name", "Ljava/lang/String;");
+
+    jstring compName = (jstring) env->GetObjectField(thisObject, fCompName);
+    jstring pinName = (jstring) env->GetObjectField(thisObject, fPinName);
+
+    const char* compNameChars = env -> GetStringUTFChars(compName, 0);
+    const char* pinNameChars = env -> GetStringUTFChars(pinName, 0);
+
+    halitem pin = componentMap[compNameChars].items[pinNameChars];
+    *(pin.u->pin.f) = value;
+    //rtapi_print_msg(RTAPI_MSG_ERR, "pinName setPinValue is: (%b)\n", value);
+  }
+
+JNIEXPORT void JNICALL Java_com_mindovercnc_base_data_IntHalPin_setPinValue
+  (JNIEnv *env, jobject thisObject, jint value){
+
+    jclass clHalPin     = env->FindClass("com/mindovercnc/base/data/IntHalPin");
+    jfieldID fCompName   = env->GetFieldID(clHalPin, "componentName", "Ljava/lang/String;");
+    jfieldID fPinName   = env->GetFieldID(clHalPin, "name", "Ljava/lang/String;");
+
+    jstring compName = (jstring) env->GetObjectField(thisObject, fCompName);
+    jstring pinName = (jstring) env->GetObjectField(thisObject, fPinName);
+
+    const char* compNameChars = env -> GetStringUTFChars(compName, 0);
+    const char* pinNameChars = env -> GetStringUTFChars(pinName, 0);
+
+    halitem pin = componentMap[compNameChars].items[pinNameChars];
+    *(pin.u->pin.s32) = value;
+    //rtapi_print_msg(RTAPI_MSG_ERR, "pinName setPinValue is: (%b)\n", value);
   }
 
 /*
@@ -153,7 +241,85 @@ JNIEXPORT jint JNICALL Java_com_mindovercnc_base_data_HalComponent_addPin
  * Method:    getPin
  * Signature: (Ljava/lang/String;)Lcom/mindovercnc/base/data/HalPin;
  */
-JNIEXPORT jobject JNICALL Java_com_mindovercnc_base_data_HalComponent_getPin
-  (JNIEnv *env, jobject thisObject, jstring pinName){
-    return NULL;
+JNIEXPORT jobject JNICALL Java_com_mindovercnc_base_data_BitHalPin_refreshValue
+  (JNIEnv *env, jobject thisObject){
+
+    jclass clHalPin     = env->FindClass("com/mindovercnc/base/data/BitHalPin");
+    jfieldID fCompName   = env->GetFieldID(clHalPin, "componentName", "Ljava/lang/String;");
+    jfieldID fPinName   = env->GetFieldID(clHalPin, "name", "Ljava/lang/String;");
+
+    jstring compName = (jstring) env->GetObjectField(thisObject, fCompName);
+    jstring pinName = (jstring) env->GetObjectField(thisObject, fPinName);
+
+    const char* compNameChars = env -> GetStringUTFChars(compName, 0);
+    const char* pinNameChars = env -> GetStringUTFChars(pinName, 0);
+
+    halitem pin = componentMap[compNameChars].items[pinNameChars];
+
+    bool value = *(pin.u->pin.b);
+
+    //now that we got the value, build java Boolean object, set the value into it and return it.
+    jclass clBool = env->FindClass("java/lang/Boolean");
+    jmethodID boolConstructor = env->GetStaticMethodID(clBool, "valueOf", "(Z)Ljava/lang/Boolean;");
+
+    return env->CallStaticObjectMethod(clBool, boolConstructor, value);
   }
+
+/*
+ * Class:     com_mindovercnc_linuxcnc_HalComponent
+ * Method:    getPin
+ * Signature: (Ljava/lang/String;)Lcom/mindovercnc/base/data/HalPin;
+ */
+JNIEXPORT jobject JNICALL Java_com_mindovercnc_base_data_FloatHalPin_refreshValue
+  (JNIEnv *env, jobject thisObject){
+
+    jclass clHalPin     = env->FindClass("com/mindovercnc/base/data/FloatHalPin");
+    jfieldID fCompName   = env->GetFieldID(clHalPin, "componentName", "Ljava/lang/String;");
+    jfieldID fPinName   = env->GetFieldID(clHalPin, "name", "Ljava/lang/String;");
+
+    jstring compName = (jstring) env->GetObjectField(thisObject, fCompName);
+    jstring pinName = (jstring) env->GetObjectField(thisObject, fPinName);
+
+    const char* compNameChars = env -> GetStringUTFChars(compName, 0);
+    const char* pinNameChars = env -> GetStringUTFChars(pinName, 0);
+
+    halitem pin = componentMap[compNameChars].items[pinNameChars];
+
+    float value = *(pin.u->pin.f);
+
+    //now that we got the value, build java Float object, set the value into it and return it.
+    jclass clFloat = env->FindClass("java/lang/Float");
+    jmethodID floatConstructor = env->GetStaticMethodID(clFloat, "valueOf", "(F)Ljava/lang/Float;");
+
+    return env->CallStaticObjectMethod(clFloat, floatConstructor, value);
+  }
+
+/*
+ * Class:     com_mindovercnc_linuxcnc_HalComponent
+ * Method:    getPin
+ * Signature: (Ljava/lang/String;)Lcom/mindovercnc/base/data/HalPin;
+ */
+JNIEXPORT jobject JNICALL Java_com_mindovercnc_base_data_IntHalPin_refreshValue
+  (JNIEnv *env, jobject thisObject){
+
+    jclass clHalPin     = env->FindClass("com/mindovercnc/base/data/IntHalPin");
+    jfieldID fCompName   = env->GetFieldID(clHalPin, "componentName", "Ljava/lang/String;");
+    jfieldID fPinName   = env->GetFieldID(clHalPin, "name", "Ljava/lang/String;");
+
+    jstring compName = (jstring) env->GetObjectField(thisObject, fCompName);
+    jstring pinName = (jstring) env->GetObjectField(thisObject, fPinName);
+
+    const char* compNameChars = env -> GetStringUTFChars(compName, 0);
+    const char* pinNameChars = env -> GetStringUTFChars(pinName, 0);
+
+    halitem pin = componentMap[compNameChars].items[pinNameChars];
+
+    int value = *(pin.u->pin.s32);
+
+    //now that we got the value, build java Integer object, set the value into it and return it.
+    jclass clInteger = env->FindClass("java/lang/Integer");
+    jmethodID integerConstructor = env->GetStaticMethodID(clInteger, "valueOf", "(I)Ljava/lang/Integer;");
+
+    return env->CallStaticObjectMethod(clInteger, integerConstructor, value);
+  }
+

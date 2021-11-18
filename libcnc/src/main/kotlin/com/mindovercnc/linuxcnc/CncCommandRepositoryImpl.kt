@@ -67,4 +67,8 @@ class CncCommandRepositoryImpl() : CncCommandRepository {
     override fun setBacklash(jointNumber: Int, backlash: Double) {
         commandWriter.setBacklash(jointNumber, backlash)
     }
+
+    override fun executeMdiCommand(command: String) {
+        commandWriter.sendMDICommand(command)
+    }
 }

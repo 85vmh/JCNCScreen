@@ -26,7 +26,7 @@ class BuffDescriptorV29() : BuffDescriptor {
         map[Key.ToolOffsetXStart] = DecodingInfo(920, DecodingInfo.DataType.Object)
         map[Key.ActiveGCodes] = DecodingInfo(992, DecodingInfo.DataType.Object)
         map[Key.ActiveMCodes] = DecodingInfo(1060, DecodingInfo.DataType.Object)
-        map[Key.ActiveSettings] = DecodingInfo(1104, DecodingInfo.DataType.Object)
+        map[Key.ActiveSettings] = DecodingInfo(1104, DecodingInfo.DataType.Object) //40 bytes -> 5 double values
         map[Key.ProgramUnits] = DecodingInfo(1144, DecodingInfo.DataType.Integer)
         map[Key.InterpreterErrorCode] = DecodingInfo(1148, DecodingInfo.DataType.Integer)
         map[Key.TaskPaused] = DecodingInfo(1152, DecodingInfo.DataType.Integer)
