@@ -1,4 +1,4 @@
-package screen
+package screen.viewmodel
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import screen.BaseScreen
 
 class BaseScreenViewModel constructor(
     scope: CoroutineScope,

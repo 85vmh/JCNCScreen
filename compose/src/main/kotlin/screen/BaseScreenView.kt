@@ -13,6 +13,7 @@ import com.mindovercnc.base.CncStatusRepository
 import kotlinx.coroutines.Dispatchers
 import org.kodein.di.compose.rememberInstance
 import screen.composables.*
+import screen.viewmodel.BaseScreenViewModel
 import usecase.MessagesUseCase
 
 @Composable

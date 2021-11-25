@@ -10,14 +10,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.ExperimentalUnitApi
-import androidx.compose.ui.unit.TextUnit
-import androidx.compose.ui.unit.TextUnitType
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.*
 
-@OptIn(ExperimentalUnitApi::class)
 @Composable
-fun HandWheelStatus() {
+fun HandwheelStatus() {
     Row(
         modifier = Modifier
             .padding(8.dp),
@@ -32,12 +28,12 @@ fun HandWheelStatus() {
             modifier = Modifier.padding(start = 8.dp)
         ) {
             Text(
-                fontSize = TextUnit(14f, TextUnitType.Sp),
+                fontSize = 14.sp,
                 fontWeight = FontWeight.Normal,
                 text = "Handwheels: Active"
             )
             Text(
-                fontSize = TextUnit(14f, TextUnitType.Sp),
+                fontSize = 14.sp,
                 fontWeight = FontWeight.Normal,
                 text = "Increment: 0.010 mm"
             )

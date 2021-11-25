@@ -50,8 +50,8 @@ class BuffDescriptorV29() : BuffDescriptor {
         map[Key.IsMotionPaused] = DecodingInfo(1456, DecodingInfo.DataType.Byte)
         map[Key.VelocityScaleFactor] = DecodingInfo(1464, DecodingInfo.DataType.Double)
         map[Key.RapidScaleFactor] = DecodingInfo(1472, DecodingInfo.DataType.Double)
-        map[Key.CommandedPositionXStart] = DecodingInfo(1480, DecodingInfo.DataType.Object)
-        map[Key.ActualPositionXStart] = DecodingInfo(1552, DecodingInfo.DataType.Object)
+        map[Key.CommandedPositionXStart] = DecodingInfo(1480, DecodingInfo.DataType.Object) // current commanded position
+        map[Key.ActualPositionXStart] = DecodingInfo(1552, DecodingInfo.DataType.Object) // current actual position, from forward kins
         map[Key.SystemVelocity] = DecodingInfo(1624, DecodingInfo.DataType.Double)
         map[Key.SystemAcceleration] = DecodingInfo(1632, DecodingInfo.DataType.Double)
         map[Key.MaxVelocity] = DecodingInfo(1640, DecodingInfo.DataType.Double)

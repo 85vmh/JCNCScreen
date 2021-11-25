@@ -36,7 +36,7 @@ internal fun VisualTurning(
         val centerLine = size.center.y
         val actors = listOf(
             CenterLineActor(centerLine, size.width),
-            StockContourActor(centerLineYCoordinate = centerLine, stockDiameter = 450f, stockLength = 600f),
+            StockContourActor(centerLineYCoordinate = centerLine, stockDiameter = 450f, stockLength = 400f),
             //TextActor("Cucu bau", Offset(x = 100f, y = 200f)),
             CylinderActor(Offset(x = 0f, y = centerLine), 200f, 180f),
             DividerActor(Offset(x = 180f, y = centerLine), 200f, 180f),

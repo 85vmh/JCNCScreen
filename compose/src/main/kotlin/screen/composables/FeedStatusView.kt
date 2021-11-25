@@ -73,9 +73,9 @@ fun FeedStatusView(modifier: Modifier = Modifier) {
                 thickness = 1.dp
             )
             SettingStatusRow("Mode:", feed.mode, modifier = settingsModifier)
-            SettingStatusRow("Set:", setFeed.toString(), feed.units, modifier = settingsModifier)
+            SettingStatusRow("Set feed:", setFeed.toString(), feed.units, modifier = settingsModifier)
             SettingStatusRow("Override:", feedOverride.toString(), "%", modifier = settingsModifier)
-            SettingStatusRow("Actual:", actualSpeed.toString(), feed.units, modifier = settingsModifier)
+            SettingStatusRow("Actual feed:", actualSpeed.toString(), feed.units, modifier = settingsModifier)
         }
     }
 }

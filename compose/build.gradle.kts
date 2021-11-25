@@ -20,12 +20,10 @@ dependencies {
     implementation("org.kodein.di:kodein-di-framework-compose:7.9.0")
 }
 
-val nativePath = File(rootProject.projectDir,"libcnc/native").path
-
 compose.desktop {
     application {
         mainClass = "MainKt"
-        jvmArgs("-Djava.library.path=$nativePath:$nativePath/lc/lib")
+        jvmArgs("-Djava.library.path=${NativePaths.getNativePaths(rootProject).joinToString(":")}")
         nativeDistributions {
             targetFormats(TargetFormat.Deb)
         }
@@ -37,7 +35,9 @@ tasks.register("distcnc") {
     val file = File(projectDir, "KtCnc")
     file.setWritable(true)
     file.setExecutable(true)
-    file.writeText("""#!/bin/bash
-java -Djava.library.path=$nativePath:$nativePath/lc/lib -jar compose-all.jar -base ./lib
-""")
+    file.writeText(
+        """#!/bin/bash
+java -Djava.library.path=${NativePaths.getNativePaths(rootProject).joinToString(":")} -jar compose-all.jar -base ./lib
+"""
+    )
 }

@@ -22,6 +22,7 @@ import org.kodein.di.compose.rememberInstance
 import screen.uimodel.AxisPosition
 import screen.uimodel.RootScreenUiModel
 import usecase.TurningUseCase
+import usecase.model.SpindleControlMode
 
 @Composable
 @Preview
@@ -40,9 +41,8 @@ fun SpindleStatusView(
     val spindleMode by useCase.spindleMode
         .map {
             when (it) {
-                SpindleMode.CSS -> SpindleModeAndUnits("Constant Surface Speed", "mm/min")
-                SpindleMode.RPM -> SpindleModeAndUnits("Constant Spindle Speed", "rev/min")
-                else -> SpindleModeAndUnits("Undefined", "??/??")
+                SpindleControlMode.CSS -> SpindleModeAndUnits("Constant Surface Speed", "mm/min")
+                SpindleControlMode.RPM -> SpindleModeAndUnits("Constant Spindle Speed", "rev/min")
             }
         }.collectAsState(SpindleModeAndUnits("Undefined", "??/??"))
 
@@ -76,9 +76,9 @@ fun SpindleStatusView(
                 thickness = 1.dp
             )
             SettingStatusRow("Mode:", spindleMode.mode, modifier = settingsModifier)
-            SettingStatusRow("Set:", setSpeed.toString(), spindleMode.units, modifier = settingsModifier)
+            SettingStatusRow("Set speed:", setSpeed.toString(), spindleMode.units, modifier = settingsModifier)
             SettingStatusRow("Override:", spindleOverride.toString(), "%", modifier = settingsModifier)
-            SettingStatusRow("Actual:", actualSpeed.toString(), "rev/min", modifier = settingsModifier)
+            SettingStatusRow("Actual speed:", actualSpeed.toString(), "rev/min", modifier = settingsModifier)
             SettingStatusRow("Oriented stop at:", "150", "degrees", modifier = settingsModifier)
         }
     }

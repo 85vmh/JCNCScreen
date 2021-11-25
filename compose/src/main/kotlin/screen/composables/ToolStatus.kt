@@ -10,12 +10,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.ExperimentalUnitApi
-import androidx.compose.ui.unit.TextUnit
-import androidx.compose.ui.unit.TextUnitType
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.*
 
-@OptIn(ExperimentalUnitApi::class)
 @Composable
 fun ToolStatus() {
     Row(
@@ -30,12 +26,12 @@ fun ToolStatus() {
             modifier = Modifier.padding(start = 16.dp)
         ) {
             Text(
-                fontSize = TextUnit(14f, TextUnitType.Sp),
+                fontSize = 14.sp,
                 fontWeight = FontWeight.Normal,
                 text = "Current Tool #: 1"
             )
             Text(
-                fontSize = TextUnit(14f, TextUnitType.Sp),
+                fontSize = 14.sp,
                 fontWeight = FontWeight.Normal,
                 text = "Orientation: Front-Left"
             )

@@ -4,26 +4,23 @@ import com.mindovercnc.base.CncStatusRepository
 import com.mindovercnc.base.data.CncStatus
 import com.mindovercnc.base.data.SystemMessage
 import com.mindovercnc.linuxcnc.parsing.CncStatusFactory
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.*
 
 class CncStatusRepositoryImpl constructor(
+    private val scope: CoroutineScope,
     private val cncStatusFactory: CncStatusFactory
 ) : CncStatusRepository {
-    private val statusReader: StatusReader
-    private val errorReader: ErrorReader
+    private val statusReader: StatusReader = StatusReader()
+    private val errorReader: ErrorReader = ErrorReader()
+    private val statusFlow = statusReader.refresh(100L)
+        .filterNotNull()
+        .map { cncStatusFactory.parse(it) }
+        .shareIn(scope, SharingStarted.Eagerly, replay = 1)
 
-    init {
-        //CncInitializer.initialize()
-        statusReader = StatusReader()
-        errorReader = ErrorReader()
-    }
 
     override fun cncStatusFlow(): Flow<CncStatus> {
-        return statusReader.refresh(100L)
-            .filterNotNull()
-            .map { cncStatusFactory.parse(it) }
+        return statusFlow
     }
 
     override fun errorFlow(): Flow<SystemMessage> {

@@ -12,6 +12,6 @@ val UseCaseModule = DI.Module("UseCase") {
     }
 
     bindProvider {
-        TurningUseCase(instance(), instance(), instance())
+        TurningUseCase(instance("app_scope"), instance(), instance(), instance(), instance())
     }
 }

@@ -1,2 +1,2 @@
 #!/bin/bash
-java -Djava.library.path=/home/vasimihalca/Work/JCNCScreen/libcnc/native:/home/vasimihalca/Work/JCNCScreen/libcnc/native/lc/lib -jar compose-all.jar -base ./lib
+java -Djava.library.path=/home/vasimihalca/Work/JCNCScreen/libcnc/native:/home/vasimihalca/Work/JCNCScreen/libcnc/native/lc/lib:/home/vasimihalca/.jdks/openjdk-17.0.1/lib:/usr/lib/x86_64-linux-gnu/java/vtk-Linux-x86_64 -jar compose-all.jar -base ./lib

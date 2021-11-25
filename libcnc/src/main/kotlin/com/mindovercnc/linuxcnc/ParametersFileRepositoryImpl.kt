@@ -8,20 +8,19 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.filterNotNull
 import java.io.File
 
+const val numCoordinateSystems = 9
 
 class ParametersFileRepositoryImpl constructor(
-    private val paramsFilePath: String
+    paramsFilePath: String
 ) : ParametersFileRepository {
 
     private data class ParsedLine(val paramNumber: Int, val paramValue: Double)
     private data class ParameterRange(val firstParamNumber: Int, val lastParamNumber: Int)
 
-    private val numCoordinateSystems = 9
-
-    private val coordinateSystemNumber = 5220
+    private val activeCoordinateSysNumber = 5220
     private val g28Home = ParameterRange(5161, 5169)
     private val g30Home = ParameterRange(5181, 5189)
-    private val localAndGlobalOffset = ParameterRange(5211, 5219)
+    private val g52g92Offset = ParameterRange(5211, 5219)
 
     private val g540 = ParameterRange(5221, 5230)
     private val g550 = ParameterRange(5241, 5250)
@@ -40,18 +39,21 @@ class ParametersFileRepositoryImpl constructor(
         return parametersState.filterNotNull()
     }
 
+    var params: ParametersState? = null
+
     init {
         val builder = ParametersStateBuilder()
 
         File(paramsFilePath).forEachLine { aLine ->
-            with(aLine.split(" ")) {
+            with(aLine.split("\t")) {
                 val parsedLine = ParsedLine(this[0].toInt(), this[1].toDouble())
                 when (parsedLine.paramNumber) {
-                    coordinateSystemNumber -> builder.coordinateSystemNumber = parsedLine.paramValue.toInt()
+                    activeCoordinateSysNumber -> builder.coordinateSysNumber = parsedLine.paramValue.toInt()
 
                     in g28Home.firstParamNumber..g28Home.lastParamNumber -> parsePositions(builder, parsedLine, g28Home.firstParamNumber)
                     in g30Home.firstParamNumber..g30Home.lastParamNumber -> parsePositions(builder, parsedLine, g30Home.firstParamNumber)
                     in toolOffset.firstParamNumber..toolOffset.lastParamNumber -> parsePositions(builder, parsedLine, toolOffset.firstParamNumber)
+                    in g52g92Offset.firstParamNumber..g52g92Offset.lastParamNumber -> parsePositions(builder, parsedLine, g52g92Offset.firstParamNumber)
 
                     in g540.firstParamNumber..g540.lastParamNumber -> parsePositions(builder, parsedLine, g540.firstParamNumber)
                     in g550.firstParamNumber..g550.lastParamNumber -> parsePositions(builder, parsedLine, g550.firstParamNumber)
@@ -66,7 +68,8 @@ class ParametersFileRepositoryImpl constructor(
             }
         }
 
-        parametersState.value = builder.build()
+        //parametersState.value = builder.build()
+        params = builder.build()
     }
 
     private fun parsePositions(builders: ParametersStateBuilder, parsedLine: ParsedLine, firstParamNumber: Int) {
@@ -74,6 +77,7 @@ class ParametersFileRepositoryImpl constructor(
             g28Home.firstParamNumber -> setPositionProperty(builders.g28Position, parsedLine, firstParamNumber)
             g30Home.firstParamNumber -> setPositionProperty(builders.g30Position, parsedLine, firstParamNumber)
             toolOffset.firstParamNumber -> setPositionProperty(builders.toolOffsetPosition, parsedLine, firstParamNumber)
+            g52g92Offset.firstParamNumber -> setPositionProperty(builders.g52G92Position, parsedLine, firstParamNumber)
 
             g540.firstParamNumber -> setPositionProperty(builders.coordinateSystems[0], parsedLine, firstParamNumber)
             g550.firstParamNumber -> setPositionProperty(builders.coordinateSystems[1], parsedLine, firstParamNumber)
@@ -103,15 +107,25 @@ class ParametersFileRepositoryImpl constructor(
     }
 
     private data class ParametersStateBuilder(
-        var coordinateSystemNumber: Int = 0,
+        var coordinateSysNumber: Int = 0,
         val g28Position: Position.Builder = Position.Builder(),
         val g30Position: Position.Builder = Position.Builder(),
         val g52G92Position: Position.Builder = Position.Builder(),
         val toolOffsetPosition: Position.Builder = Position.Builder(),
-        val coordinateSystems: List<Position.Builder> = listOf()
+        val coordinateSystems: List<Position.Builder> = getPositionBuilders(numCoordinateSystems),
     ) {
+        companion object {
+            fun getPositionBuilders(howMany: Int): List<Position.Builder> {
+                val result = mutableListOf<Position.Builder>()
+                (0 until howMany).forEach { _ ->
+                    result.add(Position.Builder())
+                }
+                return result
+            }
+        }
+
         fun build(): ParametersState = ParametersState(
-            coordinateSystemNumber = coordinateSystemNumber,
+            coordinateSystemNumber = coordinateSysNumber,
             g28Position = g28Position.build(),
             g30Position = g30Position.build(),
             g52G92Position = g52G92Position.build(),

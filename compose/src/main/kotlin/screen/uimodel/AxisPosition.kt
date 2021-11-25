@@ -2,12 +2,12 @@ package screen.uimodel
 
 data class AxisPosition(
     val axis: Axis,
-    val absValue: Double,
-    val relValue: Double? = null,
+    val primaryValue: Double,
+    val secondaryValue: Double? = null,
     val units: Units
 ) {
-    enum class Axis(index: Int) {
-        X(0), Z(1)
+    enum class Axis {
+        X, Z
     }
 
     enum class Units(val displayDigits: Int) {

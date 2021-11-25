@@ -2,18 +2,28 @@ package screen.composables
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.layout.HorizontalAlignmentLine
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.*
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import org.kodein.di.compose.rememberInstance
 import screen.uimodel.AxisPosition
+import screen.viewmodel.CoordinatesViewModel
 import themes.ComposeFonts
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -22,114 +32,142 @@ import java.math.RoundingMode
 @Preview
 private fun CoordinatesPreview() {
     Column {
-        CoordinateView(AxisPosition(axis = AxisPosition.Axis.X, absValue = 123.562788993, relValue = -23.2213, units = AxisPosition.Units.MM))
-        CoordinateView(AxisPosition(axis = AxisPosition.Axis.Z, absValue = 123.562788993, units = AxisPosition.Units.MM))
+        AxisCoordinate(AxisPosition(axis = AxisPosition.Axis.X, primaryValue = 123.562788993, secondaryValue = -23.2213, units = AxisPosition.Units.MM))
+        AxisCoordinate(AxisPosition(axis = AxisPosition.Axis.Z, primaryValue = 123.562788993, units = AxisPosition.Units.MM))
     }
 }
 
-enum class PositionType {
-    ABS,
-    REL,
+private enum class PositionType(
+    val fontSize: TextUnit,
+    val width: Dp
+) {
+    PRIMARY(50.sp, 300.dp),
+    SECONDARY(18.sp, 110.dp),
 }
 
-@OptIn(ExperimentalUnitApi::class)
 @Composable
-fun CoordinateView(axisPosition: AxisPosition, isDiameterMode: Boolean = false) {
-    Box(modifier = Modifier.padding(8.dp)) {
-        Row(
-            modifier = Modifier
-                .height(80.dp)
-                .border(BorderStroke(0.5.dp, SolidColor(Color.DarkGray)))
+fun CoordinatesView(modifier: Modifier = Modifier) {
+    val viewModel: CoordinatesViewModel by rememberInstance()
+    val model by viewModel.uiModel.collectAsState(null)
+
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+            .border(BorderStroke(0.5.dp, SolidColor(Color.DarkGray))),
+        horizontalArrangement = Arrangement.End
+    ) {
+        Column(
+            horizontalAlignment = Alignment.End,
+            modifier = modifier.padding(16.dp),
+            verticalArrangement = Arrangement.SpaceEvenly
+
         ) {
-            Position(PositionType.REL, axisPosition, isDiameterMode)
-            AxisLetter(axisPosition)
-            SpacerOrDiameter(axisPosition.axis == AxisPosition.Axis.X && isDiameterMode)
-            Position(PositionType.ABS, axisPosition, isDiameterMode)
-            Units(axisPosition.units)
+            model?.let {
+                AxisCoordinate(it.xAxisPos, it.isDiameterMode)
+                AxisCoordinate(it.zAxisPos)
+            }
         }
     }
 }
 
-@OptIn(ExperimentalUnitApi::class)
 @Composable
-fun AxisLetter(axisPosition: AxisPosition) {
+private fun AxisCoordinate(axisPosition: AxisPosition, isDiameterMode: Boolean = false, modifier: Modifier = Modifier) {
+    Box(
+        modifier = Modifier
+            .height(80.dp)
+            .padding(8.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Row(
+            modifier = modifier
+                .background(Color(0xffd8e6ff))
+        ) {
+            //val line = HorizontalAlignmentLine()
+
+            Position(PositionType.SECONDARY, axisPosition, isDiameterMode, modifier = Modifier.alignByBaseline())
+            AxisLetter(axisPosition)
+            SpacerOrDiameter(axisPosition.axis == AxisPosition.Axis.X && isDiameterMode, modifier = Modifier.alignByBaseline())
+            Position(PositionType.PRIMARY, axisPosition, isDiameterMode, modifier = Modifier.alignByBaseline())
+            Units(axisPosition.units, modifier = Modifier.alignByBaseline())
+            ZeroPos(axisPosition, modifier = Modifier.padding(start = 16.dp))
+            AbsRel(modifier = Modifier.padding(start = 16.dp))
+        }
+    }
+}
+
+@Composable
+private fun AxisLetter(axisPosition: AxisPosition, modifier: Modifier = Modifier) {
     Text(
-        modifier = Modifier.padding(start = 16.dp),
+        modifier = modifier.padding(start = 16.dp),
         text = axisPosition.axis.name,
-        fontSize = TextUnit(70f, TextUnitType.Sp),
+        fontSize = 50.sp,
     )
 }
 
-@OptIn(ExperimentalUnitApi::class)
 @Composable
-fun SpacerOrDiameter(showDiameter: Boolean) {
-    val sizeToFill = 50.dp
+private fun SpacerOrDiameter(showDiameter: Boolean, modifier: Modifier = Modifier) {
+    val sizeToFill = 35.dp
     if (showDiameter) {
         Text(
-            modifier = Modifier
+            modifier = modifier
                 .width(sizeToFill)
                 .fillMaxHeight(),
             text = "\u2300",
             textAlign = TextAlign.Center,
-            fontSize = TextUnit(60f, TextUnitType.Sp),
+            fontSize = 30.sp,
         )
     } else {
-        Box(modifier = Modifier.width(sizeToFill))
+        Spacer(modifier = modifier.width(sizeToFill))
     }
 }
 
-@OptIn(ExperimentalUnitApi::class)
 @Composable
-fun Position(positionType: PositionType, axisPosition: AxisPosition, isDiameterMode: Boolean = false) {
+private fun Position(positionType: PositionType, axisPosition: AxisPosition, isDiameterMode: Boolean = false, modifier: Modifier = Modifier) {
 
-    data class PosSetting(val value: Double?, val fontSize: TextUnit, val width: Dp, val alignment: Alignment, val boxModifier: Modifier)
-
-    val posSetting = when (positionType) {
-        PositionType.ABS -> PosSetting(
-            value = axisPosition.absValue,
-            fontSize = TextUnit(60f, TextUnitType.Sp),
-            width = 300.dp,
-            alignment = Alignment.CenterEnd,
-            boxModifier = Modifier
-        )
-        PositionType.REL -> PosSetting(
-            value = axisPosition.relValue,
-            fontSize = TextUnit(20f, TextUnitType.Sp),
-            width = 100.dp,
-            alignment = Alignment.BottomEnd,
-            boxModifier = Modifier.padding(bottom = 12.dp)
-        )
+    val value = when (positionType) {
+        PositionType.PRIMARY -> axisPosition.primaryValue
+        PositionType.SECONDARY -> axisPosition.secondaryValue
     }
-    Box(
-        modifier = posSetting.boxModifier.fillMaxHeight().width(posSetting.width),
-        contentAlignment = posSetting.alignment,
-    ) {
-        posSetting.value?.let {
-            Text(
-                modifier = Modifier.width(posSetting.width).align(posSetting.alignment),
-                text = BigDecimal(it * (if (isDiameterMode) 2 else 1))
-                    .setScale(axisPosition.units.displayDigits, RoundingMode.HALF_EVEN).toString(),
-                fontSize = posSetting.fontSize,
-                fontFamily = ComposeFonts.Family.position,
-                fontWeight = FontWeight.Thin,
-                textAlign = TextAlign.End
-            )
-        }
-    }
-}
-
-@OptIn(ExperimentalUnitApi::class)
-@Composable
-fun Units(units: AxisPosition.Units) {
-    Box(
-        modifier = Modifier.fillMaxHeight()
-    ) {
+    if (value != null) {
         Text(
-            text = units.name.lowercase(),
-            modifier = Modifier.align(Alignment.BottomEnd).padding(start = 4.dp, end = 8.dp, bottom = 20.dp),
-            fontSize = TextUnit(20f, TextUnitType.Sp),
-            fontWeight = FontWeight.Medium
+            modifier = modifier.width(positionType.width),
+            text = BigDecimal(value * (if (isDiameterMode) 2 else 1))
+                .setScale(axisPosition.units.displayDigits, RoundingMode.HALF_EVEN).toString(),
+            fontSize = positionType.fontSize,
+            fontFamily = ComposeFonts.Family.position,
+            fontWeight = FontWeight.Thin,
+            textAlign = TextAlign.End
         )
+    } else {
+        Spacer(modifier = modifier.width(positionType.width))
+    }
+}
+
+@Composable
+private fun Units(units: AxisPosition.Units, modifier: Modifier = Modifier) {
+    Text(
+        text = units.name.lowercase(),
+        modifier = modifier,
+        fontSize = 18.sp,
+        fontWeight = FontWeight.Medium
+    )
+}
+
+@Composable
+private fun ZeroPos(axisPosition: AxisPosition, modifier: Modifier = Modifier) {
+    Button(
+        onClick = {},
+        modifier.fillMaxHeight()
+    ) {
+        Text("ZERO\n${axisPosition.axis.name}-Pos")
+    }
+}
+
+@Composable
+private fun AbsRel(modifier: Modifier = Modifier) {
+    Button(onClick = {}, modifier.fillMaxHeight()) {
+        Text("ABS\nREL")
     }
 }
 

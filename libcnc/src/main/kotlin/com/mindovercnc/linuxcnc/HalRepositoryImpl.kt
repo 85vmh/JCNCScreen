@@ -5,6 +5,7 @@ import com.mindovercnc.base.data.HalComponent
 import com.mindovercnc.base.data.HalPin
 import com.mindovercnc.base.data.JoystickStatus
 import com.mindovercnc.base.data.SpindleSwitchStatus
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -25,8 +26,9 @@ private const val PinSpindleSwitchRevOut = "spindle-switch-rev-out"
 private const val PinSpindleSwitchFwdOut = "spindle-switch-fwd-out"
 private const val PinSpindleActualRpm = "spindle-actual-rpm"
 
-@OptIn(DelicateCoroutinesApi::class)
-class HalRepositoryImpl : HalRepository {
+class HalRepositoryImpl(
+    private val scope: CoroutineScope
+) : HalRepository {
     private val halHandler = HalHandler()
 
     private var halComponent: HalComponent? = null
@@ -78,7 +80,7 @@ class HalRepositoryImpl : HalRepository {
                 zMinus -> JoystickStatus(JoystickStatus.Position.Z_MINUS, isRapid)
                 else -> JoystickStatus(JoystickStatus.Position.NEUTRAL, false)
             }
-        }
+        }.distinctUntilChanged()
     }
 
     override fun getSpindleSwitchStatus(): Flow<SpindleSwitchStatus> {
@@ -91,19 +93,19 @@ class HalRepositoryImpl : HalRepository {
                 isFwd -> SpindleSwitchStatus.FWD
                 else -> SpindleSwitchStatus.NEUTRAL
             }
-        }
+        }.distinctUntilChanged()
     }
 
     override fun getCycleStartStatus(): Flow<Boolean> {
-        return pinCycleStart!!.valueFlow(RefreshRate)
+        return pinCycleStart?.valueFlow(RefreshRate)?.distinctUntilChanged() ?: flowOf(false)
     }
 
     override fun getCycleStopStatus(): Flow<Boolean> {
-        return pinCycleStop!!.valueFlow(RefreshRate)
+        return pinCycleStop?.valueFlow(RefreshRate)?.distinctUntilChanged() ?: flowOf(false)
     }
 
     override fun actualSpindleSpeed(): Flow<Float> {
-        return pinSpindleActualRpm!!.valueFlow(RefreshRate)
+        return pinSpindleActualRpm?.valueFlow(RefreshRate)?.distinctUntilChanged() ?: flowOf(0.0f)
     }
 
     override fun allowSpindleOperation(allowed: Boolean) {
@@ -116,7 +118,7 @@ class HalRepositoryImpl : HalRepository {
                 .filter { allowSpindleOperation }
                 .onEach { value -> pinSpindleSwitchRevOut?.setPinValue(value) }
                 .flowOn(Dispatchers.IO)
-                .launchIn(GlobalScope)
+                .launchIn(scope)
         }
 
         pinSpindleSwitchFwdIn?.let {
@@ -124,7 +126,7 @@ class HalRepositoryImpl : HalRepository {
                 .filter { allowSpindleOperation }
                 .onEach { value -> pinSpindleSwitchFwdOut?.setPinValue(value) }
                 .flowOn(Dispatchers.IO)
-                .launchIn(GlobalScope)
+                .launchIn(scope)
         }
     }
 }

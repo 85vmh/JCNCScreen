@@ -11,6 +11,7 @@ import androidx.compose.ui.unit.dp
 import com.mindovercnc.base.CncStatusRepository
 import kotlinx.coroutines.flow.map
 import org.kodein.di.compose.rememberInstance
+import screen.viewmodel.NotHomedViewModel
 
 @Composable
 fun NotHomedView() {
@@ -46,26 +47,3 @@ fun HomedStatus(axis: String, homing: Boolean, homed: Boolean) {
         modifier = Modifier.padding(16.dp)
     )
 }
-
-class NotHomedViewModel(
-    cncStatusRepository: CncStatusRepository
-) {
-    val uiModel = cncStatusRepository.cncStatusFlow()
-        .map {
-            with(it.motionStatus) {
-                UiModel(
-                    xHomed = this.jointsStatus[0].isHomed,
-                    zHomed = this.jointsStatus[1].isHomed,
-                    xHoming = this.jointsStatus[0].isHoming,
-                    zHoming = this.jointsStatus[1].isHoming,
-                )
-            }
-        }
-}
-
-data class UiModel(
-    val xHomed: Boolean,
-    val zHomed: Boolean,
-    val xHoming: Boolean,
-    val zHoming: Boolean
-)

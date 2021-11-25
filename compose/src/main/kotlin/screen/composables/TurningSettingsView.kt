@@ -5,27 +5,72 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.mindovercnc.base.data.SpindleMode
+import kotlinx.coroutines.flow.map
+import org.kodein.di.compose.rememberInstance
+import usecase.TurningUseCase
 import usecase.model.FeedRateMode
 import usecase.model.SpindleControlMode
 
+class SpindleState(
+    defaultControlMode: SpindleControlMode,
+    defaultCssValue: Double,
+    defaultRpmValue: Double,
+) {
+    val spindleType = mutableStateOf(defaultControlMode)
+    val cssValue = mutableStateOf(defaultCssValue.toString())
+    val rpmValue = mutableStateOf(defaultRpmValue.toString())
+}
+
+class FeedState(
+    defaultFeedRateMode: FeedRateMode,
+    defaultUnitsPerRevValue: Double,
+    defaultUnitsPerMinValue: Double,
+) {
+    val feedRateMode = mutableStateOf(defaultFeedRateMode)
+    val unitsPerRevValue = mutableStateOf(defaultUnitsPerRevValue.toString())
+    val unitsPerMinValue = mutableStateOf(defaultUnitsPerMinValue.toString())
+}
+
+
 @Composable
 fun TurningSettingsView(onFinish: () -> Unit) {
-    var spindleMode by remember { mutableStateOf(SpindleControlMode.RPM) }
-    var feedMode by remember { mutableStateOf(FeedRateMode.UNITS_PER_REVOLUTION) }
+    val useCase: TurningUseCase by rememberInstance()
+
+    val liveSpindleState = useCase.getSpindleState().collectAsState(null)
+
+    val spindleState = remember {
+        SpindleState(
+            defaultControlMode = SpindleControlMode.RPM,
+            defaultCssValue = 200.0,
+            defaultRpmValue = 500.0
+        )
+    }
+
+    val feedState = remember {
+        FeedState(
+            defaultFeedRateMode = FeedRateMode.UNITS_PER_REVOLUTION,
+            defaultUnitsPerRevValue = 0.150,
+            defaultUnitsPerMinValue = 200.0
+        )
+    }
+
+    val numPadState = remember {
+        NumPadState().apply {
+            setFieldState(
+                spindleState.rpmValue
+            )
+        }
+    }
+
     var orientedStop by remember { mutableStateOf(false) }
 
     Column {
@@ -46,10 +91,12 @@ fun TurningSettingsView(onFinish: () -> Unit) {
                     elevation = 8.dp
                 ) {
                     Column(
-                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                        verticalArrangement = Arrangement.SpaceEvenly
                     ) {
                         Text(
-                            modifier = Modifier.align(Alignment.CenterHorizontally),
+                            modifier = Modifier
+                                .align(Alignment.CenterHorizontally)
+                                .padding(8.dp),
                             fontSize = 20.sp,
                             text = "Spindle"
                         )
@@ -59,15 +106,20 @@ fun TurningSettingsView(onFinish: () -> Unit) {
                             thickness = 1.dp
                         )
                         SpindleDisplay(
-                            modifier = Modifier,
-                            spindleType = spindleMode
-                        ) {
-                            spindleMode = it
-                        }
-                        Spacer(modifier = Modifier.height(16.dp))
-                        CheckBoxSetting("Oriented spindle stop", orientedStop, "150.4", "degrees", {
-                            orientedStop = it
-                        }, {})
+                            state = spindleState,
+                            modifier = Modifier.padding(top = 16.dp),
+                        )
+                        CheckBoxSetting(
+                            "Oriented spindle stop",
+                            orientedStop,
+                            "150.4",
+                            "degrees",
+                            modifier = Modifier.padding(top = 16.dp, bottom = 16.dp),
+                            {
+                                orientedStop = it
+                            },
+                            {}
+                        )
                     }
                 }
                 Card(
@@ -77,10 +129,12 @@ fun TurningSettingsView(onFinish: () -> Unit) {
                     elevation = 8.dp
                 ) {
                     Column(
-                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                        verticalArrangement = Arrangement.SpaceEvenly
                     ) {
                         Text(
-                            modifier = Modifier.align(Alignment.CenterHorizontally),
+                            modifier = Modifier
+                                .align(Alignment.CenterHorizontally)
+                                .padding(8.dp),
                             fontSize = 20.sp,
                             text = "Feed"
                         )
@@ -90,18 +144,17 @@ fun TurningSettingsView(onFinish: () -> Unit) {
                             thickness = 1.dp
                         )
                         FeedDisplay(
-                            modifier = Modifier,
-                            feedMode = feedMode
-                        ) {
-                            feedMode = it
-                        }
+                            state = feedState,
+                            modifier = Modifier.padding(top = 16.dp, bottom = 16.dp)
+                        )
                     }
                 }
             }
             Spacer(modifier = Modifier.fillMaxHeight().width(1.dp).background(color = Color.Black))
-            NumPadView(modifier = Modifier.fillMaxHeight().width(300.dp), initialValue = "") {
-
-            }
+            NumPadView(
+                modifier = Modifier.fillMaxHeight().width(300.dp),
+                state = numPadState
+            )
         }
 
         Button(onClick = {
@@ -114,97 +167,169 @@ fun TurningSettingsView(onFinish: () -> Unit) {
 }
 
 @Composable
-fun SpindleDisplay(modifier: Modifier, spindleType: SpindleControlMode, onValueChanged: (SpindleControlMode) -> Unit) {
-    val alignment = Alignment.CenterVertically
+fun SpindleDisplay(
+    state: SpindleState,
+    modifier: Modifier = Modifier
+) {
+    var spindleType by state.spindleType
+    var cssValue by state.cssValue
+    var rpmValue by state.rpmValue
+
+    val onRpmClicked: () -> Unit = {
+        spindleType = SpindleControlMode.RPM
+    }
+
+    val onCssClicked: () -> Unit = {
+        spindleType = SpindleControlMode.CSS
+    }
+
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        RadioBoxSetting("Constant Spindle Speed", spindleType == SpindleControlMode.RPM, "1000", "rev/min", {
-            onValueChanged.invoke(SpindleControlMode.RPM)
-        }, {})
-        RadioBoxSetting("Constant Surface Speed", spindleType == SpindleControlMode.CSS, "250", "mm/min", {
-            onValueChanged.invoke(SpindleControlMode.CSS)
-        }, {})
+        RadioBoxSetting(
+            settingName = "Constant Spindle Speed",
+            selected = spindleType == SpindleControlMode.RPM,
+            value = cssValue,
+            units = "rev/min",
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable(onClick = onRpmClicked)
+                .padding(start = 16.dp),
+            onClicked = onRpmClicked,
+            onValueChanged = {
+                val doubleValue = it.toDoubleOrNull() ?: return@RadioBoxSetting
+                cssValue = it
+            }
+        )
+        RadioBoxSetting(
+            settingName = "Constant Surface Speed",
+            selected = spindleType == SpindleControlMode.CSS,
+            value = rpmValue,
+            units = "mm/min",
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable(onClick = onCssClicked)
+                .padding(start = 16.dp),
+            onClicked = onCssClicked,
+            onValueChanged = {
+                val doubleValue = it.toDoubleOrNull() ?: return@RadioBoxSetting
+                rpmValue = it
+            }
+        )
         ValueSetting("Maximum spindle speed", spindleType == SpindleControlMode.CSS, "2000", "rev/min") {}
     }
 }
 
 @Composable
-fun FeedDisplay(modifier: Modifier, feedMode: FeedRateMode, onValueChanged: (FeedRateMode) -> Unit) {
-    val alignment = Alignment.CenterVertically
+fun FeedDisplay(
+    state: FeedState,
+    modifier: Modifier
+) {
+
+    var feedMode by state.feedRateMode
+    var unitsPerRev by state.unitsPerRevValue
+    var unitsPerMin by state.unitsPerMinValue
+
+    val onUnitsPerRevClicked: () -> Unit = {
+        feedMode = FeedRateMode.UNITS_PER_REVOLUTION
+    }
+
+    val onUnitsPerMinClicked: () -> Unit = {
+        feedMode = FeedRateMode.UNITS_PER_MINUTE
+    }
+
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        RadioBoxSetting("Units per revolution", feedMode == FeedRateMode.UNITS_PER_REVOLUTION, "0.050", "mm/rev", {
-            onValueChanged.invoke(FeedRateMode.UNITS_PER_REVOLUTION)
-        }, {})
-        RadioBoxSetting("Units per minute", feedMode == FeedRateMode.UNITS_PER_MINUTE, "250", "mm/min", {
-            onValueChanged.invoke(FeedRateMode.UNITS_PER_MINUTE)
-        }, {})
+        RadioBoxSetting(
+            settingName = "Units per revolution",
+            selected = feedMode == FeedRateMode.UNITS_PER_REVOLUTION,
+            value = unitsPerRev,
+            units = "mm/rev",
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable(onClick = onUnitsPerRevClicked)
+                .padding(start = 16.dp),
+            onClicked = onUnitsPerRevClicked,
+            onValueChanged = {
+                val doubleValue = it.toDoubleOrNull() ?: return@RadioBoxSetting
+                unitsPerRev = it
+            }
+        )
+        RadioBoxSetting(
+            settingName = "Units per minute",
+            selected = feedMode == FeedRateMode.UNITS_PER_MINUTE,
+            value = unitsPerMin,
+            units = "mm/min",
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable(onClick = onUnitsPerMinClicked)
+                .padding(start = 16.dp),
+            onClicked = onUnitsPerMinClicked,
+            onValueChanged = {
+                val doubleValue = it.toDoubleOrNull() ?: return@RadioBoxSetting
+                unitsPerMin = it
+            }
+        )
     }
 }
 
 @Composable
-fun RadioBoxSetting(settingName: String, selected: Boolean, value: String, units: String, onClicked: () -> Unit, onValueChanged: (String) -> Unit) {
+fun RadioBoxSetting(
+    settingName: String,
+    selected: Boolean,
+    value: String,
+    units: String,
+    modifier: Modifier = Modifier,
+    onClicked: () -> Unit,
+    onValueChanged: (String) -> Unit
+) {
     val alignment = Alignment.CenterVertically
-    val focusRequester = remember { FocusRequester() }
 
-    Row(verticalAlignment = alignment,
-        modifier = Modifier
-            .clickable { onClicked() }
-            .padding(start = 16.dp)
+    Row(
+        verticalAlignment = alignment,
+        modifier = modifier
     ) {
         Row(
-            verticalAlignment = alignment
+            verticalAlignment = alignment,
+            modifier = Modifier.weight(1f)
         ) {
             RadioButton(
                 selected = selected,
                 onClick = {
                     onClicked()
-                    focusRequester.requestFocus()
                 })
             Text(
                 modifier = Modifier.padding(start = 16.dp),
                 text = settingName
             )
         }
-        SettingAndUnit(value, units, selected, alignment) {
+        SettingAndUnit(value, units, selected, alignment, modifier = Modifier.width(200.dp)) {
             onValueChanged(it)
         }
     }
 }
 
 @Composable
-fun SettingAndUnit(value: String, units: String, selected: Boolean, alignment: Alignment.Vertical, onValueChanged: (String) -> Unit) {
-    Row {
-        Spacer(modifier = Modifier.weight(1f))
-        Row(
-            verticalAlignment = alignment,
-            modifier = Modifier.width(200.dp)
-        ) {
-            NumTextField(value, selected) {
-                onValueChanged(it)
-            }
-            Text(
-                modifier = Modifier.padding(start = 16.dp),
-                text = units
-            )
-        }
-    }
-}
-
-@Composable
-fun CheckBoxSetting(settingName: String, checked: Boolean, value: String, units: String, onCheckedChange: (Boolean) -> Unit, onValueChanged: (String) -> Unit) {
+fun CheckBoxSetting(
+    settingName: String,
+    checked: Boolean,
+    value: String,
+    units: String,
+    modifier: Modifier = Modifier,
+    onCheckedChange: (Boolean) -> Unit,
+    onValueChanged: (String) -> Unit
+) {
     val alignment = Alignment.CenterVertically
-    Row(verticalAlignment = alignment,
-        modifier = Modifier
-            .clickable { onCheckedChange.invoke(!checked) }
-            .padding(start = 16.dp)
+    Row(
+        verticalAlignment = alignment,
+        modifier = modifier.padding(start = 16.dp)
     ) {
         Row(
-            verticalAlignment = alignment
+            verticalAlignment = alignment,
+            modifier = Modifier.weight(1f)
         ) {
             Checkbox(
                 checked = checked,
@@ -215,22 +340,28 @@ fun CheckBoxSetting(settingName: String, checked: Boolean, value: String, units:
                 text = settingName
             )
         }
-        SettingAndUnit(value, units, checked, alignment) {
+        SettingAndUnit(value, units, checked, alignment, modifier = Modifier.width(200.dp)) {
             onValueChanged(it)
         }
     }
 }
 
 @Composable
-fun ValueSetting(settingName: String, active: Boolean, value: String, units: String, onValueChanged: (String) -> Unit) {
+fun ValueSetting(
+    settingName: String,
+    active: Boolean,
+    value: String,
+    units: String,
+    onValueChanged: (String) -> Unit
+) {
     val alignment = Alignment.CenterVertically
     Row(
         verticalAlignment = alignment,
-        modifier = Modifier
-            .padding(start = 16.dp)
+        modifier = Modifier.padding(start = 16.dp)
     ) {
         Row(
-            verticalAlignment = alignment
+            verticalAlignment = alignment,
+            modifier = Modifier.weight(1f)
         ) {
             Box(modifier = Modifier.size(48.dp))
             Text(
@@ -238,8 +369,31 @@ fun ValueSetting(settingName: String, active: Boolean, value: String, units: Str
                 text = settingName
             )
         }
-        SettingAndUnit(value, units, active, alignment) {
+        SettingAndUnit(value, units, active, alignment, modifier = Modifier.width(200.dp)) {
             onValueChanged(it)
         }
+    }
+}
+
+@Composable
+fun SettingAndUnit(
+    value: String,
+    units: String,
+    selected: Boolean,
+    alignment: Alignment.Vertical,
+    modifier: Modifier = Modifier,
+    onValueChanged: (String) -> Unit
+) {
+    Row(
+        verticalAlignment = alignment,
+        modifier = modifier
+    ) {
+        NumTextField(value, selected) {
+            onValueChanged(it)
+        }
+        Text(
+            modifier = Modifier.padding(start = 16.dp),
+            text = units
+        )
     }
 }
