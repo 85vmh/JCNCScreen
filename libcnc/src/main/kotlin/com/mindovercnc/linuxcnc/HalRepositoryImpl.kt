@@ -65,25 +65,30 @@ class HalRepositoryImpl(
             pinCycleStop = it.addPin(PinCycleStop, HalPin.Type.BIT, HalPin.Dir.IN) as? HalPin<Boolean>
             pinSpindleActualRpm = it.addPin(PinSpindleActualRpm, HalPin.Type.FLOAT, HalPin.Dir.IN) as? HalPin<Float>
             handleForwarding()
+            it.setReady(it.componentId)
         }
     }
 
     override fun getJoystickStatus(): Flow<JoystickStatus> {
-        return combine(
-            pinJoystickXPlus!!.valueFlow(RefreshRate),
-            pinJoystickXMinus!!.valueFlow(RefreshRate),
-            pinJoystickZPlus!!.valueFlow(RefreshRate),
-            pinJoystickZMinus!!.valueFlow(RefreshRate),
-            pinJoystickRapid!!.valueFlow(RefreshRate),
-        ) { xPlus, xMinus, zPlus, zMinus, isRapid ->
-            when {
-                xPlus -> JoystickStatus(JoystickStatus.Position.X_PLUS, isRapid)
-                xMinus -> JoystickStatus(JoystickStatus.Position.X_MINUS, isRapid)
-                zPlus -> JoystickStatus(JoystickStatus.Position.Z_PLUS, isRapid)
-                zMinus -> JoystickStatus(JoystickStatus.Position.Z_MINUS, isRapid)
-                else -> JoystickStatus(JoystickStatus.Position.NEUTRAL, false)
-            }
-        }.distinctUntilChanged()
+        if (pinJoystickXPlus != null && pinJoystickXMinus != null && pinJoystickZPlus != null && pinJoystickZMinus != null && pinJoystickRapid != null) {
+            return combine(
+                pinJoystickXPlus!!.valueFlow(RefreshRate),
+                pinJoystickXMinus!!.valueFlow(RefreshRate),
+                pinJoystickZPlus!!.valueFlow(RefreshRate),
+                pinJoystickZMinus!!.valueFlow(RefreshRate),
+                pinJoystickRapid!!.valueFlow(RefreshRate),
+            ) { xPlus, xMinus, zPlus, zMinus, isRapid ->
+                when {
+                    xPlus -> JoystickStatus(JoystickStatus.Position.X_PLUS, isRapid)
+                    xMinus -> JoystickStatus(JoystickStatus.Position.X_MINUS, isRapid)
+                    zPlus -> JoystickStatus(JoystickStatus.Position.Z_PLUS, isRapid)
+                    zMinus -> JoystickStatus(JoystickStatus.Position.Z_MINUS, isRapid)
+                    else -> JoystickStatus(JoystickStatus.Position.NEUTRAL, false)
+                }
+            }.distinctUntilChanged()
+        } else {
+            return flowOf(JoystickStatus(JoystickStatus.Position.NEUTRAL))
+        }
     }
 
     override fun setPowerFeedingStatus(isActive: Boolean) {

@@ -22,6 +22,12 @@ interface CncCommandRepository {
 
     fun unHomeAxis(jointNumber: Int)
 
+    fun setFeedHold(hold: Boolean)
+
+    fun setFeedOverride(double: Double)
+
+    fun pause()
+
     fun jogContinuous(jogMode: JogMode = JogMode.JOINT, axisOrJoint: Int, speed: Double)
 
     fun jogIncremental(jogMode: JogMode = JogMode.JOINT, axisOrJoint: Int, stepSize: Double, speed: Double)

@@ -40,6 +40,18 @@ class CncCommandRepositoryImpl() : CncCommandRepository {
         commandWriter.unHomeAxis(jointNumber)
     }
 
+    override fun setFeedHold(hold: Boolean) {
+        commandWriter.setFeedHold(if (hold) 1 else 0)
+    }
+
+    override fun pause() {
+        commandWriter.setAuto(1, 0)
+    }
+
+    override fun setFeedOverride(double: Double) {
+        commandWriter.setFeedOverride(double)
+    }
+
     override fun jogContinuous(jogMode: JogMode, axisOrJoint: Int, speed: Double) {
         commandWriter.jogContinuous(jogMode.value, axisOrJoint, speed)
     }

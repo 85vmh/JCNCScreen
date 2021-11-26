@@ -132,7 +132,11 @@ class TurningUseCase(
         }
     }
 
-    private fun stopFeed() {
+    fun startFeed(){
+        halRepository.setPowerFeedingStatus(true)
+    }
+
+    fun stopFeed() {
         halRepository.setPowerFeedingStatus(false)
         //if (isFeeding) {
 //            commandRepository.taskAbort()

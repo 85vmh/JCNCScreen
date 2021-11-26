@@ -1,4 +1,5 @@
 package com.mindovercnc.linuxcnc
+
 /*
  * **************************************************************************
  *
@@ -45,6 +46,7 @@ class CommandWriter {
      * jogMode = 1 - jog joint
      */
     external fun jogIncremental(jogMode: Int, axisOrJoint: Int, stepSize: Double, speed: Double)
+
     /**
      * jogMode = 0 - jog axis
      * jogMode = 1 - jog joint
@@ -56,6 +58,11 @@ class CommandWriter {
     external fun setMaxPositionLimit(jointNum: Int, limit: Double)
     external fun setBacklash(jointNum: Int, backlash: Double)
 
+    /**
+     * 0 - disable
+     * 1 - enable
+     */
+    external fun setFeedHold(mode: Int)
     external fun loadTaskPlan(fileName: String?)
     external fun loadToolTable(fileName: String?)
     external fun sendMDICommand(command: String?)

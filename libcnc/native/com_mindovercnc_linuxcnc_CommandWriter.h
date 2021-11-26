@@ -141,6 +141,9 @@ JNIEXPORT void JNICALL Java_com_mindovercnc_linuxcnc_CommandWriter_setSpindle
 JNIEXPORT void JNICALL Java_com_mindovercnc_linuxcnc_CommandWriter_setSpindleOverride
   (JNIEnv *, jobject, jdouble);
 
+
+JNIEXPORT void JNICALL Java_com_mindovercnc_linuxcnc_CommandWriter_setFeedHold(JNIEnv*, jobject, jint);
+
 /*
  * Class:     com_mindovercnc_linuxcnc_CommandWriter
  * Method:    setTaskMode

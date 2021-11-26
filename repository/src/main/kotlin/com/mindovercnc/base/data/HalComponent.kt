@@ -5,6 +5,8 @@ class HalComponent internal constructor(var name: String) {
 
     external fun addPin(name: String, type: HalPin.Type, dir: HalPin.Dir): HalPin<*>?
 
+    external fun setReady(componentId: Int)
+
     override fun toString(): String {
         return "HalComponent{" +
                 "componentId=" + componentId +

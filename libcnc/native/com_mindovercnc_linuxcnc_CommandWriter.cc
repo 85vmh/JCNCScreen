@@ -474,6 +474,14 @@ JNIEXPORT void JNICALL Java_com_mindovercnc_linuxcnc_CommandWriter_setSpindleOve
   }
 
 
+JNIEXPORT void JNICALL Java_com_mindovercnc_linuxcnc_CommandWriter_setFeedHold(JNIEnv* env
+                                                                         , jobject thisObject
+                                                                         , jint    mode) {
+  EMC_TRAJ_SET_FH_ENABLE fh;
+  fh.mode = mode;
+  sendCommand(fh);
+  }
+
 /*
  * Class:     com_mindovercnc_linuxcnc_CommandWriter
  * Method:    setTaskMode

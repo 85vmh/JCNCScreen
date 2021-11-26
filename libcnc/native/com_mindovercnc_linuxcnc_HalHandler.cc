@@ -182,6 +182,17 @@ JNIEXPORT jobject JNICALL Java_com_mindovercnc_base_data_HalComponent_addPin
     return NULL;
   }
 
+JNIEXPORT void JNICALL Java_com_mindovercnc_base_data_HalComponent_setReady
+  (JNIEnv *env, jobject thisObject, jint componentId){
+
+//    jclass halCompClass  = env->FindClass("com/mindovercnc/base/data/HalComponent");
+//    jfieldID fCompId = env->GetFieldID(halCompClass, "componentId", "I");
+//    int componentId = env->GetIntField(thisObject, fCompId);
+    rtapi_print_msg(RTAPI_MSG_ERR, "ready compId is: (%d)\n", componentId);
+    int res = hal_ready(componentId);
+    rtapi_print_msg(RTAPI_MSG_ERR, "ready result is: (%s)\n", res);
+  }
+
 JNIEXPORT void JNICALL Java_com_mindovercnc_base_data_BitHalPin_setPinValue
   (JNIEnv *env, jobject thisObject, jboolean value){
 

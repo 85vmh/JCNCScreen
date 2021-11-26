@@ -15,6 +15,9 @@ extern "C" {
 JNIEXPORT jobject JNICALL Java_com_mindovercnc_base_data_HalComponent_addPin
   (JNIEnv *, jobject, jstring, jobject, jobject);
 
+JNIEXPORT void JNICALL Java_com_mindovercnc_base_data_HalComponent_setReady
+(JNIEnv *, jobject, jint);
+
 #ifdef __cplusplus
 }
 #endif

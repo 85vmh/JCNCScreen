@@ -90,9 +90,14 @@ fun RootScreenView(turningSettingsClicked: () -> Unit) {
                     Text("UnitsPerMin")
                 }
                 Button(onClick = {
-                    useCase.toggleTaperTurning()
+                    useCase.startFeed()
                 }) {
-                    Text("Taper Turning")
+                    Text("Start Feed")
+                }
+                Button(onClick = {
+                    useCase.stopFeed()
+                }) {
+                    Text("Stop Feed")
                 }
             }
         }
