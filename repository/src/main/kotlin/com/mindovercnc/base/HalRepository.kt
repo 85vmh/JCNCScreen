@@ -7,6 +7,8 @@ import kotlinx.coroutines.flow.Flow
 interface HalRepository {
     fun getJoystickStatus(): Flow<JoystickStatus>
 
+    fun setPowerFeedingStatus(isActive: Boolean)
+
     fun getSpindleSwitchStatus(): Flow<SpindleSwitchStatus>
 
     fun getCycleStartStatus(): Flow<Boolean>

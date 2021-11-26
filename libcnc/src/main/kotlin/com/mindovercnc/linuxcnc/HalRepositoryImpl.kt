@@ -18,6 +18,7 @@ private const val PinJoystickXMinus = "joystick-x-minus"
 private const val PinJoystickZPlus = "joystick-z-plus"
 private const val PinJoystickZMinus = "joystick-z-minus"
 private const val PinJoystickRapid = "joystick-rapid"
+private const val PinIsPowerFeeding = "is-power-feeding"
 private const val PinCycleStart = "cycle-start"
 private const val PinCycleStop = "cycle-stop"
 private const val PinSpindleSwitchRevIn = "spindle-switch-rev-in"
@@ -37,6 +38,7 @@ class HalRepositoryImpl(
     private var pinJoystickZPlus: HalPin<Boolean>? = null
     private var pinJoystickZMinus: HalPin<Boolean>? = null
     private var pinJoystickRapid: HalPin<Boolean>? = null
+    private var pinIsPowerFeeding: HalPin<Boolean>? = null
     private var pinCycleStart: HalPin<Boolean>? = null
     private var pinCycleStop: HalPin<Boolean>? = null
     private var pinSpindleSwitchRevIn: HalPin<Boolean>? = null
@@ -54,6 +56,7 @@ class HalRepositoryImpl(
             pinJoystickZPlus = it.addPin(PinJoystickZPlus, HalPin.Type.BIT, HalPin.Dir.IN) as? HalPin<Boolean>
             pinJoystickZMinus = it.addPin(PinJoystickZMinus, HalPin.Type.BIT, HalPin.Dir.IN) as? HalPin<Boolean>
             pinJoystickRapid = it.addPin(PinJoystickRapid, HalPin.Type.BIT, HalPin.Dir.IN) as? HalPin<Boolean>
+            pinIsPowerFeeding = it.addPin(PinIsPowerFeeding, HalPin.Type.BIT, HalPin.Dir.OUT) as? HalPin<Boolean>
             pinSpindleSwitchRevIn = it.addPin(PinSpindleSwitchRevIn, HalPin.Type.BIT, HalPin.Dir.IN) as? HalPin<Boolean>
             pinSpindleSwitchFwdIn = it.addPin(PinSpindleSwitchFwdIn, HalPin.Type.BIT, HalPin.Dir.IN) as? HalPin<Boolean>
             pinSpindleSwitchRevOut = it.addPin(PinSpindleSwitchRevOut, HalPin.Type.BIT, HalPin.Dir.OUT) as? HalPin<Boolean>
@@ -81,6 +84,10 @@ class HalRepositoryImpl(
                 else -> JoystickStatus(JoystickStatus.Position.NEUTRAL, false)
             }
         }.distinctUntilChanged()
+    }
+
+    override fun setPowerFeedingStatus(isActive: Boolean) {
+        pinIsPowerFeeding?.setPinValue(isActive)
     }
 
     override fun getSpindleSwitchStatus(): Flow<SpindleSwitchStatus> {

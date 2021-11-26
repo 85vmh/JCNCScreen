@@ -29,14 +29,14 @@ fun main() {
     //val process = Runtime.getRuntime().exec("linuxcnc '/home/vasimihalca/Work/linuxcnc-dev/configs/sim/axis/lathe.ini'")
     //Thread.sleep(1000L)
 
-    if (!vtkNativeLibrary.LoadAllNativeLibraries()) {
-        for (lib in vtkNativeLibrary.values()) {
-            if (!lib.IsLoaded()) {
-                println(lib.GetLibraryName() + " not loaded")
-            }
-        }
-    }
-    vtkNativeLibrary.DisableOutputWindow(null)
+//    if (!vtkNativeLibrary.LoadAllNativeLibraries()) {
+//        for (lib in vtkNativeLibrary.values()) {
+//            if (!lib.IsLoaded()) {
+//                println(lib.GetLibraryName() + " not loaded")
+//            }
+//        }
+//    }
+//    vtkNativeLibrary.DisableOutputWindow(null)
 
     application {
         CncInitializer.initialize()

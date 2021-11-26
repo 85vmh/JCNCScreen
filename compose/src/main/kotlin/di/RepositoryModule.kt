@@ -33,7 +33,7 @@ val RepositoryModule = DI.Module("repository") {
     bindSingleton<CncStatusRepository> { CncStatusRepositoryImpl(instance("app_scope"), instance()) }
     bindSingleton<CncCommandRepository> { CncCommandRepositoryImpl() }
     bindSingleton<HalRepository> { HalRepositoryImpl(instance("app_scope")) }
-    bindSingleton<IniFileRepository> { IniFileRepositoryImpl("/home/vasimihalca/Work/linuxcnc-dev/configs/sim/axis/lathe.ini") }
+    bindSingleton<IniFileRepository> { IniFileRepositoryImpl("/home/cnc/Work/WeilerE30/WeilerE30.ini") }
 }
 
 fun appScopeModule(scope: CoroutineScope) = DI.Module("app_scope") {

@@ -1,5 +1,6 @@
 package usecase
 
+import androidx.compose.runtime.mutableStateOf
 import com.mindovercnc.base.CncCommandRepository
 import com.mindovercnc.base.CncStatusRepository
 import com.mindovercnc.base.HalRepository
@@ -36,6 +37,7 @@ class TurningUseCase(
     private var isFeeding = false
     private var isTaperTurning = false
     private var taperAngle = 45.0
+    //val taper = mutableStateOf(false)
 
     init {
         val spindleIsOn = statusRepository.cncStatusFlow()
@@ -55,12 +57,17 @@ class TurningUseCase(
             .launchIn(scope)
     }
 
+    fun toggleTaperTurning(){
+        isTaperTurning = !isTaperTurning
+    }
+
     private suspend fun startTurning(axis: FeedAxis, feedDirection: FeedDirection) {
         if (isTaperTurning) {
             startTaperTurning(axis, feedDirection, taperAngle)
         } else {
             startStraightTurning(axis, feedDirection)
         }
+        halRepository.setPowerFeedingStatus(true)
     }
 
     private fun startStraightTurning(axis: FeedAxis, feedDirection: FeedDirection) {
@@ -78,10 +85,10 @@ class TurningUseCase(
             }
         }
         isFeeding = true
-        executeMdi("G53 G0 ${axis.name + limit}")
+        executeMdi("G53 G1 ${axis.name + limit}")
     }
 
-    suspend fun startTaperTurning(axis: FeedAxis, feedDirection: FeedDirection, angle: Double) {
+    private suspend fun startTaperTurning(axis: FeedAxis, feedDirection: FeedDirection, angle: Double) {
         val xAxisParam = iniFileRepository.getIniFile().joints[0]
         val zAxisParam = iniFileRepository.getIniFile().joints[1]
 
@@ -102,7 +109,7 @@ class TurningUseCase(
         val destPoint = computeDestinationPoint(startPoint, cornerPoint, angle)
         println("dest point: $destPoint")
         isFeeding = true
-        executeMdi("G53 G0 X${destPoint.x} Z${destPoint.z}")
+        executeMdi("G53 G1 X${destPoint.x} Z${destPoint.z}")
     }
 
     private fun computeDestinationPoint(
@@ -126,11 +133,12 @@ class TurningUseCase(
     }
 
     private fun stopFeed() {
-        if (isFeeding) {
-            commandRepository.taskAbort()
-            commandRepository.setTaskMode(TaskMode.TaskModeManual)
-            isFeeding = false
-        }
+        halRepository.setPowerFeedingStatus(false)
+        //if (isFeeding) {
+//            commandRepository.taskAbort()
+//            commandRepository.setTaskMode(TaskMode.TaskModeManual)
+//            isFeeding = false
+        //}
     }
 
     fun executeMdi(command: String) {

@@ -75,12 +75,12 @@ fun RootScreenView(turningSettingsClicked: () -> Unit) {
                 }
 
                 Button(onClick = {
-                    useCase.executeMdi("G97 S1500")
+                    useCase.executeMdi("G97 S500")
                 }) {
                     Text("Set RPM Mode")
                 }
                 Button(onClick = {
-                    useCase.executeMdi("G95 F0.150")
+                    useCase.executeMdi("G95 F0.350")
                 }) {
                     Text("UnitsPerRev")
                 }
@@ -90,11 +90,9 @@ fun RootScreenView(turningSettingsClicked: () -> Unit) {
                     Text("UnitsPerMin")
                 }
                 Button(onClick = {
-                    scope.launch {
-                        useCase.startTaperTurning(TurningUseCase.FeedAxis.X, TurningUseCase.FeedDirection.NEGATIVE, 45.0)
-                    }
+                    useCase.toggleTaperTurning()
                 }) {
-                    Text("Test Code")
+                    Text("Taper Turning")
                 }
             }
         }
