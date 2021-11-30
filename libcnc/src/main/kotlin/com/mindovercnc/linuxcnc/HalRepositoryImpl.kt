@@ -85,7 +85,7 @@ class HalRepositoryImpl(
                 }
             }.distinctUntilChanged()
         } else {
-            return flowOf(JoystickStatus(JoystickStatus.Position.Neutral))
+            return flowOf(JoystickStatus(JoystickStatus.Position.Neutral)).distinctUntilChanged()
         }
     }
 

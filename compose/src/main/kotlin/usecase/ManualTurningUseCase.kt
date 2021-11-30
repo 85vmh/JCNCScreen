@@ -15,6 +15,7 @@ import usecase.model.SpindleState
 import codegen.ManualTurningHelper.Axis
 import codegen.ManualTurningHelper.Direction
 import codegen.Point
+import extensions.stripZeros
 
 class ManualTurningUseCase(
     private val scope: CoroutineScope,
@@ -41,7 +42,12 @@ class ManualTurningUseCase(
             .map { it.isSpindleOn } //do this based on tool direction
             .distinctUntilChanged()
 
-        combine(halRepository.getJoystickStatus(), spindleIsOn) { joystickStatus, spindleOn ->
+        combine(
+            halRepository.getJoystickStatus()
+            .onEach { println("---Joystick Status: $it") },
+            spindleIsOn.onEach { println("---Spindle status: $it") }
+        ) { joystickStatus, spindleOn ->
+            println("Status: $joystickStatus, Spindle: $spindleOn")
             when (joystickStatus.position) {
                 JoystickStatus.Position.ZMinus -> handleJoystick(Axis.Z, Direction.Negative, joystickStatus.isRapid, spindleOn)
                 JoystickStatus.Position.ZPlus -> handleJoystick(Axis.Z, Direction.Positive, joystickStatus.isRapid, spindleOn)
@@ -99,8 +105,11 @@ class ManualTurningUseCase(
             }
             else -> manualTurningHelper.getStraightTurningCommand(axis, direction)
         }
+        val feedRate = setFeedRate.firstOrNull() ?: 0.0
         joystickFunction = JoystickFunction.Feeding
-        executeMdi(command)
+        val cmdWithFeed = command.plus(" F${feedRate.stripZeros()}")
+        println("-------Command to execute: $cmdWithFeed")
+        executeMdi(cmdWithFeed)
         halRepository.setPowerFeedingStatus(true)
     }
 
