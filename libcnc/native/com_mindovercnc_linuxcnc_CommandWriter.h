@@ -20,6 +20,8 @@ JNIEXPORT void JNICALL Java_com_mindovercnc_linuxcnc_CommandWriter_unHomeAxis
 JNIEXPORT void JNICALL Java_com_mindovercnc_linuxcnc_CommandWriter_overrideLimits
   (JNIEnv *, jobject, jint);
 
+JNIEXPORT void JNICALL Java_com_mindovercnc_linuxcnc_CommandWriter_setMotionMode(JNIEnv *, jobject, jint);
+
 JNIEXPORT void JNICALL Java_com_mindovercnc_linuxcnc_CommandWriter_jogContinuous
   (JNIEnv *, jobject, jint, jint, jdouble);
 

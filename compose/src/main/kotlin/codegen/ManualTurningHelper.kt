@@ -12,7 +12,7 @@ class ManualTurningHelper(
     private val zAxisParam = iniFileRepository.getIniFile().joints[1]
 
     enum class Axis(val index: Int) {
-        X(0), Z(1)
+        X(0), Z(2)
     }
 
     enum class Direction {

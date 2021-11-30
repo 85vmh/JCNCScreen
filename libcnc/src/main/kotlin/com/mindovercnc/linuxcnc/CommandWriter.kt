@@ -36,6 +36,12 @@ class CommandWriter {
     external fun overrideLimits(jointNum: Int)
 
     /**
+     * 0 = joint
+     * 1 = teleop
+     */
+    external fun setMotionMode(motionMode: Int)
+
+    /**
      * jogMode = 0 - jog axis
      * jogMode = 1 - jog joint
      */

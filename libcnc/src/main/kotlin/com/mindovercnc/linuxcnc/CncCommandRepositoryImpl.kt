@@ -52,6 +52,10 @@ class CncCommandRepositoryImpl() : CncCommandRepository {
         commandWriter.setFeedOverride(double)
     }
 
+    override fun setTeleopEnable(enabled: Boolean) {
+        commandWriter.setMotionMode(if (enabled) 1 else 0)
+    }
+
     override fun jogContinuous(jogMode: JogMode, axisOrJoint: Int, speed: Double) {
         commandWriter.jogContinuous(jogMode.value, axisOrJoint, speed)
     }

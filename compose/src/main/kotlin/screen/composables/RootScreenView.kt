@@ -11,9 +11,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import codegen.ManualTurningHelper
 import org.kodein.di.compose.rememberInstance
 import usecase.ManualTurningUseCase
 import codegen.TurningProfile
+import kotlinx.coroutines.launch
 
 @Composable
 fun RootScreenView(turningSettingsClicked: () -> Unit) {
@@ -98,6 +100,13 @@ fun RootScreenView(turningSettingsClicked: () -> Unit) {
                 }
 
                 Button(onClick = {
+
+                }) {
+                    Text("Stop jog")
+                }
+
+                Button(onClick = {
+
 //                    val generator = ThreadGenerator(1.0, -10.0, 1.0, 0.2)
 //                    println(generator.getGCode())
 

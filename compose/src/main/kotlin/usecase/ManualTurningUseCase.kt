@@ -57,7 +57,7 @@ class ManualTurningUseCase(
             .filter { it }
             .onEach {
                 isTaperTurning.value = false
-                stopFeed()
+                stopFeeding()
             }
             .flowOn(Dispatchers.Main)
             .launchIn(scope)
@@ -71,19 +71,19 @@ class ManualTurningUseCase(
         when {
             isRapid -> {
                 if (joystickFunction == JoystickFunction.Feeding) {
-                    stopFeed()
+                    stopFeeding()
                 }
                 startJogging(axis, direction)
             }
             isSpindleOn -> startFeeding(axis, direction)
-            isSpindleOn.not() -> stopFeed()
+            isSpindleOn.not() -> stopFeeding()
         }
     }
 
     private fun handleBackToNeutral() {
         when (joystickFunction) {
-            JoystickFunction.Feeding -> stopFeed()
-            JoystickFunction.Jogging -> joggedAxis?.let { stopJog(it) }
+            JoystickFunction.Feeding -> stopFeeding()
+            JoystickFunction.Jogging -> joggedAxis?.let { stopJogging(it) }
             JoystickFunction.None -> joggedAxis = null
         }
     }
@@ -104,7 +104,7 @@ class ManualTurningUseCase(
         halRepository.setPowerFeedingStatus(true)
     }
 
-    private fun stopFeed() {
+    private fun stopFeeding() {
         if (joystickFunction == JoystickFunction.Feeding) {
             halRepository.setPowerFeedingStatus(false)
             joystickFunction = JoystickFunction.None
@@ -114,20 +114,20 @@ class ManualTurningUseCase(
     private suspend fun startJogging(axis: Axis, feedDirection: Direction) {
         joystickFunction = JoystickFunction.Jogging
         commandRepository.setTaskMode(TaskMode.TaskModeManual)
-        val jogVelocity = statusRepository.cncStatusFlow().map { it.jogVelocity }.single()
+        val jogVelocity = statusRepository.cncStatusFlow().map { it.jogVelocity }.first()
         val jogDirection = when (feedDirection) {
             Direction.Positive -> jogVelocity
             Direction.Negative -> jogVelocity * -1
         }
-
-        commandRepository.jogContinuous(JogMode.JOINT, axis.index, jogDirection)
+        println("---Jog $axis with velocity: $jogDirection")
+        commandRepository.jogContinuous(JogMode.AXIS, axis.index, jogDirection)
         joggedAxis = axis
     }
 
-    private fun stopJog(axis: Axis) {
+    private fun stopJogging(axis: Axis) {
         if (joystickFunction == JoystickFunction.Jogging) {
             commandRepository.setTaskMode(TaskMode.TaskModeManual)
-            commandRepository.jogStop(JogMode.JOINT, axis.index)
+            commandRepository.jogStop(JogMode.AXIS, axis.index)
             joystickFunction = JoystickFunction.None
         }
     }

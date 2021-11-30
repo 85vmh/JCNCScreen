@@ -96,6 +96,13 @@ JNIEXPORT jint JNICALL Java_com_mindovercnc_linuxcnc_CommandWriter_init(JNIEnv* 
   return 0;
   }
 
+JNIEXPORT void JNICALL Java_com_mindovercnc_linuxcnc_CommandWriter_setMotionMode(JNIEnv *env
+                                                                      , jobject thisObject
+                                                                      , jint motionMode) {
+  EMC_TRAJ_SET_TELEOP_ENABLE teleop;
+  teleop.enable = motionMode;
+  sendCommand(teleop);
+  }
 
 JNIEXPORT void JNICALL Java_com_mindovercnc_linuxcnc_CommandWriter_jogContinuous(JNIEnv *env
                                                                       , jobject thisObject

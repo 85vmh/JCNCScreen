@@ -28,13 +28,15 @@ interface CncCommandRepository {
 
     fun pause()
 
-    fun jogContinuous(jogMode: JogMode = JogMode.JOINT, axisOrJoint: Int, speed: Double)
+    fun setTeleopEnable(enabled: Boolean)
 
-    fun jogIncremental(jogMode: JogMode = JogMode.JOINT, axisOrJoint: Int, stepSize: Double, speed: Double)
+    fun jogContinuous(jogMode: JogMode = JogMode.AXIS, axisOrJoint: Int, speed: Double)
 
-    fun jogAbsolute(jogMode: JogMode = JogMode.JOINT, axisOrJoint: Int, position: Double, speed: Double)
+    fun jogIncremental(jogMode: JogMode = JogMode.AXIS, axisOrJoint: Int, stepSize: Double, speed: Double)
 
-    fun jogStop(jogMode: JogMode = JogMode.JOINT, axisOrJoint: Int)
+    fun jogAbsolute(jogMode: JogMode = JogMode.AXIS, axisOrJoint: Int, position: Double, speed: Double)
+
+    fun jogStop(jogMode: JogMode = JogMode.AXIS, axisOrJoint: Int)
 
     fun setMinPositionLimit(jointNumber: Int, limit: Double)
 
