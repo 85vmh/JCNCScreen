@@ -15,6 +15,8 @@ import usecase.model.SpindleState
 import codegen.ManualTurningHelper.Axis
 import codegen.ManualTurningHelper.Direction
 import codegen.Point
+import extensions.stripZeros
+import extensions.trimDigits
 
 class ManualTurningUseCase(
     private val scope: CoroutineScope,
@@ -41,7 +43,12 @@ class ManualTurningUseCase(
             .map { it.isSpindleOn } //do this based on tool direction
             .distinctUntilChanged()
 
-        combine(halRepository.getJoystickStatus(), spindleIsOn) { joystickStatus, spindleOn ->
+        combine(
+            halRepository.getJoystickStatus()
+            .onEach { println("---Joystick Status: $it") },
+            spindleIsOn.onEach { println("---Spindle status: $it") }
+        ) { joystickStatus, spindleOn ->
+            println("Status: $joystickStatus, Spindle: $spindleOn")
             when (joystickStatus.position) {
                 JoystickStatus.Position.ZMinus -> handleJoystick(Axis.Z, Direction.Negative, joystickStatus.isRapid, spindleOn)
                 JoystickStatus.Position.ZPlus -> handleJoystick(Axis.Z, Direction.Positive, joystickStatus.isRapid, spindleOn)
@@ -69,12 +76,12 @@ class ManualTurningUseCase(
 
     private suspend fun handleJoystick(axis: Axis, direction: Direction, isRapid: Boolean, isSpindleOn: Boolean) {
         when {
-            isRapid -> {
-                if (joystickFunction == JoystickFunction.Feeding) {
-                    stopFeed()
-                }
-                startJogging(axis, direction)
-            }
+//            isRapid -> {
+//                if (joystickFunction == JoystickFunction.Feeding) {
+//                    stopFeed()
+//                }
+//                startJogging(axis, direction)
+//            }
             isSpindleOn -> startFeeding(axis, direction)
             isSpindleOn.not() -> stopFeed()
         }
@@ -99,8 +106,11 @@ class ManualTurningUseCase(
             }
             else -> manualTurningHelper.getStraightTurningCommand(axis, direction)
         }
+        val feedRate = setFeedRate.firstOrNull() ?: 0.0
         joystickFunction = JoystickFunction.Feeding
-        executeMdi(command)
+        val cmdWithFeed = command.plus(" F${feedRate.stripZeros()}")
+        println("-------Command to execute: $cmdWithFeed")
+        executeMdi(cmdWithFeed)
         halRepository.setPowerFeedingStatus(true)
     }
 
@@ -114,7 +124,10 @@ class ManualTurningUseCase(
     private suspend fun startJogging(axis: Axis, feedDirection: Direction) {
         joystickFunction = JoystickFunction.Jogging
         commandRepository.setTaskMode(TaskMode.TaskModeManual)
-        val jogVelocity = statusRepository.cncStatusFlow().map { it.jogVelocity }.single()
+        val jogVelocity = statusRepository.cncStatusFlow()
+            .map { it.jogVelocity }
+            .distinctUntilChanged()
+            .single()
         val jogDirection = when (feedDirection) {
             Direction.Positive -> jogVelocity
             Direction.Negative -> jogVelocity * -1

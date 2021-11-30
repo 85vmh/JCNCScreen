@@ -25,3 +25,4 @@ compose/build/
 repository/build/
 libcnc/build/
 dummycnc/build/
+/buildSrc/build/
