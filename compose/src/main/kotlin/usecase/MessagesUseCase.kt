@@ -1,39 +1,28 @@
 package usecase
 
-import com.mindovercnc.base.CncStatusRepository
-import com.mindovercnc.base.data.TaskState
+import com.mindovercnc.base.MessagesRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import usecase.model.Message
 
 class MessagesUseCase(
-    private val cncStatusRepository: CncStatusRepository
+    private val messagesRepository: MessagesRepository
 ) {
-    fun getMessage(): Flow<Message> {
-        return getMessages()
-    }
-
-    private fun getMessages(): Flow<Message> {
-        return cncStatusRepository.cncStatusFlow()
+    fun getAllMessages(): Flow<List<Message>> {
+        return messagesRepository.messagesFlow()
             .map {
-                when (it.taskStatus.taskState) {
-                    TaskState.EStop -> Message(
-                        text = "Estop is pressed!",
-                        level = Message.Level.ERROR,
-                        persistence = Message.Persistence.PERSISTENT
-                    )
-                    TaskState.MachineOff,
-                    TaskState.EStopReset -> Message(
-                        text = "Machine not powered ON",
-                        level = Message.Level.WARNING,
-                        persistence = Message.Persistence.PERSISTENT
-                    )
-                    TaskState.MachineOn -> Message(
-                        text = "Machine is ON",
-                        level = Message.Level.INFO,
-                        persistence = Message.Persistence.TRANSIENT
-                    )
+                val result = mutableListOf<Message>()
+                it.emcMessages.forEach { emcMsg ->
+                    result.add(Message(emcMsg.message, Message.Level.ERROR))
                 }
+                it.uiMessages.forEach { uiMsg ->
+                    result.add(Message(uiMsg.key.name, Message.Level.WARNING))
+                }
+                result
+            }
+            .onEach {
+                println("Message list is: $it")
             }
     }
 }

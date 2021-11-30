@@ -8,11 +8,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.*
 
 class CncStatusRepositoryImpl constructor(
-    private val scope: CoroutineScope,
+    scope: CoroutineScope,
     private val cncStatusFactory: CncStatusFactory
 ) : CncStatusRepository {
     private val statusReader: StatusReader = StatusReader()
-    private val errorReader: ErrorReader = ErrorReader()
     private val statusFlow = statusReader.refresh(100L)
         .filterNotNull()
         .map { cncStatusFactory.parse(it) }
@@ -21,9 +20,5 @@ class CncStatusRepositoryImpl constructor(
 
     override fun cncStatusFlow(): Flow<CncStatus> {
         return statusFlow
-    }
-
-    override fun errorFlow(): Flow<SystemMessage> {
-        return errorReader.refresh(10L).filterNotNull()
     }
 }

@@ -48,6 +48,7 @@ class StatusReader(private val updateListener: StatusUpdateListener? = null) {
         }
     }
 
+    @Deprecated("Was used by java code, get rid of it when removing java code")
     fun update() {
         readStatus()
         if (statusBuffer == null) return
@@ -58,6 +59,7 @@ class StatusReader(private val updateListener: StatusUpdateListener? = null) {
     private external fun readStatus(): Int
     external fun getString(offset: Int, length: Int): String?
 
+    @Deprecated("Was used by java code, remove when removing java code")
     interface StatusUpdateListener {
         fun onInitialStatus(statusBuffer: ByteBuffer?)
         fun onStatusUpdated(statusBuffer: ByteBuffer)

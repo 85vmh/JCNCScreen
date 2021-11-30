@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import extensions.trimDigits
 import org.kodein.di.compose.rememberInstance
 import screen.uimodel.AxisPosition
 import screen.viewmodel.CoordinatesViewModel
@@ -132,8 +133,7 @@ private fun Position(positionType: PositionType, axisPosition: AxisPosition, isD
     if (value != null) {
         Text(
             modifier = modifier.width(positionType.width),
-            text = BigDecimal(value * (if (isDiameterMode) 2 else 1))
-                .setScale(axisPosition.units.displayDigits, RoundingMode.HALF_EVEN).toString(),
+            text = (value * (if (isDiameterMode) 2 else 1)).trimDigits(axisPosition.units.displayDigits),
             fontSize = positionType.fontSize,
             fontFamily = ComposeFonts.Family.position,
             fontWeight = FontWeight.Thin,

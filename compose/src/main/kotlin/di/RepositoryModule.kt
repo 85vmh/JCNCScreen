@@ -1,15 +1,9 @@
 package di
 
-import com.mindovercnc.base.CncCommandRepository
-import com.mindovercnc.base.CncStatusRepository
-import com.mindovercnc.base.HalRepository
-import com.mindovercnc.base.IniFileRepository
+import com.mindovercnc.base.*
 import com.mindovercnc.base.data.CncStatus
 import com.mindovercnc.base.data.SystemMessage
-import com.mindovercnc.linuxcnc.CncCommandRepositoryImpl
-import com.mindovercnc.linuxcnc.CncStatusRepositoryImpl
-import com.mindovercnc.linuxcnc.HalRepositoryImpl
-import com.mindovercnc.linuxcnc.IniFileRepositoryImpl
+import com.mindovercnc.linuxcnc.*
 import com.mindovercnc.linuxcnc.nml.BuffDescriptor
 import com.mindovercnc.linuxcnc.nml.BuffDescriptorV29
 import com.mindovercnc.linuxcnc.parsing.*
@@ -21,23 +15,19 @@ import org.kodein.di.bindSingleton
 import org.kodein.di.instance
 
 val RepositoryModule = DI.Module("repository") {
-
-    bindSingleton("dummyStatus") {
-        emptyFlow<CncStatus>()
-    }
-
-    bindSingleton("dummyError") {
-        emptyFlow<SystemMessage>()
-    }
-
     bindSingleton<CncStatusRepository> { CncStatusRepositoryImpl(instance("app_scope"), instance()) }
+    bindSingleton<MessagesRepository> { MessagesRepositoryImpl(instance("app_scope")) }
     bindSingleton<CncCommandRepository> { CncCommandRepositoryImpl() }
     bindSingleton<HalRepository> { HalRepositoryImpl(instance("app_scope")) }
-    bindSingleton<IniFileRepository> { IniFileRepositoryImpl("/home/cnc/Work/WeilerE30/WeilerE30.ini") }
+    bindSingleton<IniFileRepository> { IniFileRepositoryImpl(instance("ini")) }
+}
+
+fun iniFileModule(filePath: String) = DI.Module("ini") {
+    bindProvider("ini") { filePath }
 }
 
 fun appScopeModule(scope: CoroutineScope) = DI.Module("app_scope") {
-    bindProvider<CoroutineScope>("app_scope") { scope }
+    bindProvider("app_scope") { scope }
 }
 
 val BuffDescriptorModule = DI.Module("buffDescriptor") {

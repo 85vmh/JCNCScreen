@@ -6,20 +6,19 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.launch
 import org.kodein.di.compose.rememberInstance
-import usecase.TurningUseCase
+import usecase.ManualTurningUseCase
+import codegen.TurningProfile
 
 @Composable
 fun RootScreenView(turningSettingsClicked: () -> Unit) {
 
-    val useCase: TurningUseCase by rememberInstance()
+    val useCase: ManualTurningUseCase by rememberInstance()
     val scope = rememberCoroutineScope()
 //
 //    val snackbarHostState = remember{ SnackbarHostState().apply {
@@ -27,6 +26,8 @@ fun RootScreenView(turningSettingsClicked: () -> Unit) {
 //            showSnackbar("Test Mesage", duration = SnackbarDuration.Short)
 //        }
 //    }}
+
+    val taperTurningActive by useCase.taperTurningActive.collectAsState()
 
     Column(
         verticalArrangement = Arrangement.SpaceBetween
@@ -89,16 +90,54 @@ fun RootScreenView(turningSettingsClicked: () -> Unit) {
                 }) {
                     Text("UnitsPerMin")
                 }
+
                 Button(onClick = {
-                    useCase.startFeed()
+                    useCase.toggleTaperTurning()
                 }) {
-                    Text("Start Feed")
+                    Text(if (taperTurningActive) "Taper Turning OFF" else "Taper Turning ON")
                 }
+
                 Button(onClick = {
-                    useCase.stopFeed()
+//                    val generator = ThreadGenerator(1.0, -10.0, 1.0, 0.2)
+//                    println(generator.getGCode())
+
+//                    val generator = TurningGenerator(
+//                        TurningProfile(),
+//                        startingXPosition = 30.0,
+//                        startingZPosition = 1.0,
+//                        turningStrategies = listOf(
+//                            TurningGenerator.TurningStrategy.Roughing(
+//                                toolNumber = 1,
+//                                remainingDistance = 1.0,
+//                                cuttingIncrement = 1.5,
+//                                retractDistance = 0.5,
+//                                cutType = TurningGenerator.CutType.Straight,
+//                                direction = TurningGenerator.TraverseDirection.ZAxis
+//                            ),
+//                            TurningGenerator.TurningStrategy.Roughing(
+//                                toolNumber = 1,
+//                                remainingDistance = 1.0,
+//                                cuttingIncrement = 1.5,
+//                                retractDistance = 0.5,
+//                                cutType = TurningGenerator.CutType.Pocket,
+//                                direction = TurningGenerator.TraverseDirection.ZAxis
+//                            ),
+//                            TurningGenerator.TurningStrategy.Finishing(
+//                                toolNumber = 1,
+//                                startingDistance = 0.0,
+//                                endingDistance = 0.0,
+//                                numberOfPasses = 1,
+//                            )
+//                        )
+//                    )
+//                    generator.getGCode().forEach {
+//                        println(it)
+//                    }
+
                 }) {
-                    Text("Stop Feed")
+                    Text("Test Code")
                 }
+
             }
         }
         Divider(

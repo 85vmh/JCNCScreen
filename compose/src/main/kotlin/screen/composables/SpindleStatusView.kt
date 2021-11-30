@@ -15,13 +15,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.unit.*
-import com.mindovercnc.base.CncStatusRepository
-import com.mindovercnc.base.data.SpindleMode
 import kotlinx.coroutines.flow.map
 import org.kodein.di.compose.rememberInstance
-import screen.uimodel.AxisPosition
-import screen.uimodel.RootScreenUiModel
-import usecase.TurningUseCase
+import usecase.ManualTurningUseCase
 import usecase.model.SpindleControlMode
 
 @Composable
@@ -34,7 +30,7 @@ private fun SpindleStatusPreview() {
 fun SpindleStatusView(
     modifier: Modifier = Modifier
 ) {
-    val useCase: TurningUseCase by rememberInstance()
+    val useCase: ManualTurningUseCase by rememberInstance()
 
     data class SpindleModeAndUnits(val mode: String, val units: String)
 

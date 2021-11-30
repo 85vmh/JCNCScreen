@@ -19,7 +19,7 @@ class CoordinatesViewModel(
             RootScreenUiModel(
                 xAxisPos = it.toAxisPosition(AxisPosition.Axis.X),
                 zAxisPos = it.toAxisPosition(AxisPosition.Axis.Z),
-                isDiameterMode = it.isDiameterMode()
+                isDiameterMode = it.isDiameterMode
             )
         }.distinctUntilChanged()
 }

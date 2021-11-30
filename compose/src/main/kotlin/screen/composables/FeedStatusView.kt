@@ -16,10 +16,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.unit.*
 import com.mindovercnc.base.data.FeedMode
-import com.mindovercnc.base.data.SpindleMode
 import kotlinx.coroutines.flow.map
 import org.kodein.di.compose.rememberInstance
-import usecase.TurningUseCase
+import usecase.ManualTurningUseCase
 
 @Composable
 @Preview
@@ -30,7 +29,7 @@ private fun FeedStatusPreview() {
 @Composable
 fun FeedStatusView(modifier: Modifier = Modifier) {
 
-    val useCase: TurningUseCase by rememberInstance()
+    val useCase: ManualTurningUseCase by rememberInstance()
 
     data class FeedModeAndUnits(val mode: String, val units: String)
 

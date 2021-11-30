@@ -23,9 +23,11 @@ import screen.BaseScreenView
 import screen.composables.VtkState
 import screen.composables.VtkView
 import vtk.*
+import java.io.File
+import java.lang.IllegalArgumentException
 
 
-fun main() {
+fun main(args: Array<String>) {
     //val process = Runtime.getRuntime().exec("linuxcnc '/home/vasimihalca/Work/linuxcnc-dev/configs/sim/axis/lathe.ini'")
     //Thread.sleep(1000L)
 
@@ -38,10 +40,11 @@ fun main() {
 //    }
 //    vtkNativeLibrary.DisableOutputWindow(null)
 
+    val iniFilePath = args.firstOrNull()?.takeIf { File(it).exists() } ?: throw IllegalArgumentException(".ini file not found")
     application {
         CncInitializer.initialize()
         val windowState = rememberWindowState(width = 1024.dp, height = 768.dp)
-        MyWindow(windowState) {
+        MyWindow(windowState, iniFilePath) {
             //process.destroy()
             //process.waitFor()
             this.exitApplication()
@@ -52,6 +55,7 @@ fun main() {
 @Composable
 fun MyWindow(
     windowState: WindowState,
+    filePath: String,
     onCloseRequest: () -> Unit
 ) = Window(
     onCloseRequest = onCloseRequest,
@@ -65,7 +69,7 @@ fun MyWindow(
     val scope = rememberCoroutineScope {
         Dispatchers.IO
     }
-    withDI(appScopeModule(scope), ViewModelModule, UseCaseModule, RepositoryModule, ParseFactoryModule, BuffDescriptorModule) {
+    withDI(iniFileModule(filePath), appScopeModule(scope), ViewModelModule, UseCaseModule, RepositoryModule, ParseFactoryModule, BuffDescriptorModule) {
         val di = localDI()
         val halRepository by di.instance<HalRepository>()
 

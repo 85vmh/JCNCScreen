@@ -6,12 +6,10 @@ import com.mindovercnc.base.data.HalPin
 import com.mindovercnc.base.data.JoystickStatus
 import com.mindovercnc.base.data.SpindleSwitchStatus
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.*
 
-private const val RefreshRate = 100L
+private const val RefreshRate = 50L
 private const val ComponentName = "weiler-e30"
 private const val PinJoystickXPlus = "joystick-x-plus"
 private const val PinJoystickXMinus = "joystick-x-minus"
@@ -79,15 +77,15 @@ class HalRepositoryImpl(
                 pinJoystickRapid!!.valueFlow(RefreshRate),
             ) { xPlus, xMinus, zPlus, zMinus, isRapid ->
                 when {
-                    xPlus -> JoystickStatus(JoystickStatus.Position.X_PLUS, isRapid)
-                    xMinus -> JoystickStatus(JoystickStatus.Position.X_MINUS, isRapid)
-                    zPlus -> JoystickStatus(JoystickStatus.Position.Z_PLUS, isRapid)
-                    zMinus -> JoystickStatus(JoystickStatus.Position.Z_MINUS, isRapid)
-                    else -> JoystickStatus(JoystickStatus.Position.NEUTRAL, false)
+                    xPlus -> JoystickStatus(JoystickStatus.Position.XPlus, isRapid)
+                    xMinus -> JoystickStatus(JoystickStatus.Position.XMinus, isRapid)
+                    zPlus -> JoystickStatus(JoystickStatus.Position.ZPlus, isRapid)
+                    zMinus -> JoystickStatus(JoystickStatus.Position.ZMinus, isRapid)
+                    else -> JoystickStatus(JoystickStatus.Position.Neutral, false)
                 }
             }.distinctUntilChanged()
         } else {
-            return flowOf(JoystickStatus(JoystickStatus.Position.NEUTRAL))
+            return flowOf(JoystickStatus(JoystickStatus.Position.Neutral))
         }
     }
 

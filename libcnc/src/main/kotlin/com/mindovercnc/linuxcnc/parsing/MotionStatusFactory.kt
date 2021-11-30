@@ -5,7 +5,7 @@ import com.mindovercnc.linuxcnc.nml.BuffDescriptor
 import com.mindovercnc.linuxcnc.nml.Key
 import java.nio.ByteBuffer
 
-const val IO_NUMBER = 64
+private const val IO_NUMBER = 64
 
 class MotionStatusFactory(
     descriptor: BuffDescriptor,

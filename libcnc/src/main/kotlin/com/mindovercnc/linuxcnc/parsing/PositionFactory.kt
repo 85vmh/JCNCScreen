@@ -28,7 +28,6 @@ class PositionFactory(private val descriptor: BuffDescriptor) {
         TOOL_OFFSET(Key.ToolOffsetXStart),
         CURRENT_COMMANDED(Key.CommandedPositionXStart),
         CURRENT_ACTUAL(Key.ActualPositionXStart),
-        ABS_POSITION(Key.ActualPositionXStart), //TODO: check this
         DTG(Key.DtgPositionXStart),
         PROBED(Key.ProbedPositionXStart),
         EXTERNAL_OFFSETS(Key.ExternalOffsetsPositionXStart),

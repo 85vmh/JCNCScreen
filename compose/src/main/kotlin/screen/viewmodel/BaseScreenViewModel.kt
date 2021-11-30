@@ -3,9 +3,9 @@ package screen.viewmodel
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import com.mindovercnc.base.CncCommandRepository
 import com.mindovercnc.base.CncStatusRepository
-import com.mindovercnc.base.data.CncStatus
+import com.mindovercnc.base.MessagesRepository
+import com.mindovercnc.base.data.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
@@ -15,21 +15,46 @@ import screen.BaseScreen
 
 class BaseScreenViewModel constructor(
     scope: CoroutineScope,
-    private val cncStatusRepository: CncStatusRepository,
-    private val cncCommandRepository: CncCommandRepository,
+    cncStatusRepository: CncStatusRepository,
+    messagesRepository: MessagesRepository,
     startupScreen: BaseScreen
 ) {
     var screen by mutableStateOf(startupScreen)
 
     init {
         cncStatusRepository.cncStatusFlow()
-            .map { it.machineHomed() }
+            .map { it.isHomed() }
             .distinctUntilChanged()
             .onEach {
                 screen = if (it) {
+                    messagesRepository.popMessage(UiMessageType.MachineNotHomed)
                     BaseScreen.RootScreen
                 } else {
+                    messagesRepository.pushMessage(UiMessageType.MachineNotHomed)
                     BaseScreen.NotHomedScreen
+                }
+            }
+            .launchIn(scope)
+
+        cncStatusRepository.cncStatusFlow()
+            .map { it.isNotOn }
+            .distinctUntilChanged()
+            .onEach {
+                if (it) {
+                    messagesRepository.pushMessage(UiMessageType.MachineNotON)
+                } else {
+                    messagesRepository.popMessage(UiMessageType.MachineNotON)
+                }
+            }
+            .launchIn(scope)
+        cncStatusRepository.cncStatusFlow()
+            .map { it.isEstop }
+            .distinctUntilChanged()
+            .onEach {
+                if (it) {
+                    messagesRepository.pushMessage(UiMessageType.MachineInEstop)
+                } else {
+                    messagesRepository.popMessage(UiMessageType.MachineInEstop)
                 }
             }
             .launchIn(scope)
@@ -42,11 +67,4 @@ class BaseScreenViewModel constructor(
     fun turningSettingsClose() {
         screen = BaseScreen.RootScreen
     }
-}
-
-fun CncStatus.machineHomed(): Boolean {
-    motionStatus.jointsStatus.forEach {
-        if (it.isHomed.not()) return false
-    }
-    return true
 }

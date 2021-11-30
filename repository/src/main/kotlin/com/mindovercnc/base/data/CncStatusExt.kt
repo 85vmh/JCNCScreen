@@ -4,9 +4,28 @@ import kotlin.math.acos
 import kotlin.math.cos
 import kotlin.math.sin
 
-fun CncStatus.isDiameterMode() = taskStatus.activeCodes.gCodes.contains(7.0f)
+fun CncStatus.isHomed(): Boolean {
+    motionStatus.jointsStatus.forEach {
+        if (it.isHomed.not()) return false
+    }
+    return true
+}
 
-fun CncStatus.getG53Position() = motionStatus.trajectoryStatus.currentActualPosition
+val CncStatus.jogVelocity get() = motionStatus.trajectoryStatus.maxVelocity
+
+val CncStatus.isEstop get() = taskStatus.taskState == TaskState.EStop
+
+val CncStatus.isNotOn get() = taskStatus.taskState == TaskState.MachineOff || taskStatus.taskState == TaskState.EStopReset
+
+val CncStatus.isOn get() = taskStatus.taskState == TaskState.MachineOn
+
+val CncStatus.isDiameterMode get() = taskStatus.activeCodes.gCodes.contains(7.0f)
+
+val CncStatus.g53Position get() = motionStatus.trajectoryStatus.currentActualPosition
+
+val CncStatus.isSpindleOn
+    get() = motionStatus.spindlesStatus[0].direction == SpindleStatus.Direction.REVERSE ||
+            motionStatus.spindlesStatus[0].direction == SpindleStatus.Direction.FORWARD
 
 fun CncStatus.getDisplayablePosition(): Position {
     val actualPosition = motionStatus.trajectoryStatus.currentCommandedPosition

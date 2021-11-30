@@ -6,6 +6,6 @@ data class JoystickStatus(
 ) {
 
     enum class Position {
-        NEUTRAL, X_PLUS, X_MINUS, Z_PLUS, Z_MINUS
+        Neutral, XPlus, XMinus, ZPlus, ZMinus
     }
 }

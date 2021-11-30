@@ -1,6 +1,7 @@
 package screen.composables
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -17,16 +18,19 @@ import kotlinx.coroutines.flow.Flow
 import usecase.model.Message
 
 @Composable
-fun MessageView(message: Flow<Message>) {
-    val str by message.collectAsState(null)
+fun HeaderView(message: Flow<List<Message>>, onClick: () -> Unit) {
+    val messageList by message.collectAsState(emptyList())
+
+    val lastMessage = messageList.lastOrNull()
     Row(
         modifier = Modifier.fillMaxWidth()
+            .clickable { onClick.invoke() }
             .height(40.dp)
             .background(Color.Gray)
     ) {
         Text(
             modifier = Modifier.fillMaxWidth().align(Alignment.CenterVertically).padding(start = 16.dp),
-            text = "Message is: ${str?.text}"
+            text = "Message is: ${lastMessage?.text}"
         )
     }
 }

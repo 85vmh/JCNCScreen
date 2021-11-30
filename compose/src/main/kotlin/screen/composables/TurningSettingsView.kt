@@ -13,56 +13,55 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.mindovercnc.base.data.SpindleMode
-import kotlinx.coroutines.flow.map
 import org.kodein.di.compose.rememberInstance
-import usecase.TurningUseCase
+import usecase.ManualTurningUseCase
 import usecase.model.FeedRateMode
+import usecase.model.FeedState
 import usecase.model.SpindleControlMode
-
-class SpindleState(
-    defaultControlMode: SpindleControlMode,
-    defaultCssValue: Double,
-    defaultRpmValue: Double,
-) {
-    val spindleType = mutableStateOf(defaultControlMode)
-    val cssValue = mutableStateOf(defaultCssValue.toString())
-    val rpmValue = mutableStateOf(defaultRpmValue.toString())
-}
-
-class FeedState(
-    defaultFeedRateMode: FeedRateMode,
-    defaultUnitsPerRevValue: Double,
-    defaultUnitsPerMinValue: Double,
-) {
-    val feedRateMode = mutableStateOf(defaultFeedRateMode)
-    val unitsPerRevValue = mutableStateOf(defaultUnitsPerRevValue.toString())
-    val unitsPerMinValue = mutableStateOf(defaultUnitsPerMinValue.toString())
-}
+import usecase.model.SpindleState
 
 
 @Composable
-fun TurningSettingsView(onFinish: () -> Unit) {
-    val useCase: TurningUseCase by rememberInstance()
-
-    val liveSpindleState = useCase.getSpindleState().collectAsState(null)
-
-    val spindleState = remember {
-        SpindleState(
-            defaultControlMode = SpindleControlMode.RPM,
-            defaultCssValue = 200.0,
-            defaultRpmValue = 500.0
-        )
+private fun ManualTurningUseCase.createSpindleState(): State<SpindleState?> {
+    return produceState<SpindleState?>(null) {
+        value = getSpindleState()
     }
+}
 
-    val feedState = remember {
-        FeedState(
+@Composable
+private fun ManualTurningUseCase.createFeedState(): State<FeedState?> {
+    return produceState<FeedState?>(null) {
+        value = FeedState(
             defaultFeedRateMode = FeedRateMode.UNITS_PER_REVOLUTION,
             defaultUnitsPerRevValue = 0.150,
             defaultUnitsPerMinValue = 200.0
         )
     }
+}
 
+@Composable
+fun TurningSettingsView(onFinish: () -> Unit) {
+    val useCase: ManualTurningUseCase by rememberInstance()
+
+    val spindleState: SpindleState? by useCase.createSpindleState()
+    val feedState: FeedState? by useCase.createFeedState()
+
+    var orientedStop by remember { mutableStateOf(false) }
+
+    if (spindleState == null || feedState == null) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator()
+        }
+    } else {
+        TurningSettingsContent(spindleState!!, feedState!!, onFinish)
+    }
+}
+
+@Composable
+fun TurningSettingsContent(spindleState: SpindleState, feedState: FeedState, onFinish: () -> Unit) {
     val numPadState = remember {
         NumPadState().apply {
             setFieldState(
@@ -70,8 +69,6 @@ fun TurningSettingsView(onFinish: () -> Unit) {
             )
         }
     }
-
-    var orientedStop by remember { mutableStateOf(false) }
 
     Column {
         Row(
@@ -109,17 +106,17 @@ fun TurningSettingsView(onFinish: () -> Unit) {
                             state = spindleState,
                             modifier = Modifier.padding(top = 16.dp),
                         )
-                        CheckBoxSetting(
-                            "Oriented spindle stop",
-                            orientedStop,
-                            "150.4",
-                            "degrees",
-                            modifier = Modifier.padding(top = 16.dp, bottom = 16.dp),
-                            {
-                                orientedStop = it
-                            },
-                            {}
-                        )
+//                        CheckBoxSetting(
+//                            "Oriented spindle stop",
+//                            orientedStop,
+//                            "150.4",
+//                            "degrees",
+//                            modifier = Modifier.padding(top = 16.dp, bottom = 16.dp),
+//                            {
+//                                orientedStop = it
+//                            },
+//                            {}
+//                        )
                     }
                 }
                 Card(
@@ -163,7 +160,6 @@ fun TurningSettingsView(onFinish: () -> Unit) {
             Text("Close settings")
         }
     }
-
 }
 
 @Composable

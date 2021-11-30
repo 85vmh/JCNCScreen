@@ -34,7 +34,7 @@ import java.util.*
 class ErrorReader {
     var isBackendAvailable = false
     private external fun init(): Int
-    external fun fetchMessage(): SystemMessage?
+    private external fun fetchMessage(): SystemMessage?
 
     init {
         isBackendAvailable = init() >= 0

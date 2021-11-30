@@ -4,7 +4,7 @@
       <option name="executionName" />
       <option name="externalProjectPath" value="$PROJECT_DIR$/compose" />
       <option name="externalSystemIdString" value="GRADLE" />
-      <option name="scriptParameters" value="run --args=&quot;-base ./lib&quot;" />
+      <option name="scriptParameters" value="run --args=&quot;$PROJECT_DIR$/../linuxcnc-dev/configs/sim/axis/lathe.ini&quot;" />
       <option name="taskDescriptions">
         <list />
       </option>

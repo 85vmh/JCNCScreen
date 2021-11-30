@@ -1,0 +1,1 @@
+/home/vasimihalca/Work/JCNCScreen/buildSrc/build/classes/kotlin/main/NativePaths.class
