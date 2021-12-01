@@ -78,38 +78,83 @@ class ManualTurningUseCase(
 
 
     private suspend fun handleJoystick(axis: Axis, direction: Direction, isRapid: Boolean, isSpindleOn: Boolean) {
-        when {
-            isRapid -> {
-                if (joystickFunction == JoystickFunction.Feeding) {
-                    println("---Rapid requested, stop feeding")
-                    stopFeeding()
-                }
-                startJogging(axis, direction)
+        if (isRapid) {
+            if (joystickFunction == JoystickFunction.Feeding) {
+                println("---Rapid requested, stop feeding")
+                stopFeeding()
+            }
+            startJogging(axis, direction)
+            joystickResetRequired = true
+        } else {
+            if (joystickFunction == JoystickFunction.Jogging) {
+                stopJogging(axis)
                 joystickResetRequired = true
             }
-            isSpindleOn -> {
-                if (joystickResetRequired) {
-                    println("---Joystick is not in neutral state")
-                    messagesRepository.pushMessage(UiMessageType.JoystickResetRequired)
-                } else {
-                    startFeeding(axis, direction)
-                }
+        }
+
+        if (isSpindleOn) {
+            if (joystickResetRequired) {
+                println("---Joystick is not in neutral state")
+                messagesRepository.pushMessage(UiMessageType.JoystickResetRequired)
+            } else {
+                startFeeding(axis, direction)
             }
-            isSpindleOn.not() -> {
-                when (joystickFunction) {
-                    JoystickFunction.Feeding -> {
-                        println("---Spindle was stopped while feeding, stopFeeding!")
-                        stopFeeding()
-                        joystickResetRequired = true
-                        println("---Set resetRequired flag")
-                    }
-                    JoystickFunction.None -> {
-                        println("---Feed attempted while spindle is off")
-                        messagesRepository.pushMessage(UiMessageType.JoystickCannotFeedWithSpindleOff)
-                    }
+        } else {
+            when (joystickFunction) {
+                JoystickFunction.Feeding -> {
+                    println("---Spindle was stopped while feeding, stopFeeding!")
+                    stopFeeding()
+                    joystickResetRequired = true
+                    println("---Set resetRequired flag")
+                }
+                JoystickFunction.Jogging -> {
+                    //nothing to do here
+                }
+                JoystickFunction.None -> {
+                    println("---Feed attempted while spindle is off")
+                    messagesRepository.pushMessage(UiMessageType.JoystickCannotFeedWithSpindleOff)
                 }
             }
         }
+
+//        when {
+//            isRapid -> {
+//                if (joystickFunction == JoystickFunction.Feeding) {
+//                    println("---Rapid requested, stop feeding")
+//                    stopFeeding()
+//                }
+//                startJogging(axis, direction)
+//                joystickResetRequired = true
+//            }
+//            isRapid.not() -> {
+//                if (joystickFunction == JoystickFunction.Jogging) {
+//                    stopJogging(axis)
+//                    joystickResetRequired = true
+//                }
+//            }
+//            isSpindleOn -> {
+//                if (joystickResetRequired) {
+//                    println("---Joystick is not in neutral state")
+//                    messagesRepository.pushMessage(UiMessageType.JoystickResetRequired)
+//                } else {
+//                    startFeeding(axis, direction)
+//                }
+//            }
+//            isSpindleOn.not() -> {
+//                when (joystickFunction) {
+//                    JoystickFunction.Feeding -> {
+//                        println("---Spindle was stopped while feeding, stopFeeding!")
+//                        stopFeeding()
+//                        joystickResetRequired = true
+//                        println("---Set resetRequired flag")
+//                    }
+//                    JoystickFunction.None -> {
+//                        println("---Feed attempted while spindle is off")
+//                        messagesRepository.pushMessage(UiMessageType.JoystickCannotFeedWithSpindleOff)
+//                    }
+//                }
+//            }
+//        }
     }
 
     private fun handleBackToNeutral() {
