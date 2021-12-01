@@ -13,6 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.flow.Flow
 import usecase.model.Message
@@ -28,9 +29,18 @@ fun HeaderView(message: Flow<List<Message>>, onClick: () -> Unit) {
             .height(40.dp)
             .background(Color.Gray)
     ) {
-        Text(
-            modifier = Modifier.fillMaxWidth().align(Alignment.CenterVertically).padding(start = 16.dp),
-            text = "Message is: ${lastMessage?.text}"
-        )
+        lastMessage?.let {
+            Text(
+                modifier = Modifier.fillMaxWidth().align(Alignment.CenterVertically).padding(start = 16.dp),
+                text = "Message is: ${it.text}"
+            )
+        }
+        if (lastMessage == null) {
+            Text(
+                modifier = Modifier.fillMaxWidth().align(Alignment.CenterVertically).padding(start = 16.dp),
+                textAlign = TextAlign.Center,
+                text = "Weiler E30"
+            )
+        }
     }
 }

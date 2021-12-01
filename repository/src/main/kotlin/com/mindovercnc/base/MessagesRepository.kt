@@ -13,3 +13,11 @@ interface MessagesRepository {
 
     fun popMessage(uiMessageType: UiMessageType)
 }
+
+fun MessagesRepository.handleMessage(isNeeded: Boolean, uiMessageType: UiMessageType) {
+    if (isNeeded) {
+        pushMessage(uiMessageType)
+    } else {
+        popMessage(uiMessageType)
+    }
+}

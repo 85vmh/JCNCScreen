@@ -7,9 +7,10 @@ enum class UiMessageType {
     SpindleOperationNotAllowed,
     SpindleForwardNotAllowed,
     SpindleReverseNotAllowed,
-    JoystickOperationNotAllowed,
-    ReachedMinLimitX,
-    ReachedMaxLimitX,
-    ReachedMinLimitZ,
-    ReachedMaxLimitZ
+    JoystickCannotFeedWithSpindleOff,
+    JoystickResetRequired,
+    ReachedMinSoftLimitX,
+    ReachedMaxSoftLimitX,
+    ReachedMinSoftLimitZ,
+    ReachedMaxSoftLimitZ
 }

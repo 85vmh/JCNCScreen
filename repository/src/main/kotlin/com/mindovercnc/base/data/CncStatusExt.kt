@@ -19,6 +19,11 @@ val CncStatus.isNotOn get() = taskStatus.taskState == TaskState.MachineOff || ta
 
 val CncStatus.isOn get() = taskStatus.taskState == TaskState.MachineOn
 
+val CncStatus.isMinSoftLimitOnX get() = motionStatus.jointsStatus[0].minSoftLimitExceeded
+val CncStatus.isMaxSoftLimitOnX get() = motionStatus.jointsStatus[0].maxSoftLimitExceeded
+val CncStatus.isMinSoftLimitOnZ get() = motionStatus.jointsStatus[1].minSoftLimitExceeded
+val CncStatus.isMaxSoftLimitOnZ get() = motionStatus.jointsStatus[1].maxSoftLimitExceeded
+
 val CncStatus.isDiameterMode get() = taskStatus.activeCodes.gCodes.contains(7.0f)
 
 val CncStatus.g53Position get() = motionStatus.trajectoryStatus.currentActualPosition

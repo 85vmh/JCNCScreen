@@ -2,11 +2,10 @@ package di
 
 import codegen.ManualTurningHelper
 import org.kodein.di.DI
-import org.kodein.di.bindProvider
 import org.kodein.di.bindSingleton
 import org.kodein.di.instance
-import usecase.MessagesUseCase
 import usecase.ManualTurningUseCase
+import usecase.MessagesUseCase
 
 val UseCaseModule = DI.Module("UseCase") {
     bindSingleton {
@@ -14,7 +13,7 @@ val UseCaseModule = DI.Module("UseCase") {
     }
 
     bindSingleton {
-        ManualTurningUseCase(instance("app_scope"), instance(), instance(), instance(), instance())
+        ManualTurningUseCase(instance("app_scope"), instance(), instance(), instance(), instance(), instance())
     }
     bindSingleton {
         ManualTurningHelper(instance())

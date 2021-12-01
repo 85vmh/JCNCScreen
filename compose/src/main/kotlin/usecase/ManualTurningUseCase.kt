@@ -15,18 +15,22 @@ import usecase.model.SpindleState
 import codegen.ManualTurningHelper.Axis
 import codegen.ManualTurningHelper.Direction
 import codegen.Point
+import com.mindovercnc.base.MessagesRepository
 import extensions.stripZeros
 
 class ManualTurningUseCase(
-    private val scope: CoroutineScope,
+    scope: CoroutineScope,
     private val statusRepository: CncStatusRepository,
     private val commandRepository: CncCommandRepository,
+    private val messagesRepository: MessagesRepository,
     private val halRepository: HalRepository,
     private val manualTurningHelper: ManualTurningHelper
 ) {
 
     private var joystickFunction = JoystickFunction.None
     private var joggedAxis: Axis? = null
+    private var joystickResetRequired = false
+
     private val isTaperTurning = MutableStateFlow(false)
 
     private val taperAngle = MutableStateFlow(45.0)
@@ -43,9 +47,8 @@ class ManualTurningUseCase(
             .distinctUntilChanged()
 
         combine(
-            halRepository.getJoystickStatus()
-            .onEach { println("---Joystick Status: $it") },
-            spindleIsOn.onEach { println("---Spindle status: $it") }
+            halRepository.getJoystickStatus().onEach { println("---Joystick: $it") },
+            spindleIsOn.onEach { println("---Spindle: $it") }
         ) { joystickStatus, spindleOn ->
             println("Status: $joystickStatus, Spindle: $spindleOn")
             when (joystickStatus.position) {
@@ -73,16 +76,39 @@ class ManualTurningUseCase(
         isTaperTurning.value = !isTaperTurning.value
     }
 
+
     private suspend fun handleJoystick(axis: Axis, direction: Direction, isRapid: Boolean, isSpindleOn: Boolean) {
         when {
             isRapid -> {
                 if (joystickFunction == JoystickFunction.Feeding) {
+                    println("---Rapid requested, stop feeding")
                     stopFeeding()
                 }
                 startJogging(axis, direction)
+                joystickResetRequired = true
             }
-            isSpindleOn -> startFeeding(axis, direction)
-            isSpindleOn.not() -> stopFeeding()
+            isSpindleOn -> {
+                if (joystickResetRequired) {
+                    println("---Joystick is not in neutral state")
+                    messagesRepository.pushMessage(UiMessageType.JoystickResetRequired)
+                } else {
+                    startFeeding(axis, direction)
+                }
+            }
+            isSpindleOn.not() -> {
+                when (joystickFunction) {
+                    JoystickFunction.Feeding -> {
+                        println("---Spindle was stopped while feeding, stopFeeding!")
+                        stopFeeding()
+                        joystickResetRequired = true
+                        println("---Set resetRequired flag")
+                    }
+                    JoystickFunction.None -> {
+                        println("---Feed attempted while spindle is off")
+                        messagesRepository.pushMessage(UiMessageType.JoystickCannotFeedWithSpindleOff)
+                    }
+                }
+            }
         }
     }
 
@@ -90,7 +116,14 @@ class ManualTurningUseCase(
         when (joystickFunction) {
             JoystickFunction.Feeding -> stopFeeding()
             JoystickFunction.Jogging -> joggedAxis?.let { stopJogging(it) }
-            JoystickFunction.None -> joggedAxis = null
+            JoystickFunction.None -> {
+                joggedAxis = null
+                messagesRepository.popMessage(UiMessageType.JoystickCannotFeedWithSpindleOff)
+            }
+        }
+        if (joystickResetRequired) {
+            joystickResetRequired = false
+            messagesRepository.popMessage(UiMessageType.JoystickResetRequired)
         }
     }
 
@@ -108,7 +141,7 @@ class ManualTurningUseCase(
         val feedRate = setFeedRate.firstOrNull() ?: 0.0
         joystickFunction = JoystickFunction.Feeding
         val cmdWithFeed = command.plus(" F${feedRate.stripZeros()}")
-        println("-------Command to execute: $cmdWithFeed")
+        println("---Command to execute: $cmdWithFeed")
         executeMdi(cmdWithFeed)
         halRepository.setPowerFeedingStatus(true)
     }
@@ -117,11 +150,11 @@ class ManualTurningUseCase(
         if (joystickFunction == JoystickFunction.Feeding) {
             halRepository.setPowerFeedingStatus(false)
             joystickFunction = JoystickFunction.None
+            println("---Stop feeding")
         }
     }
 
     private suspend fun startJogging(axis: Axis, feedDirection: Direction) {
-        joystickFunction = JoystickFunction.Jogging
         commandRepository.setTaskMode(TaskMode.TaskModeManual)
         val jogVelocity = statusRepository.cncStatusFlow().map { it.jogVelocity }.first()
         val jogDirection = when (feedDirection) {
@@ -131,13 +164,14 @@ class ManualTurningUseCase(
         println("---Jog $axis with velocity: $jogDirection")
         commandRepository.jogContinuous(JogMode.AXIS, axis.index, jogDirection)
         joggedAxis = axis
+        joystickFunction = JoystickFunction.Jogging
     }
 
     private fun stopJogging(axis: Axis) {
         if (joystickFunction == JoystickFunction.Jogging) {
-            commandRepository.setTaskMode(TaskMode.TaskModeManual)
             commandRepository.jogStop(JogMode.AXIS, axis.index)
             joystickFunction = JoystickFunction.None
+            println("---Stop jogging")
         }
     }
 

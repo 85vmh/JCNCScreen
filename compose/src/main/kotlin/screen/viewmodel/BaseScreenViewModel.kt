@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import com.mindovercnc.base.CncStatusRepository
 import com.mindovercnc.base.MessagesRepository
 import com.mindovercnc.base.data.*
+import com.mindovercnc.base.handleMessage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
@@ -27,36 +28,48 @@ class BaseScreenViewModel constructor(
             .distinctUntilChanged()
             .onEach {
                 screen = if (it) {
-                    messagesRepository.popMessage(UiMessageType.MachineNotHomed)
                     BaseScreen.RootScreen
                 } else {
-                    messagesRepository.pushMessage(UiMessageType.MachineNotHomed)
                     BaseScreen.NotHomedScreen
                 }
+                messagesRepository.handleMessage(!it, UiMessageType.MachineNotHomed)
             }
             .launchIn(scope)
 
         cncStatusRepository.cncStatusFlow()
             .map { it.isNotOn }
             .distinctUntilChanged()
-            .onEach {
-                if (it) {
-                    messagesRepository.pushMessage(UiMessageType.MachineNotON)
-                } else {
-                    messagesRepository.popMessage(UiMessageType.MachineNotON)
-                }
-            }
+            .onEach { messagesRepository.handleMessage(it, UiMessageType.MachineNotON) }
             .launchIn(scope)
         cncStatusRepository.cncStatusFlow()
             .map { it.isEstop }
             .distinctUntilChanged()
-            .onEach {
-                if (it) {
-                    messagesRepository.pushMessage(UiMessageType.MachineInEstop)
-                } else {
-                    messagesRepository.popMessage(UiMessageType.MachineInEstop)
-                }
-            }
+            .onEach { messagesRepository.handleMessage(it, UiMessageType.MachineInEstop) }
+            .launchIn(scope)
+        cncStatusRepository.cncStatusFlow()
+            .map { it.isEstop }
+            .distinctUntilChanged()
+            .onEach { messagesRepository.handleMessage(it, UiMessageType.MachineInEstop) }
+            .launchIn(scope)
+        cncStatusRepository.cncStatusFlow()
+            .map { it.isMinSoftLimitOnX }
+            .distinctUntilChanged()
+            .onEach { messagesRepository.handleMessage(it, UiMessageType.ReachedMinSoftLimitX) }
+            .launchIn(scope)
+        cncStatusRepository.cncStatusFlow()
+            .map { it.isMaxSoftLimitOnX }
+            .distinctUntilChanged()
+            .onEach { messagesRepository.handleMessage(it, UiMessageType.ReachedMaxSoftLimitX) }
+            .launchIn(scope)
+        cncStatusRepository.cncStatusFlow()
+            .map { it.isMinSoftLimitOnZ }
+            .distinctUntilChanged()
+            .onEach { messagesRepository.handleMessage(it, UiMessageType.ReachedMinSoftLimitZ) }
+            .launchIn(scope)
+        cncStatusRepository.cncStatusFlow()
+            .map { it.isMaxSoftLimitOnZ }
+            .distinctUntilChanged()
+            .onEach { messagesRepository.handleMessage(it, UiMessageType.ReachedMaxSoftLimitZ) }
             .launchIn(scope)
     }
 
