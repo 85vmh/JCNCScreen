@@ -12,6 +12,7 @@ class ManualTurningHelper(
     private val zAxisParam = iniFileRepository.getIniFile().joints[1]
 
     enum class Axis(val index: Int) {
+        //When jogging, the axes are considered as X=0, Y=1, Z=2
         X(0), Z(2)
     }
 
@@ -22,8 +23,8 @@ class ManualTurningHelper(
     fun getStraightTurningCommand(axis: Axis, feedDirection: Direction): String {
         val limit = when (axis) {
             Axis.X -> when (feedDirection) {
-                Direction.Negative -> xAxisParam.minLimit
-                Direction.Positive -> xAxisParam.maxLimit
+                Direction.Negative -> xAxisParam.minLimit * 2 //because lathes work in diameter mode
+                Direction.Positive -> xAxisParam.maxLimit * 2 //because lathes work in diameter mode
             }
             Axis.Z -> when (feedDirection) {
                 Direction.Negative -> zAxisParam.minLimit
@@ -36,12 +37,12 @@ class ManualTurningHelper(
     fun getTaperTurningCommand(axis: Axis, feedDirection: Direction, startPoint: Point, angle: Double): String {
         val cornerPoint = when (axis) {
             Axis.X -> when (feedDirection) {
-                Direction.Positive -> Point(xAxisParam.maxLimit, zAxisParam.minLimit)
-                Direction.Negative -> Point(xAxisParam.minLimit, zAxisParam.maxLimit)
+                Direction.Positive -> Point(xAxisParam.maxLimit * 2, zAxisParam.minLimit)
+                Direction.Negative -> Point(xAxisParam.minLimit * 2, zAxisParam.maxLimit)
             }
             Axis.Z -> when (feedDirection) {
-                Direction.Positive -> Point(xAxisParam.maxLimit, zAxisParam.maxLimit)
-                Direction.Negative -> Point(xAxisParam.minLimit, zAxisParam.minLimit)
+                Direction.Positive -> Point(xAxisParam.maxLimit * 2, zAxisParam.maxLimit)
+                Direction.Negative -> Point(xAxisParam.minLimit * 2, zAxisParam.minLimit)
             }
         }
 

@@ -22,7 +22,7 @@ class MessagesUseCase(
                 result
             }
             .onEach {
-                println("Message list is: $it")
+                //println("Message list is: $it")
             }
     }
 }
