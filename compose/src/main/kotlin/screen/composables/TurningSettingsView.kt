@@ -31,11 +31,7 @@ private fun ManualTurningUseCase.createSpindleState(): State<SpindleState?> {
 @Composable
 private fun ManualTurningUseCase.createFeedState(): State<FeedState?> {
     return produceState<FeedState?>(null) {
-        value = FeedState(
-            defaultFeedRateMode = FeedRateMode.UNITS_PER_REVOLUTION,
-            defaultUnitsPerRevValue = 0.150,
-            defaultUnitsPerMinValue = 200.0
-        )
+        value = getFeedState()
     }
 }
 
@@ -46,8 +42,6 @@ fun TurningSettingsView(onFinish: () -> Unit) {
     val spindleState: SpindleState? by useCase.createSpindleState()
     val feedState: FeedState? by useCase.createFeedState()
 
-    var orientedStop by remember { mutableStateOf(false) }
-
     if (spindleState == null || feedState == null) {
         Box(
             modifier = Modifier.fillMaxSize(),
@@ -56,7 +50,11 @@ fun TurningSettingsView(onFinish: () -> Unit) {
             CircularProgressIndicator()
         }
     } else {
-        TurningSettingsContent(spindleState!!, feedState!!, onFinish)
+        TurningSettingsContent(spindleState!!, feedState!!) {
+            useCase.applyFeedSettings(feedState!!) //this needs to be called first
+            useCase.applySpindleSettings(spindleState!!)
+            onFinish.invoke()
+        }
     }
 }
 
@@ -106,17 +104,6 @@ fun TurningSettingsContent(spindleState: SpindleState, feedState: FeedState, onF
                             state = spindleState,
                             modifier = Modifier.padding(top = 16.dp),
                         )
-//                        CheckBoxSetting(
-//                            "Oriented spindle stop",
-//                            orientedStop,
-//                            "150.4",
-//                            "degrees",
-//                            modifier = Modifier.padding(top = 16.dp, bottom = 16.dp),
-//                            {
-//                                orientedStop = it
-//                            },
-//                            {}
-//                        )
                     }
                 }
                 Card(
@@ -154,10 +141,28 @@ fun TurningSettingsContent(spindleState: SpindleState, feedState: FeedState, onF
             )
         }
 
-        Button(onClick = {
-            onFinish.invoke()
-        }) {
-            Text("Close settings")
+        Row(
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            modifier = Modifier.fillMaxWidth()
+                .background(Color(170, 170, 180))
+        ) {
+            Button(onClick = {
+                onFinish.invoke()
+            }) {
+                Text("<- Back")
+            }
+
+            Button(onClick = {
+                println("Spindle mode: ${spindleState.spindleMode}")
+                println("Rpm value ${spindleState.rpmValue}")
+                println("css value ${spindleState.cssValue}")
+                println("stop active ${spindleState.orientedStop}")
+                println("Stop angle ${spindleState.stopAngle}")
+
+                onFinish.invoke()
+            }) {
+                Text("Apply Changes")
+            }
         }
     }
 }
@@ -167,9 +172,12 @@ fun SpindleDisplay(
     state: SpindleState,
     modifier: Modifier = Modifier
 ) {
-    var spindleType by state.spindleType
+    var spindleType by state.spindleMode
     var cssValue by state.cssValue
     var rpmValue by state.rpmValue
+    var maxSpeed by state.maxCssRpm
+    var orientedStop by state.orientedStop
+    var stopAngle by state.stopAngle
 
     val onRpmClicked: () -> Unit = {
         spindleType = SpindleControlMode.RPM
@@ -186,7 +194,7 @@ fun SpindleDisplay(
         RadioBoxSetting(
             settingName = "Constant Spindle Speed",
             selected = spindleType == SpindleControlMode.RPM,
-            value = cssValue,
+            value = rpmValue,
             units = "rev/min",
             modifier = Modifier
                 .fillMaxWidth()
@@ -195,14 +203,14 @@ fun SpindleDisplay(
             onClicked = onRpmClicked,
             onValueChanged = {
                 val doubleValue = it.toDoubleOrNull() ?: return@RadioBoxSetting
-                cssValue = it
+                rpmValue = it
             }
         )
         RadioBoxSetting(
             settingName = "Constant Surface Speed",
             selected = spindleType == SpindleControlMode.CSS,
-            value = rpmValue,
-            units = "mm/min",
+            value = cssValue,
+            units = "m/min",
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable(onClick = onCssClicked)
@@ -210,10 +218,34 @@ fun SpindleDisplay(
             onClicked = onCssClicked,
             onValueChanged = {
                 val doubleValue = it.toDoubleOrNull() ?: return@RadioBoxSetting
-                rpmValue = it
+                cssValue = it
             }
         )
-        ValueSetting("Maximum spindle speed", spindleType == SpindleControlMode.CSS, "2000", "rev/min") {}
+        ValueSetting(
+            settingName = "Maximum spindle speed",
+            active = spindleType == SpindleControlMode.CSS,
+            value = maxSpeed,
+            units = "rev/min",
+            onValueChanged = {
+                val doubleValue = it.toDoubleOrNull() ?: return@ValueSetting
+                maxSpeed = it
+            }
+        )
+
+        CheckBoxSetting(
+            settingName = "Oriented spindle stop",
+            checked = orientedStop,
+            value = stopAngle,
+            units = "degrees",
+            modifier = Modifier.padding(top = 16.dp, bottom = 16.dp),
+            onCheckedChange = {
+                orientedStop = it
+            },
+            onValueChanged = {
+                val doubleValue = it.toDoubleOrNull() ?: return@CheckBoxSetting
+                stopAngle = it
+            }
+        )
     }
 }
 

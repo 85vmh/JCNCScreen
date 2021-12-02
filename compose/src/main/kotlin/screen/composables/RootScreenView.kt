@@ -71,27 +71,7 @@ fun RootScreenView(turningSettingsClicked: () -> Unit) {
                 horizontalAlignment = Alignment.CenterHorizontally
 
             ) {
-                Button(onClick = {
-                    useCase.executeMdi("G96 D2500 S250")
-                }) {
-                    Text("Set CSS Mode")
-                }
 
-                Button(onClick = {
-                    useCase.executeMdi("G97 S500")
-                }) {
-                    Text("Set RPM Mode")
-                }
-                Button(onClick = {
-                    useCase.executeMdi("G95 F0.350")
-                }) {
-                    Text("UnitsPerRev")
-                }
-                Button(onClick = {
-                    useCase.executeMdi("G94 F200")
-                }) {
-                    Text("UnitsPerMin")
-                }
 
                 Button(onClick = {
                     useCase.toggleTaperTurning()

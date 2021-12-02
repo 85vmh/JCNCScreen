@@ -3,5 +3,4 @@ rootProject.name = "JCNCScreen"
 include("compose")
 include("libcnc")
 include("repository")
-include("dummycnc")
 //include("localization")

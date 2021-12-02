@@ -11,6 +11,11 @@ fun CncStatus.isHomed(): Boolean {
     return true
 }
 
+val CncStatus.isInterpreterIdle get() = taskStatus.interpreterState == InterpreterState.Idle
+val CncStatus.isInMdiMode get() = taskStatus.taskMode == TaskMode.TaskModeMDI
+val CncStatus.isInManualMode get() = taskStatus.taskMode == TaskMode.TaskModeManual
+val CncStatus.isInAutoMode get() = taskStatus.taskMode == TaskMode.TaskModeAuto
+
 val CncStatus.jogVelocity get() = motionStatus.trajectoryStatus.maxVelocity
 
 val CncStatus.isEstop get() = taskStatus.taskState == TaskState.EStop

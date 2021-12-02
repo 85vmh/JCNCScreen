@@ -13,7 +13,7 @@ val UseCaseModule = DI.Module("UseCase") {
     }
 
     bindSingleton {
-        ManualTurningUseCase(instance("app_scope"), instance(), instance(), instance(), instance(), instance())
+        ManualTurningUseCase(instance("app_scope"), instance(), instance(), instance(), instance(), instance(), instance())
     }
     bindSingleton {
         ManualTurningHelper(instance())

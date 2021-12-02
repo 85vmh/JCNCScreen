@@ -58,13 +58,13 @@ class ManualTurningHelper(
         angle: Double
     ): Point {
         val opposite = abs(cornerPoint.x - startPoint.x)
-        val adjacent = opposite / tan(Math.toRadians(angle))
+        val adjacent = (opposite / tan(Math.toRadians(angle))) / 2 //divided by 2 due to diameter mode
         val maxDistZ = abs(cornerPoint.z - startPoint.z)
         return if (adjacent > maxDistZ) {
             val extraDistZ = adjacent - maxDistZ
             val sign = if (cornerPoint.x > 0) -1 else 1
             val smallOpposite = extraDistZ * tan(Math.toRadians(angle))
-            val destPointX = cornerPoint.x + (smallOpposite * sign) //minus when xMaxLimit, plus when xMinLimit
+            val destPointX = cornerPoint.x + (2 * smallOpposite * sign) //minus when xMaxLimit, plus when xMinLimit
             Point(destPointX, cornerPoint.z)
         } else {
             val sign = if (cornerPoint.z > 0) 1 else -1

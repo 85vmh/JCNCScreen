@@ -1,10 +1,7 @@
 package com.mindovercnc.linuxcnc
 
 import com.mindovercnc.base.HalRepository
-import com.mindovercnc.base.data.HalComponent
-import com.mindovercnc.base.data.HalPin
-import com.mindovercnc.base.data.JoystickStatus
-import com.mindovercnc.base.data.SpindleSwitchStatus
+import com.mindovercnc.base.data.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
@@ -87,6 +84,31 @@ class HalRepositoryImpl(
         } else {
             return flowOf(JoystickStatus(JoystickStatus.Position.Neutral)).distinctUntilChanged()
         }
+    }
+
+    override fun getJoystickPosition(): Flow<JoystickPosition> {
+        if (pinJoystickXPlus != null && pinJoystickXMinus != null && pinJoystickZPlus != null && pinJoystickZMinus != null) {
+            return combine(
+                pinJoystickXPlus!!.valueFlow(RefreshRate),
+                pinJoystickXMinus!!.valueFlow(RefreshRate),
+                pinJoystickZPlus!!.valueFlow(RefreshRate),
+                pinJoystickZMinus!!.valueFlow(RefreshRate),
+            ) { xPlus, xMinus, zPlus, zMinus ->
+                when {
+                    xPlus -> JoystickPosition.XPlus
+                    xMinus -> JoystickPosition.XMinus
+                    zPlus -> JoystickPosition.ZPlus
+                    zMinus -> JoystickPosition.ZMinus
+                    else -> JoystickPosition.Neutral
+                }
+            }.distinctUntilChanged()
+        } else {
+            return flowOf(JoystickPosition.Neutral).distinctUntilChanged()
+        }
+    }
+
+    override fun getJoystickRapidState(): Flow<Boolean> {
+        return pinJoystickRapid?.valueFlow(RefreshRate)?.distinctUntilChanged() ?: flowOf(false)
     }
 
     override fun setPowerFeedingStatus(isActive: Boolean) {

@@ -13,6 +13,7 @@ import org.kodein.di.DI
 import org.kodein.di.bindProvider
 import org.kodein.di.bindSingleton
 import org.kodein.di.instance
+import java.util.prefs.Preferences
 
 val RepositoryModule = DI.Module("repository") {
     bindSingleton<CncStatusRepository> { CncStatusRepositoryImpl(instance("app_scope"), instance()) }
@@ -20,6 +21,8 @@ val RepositoryModule = DI.Module("repository") {
     bindSingleton<CncCommandRepository> { CncCommandRepositoryImpl() }
     bindSingleton<HalRepository> { HalRepositoryImpl(instance("app_scope")) }
     bindSingleton<IniFileRepository> { IniFileRepositoryImpl(instance("ini")) }
+    bindSingleton { Preferences.userRoot() }
+    bindSingleton<SettingsRepository> { SettingsRepositoryImpl(instance()) }
 }
 
 fun iniFileModule(filePath: String) = DI.Module("ini") {

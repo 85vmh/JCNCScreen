@@ -16,7 +16,6 @@ dependencies {
     implementation(fileTree(mapOf("dir" to "lib", "include" to listOf("*.jar"))))
     implementation(project(":libcnc"))
     implementation(project(":repository"))
-    implementation(project(":dummycnc"))
     implementation("org.kodein.di:kodein-di-framework-compose:7.9.0")
 }
 

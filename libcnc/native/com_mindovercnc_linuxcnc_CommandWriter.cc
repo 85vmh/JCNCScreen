@@ -55,9 +55,7 @@ static void sleep(double s) {
 static int sendCommand(RCS_CMD_MSG& msg) {
   if (cCmd->write(&msg)) return -1;
 
-  for (double end = 0.0
-     ; end < EMC_COMMAND_TIMEOUT
-     ; end += EMC_COMMAND_DELAY) {
+  for (double end = 0.0; end < EMC_COMMAND_TIMEOUT; end += EMC_COMMAND_DELAY) {
       cStat->peek();
 
       if ((status->echo_serial_number - msg.serial_number) >= 0) return 0;

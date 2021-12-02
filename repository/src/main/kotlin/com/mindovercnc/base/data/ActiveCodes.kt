@@ -30,7 +30,6 @@ enum class DistanceMode(override val value: Float) : ActiveCode {
 }
 
 enum class FeedMode(override val value: Float) : ActiveCode {
-    INVERSE_TIME_MODE(93f),
     UNITS_PER_MINUTE(94f),
     UNITS_PER_REVOLUTION(95f)
 }
