@@ -9,12 +9,8 @@ import com.mindovercnc.base.data.*
 import extensions.stripZeros
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
-import usecase.model.FeedRateMode
-import usecase.model.FeedState
-import usecase.model.SpindleControlMode
-import usecase.model.SpindleState
+import usecase.model.*
 
 class ManualTurningUseCase(
     private val scope: CoroutineScope,
@@ -40,6 +36,10 @@ class ManualTurningUseCase(
 
     val taperTurningActive = isTaperTurning.asStateFlow()
 
+    private val spindleOpAllowed = statusRepository.cncStatusFlow()
+        .map { it.isHomed() }
+        .distinctUntilChanged()
+
     init {
         val spindleIsOn = statusRepository.cncStatusFlow()
             .map { it.isSpindleOn } //do this based on tool direction
@@ -60,6 +60,25 @@ class ManualTurningUseCase(
             .flowOn(Dispatchers.Main)
             .launchIn(scope)
 
+        combine(
+            halRepository.getSpindleSwitchStatus(),
+            spindleOpAllowed
+        )
+        { switchStatus, spindleAllowed ->
+            when {
+                spindleAllowed -> sendSpindleCommand(switchStatus)
+                spindleAllowed.not() -> {
+                    when (switchStatus) {
+                        SpindleSwitchStatus.NEUTRAL -> messagesRepository.popMessage(UiMessageType.SpindleOperationNotAllowed)
+                        else -> messagesRepository.pushMessage(UiMessageType.SpindleOperationNotAllowed)
+                    }
+                }
+            }
+        }
+            .flowOn(Dispatchers.Main)
+            .launchIn(scope)
+
+
         halRepository.getCycleStopStatus()
             .filter { it }
             .onEach {
@@ -74,6 +93,17 @@ class ManualTurningUseCase(
         isTaperTurning.value = !isTaperTurning.value
     }
 
+    private fun sendSpindleCommand(status: SpindleSwitchStatus) {
+        when (status) {
+            SpindleSwitchStatus.REV -> "M4"
+            SpindleSwitchStatus.FWD -> "M3"
+            SpindleSwitchStatus.NEUTRAL -> null //for now spindle stop is done in HAL
+        }?.let {
+            commandRepository.setTaskMode(TaskMode.TaskModeMDI)
+            commandRepository.executeMdiCommand(it)
+            commandRepository.setTaskMode(TaskMode.TaskModeManual)
+        }
+    }
 
     private suspend fun handleJoystick(axis: Axis, direction: Direction, isRapid: Boolean, isSpindleOn: Boolean) {
         if (isRapid) {
@@ -178,12 +208,10 @@ class ManualTurningUseCase(
         }
     }
 
-
     private fun executeMdi(command: String) {
         commandRepository.setTaskMode(TaskMode.TaskModeMDI)
         println("---Execute MDI: $command")
         commandRepository.executeMdiCommand(command)
-
 //        //When its MDI, do this
 //        statusRepository.cncStatusFlow()
 //            .onEach {
@@ -199,8 +227,6 @@ class ManualTurningUseCase(
 //                commandRepository.executeMdiCommand(command)
 //            }
 //            .launchIn(scope)
-
-        //This will change the taskMode to MDI
     }
 
     suspend fun getSpindleState(): SpindleState {
@@ -315,4 +341,11 @@ class ManualTurningUseCase(
     private val cssMaxSpeed = statusRepository.cncStatusFlow()
         .map { it.motionStatus.spindlesStatus[0].cssMaximum.toInt() }
         .distinctUntilChanged()
+
+    val handwheelsState = combine(
+        statusRepository.cncStatusFlow().map { it.isInManualMode },
+        halRepository.jogIncrementValue()
+    ) { isManualMode, jogIncrement ->
+        HandwheelsState(isManualMode, jogIncrement)
+    }
 }

@@ -192,7 +192,7 @@ fun SpindleDisplay(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         RadioBoxSetting(
-            settingName = "Constant Spindle Speed",
+            settingName = "Constant Spindle Speed (RPM)",
             selected = spindleType == SpindleControlMode.RPM,
             value = rpmValue,
             units = "rev/min",
@@ -207,7 +207,7 @@ fun SpindleDisplay(
             }
         )
         RadioBoxSetting(
-            settingName = "Constant Surface Speed",
+            settingName = "Constant Surface Speed (CSS)",
             selected = spindleType == SpindleControlMode.CSS,
             value = cssValue,
             units = "m/min",

@@ -20,7 +20,13 @@ interface HalRepository {
 
     fun getCycleStopStatus(): Flow<Boolean>
 
-    fun allowSpindleOperation(allowed: Boolean = true)
-
     fun actualSpindleSpeed(): Flow<Float>
+
+    fun jogIncrementValue(): Flow<Float>
+
+    fun getToolChangeToolNumber(): Flow<Int>
+
+    fun getToolChangeRequest(): Flow<Boolean>
+
+    fun setToolChangedResponse()
 }

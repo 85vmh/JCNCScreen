@@ -1,6 +1,7 @@
 package usecase
 
 import com.mindovercnc.base.MessagesRepository
+import com.mindovercnc.base.data.SystemMessage
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
@@ -14,7 +15,11 @@ class MessagesUseCase(
             .map {
                 val result = mutableListOf<Message>()
                 it.emcMessages.forEach { emcMsg ->
-                    result.add(Message(emcMsg.message, Message.Level.ERROR))
+                    when (emcMsg.type) {
+                        SystemMessage.MessageType.NMLError,
+                        SystemMessage.MessageType.OperatorError -> result.add(Message(emcMsg.message, Message.Level.ERROR))
+                        else -> result.add(Message(emcMsg.message, Message.Level.INFO))
+                    }
                 }
                 it.uiMessages.forEach { uiMsg ->
                     result.add(Message(uiMsg.key.name, Message.Level.WARNING))

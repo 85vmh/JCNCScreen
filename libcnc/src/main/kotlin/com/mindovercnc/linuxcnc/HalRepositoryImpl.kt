@@ -18,9 +18,11 @@ private const val PinCycleStart = "cycle-start"
 private const val PinCycleStop = "cycle-stop"
 private const val PinSpindleSwitchRevIn = "spindle-switch-rev-in"
 private const val PinSpindleSwitchFwdIn = "spindle-switch-fwd-in"
-private const val PinSpindleSwitchRevOut = "spindle-switch-rev-out"
-private const val PinSpindleSwitchFwdOut = "spindle-switch-fwd-out"
+private const val PinJogIncrement = "jog-increment-value"
 private const val PinSpindleActualRpm = "spindle-actual-rpm"
+private const val PinToolChangeToolNo = "tool-change.number"
+private const val PinToolChangeRequest = "tool-change.change"
+private const val PinToolChangeResponse = "tool-change.changed"
 
 class HalRepositoryImpl(
     private val scope: CoroutineScope
@@ -38,10 +40,11 @@ class HalRepositoryImpl(
     private var pinCycleStop: HalPin<Boolean>? = null
     private var pinSpindleSwitchRevIn: HalPin<Boolean>? = null
     private var pinSpindleSwitchFwdIn: HalPin<Boolean>? = null
-    private var pinSpindleSwitchRevOut: HalPin<Boolean>? = null
-    private var pinSpindleSwitchFwdOut: HalPin<Boolean>? = null
+    private var pinJogIncrementValue: HalPin<Float>? = null
     private var pinSpindleActualRpm: HalPin<Float>? = null
-    private var allowSpindleOperation: Boolean = true
+    private var pinToolChangeToolNo: HalPin<Int>? = null
+    private var pinToolChangeRequest: HalPin<Boolean>? = null
+    private var pinToolChangeResponse: HalPin<Boolean>? = null
 
     init {
         halComponent = halHandler.createComponent(ComponentName)
@@ -54,12 +57,15 @@ class HalRepositoryImpl(
             pinIsPowerFeeding = it.addPin(PinIsPowerFeeding, HalPin.Type.BIT, HalPin.Dir.OUT) as? HalPin<Boolean>
             pinSpindleSwitchRevIn = it.addPin(PinSpindleSwitchRevIn, HalPin.Type.BIT, HalPin.Dir.IN) as? HalPin<Boolean>
             pinSpindleSwitchFwdIn = it.addPin(PinSpindleSwitchFwdIn, HalPin.Type.BIT, HalPin.Dir.IN) as? HalPin<Boolean>
-            pinSpindleSwitchRevOut = it.addPin(PinSpindleSwitchRevOut, HalPin.Type.BIT, HalPin.Dir.OUT) as? HalPin<Boolean>
-            pinSpindleSwitchFwdOut = it.addPin(PinSpindleSwitchFwdOut, HalPin.Type.BIT, HalPin.Dir.OUT) as? HalPin<Boolean>
             pinCycleStart = it.addPin(PinCycleStart, HalPin.Type.BIT, HalPin.Dir.IN) as? HalPin<Boolean>
             pinCycleStop = it.addPin(PinCycleStop, HalPin.Type.BIT, HalPin.Dir.IN) as? HalPin<Boolean>
+            pinJogIncrementValue = it.addPin(PinJogIncrement, HalPin.Type.FLOAT, HalPin.Dir.IN) as? HalPin<Float>
             pinSpindleActualRpm = it.addPin(PinSpindleActualRpm, HalPin.Type.FLOAT, HalPin.Dir.IN) as? HalPin<Float>
-            handleForwarding()
+
+            pinToolChangeToolNo = it.addPin(PinToolChangeToolNo, HalPin.Type.S32, HalPin.Dir.IN) as? HalPin<Int>
+            pinToolChangeRequest = it.addPin(PinToolChangeRequest, HalPin.Type.BIT, HalPin.Dir.IN) as? HalPin<Boolean>
+            pinToolChangeResponse = it.addPin(PinToolChangeResponse, HalPin.Type.BIT, HalPin.Dir.OUT) as? HalPin<Boolean>
+
             it.setReady(it.componentId)
         }
     }
@@ -116,16 +122,20 @@ class HalRepositoryImpl(
     }
 
     override fun getSpindleSwitchStatus(): Flow<SpindleSwitchStatus> {
-        return combine(
-            pinSpindleSwitchRevIn!!.valueFlow(RefreshRate),
-            pinSpindleSwitchFwdIn!!.valueFlow(RefreshRate)
-        ) { isRev, isFwd ->
-            when {
-                isRev -> SpindleSwitchStatus.REV
-                isFwd -> SpindleSwitchStatus.FWD
-                else -> SpindleSwitchStatus.NEUTRAL
-            }
-        }.distinctUntilChanged()
+        if (pinSpindleSwitchRevIn != null && pinSpindleSwitchFwdIn != null) {
+            return combine(
+                pinSpindleSwitchRevIn!!.valueFlow(RefreshRate),
+                pinSpindleSwitchFwdIn!!.valueFlow(RefreshRate)
+            ) { isRev, isFwd ->
+                when {
+                    isRev -> SpindleSwitchStatus.REV
+                    isFwd -> SpindleSwitchStatus.FWD
+                    else -> SpindleSwitchStatus.NEUTRAL
+                }
+            }.distinctUntilChanged()
+        } else {
+            return flowOf(SpindleSwitchStatus.NEUTRAL)
+        }
     }
 
     override fun getCycleStartStatus(): Flow<Boolean> {
@@ -140,25 +150,19 @@ class HalRepositoryImpl(
         return pinSpindleActualRpm?.valueFlow(RefreshRate)?.distinctUntilChanged() ?: flowOf(0.0f)
     }
 
-    override fun allowSpindleOperation(allowed: Boolean) {
-        this.allowSpindleOperation = allowed
+    override fun jogIncrementValue(): Flow<Float> {
+        return pinJogIncrementValue?.valueFlow(RefreshRate)?.distinctUntilChanged() ?: flowOf(0.0f)
     }
 
-    private fun handleForwarding() {
-        pinSpindleSwitchRevIn?.let {
-            it.valueFlow(RefreshRate)
-                .filter { allowSpindleOperation }
-                .onEach { value -> pinSpindleSwitchRevOut?.setPinValue(value) }
-                .flowOn(Dispatchers.IO)
-                .launchIn(scope)
-        }
+    override fun getToolChangeRequest(): Flow<Boolean> {
+        return pinToolChangeRequest?.valueFlow(RefreshRate)?.distinctUntilChanged() ?: flowOf(false)
+    }
 
-        pinSpindleSwitchFwdIn?.let {
-            it.valueFlow(RefreshRate)
-                .filter { allowSpindleOperation }
-                .onEach { value -> pinSpindleSwitchFwdOut?.setPinValue(value) }
-                .flowOn(Dispatchers.IO)
-                .launchIn(scope)
-        }
+    override fun getToolChangeToolNumber(): Flow<Int> {
+        return pinToolChangeToolNo?.valueFlow(RefreshRate)?.distinctUntilChanged() ?: flowOf(0)
+    }
+
+    override fun setToolChangedResponse() {
+        pinToolChangeResponse?.setPinValue(true)
     }
 }
