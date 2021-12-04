@@ -14,6 +14,8 @@ interface HalRepository {
 
     fun setPowerFeedingStatus(isActive: Boolean)
 
+    fun setSpindleStarted(isStarted: Boolean)
+
     fun getSpindleSwitchStatus(): Flow<SpindleSwitchStatus>
 
     fun getCycleStartStatus(): Flow<Boolean>

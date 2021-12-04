@@ -16,10 +16,11 @@ private const val PinJoystickRapid = "joystick-rapid"
 private const val PinIsPowerFeeding = "is-power-feeding"
 private const val PinCycleStart = "cycle-start"
 private const val PinCycleStop = "cycle-stop"
-private const val PinSpindleSwitchRevIn = "spindle-switch-rev-in"
-private const val PinSpindleSwitchFwdIn = "spindle-switch-fwd-in"
+private const val PinSpindleSwitchRevIn = "spindle.switch-rev-in"
+private const val PinSpindleSwitchFwdIn = "spindle.switch-fwd-in"
+private const val PinSpindleStarted = "spindle.started"
+private const val PinSpindleActualRpm = "spindle.actual-rpm"
 private const val PinJogIncrement = "jog-increment-value"
-private const val PinSpindleActualRpm = "spindle-actual-rpm"
 private const val PinToolChangeToolNo = "tool-change.number"
 private const val PinToolChangeRequest = "tool-change.change"
 private const val PinToolChangeResponse = "tool-change.changed"
@@ -40,6 +41,7 @@ class HalRepositoryImpl(
     private var pinCycleStop: HalPin<Boolean>? = null
     private var pinSpindleSwitchRevIn: HalPin<Boolean>? = null
     private var pinSpindleSwitchFwdIn: HalPin<Boolean>? = null
+    private var pinSpindleStarted: HalPin<Boolean>? = null
     private var pinJogIncrementValue: HalPin<Float>? = null
     private var pinSpindleActualRpm: HalPin<Float>? = null
     private var pinToolChangeToolNo: HalPin<Int>? = null
@@ -57,6 +59,7 @@ class HalRepositoryImpl(
             pinIsPowerFeeding = it.addPin(PinIsPowerFeeding, HalPin.Type.BIT, HalPin.Dir.OUT) as? HalPin<Boolean>
             pinSpindleSwitchRevIn = it.addPin(PinSpindleSwitchRevIn, HalPin.Type.BIT, HalPin.Dir.IN) as? HalPin<Boolean>
             pinSpindleSwitchFwdIn = it.addPin(PinSpindleSwitchFwdIn, HalPin.Type.BIT, HalPin.Dir.IN) as? HalPin<Boolean>
+            pinSpindleStarted = it.addPin(PinSpindleStarted, HalPin.Type.BIT, HalPin.Dir.OUT) as? HalPin<Boolean>
             pinCycleStart = it.addPin(PinCycleStart, HalPin.Type.BIT, HalPin.Dir.IN) as? HalPin<Boolean>
             pinCycleStop = it.addPin(PinCycleStop, HalPin.Type.BIT, HalPin.Dir.IN) as? HalPin<Boolean>
             pinJogIncrementValue = it.addPin(PinJogIncrement, HalPin.Type.FLOAT, HalPin.Dir.IN) as? HalPin<Float>
@@ -119,6 +122,10 @@ class HalRepositoryImpl(
 
     override fun setPowerFeedingStatus(isActive: Boolean) {
         pinIsPowerFeeding?.setPinValue(isActive)
+    }
+
+    override fun setSpindleStarted(isStarted: Boolean) {
+        pinSpindleStarted?.setPinValue(isStarted)
     }
 
     override fun getSpindleSwitchStatus(): Flow<SpindleSwitchStatus> {

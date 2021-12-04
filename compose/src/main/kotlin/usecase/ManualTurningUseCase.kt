@@ -63,7 +63,10 @@ class ManualTurningUseCase(
             .launchIn(scope)
 
         combine(
-            halRepository.getSpindleSwitchStatus(),
+            halRepository.getSpindleSwitchStatus()
+                .onEach {
+                    println("---spindle switch is: $it")
+                },
             spindleOpAllowed
         )
         { switchStatus, spindleAllowed ->
@@ -99,10 +102,14 @@ class ManualTurningUseCase(
         when (status) {
             SpindleSwitchStatus.REV -> "M4"
             SpindleSwitchStatus.FWD -> "M3"
-            SpindleSwitchStatus.NEUTRAL -> null //for now spindle stop is done in HAL
+            SpindleSwitchStatus.NEUTRAL -> {
+                halRepository.setSpindleStarted(false)
+                null //for now spindle stop is done in HAL
+            }
         }?.let {
             commandRepository.setTaskMode(TaskMode.TaskModeMDI)
             commandRepository.executeMdiCommand(it)
+            halRepository.setSpindleStarted(true)
             commandRepository.setTaskMode(TaskMode.TaskModeManual)
         }
     }
