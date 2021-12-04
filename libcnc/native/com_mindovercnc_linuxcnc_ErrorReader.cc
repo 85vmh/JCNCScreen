@@ -32,6 +32,7 @@
 #include <nml_oi.hh>
 #include <stdio.h>
 #include <cstring>
+#include <config.h>
 
 #include  <com_mindovercnc_linuxcnc_ErrorReader.h>
 

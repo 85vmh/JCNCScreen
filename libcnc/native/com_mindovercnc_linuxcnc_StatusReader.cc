@@ -33,6 +33,7 @@
 #include <stdio.h>
 #include <sys/time.h>
 #include <com_mindovercnc_linuxcnc_StatusReader.h>
+#include <config.h>
 
 static RCS_STAT_CHANNEL*   cStat;
 static EMC_STAT*           status;

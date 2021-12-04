@@ -32,7 +32,7 @@
 #include <cstring>
 #include <sys/time.h>
 #include  <com_mindovercnc_linuxcnc_CommandWriter.h>
-
+#include <config.h>
 
 static RCS_CMD_CHANNEL*  cCmd;
 static RCS_STAT_CHANNEL* cStat;

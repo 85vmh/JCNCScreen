@@ -40,6 +40,8 @@ class ManualTurningUseCase(
         .map { it.isHomed() }
         .distinctUntilChanged()
 
+    //af7d1d2ed1f2c86fdbe4dc1068063f41d1987d9f
+
     init {
         val spindleIsOn = statusRepository.cncStatusFlow()
             .map { it.isSpindleOn } //do this based on tool direction

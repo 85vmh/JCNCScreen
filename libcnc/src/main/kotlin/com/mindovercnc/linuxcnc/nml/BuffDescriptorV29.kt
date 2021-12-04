@@ -124,26 +124,26 @@ class BuffDescriptorV29() : BuffDescriptor {
         map[Key.Motion64AnalogInputsDouble] = DecodingInfo(8448, DecodingInfo.DataType.Object)
         map[Key.Motion64AnalogOutputsDouble] = DecodingInfo(8960, DecodingInfo.DataType.Object)
 
-        map[Key.MotionDebug] = DecodingInfo(9472, DecodingInfo.DataType.Integer)
-        map[Key.MotionOnSoftLimit] = DecodingInfo(9476, DecodingInfo.DataType.Integer)
-        map[Key.ExternalOffsetsApplied] = DecodingInfo(9480, DecodingInfo.DataType.Integer)
-        map[Key.ExternalOffsetsPositionXStart] = DecodingInfo(9488, DecodingInfo.DataType.Object)
-        map[Key.NumExtraJoints] = DecodingInfo(9560, DecodingInfo.DataType.Integer)
+        map[Key.MotionDebug] = DecodingInfo(9728, DecodingInfo.DataType.Integer)
+        map[Key.MotionOnSoftLimit] = DecodingInfo(9732, DecodingInfo.DataType.Integer)
+        map[Key.ExternalOffsetsApplied] = DecodingInfo(9736, DecodingInfo.DataType.Integer)
+        map[Key.ExternalOffsetsPositionXStart] = DecodingInfo(9744, DecodingInfo.DataType.Object)
+        map[Key.NumExtraJoints] = DecodingInfo(9816, DecodingInfo.DataType.Integer)
 
-        map[Key.IoCycleTime] = DecodingInfo(9680, DecodingInfo.DataType.Double)
-        map[Key.IoDebug] = DecodingInfo(9688, DecodingInfo.DataType.Integer)
-        map[Key.IoReason] = DecodingInfo(9692, DecodingInfo.DataType.Integer)
-        map[Key.IoFaultDuringM6] = DecodingInfo(9696, DecodingInfo.DataType.Integer)
+        map[Key.IoCycleTime] = DecodingInfo(9936, DecodingInfo.DataType.Double)
+        map[Key.IoDebug] = DecodingInfo(9944, DecodingInfo.DataType.Integer)
+        map[Key.IoReason] = DecodingInfo(9948, DecodingInfo.DataType.Integer)
+        map[Key.IoFaultDuringM6] = DecodingInfo(9952, DecodingInfo.DataType.Integer)
 
-        map[Key.IoPocketPrepared] = DecodingInfo(9808, DecodingInfo.DataType.Integer)
-        map[Key.IoLoadedTool] = DecodingInfo(9812, DecodingInfo.DataType.Integer)
+        map[Key.IoPocketPrepared] = DecodingInfo(10064, DecodingInfo.DataType.Integer)
+        map[Key.IoLoadedTool] = DecodingInfo(10068, DecodingInfo.DataType.Integer)
 
-        map[Key.IoCoolantMist] = DecodingInfo(10032, DecodingInfo.DataType.Integer)
-        map[Key.IoCoolantFlood] = DecodingInfo(10036, DecodingInfo.DataType.Integer)
+        map[Key.IoCoolantMist] = DecodingInfo(10288, DecodingInfo.DataType.Integer)
+        map[Key.IoCoolantFlood] = DecodingInfo(10292, DecodingInfo.DataType.Integer)
 
-        map[Key.IoAuxEstop] = DecodingInfo(10144, DecodingInfo.DataType.Integer)
-        map[Key.IoAuxLubeOn] = DecodingInfo(10256, DecodingInfo.DataType.Integer)
-        map[Key.IoAuxLubeLevelOk] = DecodingInfo(10260, DecodingInfo.DataType.Integer)
+        map[Key.IoAuxEstop] = DecodingInfo(10400, DecodingInfo.DataType.Integer)
+        map[Key.IoAuxLubeOn] = DecodingInfo(10512, DecodingInfo.DataType.Integer)
+        map[Key.IoAuxLubeLevelOk] = DecodingInfo(10516, DecodingInfo.DataType.Integer)
     }
 
     override val entries: Map<Key, DecodingInfo>
