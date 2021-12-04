@@ -3,8 +3,10 @@ package com.mindovercnc.linuxcnc
 import com.mindovercnc.base.HalRepository
 import com.mindovercnc.base.data.*
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flowOf
 
 private const val RefreshRate = 50L
 private const val ComponentName = "weiler-e30"

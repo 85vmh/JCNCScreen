@@ -65,21 +65,20 @@ fun MyWindow(
     state = windowState
 ) {
 
-    //withDI(CncModule) {
     val scope = rememberCoroutineScope {
         Dispatchers.IO
     }
-    withDI(iniFileModule(filePath), appScopeModule(scope), ViewModelModule, UseCaseModule, RepositoryModule, ParseFactoryModule, BuffDescriptorModule) {
-        val di = localDI()
-        val halRepository by di.instance<HalRepository>()
-
-//        halRepository.getJoystickStatus()
-//            .distinctUntilChanged()
-//            .onEach {
-//                println("-----JoystickStatus value is: $it")
-//            }
-//            .flowOn(Dispatchers.IO)
-//            .launchIn(GlobalScope)
+    withDI(
+        iniFileModule(filePath),
+        varFileModule("/home/vasimihalca/Work/linuxcnc-dev/configs/sim/axis/sim-lathe.var"),
+        toolFileModule("/home/vasimihalca/Work/linuxcnc-dev/configs/sim/axis/lathe.tbl"),
+        appScopeModule(scope),
+        ViewModelModule,
+        UseCaseModule,
+        RepositoryModule,
+        ParseFactoryModule,
+        BuffDescriptorModule
+    ) {
 
         MaterialTheme {
             BaseScreenView()

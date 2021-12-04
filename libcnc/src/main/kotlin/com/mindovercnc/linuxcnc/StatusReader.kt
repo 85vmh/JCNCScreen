@@ -31,37 +31,23 @@ import java.nio.ByteOrder
  *
  * **************************************************************************
  */
-class StatusReader(private val updateListener: StatusUpdateListener? = null) {
+class StatusReader {
     private val statusBuffer: ByteBuffer?
 
     init {
         statusBuffer = init()
         statusBuffer!!.order(ByteOrder.LITTLE_ENDIAN)
-        updateListener?.onInitialStatus(statusBuffer)
     }
 
-    fun refresh(interval: Long) = flow{
-        while (true){
+    fun refresh(interval: Long) = flow {
+        while (true) {
             readStatus()
             emit(statusBuffer)
             delay(interval)
         }
     }
 
-    @Deprecated("Was used by java code, get rid of it when removing java code")
-    fun update() {
-        readStatus()
-        if (statusBuffer == null) return
-        updateListener?.onStatusUpdated(statusBuffer)
-    }
-
     private external fun init(): ByteBuffer?
     private external fun readStatus(): Int
     external fun getString(offset: Int, length: Int): String?
-
-    @Deprecated("Was used by java code, remove when removing java code")
-    interface StatusUpdateListener {
-        fun onInitialStatus(statusBuffer: ByteBuffer?)
-        fun onStatusUpdated(statusBuffer: ByteBuffer)
-    }
 }

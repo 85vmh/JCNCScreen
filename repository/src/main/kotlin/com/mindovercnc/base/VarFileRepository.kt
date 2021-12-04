@@ -4,6 +4,6 @@ import com.mindovercnc.base.data.ParametersState
 import com.mindovercnc.base.data.Position
 import kotlinx.coroutines.flow.Flow
 
-interface ParametersFileRepository {
+interface VarFileRepository {
     fun getParametersState(): Flow<ParametersState>
 }

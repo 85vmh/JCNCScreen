@@ -21,12 +21,22 @@ val RepositoryModule = DI.Module("repository") {
     bindSingleton<CncCommandRepository> { CncCommandRepositoryImpl() }
     bindSingleton<HalRepository> { HalRepositoryImpl(instance("app_scope")) }
     bindSingleton<IniFileRepository> { IniFileRepositoryImpl(instance("ini")) }
+    bindSingleton<VarFileRepository> { VarFileRepositoryImpl(instance("app_scope"), instance("var")) }
+    bindSingleton<ToolFileRepository> { ToolFileRepositoryImpl(instance("app_scope"), instance("tool")) }
     bindSingleton { Preferences.userRoot() }
     bindSingleton<SettingsRepository> { SettingsRepositoryImpl(instance()) }
 }
 
 fun iniFileModule(filePath: String) = DI.Module("ini") {
     bindProvider("ini") { filePath }
+}
+
+fun toolFileModule(filePath: String) = DI.Module("tool") {
+    bindProvider("tool") { filePath }
+}
+
+fun varFileModule(filePath: String) = DI.Module("var") {
+    bindProvider("var") { filePath }
 }
 
 fun appScopeModule(scope: CoroutineScope) = DI.Module("app_scope") {

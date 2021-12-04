@@ -135,7 +135,7 @@ class IniFileRepositoryImpl(
                     do {
                         val group = line.substring(1, line.length - 1)
                         val subMap: MutableMap<String, String> = HashMap()
-                        var parts: Array<String>? = null
+                        var parts: Array<String>?
                         properties[group] = subMap
                         while (buffReader.readLine().also { it?.let { line = it } } != null) {
                             if (line.isEmpty()) continue

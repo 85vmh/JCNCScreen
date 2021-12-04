@@ -244,7 +244,7 @@ JNIEXPORT void JNICALL Java_com_mindovercnc_linuxcnc_CommandWriter_loadTaskPlan(
 JNIEXPORT void JNICALL Java_com_mindovercnc_linuxcnc_CommandWriter_loadToolTable(JNIEnv* env
                                                                            , jobject thisObject
                                                                            , jstring toolTableFile) {
-/*
+
   EMC_TOOL_LOAD_TOOL_TABLE ltt;
   const char*              fileName = NULL;
 
@@ -253,7 +253,6 @@ JNIEXPORT void JNICALL Java_com_mindovercnc_linuxcnc_CommandWriter_loadToolTable
      strcpy(ltt.file, fileName);
      }
   sendCommand(ltt);
-  */
   }
 
 

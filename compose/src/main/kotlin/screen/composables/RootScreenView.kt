@@ -82,7 +82,7 @@ fun RootScreenView(turningSettingsClicked: () -> Unit) {
                 Button(onClick = {
 
                 }) {
-                    Text("Stop jog")
+                    Text("Test Tool")
                 }
 
                 Button(onClick = {

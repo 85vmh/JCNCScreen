@@ -1,8 +1,9 @@
 package com.mindovercnc.linuxcnc
 
-import com.mindovercnc.base.ParametersFileRepository
+import com.mindovercnc.base.VarFileRepository
 import com.mindovercnc.base.data.ParametersState
 import com.mindovercnc.base.data.Position
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.filterNotNull
@@ -10,9 +11,10 @@ import java.io.File
 
 const val numCoordinateSystems = 9
 
-class ParametersFileRepositoryImpl constructor(
-    paramsFilePath: String
-) : ParametersFileRepository {
+class VarFileRepositoryImpl constructor(
+    scope: CoroutineScope,
+    varFilePath: String
+) : VarFileRepository {
 
     private data class ParsedLine(val paramNumber: Int, val paramValue: Double)
     private data class ParameterRange(val firstParamNumber: Int, val lastParamNumber: Int)
@@ -39,12 +41,15 @@ class ParametersFileRepositoryImpl constructor(
         return parametersState.filterNotNull()
     }
 
-    var params: ParametersState? = null
-
     init {
-        val builder = ParametersStateBuilder()
+        FileWatcher.watchChanges(scope, varFilePath, true) {
+            parametersState.value = getParametersState(varFilePath)
+        }
+    }
 
-        File(paramsFilePath).forEachLine { aLine ->
+    private fun getParametersState(varFilePath: String): ParametersState {
+        val builder = ParametersStateBuilder()
+        File(varFilePath).forEachLine { aLine ->
             with(aLine.split("\t")) {
                 val parsedLine = ParsedLine(this[0].toInt(), this[1].toDouble())
                 when (parsedLine.paramNumber) {
@@ -67,9 +72,7 @@ class ParametersFileRepositoryImpl constructor(
                 }
             }
         }
-
-        //parametersState.value = builder.build()
-        params = builder.build()
+        return builder.build()
     }
 
     private fun parsePositions(builders: ParametersStateBuilder, parsedLine: ParsedLine, firstParamNumber: Int) {
