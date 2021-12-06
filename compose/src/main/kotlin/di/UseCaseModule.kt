@@ -6,16 +6,49 @@ import org.kodein.di.bindSingleton
 import org.kodein.di.instance
 import usecase.ManualTurningUseCase
 import usecase.MessagesUseCase
+import usecase.OffsetsUseCase
+import usecase.ToolsUseCase
 
 val UseCaseModule = DI.Module("UseCase") {
     bindSingleton {
-        MessagesUseCase(instance())
+        MessagesUseCase(messagesRepository = instance())
     }
 
     bindSingleton {
-        ManualTurningUseCase(instance("app_scope"), instance(), instance(), instance(), instance(), instance(), instance(), instance(), instance())
+        ManualTurningUseCase(
+            scope = instance(tag = "app_scope"),
+            statusRepository = instance(),
+            commandRepository = instance(),
+            messagesRepository = instance(),
+            halRepository = instance(),
+            manualTurningHelper = instance(),
+            settingsRepository = instance()
+        )
     }
+
     bindSingleton {
-        ManualTurningHelper(instance())
+        ToolsUseCase(
+            scope = instance(tag = "app_scope"),
+            statusRepository = instance(),
+            commandRepository = instance(),
+            messagesRepository = instance(),
+            halRepository = instance(),
+            settingsRepository = instance(),
+            toolFileRepository = instance(),
+            varFileRepository = instance()
+        )
+    }
+
+    bindSingleton {
+        OffsetsUseCase(
+            scope = instance(tag = "app_scope"),
+            statusRepository = instance(),
+            commandRepository = instance(),
+            varFileRepository = instance()
+        )
+    }
+
+    bindSingleton {
+        ManualTurningHelper(iniFileRepository = instance())
     }
 }

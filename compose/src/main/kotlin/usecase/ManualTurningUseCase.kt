@@ -20,8 +20,6 @@ class ManualTurningUseCase(
     private val halRepository: HalRepository,
     private val manualTurningHelper: ManualTurningHelper,
     private val settingsRepository: SettingsRepository,
-    private val toolFileRepository: ToolFileRepository,
-    private val varFileRepository: VarFileRepository
 ) {
 
     private var joystickFunction = JoystickFunction.None
@@ -45,13 +43,6 @@ class ManualTurningUseCase(
     //af7d1d2ed1f2c86fdbe4dc1068063f41d1987d9f
 
     init {
-        toolFileRepository.getTools().onEach {
-            println("----Tool list size ${it.size}")
-            it.forEach { tool ->
-                println(tool)
-            }
-        }.launchIn(scope)
-
         val spindleIsOn = statusRepository.cncStatusFlow()
             .map { it.isSpindleOn } //do this based on tool direction
             .distinctUntilChanged()

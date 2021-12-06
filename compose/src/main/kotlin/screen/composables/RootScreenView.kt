@@ -18,7 +18,11 @@ import codegen.TurningProfile
 import kotlinx.coroutines.launch
 
 @Composable
-fun RootScreenView(turningSettingsClicked: () -> Unit) {
+fun RootScreenView(
+    turningSettingsClicked: () -> Unit,
+    toolLibraryClicked: () -> Unit,
+    offsetsClicked: () -> Unit
+) {
 
     val useCase: ManualTurningUseCase by rememberInstance()
     val scope = rememberCoroutineScope()
@@ -80,9 +84,15 @@ fun RootScreenView(turningSettingsClicked: () -> Unit) {
                 }
 
                 Button(onClick = {
-
+                    toolLibraryClicked.invoke()
                 }) {
-                    Text("Test Tool")
+                    Text("Tool Library")
+                }
+
+                Button(onClick = {
+                    offsetsClicked.invoke()
+                }) {
+                    Text("Offsets")
                 }
 
                 Button(onClick = {

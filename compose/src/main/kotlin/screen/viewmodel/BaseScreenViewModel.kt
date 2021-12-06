@@ -77,7 +77,15 @@ class BaseScreenViewModel constructor(
         screen = BaseScreen.TurningSettingsScreen
     }
 
-    fun turningSettingsClose() {
+    fun toolLibraryClicked() {
+        screen = BaseScreen.ToolLibraryScreen
+    }
+
+    fun offsetsClicked() {
+        screen = BaseScreen.G5xOffsetsScreen
+    }
+
+    fun toRootScreen() {
         screen = BaseScreen.RootScreen
     }
 }

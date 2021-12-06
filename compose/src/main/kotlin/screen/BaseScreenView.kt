@@ -4,8 +4,6 @@ import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.AlertDialog
-import androidx.compose.material.Button
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -67,11 +65,19 @@ fun BaseScreenView() {
             when (val screen = viewModel.screen) {
                 BaseScreen.SplashScreen -> SplashScreenView()
                 BaseScreen.NotHomedScreen -> NotHomedView()
-                BaseScreen.RootScreen -> RootScreenView {
-                    viewModel.turningSettingsClicked()
-                }
+                BaseScreen.RootScreen -> RootScreenView(
+                    turningSettingsClicked = { viewModel.turningSettingsClicked() },
+                    toolLibraryClicked = { viewModel.toolLibraryClicked() },
+                    offsetsClicked = { viewModel.offsetsClicked() }
+                )
                 is BaseScreen.TurningSettingsScreen -> TurningSettingsView() {
-                    viewModel.turningSettingsClose()
+                    viewModel.toRootScreen()
+                }
+                is BaseScreen.ToolLibraryScreen -> ToolLibraryView() {
+                    viewModel.toRootScreen()
+                }
+                is BaseScreen.G5xOffsetsScreen -> OffsetsView() {
+                    viewModel.toRootScreen()
                 }
             }
         }

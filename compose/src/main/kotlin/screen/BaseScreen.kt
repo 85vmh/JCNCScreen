@@ -5,4 +5,6 @@ sealed class BaseScreen {
     object NotHomedScreen : BaseScreen()
     object RootScreen : BaseScreen()
     object TurningSettingsScreen : BaseScreen()
+    object ToolLibraryScreen : BaseScreen()
+    object G5xOffsetsScreen : BaseScreen()
 }
