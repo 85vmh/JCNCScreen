@@ -3,27 +3,32 @@ package codegen
 import extensions.stripZeros
 
 class TurningOperation(
-    private val geometryData: TurningProfile,
+    private val profileGeometry: ProfileGeometry,
     private val turningStrategies: List<TurningStrategy>,
     private val startingXPosition: Double,
     private val startingZPosition: Double,
 ) : Operation {
 
     override fun getComment(): List<String> {
-        TODO("Not yet implemented")
+        return mutableListOf<String>().apply {
+            add("(Turning operation)")
+        }
     }
 
     override fun getOperationCode(): List<String> {
         return mutableListOf<String>().apply {
+            add("(The subroutine above, defines the profile of the cut)")
             addAll(subroutineLines)
             add("\n")
             turningStrategies.forEach {
                 when (it) {
                     is TurningStrategy.Roughing -> {
+                        add("(Roughing)")
                         add("G40 M6 T${it.toolNumber} G43")
                         add(it.direction.code + it.cutType.prefix + commonParams + it.strategyParams)
                     }
                     is TurningStrategy.Finishing -> {
+                        add("(Finishing)")
                         add("G40 M6 T${it.toolNumber} G43")
                         it.feedRate?.let { feed ->
                             add("F${feed.stripZeros()}")
@@ -77,15 +82,15 @@ class TurningOperation(
     }
 
     private val commonParams: String
-        get() = " Q${geometryData.subroutineNumber}" +
+        get() = " Q${profileGeometry.subroutineNumber}" +
                 " X${startingXPosition.stripZeros()}" +
                 " Z${startingZPosition.stripZeros()}"
 
     private val subroutineLines = mutableListOf<String>().apply {
-        add("O${geometryData.subroutineNumber} SUB")
-        geometryData.getProfile().forEach {
+        add("O${profileGeometry.subroutineNumber} SUB")
+        profileGeometry.getProfile().forEach {
             add("\t$it")
         }
-        add("O${geometryData.subroutineNumber} ENDSUB")
+        add("O${profileGeometry.subroutineNumber} ENDSUB")
     }
 }

@@ -1,6 +1,6 @@
 package codegen
 
-class TurningProfile {
+class ProfileGeometry {
 
     fun getProfile(): List<String> {
         val result = mutableListOf<String>()

@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOf
 
-private const val RefreshRate = 50L
+private const val RefreshRate = 5L
 private const val ComponentName = "weiler-e30"
 private const val PinJoystickXPlus = "joystick-x-plus"
 private const val PinJoystickXMinus = "joystick-x-minus"

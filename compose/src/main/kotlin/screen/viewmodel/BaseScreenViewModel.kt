@@ -88,4 +88,12 @@ class BaseScreenViewModel constructor(
     fun toRootScreen() {
         screen = BaseScreen.RootScreen
     }
+
+    fun conversationalClicked() {
+        screen = BaseScreen.ConversationalScreen
+    }
+
+    fun programsClicked() {
+        screen = BaseScreen.ProgramsScreen
+    }
 }

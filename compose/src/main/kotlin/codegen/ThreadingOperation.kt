@@ -6,6 +6,7 @@ import kotlin.math.sqrt
 
 class ThreadingOperation(
     private val toolNumber: Int,
+    private val spindleSpeed: Int,
     private val startPoint: Point,
     private val threadPitch: Double,
     private val finalZPosition: Double,
@@ -25,6 +26,8 @@ class ThreadingOperation(
 
     override fun getOperationCode(): List<String> {
         val lines = mutableListOf<String>()
+        lines.add("G95")
+        lines.add("G97 S$spindleSpeed")
         lines.add("M6 T$toolNumber G43")
 
         val leadOffset = threadPitch / threadStarts

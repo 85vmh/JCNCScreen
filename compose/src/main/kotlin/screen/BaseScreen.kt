@@ -7,4 +7,6 @@ sealed class BaseScreen {
     object TurningSettingsScreen : BaseScreen()
     object ToolLibraryScreen : BaseScreen()
     object G5xOffsetsScreen : BaseScreen()
+    object ConversationalScreen : BaseScreen()
+    object ProgramsScreen : BaseScreen()
 }

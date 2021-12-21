@@ -4,10 +4,7 @@ import codegen.ManualTurningHelper
 import org.kodein.di.DI
 import org.kodein.di.bindSingleton
 import org.kodein.di.instance
-import usecase.ManualTurningUseCase
-import usecase.MessagesUseCase
-import usecase.OffsetsUseCase
-import usecase.ToolsUseCase
+import usecase.*
 
 val UseCaseModule = DI.Module("UseCase") {
     bindSingleton {
@@ -23,6 +20,13 @@ val UseCaseModule = DI.Module("UseCase") {
             halRepository = instance(),
             manualTurningHelper = instance(),
             settingsRepository = instance()
+        )
+    }
+
+    bindSingleton {
+        ManualPositionUseCase(
+            scope = instance(tag = "app_scope"),
+            cncStatusRepository = instance(),
         )
     }
 
@@ -47,6 +51,25 @@ val UseCaseModule = DI.Module("UseCase") {
             varFileRepository = instance()
         )
     }
+
+    bindSingleton {
+        ConversationalUseCase(
+            scope = instance(tag = "app_scope"),
+            statusRepository = instance(),
+            commandRepository = instance(),
+            settingsRepository = instance()
+        )
+    }
+
+    bindSingleton {
+        ProgramsUseCase(
+            scope = instance(tag = "app_scope"),
+            statusRepository = instance(),
+            commandRepository = instance(),
+            settingsRepository = instance()
+        )
+    }
+
 
     bindSingleton {
         ManualTurningHelper(iniFileRepository = instance())

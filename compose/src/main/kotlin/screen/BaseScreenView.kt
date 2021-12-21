@@ -68,15 +68,23 @@ fun BaseScreenView() {
                 BaseScreen.RootScreen -> RootScreenView(
                     turningSettingsClicked = { viewModel.turningSettingsClicked() },
                     toolLibraryClicked = { viewModel.toolLibraryClicked() },
-                    offsetsClicked = { viewModel.offsetsClicked() }
+                    offsetsClicked = { viewModel.offsetsClicked() },
+                    programsClicked = { viewModel.programsClicked() },
+                    conversationalClicked = { viewModel.conversationalClicked() }
                 )
-                is BaseScreen.TurningSettingsScreen -> TurningSettingsView() {
+                is BaseScreen.TurningSettingsScreen -> TurningSettingsView {
                     viewModel.toRootScreen()
                 }
-                is BaseScreen.ToolLibraryScreen -> ToolLibraryView() {
+                is BaseScreen.ToolLibraryScreen -> ToolLibraryView {
                     viewModel.toRootScreen()
                 }
-                is BaseScreen.G5xOffsetsScreen -> OffsetsView() {
+                is BaseScreen.G5xOffsetsScreen -> OffsetsView {
+                    viewModel.toRootScreen()
+                }
+                is BaseScreen.ProgramsScreen -> ProgramsView {
+                    viewModel.toRootScreen()
+                }
+                is BaseScreen.ConversationalScreen -> ConversationalView {
                     viewModel.toRootScreen()
                 }
             }

@@ -15,7 +15,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.unit.*
-import kotlinx.coroutines.flow.map
 import org.kodein.di.compose.rememberInstance
 import usecase.ManualTurningUseCase
 import usecase.model.SpindleControlMode
@@ -32,25 +31,16 @@ fun SpindleStatusView(
 ) {
     val useCase: ManualTurningUseCase by rememberInstance()
 
-    data class SpindleModeAndUnits(val mode: String, val units: String)
+    data class SpindleModeAndUnits(val mode: String, val value: String, val units: String)
 
-    val spindleMode by useCase.spindleMode
-        .map {
-            when (it) {
-                SpindleControlMode.CSS -> SpindleModeAndUnits("CSS", "m/min")
-                SpindleControlMode.RPM -> SpindleModeAndUnits("RPM", "rev/min")
-            }
-        }.collectAsState(SpindleModeAndUnits("???", "??/??"))
-
-    val mode by useCase.spindleMode.collectAsState(null)
-
-    val setSpeed by useCase.setSpindleSpeed.collectAsState(0)
+    val spModeWithUnits = when (useCase.getSpindleState().spindleMode.value) {
+        SpindleControlMode.CSS -> SpindleModeAndUnits("CSS", useCase.getSpindleState().cssValue.value, "m/min")
+        SpindleControlMode.RPM -> SpindleModeAndUnits("RPM", useCase.getSpindleState().rpmValue.value, "rev/min")
+    }
 
     val spindleOverride by useCase.spindleOverride.collectAsState(0)
 
     val actualSpeed by useCase.actualSpindleSpeed.collectAsState(0)
-
-    val cssMaxSpeed by useCase.cssMaxSpeed.collectAsState(0)
 
     Card(
         shape = RoundedCornerShape(8.dp),
@@ -91,12 +81,12 @@ fun SpindleStatusView(
             * */
 
 
-            SettingStatusRow("Set ${spindleMode.mode}:", setSpeed.toString(), spindleMode.units, modifier = settingsModifier)
-            if (mode == SpindleControlMode.CSS) {
-                SettingStatusRow("Max speed:", cssMaxSpeed.toString(), "rev/min", modifier = settingsModifier)
+            SettingStatusRow("Set ${spModeWithUnits.mode}:", spModeWithUnits.value, spModeWithUnits.units, modifier = settingsModifier)
+            if (useCase.getSpindleState().spindleMode.value == SpindleControlMode.CSS) {
+                SettingStatusRow("Max RPM:", useCase.getSpindleState().maxCssRpm.value, "rev/min", modifier = settingsModifier)
             }
             SettingStatusRow("Override:", spindleOverride.toString(), "%", modifier = settingsModifier)
-            SettingStatusRow("Actual speed:", actualSpeed.toString(), "rev/min", modifier = settingsModifier)
+            SettingStatusRow("Actual RPM:", actualSpeed.toString(), "rev/min", modifier = settingsModifier)
             SettingStatusRow("Oriented stop at:", "150", "degrees", modifier = settingsModifier)
         }
     }

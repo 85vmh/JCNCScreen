@@ -3,6 +3,8 @@ package com.mindovercnc.base.data
 interface SettingKey
 
 enum class IntegerKey() : SettingKey {
+    SpindleMode,
+    FeedMode,
     RpmValue,
     CssValue,
     MaxCssRpm,

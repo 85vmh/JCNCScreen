@@ -10,7 +10,8 @@ import java.io.IOException
 class IniFileRepositoryImpl(
     iniFilePath: String
 ) : IniFileRepository {
-    var parsedFile: Map<String, Map<String, String>>
+    private var parsedFile: Map<String, Map<String, String>>
+    val rootPath = iniFilePath.substring(0, iniFilePath.lastIndexOf("/") + 1)
 
     init {
         parsedFile = parseIniFile(iniFilePath)
@@ -18,8 +19,8 @@ class IniFileRepositoryImpl(
 
     override fun getIniFile(): IniFile {
         var programPrefix = ""
-        var parameterFile = ""
-        var toolTableFile = ""
+        var parameterFile = rootPath
+        var toolTableFile = rootPath
         val jointParameters = mutableListOf<IniFile.JointParameters>()
 
         if (parsedFile.keys.contains(Section.DISPLAY.name)) {
@@ -35,7 +36,7 @@ class IniFileRepositoryImpl(
             parsedFile[Section.RS274NGC.name]?.let { displaySection ->
                 if (displaySection.keys.contains(Parameter.PARAMETER_FILE.name)) {
                     displaySection[Parameter.PARAMETER_FILE.name]?.let {
-                        parameterFile = it
+                        parameterFile += it
                     }
                 }
             }
@@ -44,7 +45,7 @@ class IniFileRepositoryImpl(
             parsedFile[Section.EMCIO.name]?.let { displaySection ->
                 if (displaySection.keys.contains(Parameter.TOOL_TABLE.name)) {
                     displaySection[Parameter.TOOL_TABLE.name]?.let {
-                        toolTableFile = it
+                        toolTableFile += it
                     }
                 }
             }

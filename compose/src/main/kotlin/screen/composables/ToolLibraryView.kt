@@ -1,6 +1,7 @@
 package screen.composables
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -15,6 +16,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.mindovercnc.base.data.LatheTool
 import extensions.trimDigits
@@ -32,12 +34,7 @@ fun ToolLibraryView(onFinish: () -> Unit) {
         contentAlignment = Alignment.Center
     ) {
 
-        val longerList = mutableListOf<LatheTool>()
-        longerList.addAll(toolsList)
-        longerList.addAll(toolsList)
-        longerList.addAll(toolsList)
-        longerList.addAll(toolsList)
-        ToolsList(longerList)
+        ToolsList(toolsList)
 
         Button(onClick = {
             onFinish.invoke()
@@ -65,22 +62,56 @@ fun ToolsList(toolsList: List<LatheTool>) {
     }
 }
 
+enum class ColumnModifier(val modifier: Modifier) {
+    ToolNo(Modifier.width(60.dp)),
+    XOffs(Modifier.width(80.dp)),
+    ZOffs(Modifier.width(80.dp)),
+    XWear(Modifier.width(80.dp)),
+    ZWear(Modifier.width(80.dp)),
+    TipRadius(Modifier.width(100.dp)),
+    Orientation(Modifier.width(110.dp)),
+}
+
 @Composable
 fun ToolsHeader(modifier: Modifier = Modifier) {
     Row(
-        modifier = modifier
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
-            modifier = Modifier.width(80.dp),
-            text = "Tool No"
+            modifier = ColumnModifier.ToolNo.modifier,
+            textAlign = TextAlign.Center,
+            text = "Tool #"
         )
         Text(
-            modifier = Modifier.width(100.dp),
-            text = "X Offset"
+            modifier = ColumnModifier.XOffs.modifier,
+            textAlign = TextAlign.Right,
+            text = "X"
         )
         Text(
-            modifier = Modifier.width(100.dp),
-            text = "Z Offset"
+            modifier = ColumnModifier.ZOffs.modifier,
+            textAlign = TextAlign.Right,
+            text = "Z"
+        )
+        Text(
+            modifier = ColumnModifier.XWear.modifier,
+            textAlign = TextAlign.Right,
+            text = "X Wear"
+        )
+        Text(
+            modifier = ColumnModifier.ZWear.modifier,
+            textAlign = TextAlign.Right,
+            text = "Z Wear"
+        )
+        Text(
+            modifier = ColumnModifier.TipRadius.modifier,
+            textAlign = TextAlign.Right,
+            text = "Tip Radius"
+        )
+        Text(
+            modifier = ColumnModifier.Orientation.modifier,
+            textAlign = TextAlign.Right,
+            text = "Orientation"
         )
     }
 }
@@ -89,6 +120,7 @@ fun ToolsHeader(modifier: Modifier = Modifier) {
 fun ToolRow(item: LatheTool, modifier: Modifier = Modifier) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
         modifier = modifier
             .fillMaxWidth()
             .height(60.dp)
@@ -97,16 +129,39 @@ fun ToolRow(item: LatheTool, modifier: Modifier = Modifier) {
             }
     ) {
         Text(
-            modifier = Modifier.width(80.dp),
+            modifier = ColumnModifier.ToolNo.modifier,
+            textAlign = TextAlign.Center,
             text = item.toolNo.toString()
         )
         Text(
-            modifier = Modifier.width(100.dp),
+            modifier = ColumnModifier.XOffs.modifier,
+            textAlign = TextAlign.Right,
             text = item.xOffset.trimDigits()
         )
         Text(
-            modifier = Modifier.width(100.dp),
+            modifier = ColumnModifier.ZOffs.modifier,
+            textAlign = TextAlign.Right,
             text = item.zOffset.trimDigits()
+        )
+        Text(
+            modifier = ColumnModifier.XWear.modifier,
+            textAlign = TextAlign.Right,
+            text = item.xWear.trimDigits()
+        )
+        Text(
+            modifier = ColumnModifier.ZWear.modifier,
+            textAlign = TextAlign.Right,
+            text = item.zWear.trimDigits()
+        )
+        Text(
+            modifier = ColumnModifier.TipRadius.modifier,
+            textAlign = TextAlign.Right,
+            text = item.tipRadius.trimDigits()
+        )
+        Text(
+            modifier = ColumnModifier.Orientation.modifier,
+            textAlign = TextAlign.Center,
+            text = item.orientation.angle.toString()
         )
     }
 }

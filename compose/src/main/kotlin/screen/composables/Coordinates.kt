@@ -9,12 +9,10 @@ import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.layout.HorizontalAlignmentLine
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
@@ -24,17 +22,15 @@ import androidx.compose.ui.unit.sp
 import extensions.trimDigits
 import org.kodein.di.compose.rememberInstance
 import screen.uimodel.AxisPosition
-import screen.viewmodel.CoordinatesViewModel
 import themes.ComposeFonts
-import java.math.BigDecimal
-import java.math.RoundingMode
+import usecase.ManualPositionUseCase
 
 @Composable
 @Preview
 private fun CoordinatesPreview() {
     Column {
-        AxisCoordinate(AxisPosition(axis = AxisPosition.Axis.X, primaryValue = 123.562788993, secondaryValue = -23.2213, units = AxisPosition.Units.MM))
-        AxisCoordinate(AxisPosition(axis = AxisPosition.Axis.Z, primaryValue = 123.562788993, units = AxisPosition.Units.MM))
+        //AxisCoordinate(AxisPosition(axis = AxisPosition.Axis.X, primaryValue = 123.562788993, secondaryValue = -23.2213, units = AxisPosition.Units.MM), )
+        //AxisCoordinate(AxisPosition(axis = AxisPosition.Axis.Z, primaryValue = 123.562788993, units = AxisPosition.Units.MM))
     }
 }
 
@@ -48,8 +44,8 @@ private enum class PositionType(
 
 @Composable
 fun CoordinatesView(modifier: Modifier = Modifier) {
-    val viewModel: CoordinatesViewModel by rememberInstance()
-    val model by viewModel.uiModel.collectAsState(null)
+    val useCase: ManualPositionUseCase by rememberInstance()
+    val model = useCase.uiModel.collectAsState(null).value
 
     Row(
         modifier = modifier
@@ -65,15 +61,31 @@ fun CoordinatesView(modifier: Modifier = Modifier) {
 
         ) {
             model?.let {
-                AxisCoordinate(it.xAxisPos, it.isDiameterMode)
-                AxisCoordinate(it.zAxisPos)
+
+                AxisCoordinate(
+                    it.xAxisPos,
+                    it.isDiameterMode,
+                    zeroPosClicked = { useCase.setZeroPosX() },
+                    absRelClicked = { useCase.toggleXAbsRel() }
+                )
+                AxisCoordinate(
+                    it.zAxisPos,
+                    zeroPosClicked = { useCase.setZeroPosZ() },
+                    absRelClicked = { useCase.toggleZAbsRel() }
+                )
             }
         }
     }
 }
 
 @Composable
-private fun AxisCoordinate(axisPosition: AxisPosition, isDiameterMode: Boolean = false, modifier: Modifier = Modifier) {
+private fun AxisCoordinate(
+    axisPosition: AxisPosition,
+    isDiameterMode: Boolean = false,
+    modifier: Modifier = Modifier,
+    zeroPosClicked: () -> Unit,
+    absRelClicked: () -> Unit
+) {
     Box(
         modifier = Modifier
             .height(80.dp)
@@ -91,8 +103,12 @@ private fun AxisCoordinate(axisPosition: AxisPosition, isDiameterMode: Boolean =
             SpacerOrDiameter(axisPosition.axis == AxisPosition.Axis.X && isDiameterMode, modifier = Modifier.alignByBaseline())
             Position(PositionType.PRIMARY, axisPosition, isDiameterMode, modifier = Modifier.alignByBaseline())
             Units(axisPosition.units, modifier = Modifier.alignByBaseline())
-            ZeroPos(axisPosition, modifier = Modifier.padding(start = 16.dp))
-            AbsRel(modifier = Modifier.padding(start = 16.dp))
+            ZeroPos(axisPosition, modifier = Modifier.padding(start = 16.dp)) {
+                zeroPosClicked.invoke()
+            }
+            AbsRel(modifier = Modifier.padding(start = 16.dp)) {
+                absRelClicked.invoke()
+            }
         }
     }
 }
@@ -155,9 +171,9 @@ private fun Units(units: AxisPosition.Units, modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun ZeroPos(axisPosition: AxisPosition, modifier: Modifier = Modifier) {
+private fun ZeroPos(axisPosition: AxisPosition, modifier: Modifier = Modifier, onClick: () -> Unit) {
     Button(
-        onClick = {},
+        onClick = onClick,
         modifier.fillMaxHeight()
     ) {
         Text("ZERO\n${axisPosition.axis.name}-Pos")
@@ -165,8 +181,8 @@ private fun ZeroPos(axisPosition: AxisPosition, modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun AbsRel(modifier: Modifier = Modifier) {
-    Button(onClick = {}, modifier.fillMaxHeight()) {
+private fun AbsRel(modifier: Modifier = Modifier, onClick: () -> Unit) {
+    Button(onClick = onClick, modifier.fillMaxHeight()) {
         Text("ABS\nREL")
     }
 }

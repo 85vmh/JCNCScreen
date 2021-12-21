@@ -6,6 +6,8 @@ data class LatheTool(
     val orientation: Orientation,
     val xOffset: Double,
     val zOffset: Double,
+    val xWear: Double,
+    val zWear: Double,
     val frontAngle: Double,
     val backAngle: Double,
     val tipRadius: Double,
@@ -46,6 +48,8 @@ data class LatheTool(
         var orientation: Orientation = Orientation.Position2
         var xOffset = 0.0
         var zOffset = 0.0
+        var xWear = 0.0
+        var zWear = 0.0
         var frontAngle = 0.0
         var backAngle = 0.0
         var tipRadius = 0.0
@@ -57,6 +61,8 @@ data class LatheTool(
             orientation = orientation,
             xOffset = xOffset,
             zOffset = zOffset,
+            xWear = xWear,
+            zWear = zWear,
             frontAngle = frontAngle,
             backAngle = backAngle,
             tipRadius = tipRadius,

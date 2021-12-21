@@ -19,6 +19,7 @@ import com.mindovercnc.base.data.FeedMode
 import kotlinx.coroutines.flow.map
 import org.kodein.di.compose.rememberInstance
 import usecase.ManualTurningUseCase
+import usecase.model.FeedRateMode
 
 @Composable
 @Preview
@@ -33,21 +34,24 @@ fun FeedStatusView(modifier: Modifier = Modifier) {
 
     data class FeedModeAndUnits(val mode: String, val units: String)
 
-    val feed by useCase.feedMode
-        .map {
-            when (it) {
-                FeedMode.UNITS_PER_REVOLUTION -> FeedModeAndUnits("Units per revolution", "mm/rev")
-                FeedMode.UNITS_PER_MINUTE -> FeedModeAndUnits("Units per minute", "mm/min")
-                else -> FeedModeAndUnits("Undefined", "??/??")
-            }
-        }.collectAsState(FeedModeAndUnits("Undefined", "??/??"))
+    var setFeed = "0.0"
+    val feed = when (useCase.getFeedState().feedRateMode.value) {
+        FeedRateMode.UNITS_PER_REVOLUTION -> {
+            setFeed = useCase.getFeedState().unitsPerRevValue.value
+            FeedModeAndUnits("Units per revolution", "mm/rev")
+        }
+        FeedRateMode.UNITS_PER_MINUTE -> {
+            setFeed = useCase.getFeedState().unitsPerMinValue.value
+            FeedModeAndUnits("Units per minute", "mm/min")
+        }
+        else -> {
+            FeedModeAndUnits("Undefined", "??/??")
+        }
+    }
 
-    val setFeed by useCase.setFeedRate.collectAsState(0.0)
-
-    val feedOverride by useCase.feedOverride.collectAsState(0.0)
+    val feedOverride by useCase.feedOverride.map { it.toInt() }.collectAsState(0)
 
     val actualSpeed by useCase.actualFeedRate.collectAsState(0.0)
-
 
 
     Card(
@@ -72,7 +76,7 @@ fun FeedStatusView(modifier: Modifier = Modifier) {
                 thickness = 1.dp
             )
             SettingStatusRow("Mode:", feed.mode, modifier = settingsModifier)
-            SettingStatusRow("Set feed:", setFeed.toString(), feed.units, modifier = settingsModifier)
+            SettingStatusRow("Set feed:", setFeed, feed.units, modifier = settingsModifier)
             SettingStatusRow("Override:", feedOverride.toString(), "%", modifier = settingsModifier)
             SettingStatusRow("Actual feed:", actualSpeed.toString(), feed.units, modifier = settingsModifier)
         }

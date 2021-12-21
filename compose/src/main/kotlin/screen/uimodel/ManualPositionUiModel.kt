@@ -1,7 +1,7 @@
 package screen.uimodel
 
-data class RootScreenUiModel(
-    val zAxisPos: AxisPosition,
+data class ManualPositionUiModel(
     val xAxisPos: AxisPosition,
+    val zAxisPos: AxisPosition,
     val isDiameterMode: Boolean,
 )

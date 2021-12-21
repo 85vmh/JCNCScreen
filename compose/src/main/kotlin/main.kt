@@ -70,8 +70,6 @@ fun MyWindow(
     }
     withDI(
         iniFileModule(filePath),
-        varFileModule("/home/vasimihalca/Work/linuxcnc-dev/configs/sim/axis/sim-lathe.var"),
-        toolFileModule("/home/vasimihalca/Work/linuxcnc-dev/configs/sim/axis/lathe.tbl"),
         appScopeModule(scope),
         ViewModelModule,
         UseCaseModule,

@@ -6,25 +6,28 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import codegen.ManualTurningHelper
 import org.kodein.di.compose.rememberInstance
 import usecase.ManualTurningUseCase
-import codegen.TurningProfile
-import kotlinx.coroutines.launch
 
 @Composable
 fun RootScreenView(
     turningSettingsClicked: () -> Unit,
     toolLibraryClicked: () -> Unit,
-    offsetsClicked: () -> Unit
+    offsetsClicked: () -> Unit,
+    programsClicked: () -> Unit,
+    conversationalClicked: () -> Unit
 ) {
 
     val useCase: ManualTurningUseCase by rememberInstance()
+
     val scope = rememberCoroutineScope()
 //
 //    val snackbarHostState = remember{ SnackbarHostState().apply {
@@ -75,28 +78,44 @@ fun RootScreenView(
                 horizontalAlignment = Alignment.CenterHorizontally
 
             ) {
+                val btnModifier = Modifier.height(50.dp)
 
-
-                Button(onClick = {
-                    useCase.toggleTaperTurning()
-                }) {
+                Button(
+                    modifier = btnModifier,
+                    onClick = {
+                        useCase.toggleTaperTurning()
+                    }) {
                     Text(if (taperTurningActive) "Taper Turning OFF" else "Taper Turning ON")
                 }
 
-                Button(onClick = {
-                    toolLibraryClicked.invoke()
-                }) {
+                Button(
+                    modifier = btnModifier,
+                    onClick = {
+                        toolLibraryClicked.invoke()
+                    }) {
                     Text("Tool Library")
                 }
 
-                Button(onClick = {
-                    offsetsClicked.invoke()
-                }) {
+                Button(
+                    modifier = btnModifier,
+                    onClick = {
+                        offsetsClicked.invoke()
+                    }) {
                     Text("Offsets")
                 }
 
-                Button(onClick = {
+                Button(
+                    modifier = btnModifier,
+                    onClick = {
+                        programsClicked.invoke()
+                    }) {
+                    Text("Programs")
+                }
 
+                Button(
+                    modifier = btnModifier,
+                    onClick = {
+                        conversationalClicked.invoke()
 //                    val generator = ThreadGenerator(1.0, -10.0, 1.0, 0.2)
 //                    println(generator.getGCode())
 
@@ -133,8 +152,8 @@ fun RootScreenView(
 //                        println(it)
 //                    }
 
-                }) {
-                    Text("Test Code")
+                    }) {
+                    Text("Conversational")
                 }
 
             }
