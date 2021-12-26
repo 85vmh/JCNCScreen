@@ -1,107 +1,55 @@
 package screen.composables
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.material.Checkbox
+import androidx.compose.material.RadioButton
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import org.kodein.di.compose.rememberInstance
 import usecase.ManualTurningUseCase
 import usecase.model.FeedRateMode
 import usecase.model.FeedState
 import usecase.model.SpindleControlMode
 import usecase.model.SpindleState
 
-
 @Composable
-private fun ManualTurningUseCase.createSpindleState(): State<SpindleState?> {
-    return produceState<SpindleState?>(null) {
-        value = getSpindleState()
+fun TurningSettingsView(
+    viewModel: TurningSettingsViewModel,
+    modifier: Modifier
+) {
+    Column(
+        modifier = modifier.padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        CardWithTitle("Spindle") {
+            SpindleDisplay(
+                state = viewModel.spindleState,
+                modifier = Modifier.padding(top = 8.dp),
+            )
+        }
+        CardWithTitle("Feed") {
+            FeedDisplay(
+                state = viewModel.feedState,
+                modifier = Modifier.padding(top = 8.dp, bottom = 8.dp)
+            )
+        }
     }
 }
 
-@Composable
-private fun ManualTurningUseCase.createFeedState(): State<FeedState?> {
-    return produceState<FeedState?>(null) {
-        value = getFeedState()
-    }
-}
-
-@Composable
-fun TurningSettingsView(onFinish: () -> Unit) {
-    val useCase: ManualTurningUseCase by rememberInstance()
-
+class TurningSettingsViewModel(
+    val useCase: ManualTurningUseCase
+) {
     val spindleState: SpindleState = useCase.getSpindleState()
     val feedState: FeedState = useCase.getFeedState()
 
-    TurningSettingsContent(spindleState, feedState) {
-        useCase.applyFeedSettings(feedState) //this needs to be called first
+    fun save() {
+        useCase.applyFeedSettings(feedState)
         useCase.applySpindleSettings(spindleState)
-        onFinish.invoke()
-    }
-}
-
-@Composable
-fun TurningSettingsContent(spindleState: SpindleState, feedState: FeedState, onFinish: () -> Unit) {
-    val numPadState = remember {
-        NumPadState().apply {
-            setFieldState(
-                spindleState.rpmValue
-            )
-        }
-    }
-
-    Column {
-        Row(
-            modifier = Modifier.weight(1f)
-        ) {
-            Column(
-                verticalArrangement = Arrangement.spacedBy(16.dp), modifier = Modifier.weight(1f).align(Alignment.Top).padding(16.dp)
-            ) {
-                CardWithTitle("Spindle") {
-                    SpindleDisplay(
-                        state = spindleState,
-                        modifier = Modifier.padding(top = 8.dp),
-                    )
-                }
-                CardWithTitle("Feed") {
-                    FeedDisplay(
-                        state = feedState, modifier = Modifier.padding(top = 8.dp, bottom = 8.dp)
-                    )
-                }
-            }
-            Spacer(modifier = Modifier.fillMaxHeight().width(1.dp).background(color = Color.Black))
-            NumPadView(
-                modifier = Modifier.fillMaxHeight().width(300.dp), state = numPadState
-            )
-        }
-
-        Row(
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            modifier = Modifier.fillMaxWidth().padding(bottom = 10.dp).height(50.dp).background(Color(170, 170, 180))
-        ) {
-            Button(modifier = Modifier.fillMaxHeight(), onClick = {
-                onFinish.invoke()
-            }) {
-                Text("<- Back")
-            }
-
-            Button(modifier = Modifier.fillMaxHeight(), onClick = {
-                println("Spindle mode: ${spindleState.spindleMode}")
-                println("Rpm value ${spindleState.rpmValue}")
-                println("css value ${spindleState.cssValue}")
-                println("stop active ${spindleState.orientedStop}")
-                println("Stop angle ${spindleState.stopAngle}")
-
-                onFinish.invoke()
-            }) {
-                Text("Apply Changes")
-            }
-        }
     }
 }
 

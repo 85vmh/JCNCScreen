@@ -3,7 +3,7 @@ package screen.composables
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
-import androidx.compose.material.Text
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -22,7 +22,7 @@ import screen.composables.platform.NcFilesFolder
 import usecase.ProgramsUseCase
 
 @Composable
-fun ProgramsView(onFinish: () -> Unit) {
+fun ProgramsView(modifier: Modifier) {
     val useCase: ProgramsUseCase by rememberInstance()
     val scope = rememberCoroutineScope()
 
@@ -36,34 +36,23 @@ fun ProgramsView(onFinish: () -> Unit) {
         )
     }
 
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
+    Row(
+        modifier = modifier
     ) {
-        Row {
-            Column(
-                modifier = Modifier
-                    .background(color = Color.Green)
-                    .width(300.dp)
-            ) {
-                FileTreeView(model.fileTree)
-            }
-            if (model.editors.active != null) {
-                Column(Modifier.weight(1f)) {
-                    //TODO: add a title and a path here
-                    EditorView(model.editors.active!!, model.settings)
-                }
-            } else {
-                EditorEmptyView()
-            }
+        Column(
+            modifier = Modifier
+                .background(color = Color.Green)
+                .width(300.dp)
+        ) {
+            FileTreeView(model.fileTree)
         }
-
-
-
-        Button(onClick = {
-            onFinish.invoke()
-        }) {
-            Text("<- Back")
+        if (model.editors.active != null) {
+            Column(Modifier.weight(1f)) {
+                //TODO: add a title and a path here
+                EditorView(model.editors.active!!, model.settings)
+            }
+        } else {
+            EditorEmptyView()
         }
     }
 }

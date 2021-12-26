@@ -1,28 +1,19 @@
 // Copyright 2000-2021 JetBrains s.r.o. and contributors. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
 @file:Suppress("FunctionName")
 
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
-import com.mindovercnc.base.HalRepository
 import com.mindovercnc.linuxcnc.CncInitializer
 import di.*
 import kotlinx.coroutines.Dispatchers
-import org.kodein.di.compose.localDI
 import org.kodein.di.compose.withDI
-import org.kodein.di.instance
 import screen.BaseScreenView
-import screen.composables.VtkState
-import screen.composables.VtkView
-import vtk.*
+import themes.AppTheme
 import java.io.File
 import java.lang.IllegalArgumentException
 
@@ -78,11 +69,10 @@ fun MyWindow(
         BuffDescriptorModule
     ) {
 
-        MaterialTheme {
+        AppTheme {
             BaseScreenView()
+
 //            val state = remember {
-//
-//
 //                val cone = vtkConeSource()
 //                cone.SetResolution(8)
 //

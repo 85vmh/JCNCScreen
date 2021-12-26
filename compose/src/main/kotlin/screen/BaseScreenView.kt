@@ -1,15 +1,13 @@
 package screen
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import com.mindovercnc.base.CncStatusRepository
 import com.mindovercnc.base.MessagesRepository
@@ -19,12 +17,11 @@ import screen.composables.*
 import screen.viewmodel.BaseScreenViewModel
 import usecase.MessagesUseCase
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.WindowPosition
-import androidx.compose.ui.window.rememberDialogState
+import navigation.AppNavigator
+import org.kodein.di.compose.localDI
+import org.kodein.di.instance
+import screen.uimodel.*
+import usecase.ManualTurningUseCase
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -35,6 +32,8 @@ fun BaseScreenView() {
     val messagesRepository by rememberInstance<MessagesRepository>()
     val messagesUseCase by rememberInstance<MessagesUseCase>()
 
+    val appNavigator by rememberInstance<AppNavigator>()
+
     val scope = rememberCoroutineScope {
         Dispatchers.Main
     }
@@ -42,53 +41,118 @@ fun BaseScreenView() {
         BaseScreenViewModel(scope, statusRepository, messagesRepository, BaseScreen.NotHomedScreen)
     }
 
-    var openDialog by remember { mutableStateOf(false) }
+    val kbState = mutableStateOf("")
+
+    val numPadState = remember {
+        NumPadState().apply {
+            setFieldState(kbState)
+        }
+    }
+
+//    var openDialog by remember { mutableStateOf(false) }
+//    var openKeyboard by remember { mutableStateOf(false) }
+//
+//    if (openDialog) {
+//        Dialog(
+//            title = "Messages",
+//            onCloseRequest = { openDialog = false },
+//            state = rememberDialogState(position = WindowPosition(Alignment.Center))
+//        ) {
+//            Text("Here I'll display a list of messages")
+//        }
+//    }
+//
+//    if (openKeyboard) {
+//        AlertDialog(
+//            onDismissRequest = { /*TODO*/ },
+//            text = {
+//                NumPadView(
+//                    modifier = Modifier.fillMaxWidth().fillMaxHeight(), state = numPadState
+//                )
+//            },
+//            buttons = {},
+//            shape = RoundedCornerShape(8.dp),
+//            modifier = Modifier.height(500.dp).width(300.dp)
+//        )
+//    }
+
+    //val screen = viewModel.screen
+
+    val selectedTab by appNavigator.currentTab.collectAsState()
+    val currentScreen by appNavigator.currentScreen.collectAsState(LoadingScreen)
 
     Box {
-        Column(
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            HeaderView(messagesUseCase.getAllMessages()) {
-                openDialog = true
-            }
+        ScaffoldView(
+            screenTitle = currentScreen.title,
+            selectedTab = selectedTab,
+            onTabClicked = { appNavigator.selectTab(it) },
+            navigationIcon = {
+                if (currentScreen.isBackEnabled) {
+                    IconButton(onClick = { appNavigator.navigateUp() }) {
+                        Icon(Icons.Default.ArrowBack, contentDescription = "")
+                    }
+                }
+            },
+            actions = { ScreenActions(currentScreen, appNavigator) }
+        ) { modifier ->
+            ScreenContent(currentScreen, modifier, appNavigator)
+        }
+    }
+}
 
-            if (openDialog) {
-                Dialog(
-                    title = "Messages",
-                    onCloseRequest = { openDialog = false },
-                    state = rememberDialogState(position = WindowPosition(Alignment.Center))
-                ) {
-                    Text("Here I'll display a list of messages")
-                }
-            }
-
-            when (val screen = viewModel.screen) {
-                BaseScreen.SplashScreen -> SplashScreenView()
-                BaseScreen.NotHomedScreen -> NotHomedView()
-                BaseScreen.RootScreen -> RootScreenView(
-                    turningSettingsClicked = { viewModel.turningSettingsClicked() },
-                    toolLibraryClicked = { viewModel.toolLibraryClicked() },
-                    offsetsClicked = { viewModel.offsetsClicked() },
-                    programsClicked = { viewModel.programsClicked() },
-                    conversationalClicked = { viewModel.conversationalClicked() }
-                )
-                is BaseScreen.TurningSettingsScreen -> TurningSettingsView {
-                    viewModel.toRootScreen()
-                }
-                is BaseScreen.ToolLibraryScreen -> ToolLibraryView {
-                    viewModel.toRootScreen()
-                }
-                is BaseScreen.G5xOffsetsScreen -> OffsetsView {
-                    viewModel.toRootScreen()
-                }
-                is BaseScreen.ProgramsScreen -> ProgramsView {
-                    viewModel.toRootScreen()
-                }
-                is BaseScreen.ConversationalScreen -> ConversationalView {
-                    viewModel.toRootScreen()
-                }
+@Composable
+private fun ScreenContent(screen: TabScreen, modifier: Modifier, appNavigator: AppNavigator) {
+    val useCase by localDI().instance<ManualTurningUseCase>()
+    when (screen) {
+        ManualScreen.ManualRootScreen -> {
+            ManualTurningView(modifier) {
+                val viewModel = TurningSettingsViewModel(useCase)
+                appNavigator.navigate(ManualScreen.TurningSettingsScreen(viewModel, screen as ManualScreen))
             }
         }
+        is ManualScreen.TurningSettingsScreen -> {
+            TurningSettingsView(screen.viewModel, modifier)
+        }
+        ConversationalScreen.ConversationalRootScreen -> {
+            ConversationalView(modifier)
+        }
+        is ConversationalScreen.NewOperationScreen -> {
+            NewOperationView(modifier)
+        }
+        ProgramsScreen.ProgramsRootScreen -> {
+            ProgramsView(modifier)
+        }
+        ToolsOffsetsScreen.ToolsOffsetsRootScreen -> {
+            ToolsAndOffsetsView(modifier)
+        }
+    }
+}
+
+@Composable
+private fun ScreenActions(screen: TabScreen, appNavigator: AppNavigator) {
+    when (screen) {
+        ManualScreen.ManualRootScreen -> {
+            IconButton(onClick = { }) {
+                Icon(
+                    Icons.Default.Settings,
+                    contentDescription = "",
+                )
+            }
+        }
+        is ManualScreen.TurningSettingsScreen -> {
+            IconButton(onClick = {
+                screen.viewModel.save()
+                appNavigator.navigateUp()
+            }) {
+                Icon(
+                    Icons.Default.Check,
+                    contentDescription = "",
+                )
+            }
+        }
+        is ConversationalScreen.ConversationalRootScreen -> {}
+        is ProgramsScreen.ProgramsRootScreen -> {}
+        is ToolsOffsetsScreen.ToolsOffsetsRootScreen -> {}
     }
 }
 

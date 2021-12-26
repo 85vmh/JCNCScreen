@@ -1,6 +1,7 @@
 package di
 
 import codegen.ManualTurningHelper
+import navigation.AppNavigator
 import org.kodein.di.DI
 import org.kodein.di.bindSingleton
 import org.kodein.di.instance
@@ -10,6 +11,8 @@ val UseCaseModule = DI.Module("UseCase") {
     bindSingleton {
         MessagesUseCase(messagesRepository = instance())
     }
+
+    bindSingleton { AppNavigator() }
 
     bindSingleton {
         ManualTurningUseCase(

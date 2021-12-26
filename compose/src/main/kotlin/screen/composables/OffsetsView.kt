@@ -7,7 +7,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Button
 import androidx.compose.material.Divider
-import androidx.compose.material.Text
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -22,7 +22,7 @@ import usecase.OffsetsUseCase
 import usecase.model.OffsetEntry
 
 @Composable
-fun OffsetsView(onFinish: () -> Unit) {
+fun OffsetsView() {
     val useCase: OffsetsUseCase by rememberInstance()
     val scope = rememberCoroutineScope()
     val offsets by useCase.getOffsets().collectAsState(emptyList())
@@ -33,12 +33,6 @@ fun OffsetsView(onFinish: () -> Unit) {
     ) {
 
         OffsetsList(offsets)
-
-        Button(onClick = {
-            onFinish.invoke()
-        }) {
-            Text("<- Back")
-        }
     }
 }
 

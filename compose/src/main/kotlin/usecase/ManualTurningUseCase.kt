@@ -39,8 +39,6 @@ class ManualTurningUseCase(
 
     private val spindleOpAllowed = statusRepository.cncStatusFlow().map { it.isHomed() }.distinctUntilChanged()
 
-    //af7d1d2ed1f2c86fdbe4dc1068063f41d1987d9f
-
     init {
         val spindleIsOn = statusRepository.cncStatusFlow().map { it.isSpindleOn } //do this based on tool direction
             .distinctUntilChanged()
@@ -58,7 +56,7 @@ class ManualTurningUseCase(
 
         combine(
             halRepository.getSpindleSwitchStatus().onEach {
-                println("---spindle switch is: $it")
+                println("---Spindle switch is: $it")
             }, spindleOpAllowed
         ) { switchStatus, spindleAllowed ->
             when {
@@ -71,7 +69,6 @@ class ManualTurningUseCase(
                 }
             }
         }.flowOn(Dispatchers.Main).launchIn(scope)
-
 
         halRepository.getCycleStopStatus().filter { it }.onEach {
             isTaperTurning.value = false
@@ -206,21 +203,6 @@ class ManualTurningUseCase(
         commandRepository.setTaskMode(TaskMode.TaskModeMDI)
         println("---Execute MDI: $command")
         commandRepository.executeMdiCommand(command)
-//        //When its MDI, do this
-//        statusRepository.cncStatusFlow()
-//            .onEach {
-//                println("---*isMdi: ${it.isInMdiMode}")
-//                println("---*isIdle: ${it.isInterpreterIdle}")
-//                println("-------------------------")
-//            }
-//            .map { it.isInMdiMode && it.isInterpreterIdle }
-//            .filter { it }
-//            .distinctUntilChanged() //this is to make sure that it gets executed only once??
-//            .onEach {
-//                println("---Execute MDI: $command")
-//                commandRepository.executeMdiCommand(command)
-//            }
-//            .launchIn(scope)
     }
 
     fun getSpindleState(): SpindleState {
@@ -269,7 +251,7 @@ class ManualTurningUseCase(
 
     val distanceMode = statusRepository.cncStatusFlow().map { it.taskStatus.activeCodes.distanceMode }.distinctUntilChanged()
 
-    val setFeedRate = statusRepository.cncStatusFlow().map { it.taskStatus.setFeedRate }.distinctUntilChanged()
+    private val setFeedRate = statusRepository.cncStatusFlow().map { it.taskStatus.setFeedRate }.distinctUntilChanged()
 
     val feedOverride = statusRepository.cncStatusFlow().map { it.motionStatus.trajectoryStatus.velocityScale }.distinctUntilChanged()
 

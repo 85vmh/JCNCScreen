@@ -37,6 +37,8 @@ val CncStatus.isSpindleOn
     get() = motionStatus.spindlesStatus[0].direction == SpindleStatus.Direction.REVERSE ||
             motionStatus.spindlesStatus[0].direction == SpindleStatus.Direction.FORWARD
 
+val CncStatus.currentToolNo get() = ioStatus.toolStatus.currentLoadedTool
+
 fun CncStatus.getDisplayablePosition(): Position {
     val actualPosition = motionStatus.trajectoryStatus.currentCommandedPosition
     val g5xOffset = taskStatus.g5xOffset

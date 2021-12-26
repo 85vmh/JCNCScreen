@@ -8,7 +8,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Button
 import androidx.compose.material.Divider
-import androidx.compose.material.Text
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -23,30 +23,13 @@ import extensions.trimDigits
 import org.kodein.di.compose.rememberInstance
 import usecase.ToolsUseCase
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ToolLibraryView(onFinish: () -> Unit) {
+fun ToolLibraryView() {
     val useCase: ToolsUseCase by rememberInstance()
     val scope = rememberCoroutineScope()
     val toolsList by useCase.getTools().collectAsState(emptyList())
 
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-
-        ToolsList(toolsList)
-
-        Button(onClick = {
-            onFinish.invoke()
-        }) {
-            Text("<- Back")
-        }
-    }
-}
-
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-fun ToolsList(toolsList: List<LatheTool>) {
     LazyColumn(
         modifier = Modifier
 

@@ -28,7 +28,7 @@ class BaseScreenViewModel constructor(
             .distinctUntilChanged()
             .onEach {
                 screen = if (it) {
-                    BaseScreen.RootScreen
+                    BaseScreen.ManualTurningScreen
                 } else {
                     BaseScreen.NotHomedScreen
                 }
@@ -86,7 +86,7 @@ class BaseScreenViewModel constructor(
     }
 
     fun toRootScreen() {
-        screen = BaseScreen.RootScreen
+        screen = BaseScreen.ManualTurningScreen
     }
 
     fun conversationalClicked() {

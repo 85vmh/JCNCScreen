@@ -4,9 +4,10 @@ import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
 import androidx.compose.material.Divider
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -42,11 +43,12 @@ fun SpindleStatusView(
 
     val actualSpeed by useCase.actualSpindleSpeed.collectAsState(0)
 
-    Card(
+    Surface(
         shape = RoundedCornerShape(8.dp),
         modifier = modifier,
         border = BorderStroke(1.dp, SolidColor(Color.DarkGray)),
-        elevation = 8.dp
+        shadowElevation = 8.dp,
+        color = MaterialTheme.colorScheme.secondaryContainer
     )
     {
         val settingsModifier = Modifier
@@ -56,7 +58,7 @@ fun SpindleStatusView(
         Column {
             Text(
                 modifier = Modifier.align(Alignment.CenterHorizontally),
-                fontSize = 20.sp,
+                style = MaterialTheme.typography.titleMedium,
                 text = "Spindle"
             )
             Divider(

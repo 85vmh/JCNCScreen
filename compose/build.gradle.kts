@@ -1,3 +1,4 @@
+import org.jetbrains.compose.ExperimentalComposeLibrary
 import org.jetbrains.compose.compose
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
@@ -10,9 +11,11 @@ version = "1.0"
 
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0")
     implementation(compose.desktop.currentOs)
     implementation(compose.uiTooling)
+    @OptIn(ExperimentalComposeLibrary::class)
+    implementation(compose.material3)
     implementation(fileTree(mapOf("dir" to "lib", "include" to listOf("*.jar"))))
     implementation(project(":libcnc"))
     implementation(project(":repository"))

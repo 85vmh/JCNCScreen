@@ -2,8 +2,9 @@ package usecase
 
 import com.mindovercnc.base.*
 import com.mindovercnc.base.data.LatheTool
+import com.mindovercnc.base.data.currentToolNo
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.*
 
 class ToolsUseCase(
     private val scope: CoroutineScope,
@@ -18,5 +19,22 @@ class ToolsUseCase(
 
     fun getTools(): Flow<List<LatheTool>> {
         return toolFileRepository.getTools()
+    }
+
+    fun touchOffX(value: Double) {
+
+    }
+
+    fun touchOffZ(value: Double) {
+
+    }
+
+    fun getCurrentTool(): Flow<LatheTool?> {
+        return combine(
+            toolFileRepository.getTools().distinctUntilChanged(),
+            statusRepository.cncStatusFlow().map { it.currentToolNo }.distinctUntilChanged()
+        ) { toolsList, loadedToolNo ->
+            toolsList.find { it.toolNo == loadedToolNo }
+        }
     }
 }

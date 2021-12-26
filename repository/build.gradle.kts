@@ -10,6 +10,6 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib"))
-    api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.1")
-    implementation("org.kodein.di:kodein-di-framework-compose:7.8.0")
+    api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0")
+    implementation("org.kodein.di:kodein-di-framework-compose:7.9.0")
 }
