@@ -1,9 +1,12 @@
 package usecase
 
 import com.mindovercnc.base.*
+import com.mindovercnc.base.data.TaskMode
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import usecase.model.OffsetEntry
 
 class OffsetsUseCase(
@@ -22,6 +25,27 @@ class OffsetsUseCase(
                 }
                 offsets
             }
+    }
+
+    val currentWcs = statusRepository.cncStatusFlow()
+        .map { it.taskStatus.g5xIndex }
+        .map { getStringRepresentation(it) }
+
+    fun touchOffX(value: Double) {
+        executeMdiCommand("G10 L20 P0 X$value")
+    }
+
+    fun touchOffZ(value: Double) {
+        executeMdiCommand("G10 L20 P0 Z$value")
+    }
+
+    private fun executeMdiCommand(cmd: String) {
+        scope.launch {
+            val initialTaskMode = statusRepository.cncStatusFlow().map { it.taskStatus.taskMode }.first()
+            commandRepository.setTaskMode(TaskMode.TaskModeMDI)
+            commandRepository.executeMdiCommand(cmd)
+            commandRepository.setTaskMode(initialTaskMode)
+        }
     }
 
     private fun getStringRepresentation(index: Int): String {

@@ -44,6 +44,10 @@ fun ManualTurningView(
 
     val taperTurningActive by useCase.taperTurningActive.collectAsState()
 
+    //Touch Off: G10 L20
+    //Tool Touch Off: G10 L10/11, apoi un G43
+
+
     Row {
         NavigationRail(
 

@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
+import screen.composables.common.AppTheme
 import screen.uimodel.BottomNavTab
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -69,15 +70,17 @@ fun ScaffoldView(
                 )
                 BottomNavigationItem(
                     icon = {
-//                        BadgedBox(
-//                            badge = {
-//                                Badge {
-//                                    Text("1")
-//                                }
-//                            }
-//                        ) {
-                        Icon(Icons.Outlined.AccountBox, contentDescription = "")
-                        //}
+                        BadgedBox(
+                            badge = {
+                                Badge(
+                                    backgroundColor = AppTheme.colors.material.secondary
+                                ) {
+                                    Text("1")
+                                }
+                            }
+                        ) {
+                            Icon(Icons.Outlined.AccountBox, contentDescription = "")
+                        }
                     },
                     selected = selectedTab == BottomNavTab.ToolsOffsets,
                     selectedContentColor = MaterialTheme.colorScheme.primary,
