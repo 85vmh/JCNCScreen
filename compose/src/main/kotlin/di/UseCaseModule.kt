@@ -69,7 +69,8 @@ val UseCaseModule = DI.Module("UseCase") {
             scope = instance(tag = "app_scope"),
             statusRepository = instance(),
             commandRepository = instance(),
-            settingsRepository = instance()
+            settingsRepository = instance(),
+            fileSystemRepository = instance()
         )
     }
 

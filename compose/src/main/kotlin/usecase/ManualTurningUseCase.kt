@@ -27,7 +27,6 @@ class ManualTurningUseCase(
     private var joystickResetRequired = false
 
     private val isTaperTurning = MutableStateFlow(false)
-
     private val taperAngle = MutableStateFlow(45.0)
 
     enum class JoystickFunction {
@@ -76,7 +75,7 @@ class ManualTurningUseCase(
     }
 
     fun toggleTaperTurning() {
-        isTaperTurning.value = !isTaperTurning.value
+        isTaperTurning.value = isTaperTurning.value.not()
     }
 
     private fun sendSpindleCommand(status: SpindleSwitchStatus) {

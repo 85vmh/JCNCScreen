@@ -14,7 +14,8 @@ class AppNavigator {
     private val _manualScreen = MutableStateFlow<ManualScreen>(ManualScreen.ManualRootScreen)
     private val _conversationalScreen = MutableStateFlow<ConversationalScreen>(ConversationalScreen.ConversationalRootScreen)
     private val _programsScreen = MutableStateFlow<ProgramsScreen>(ProgramsScreen.ProgramsRootScreen)
-    private val _toolsOffsetsScreen = MutableStateFlow<ToolsOffsetsScreen>(ToolsOffsetsScreen.ToolsOffsetsRootScreen)
+    private val _toolsScreen = MutableStateFlow<ToolsScreen>(ToolsScreen.ToolsRootScreen)
+    private val _settingsScreen = MutableStateFlow<SettingsScreen>(SettingsScreen.SettingsRootScreen)
 
     val currentTab = _currentTab.asStateFlow()
 
@@ -24,7 +25,8 @@ class AppNavigator {
             BottomNavTab.ManualTurning -> _manualScreen
             BottomNavTab.Conversational -> _conversationalScreen
             BottomNavTab.Programs -> _programsScreen
-            BottomNavTab.ToolsOffsets -> _toolsOffsetsScreen
+            BottomNavTab.Tools -> _toolsScreen
+            BottomNavTab.Settings -> _settingsScreen
         }
     }
 
@@ -37,7 +39,8 @@ class AppNavigator {
             is ManualScreen -> _manualScreen.value = to
             is ConversationalScreen -> _conversationalScreen.value = to
             is ProgramsScreen -> _programsScreen.value = to
-            is ToolsOffsetsScreen -> _toolsOffsetsScreen.value = to
+            is ToolsScreen -> _toolsScreen.value = to
+            is SettingsScreen -> _settingsScreen.value = to
         }
         _currentTab.value = to.tab
     }
@@ -59,8 +62,13 @@ class AppNavigator {
                     it.previousScreen ?: it
                 }
             }
-            BottomNavTab.ToolsOffsets -> {
-                _toolsOffsetsScreen.update {
+            BottomNavTab.Tools -> {
+                _toolsScreen.update {
+                    it.previousScreen ?: it
+                }
+            }
+            BottomNavTab.Settings -> {
+                _settingsScreen.update {
                     it.previousScreen ?: it
                 }
             }

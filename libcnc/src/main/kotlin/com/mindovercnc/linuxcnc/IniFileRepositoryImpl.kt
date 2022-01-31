@@ -11,7 +11,7 @@ class IniFileRepositoryImpl(
     iniFilePath: String
 ) : IniFileRepository {
     private var parsedFile: Map<String, Map<String, String>>
-    val rootPath = iniFilePath.substring(0, iniFilePath.lastIndexOf("/") + 1)
+    private val rootPath = iniFilePath.substring(0, iniFilePath.lastIndexOf("/") + 1)
 
     init {
         parsedFile = parseIniFile(iniFilePath)

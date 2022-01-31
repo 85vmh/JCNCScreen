@@ -28,11 +28,10 @@ class BaseScreenViewModel constructor(
             .distinctUntilChanged()
             .onEach {
                 screen = if (it) {
-                    BaseScreen.ManualTurningScreen
+                    BaseScreen.HomedTabbedScreen
                 } else {
                     BaseScreen.NotHomedScreen
                 }
-                messagesRepository.handleMessage(!it, UiMessageType.MachineNotHomed)
             }
             .launchIn(scope)
 
@@ -40,11 +39,6 @@ class BaseScreenViewModel constructor(
             .map { it.isNotOn }
             .distinctUntilChanged()
             .onEach { messagesRepository.handleMessage(it, UiMessageType.MachineNotON) }
-            .launchIn(scope)
-        cncStatusRepository.cncStatusFlow()
-            .map { it.isEstop }
-            .distinctUntilChanged()
-            .onEach { messagesRepository.handleMessage(it, UiMessageType.MachineInEstop) }
             .launchIn(scope)
         cncStatusRepository.cncStatusFlow()
             .map { it.isEstop }
@@ -71,29 +65,5 @@ class BaseScreenViewModel constructor(
             .distinctUntilChanged()
             .onEach { messagesRepository.handleMessage(it, UiMessageType.ReachedMaxSoftLimitZ) }
             .launchIn(scope)
-    }
-
-    fun turningSettingsClicked() {
-        screen = BaseScreen.TurningSettingsScreen
-    }
-
-    fun toolLibraryClicked() {
-        screen = BaseScreen.ToolLibraryScreen
-    }
-
-    fun offsetsClicked() {
-        screen = BaseScreen.G5xOffsetsScreen
-    }
-
-    fun toRootScreen() {
-        screen = BaseScreen.ManualTurningScreen
-    }
-
-    fun conversationalClicked() {
-        screen = BaseScreen.ConversationalScreen
-    }
-
-    fun programsClicked() {
-        screen = BaseScreen.ProgramsScreen
     }
 }

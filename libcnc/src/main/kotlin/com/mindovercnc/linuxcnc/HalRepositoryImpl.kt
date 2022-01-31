@@ -26,6 +26,10 @@ private const val PinJogIncrement = "jog-increment-value"
 private const val PinToolChangeToolNo = "tool-change.number"
 private const val PinToolChangeRequest = "tool-change.change"
 private const val PinToolChangeResponse = "tool-change.changed"
+private const val PinVirtualLimitXMin = "virtual-limits.x-min"
+private const val PinVirtualLimitXMax = "virtual-limits.x-max"
+private const val PinVirtualLimitZMin = "virtual-limits.z-min"
+private const val PinVirtualLimitZMax = "virtual-limits.z-max"
 
 class HalRepositoryImpl(
     private val scope: CoroutineScope
@@ -46,6 +50,10 @@ class HalRepositoryImpl(
     private var pinSpindleStarted: HalPin<Boolean>? = null
     private var pinJogIncrementValue: HalPin<Float>? = null
     private var pinSpindleActualRpm: HalPin<Float>? = null
+    private var pinVirtualLimitXMin: HalPin<Float>? = null
+    private var pinVirtualLimitXMax: HalPin<Float>? = null
+    private var pinVirtualLimitZMin: HalPin<Float>? = null
+    private var pinVirtualLimitZMax: HalPin<Float>? = null
     private var pinToolChangeToolNo: HalPin<Int>? = null
     private var pinToolChangeRequest: HalPin<Boolean>? = null
     private var pinToolChangeResponse: HalPin<Boolean>? = null
@@ -67,6 +75,11 @@ class HalRepositoryImpl(
             pinJogIncrementValue = it.addPin(PinJogIncrement, HalPin.Type.FLOAT, HalPin.Dir.IN) as? HalPin<Float>
             pinSpindleActualRpm = it.addPin(PinSpindleActualRpm, HalPin.Type.FLOAT, HalPin.Dir.IN) as? HalPin<Float>
 
+            pinVirtualLimitXMin = it.addPin(PinVirtualLimitXMin, HalPin.Type.FLOAT, HalPin.Dir.OUT) as? HalPin<Float>
+            pinVirtualLimitXMax = it.addPin(PinVirtualLimitXMax, HalPin.Type.FLOAT, HalPin.Dir.OUT) as? HalPin<Float>
+            pinVirtualLimitZMin = it.addPin(PinVirtualLimitZMin, HalPin.Type.FLOAT, HalPin.Dir.OUT) as? HalPin<Float>
+            pinVirtualLimitZMax = it.addPin(PinVirtualLimitZMax, HalPin.Type.FLOAT, HalPin.Dir.OUT) as? HalPin<Float>
+
             pinToolChangeToolNo = it.addPin(PinToolChangeToolNo, HalPin.Type.S32, HalPin.Dir.IN) as? HalPin<Int>
             pinToolChangeRequest = it.addPin(PinToolChangeRequest, HalPin.Type.BIT, HalPin.Dir.IN) as? HalPin<Boolean>
             pinToolChangeResponse = it.addPin(PinToolChangeResponse, HalPin.Type.BIT, HalPin.Dir.OUT) as? HalPin<Boolean>
@@ -76,46 +89,51 @@ class HalRepositoryImpl(
     }
 
     override fun getJoystickStatus(): Flow<JoystickStatus> {
-        if (pinJoystickXPlus != null && pinJoystickXMinus != null && pinJoystickZPlus != null && pinJoystickZMinus != null && pinJoystickRapid != null) {
-            return combine(
-                pinJoystickXPlus!!.valueFlow(RefreshRate),
-                pinJoystickXMinus!!.valueFlow(RefreshRate),
-                pinJoystickZPlus!!.valueFlow(RefreshRate),
-                pinJoystickZMinus!!.valueFlow(RefreshRate),
-                pinJoystickRapid!!.valueFlow(RefreshRate),
-            ) { xPlus, xMinus, zPlus, zMinus, isRapid ->
-                when {
-                    xPlus -> JoystickStatus(JoystickStatus.Position.XPlus, isRapid)
-                    xMinus -> JoystickStatus(JoystickStatus.Position.XMinus, isRapid)
-                    zPlus -> JoystickStatus(JoystickStatus.Position.ZPlus, isRapid)
-                    zMinus -> JoystickStatus(JoystickStatus.Position.ZMinus, isRapid)
-                    else -> JoystickStatus(JoystickStatus.Position.Neutral, false)
-                }
-            }.distinctUntilChanged()
-        } else {
-            return flowOf(JoystickStatus(JoystickStatus.Position.Neutral)).distinctUntilChanged()
-        }
+        fun neutralFlow() = flowOf(JoystickStatus(JoystickStatus.Position.Neutral)).distinctUntilChanged()
+        val pinJoyXPlus = pinJoystickXPlus ?: return neutralFlow()
+        val pinJoyXMinus = pinJoystickXMinus ?: return neutralFlow()
+        val pinJoyZPlus = pinJoystickZPlus ?: return neutralFlow()
+        val pinJoyZMinus = pinJoystickZMinus ?: return neutralFlow()
+        val pinJoyRapid = pinJoystickRapid ?: return neutralFlow()
+
+        return combine(
+            pinJoyXPlus.valueFlow(RefreshRate),
+            pinJoyXMinus.valueFlow(RefreshRate),
+            pinJoyZPlus.valueFlow(RefreshRate),
+            pinJoyZMinus.valueFlow(RefreshRate),
+            pinJoyRapid.valueFlow(RefreshRate),
+        ) { xPlus, xMinus, zPlus, zMinus, isRapid ->
+            when {
+                xPlus -> JoystickStatus(JoystickStatus.Position.XPlus, isRapid)
+                xMinus -> JoystickStatus(JoystickStatus.Position.XMinus, isRapid)
+                zPlus -> JoystickStatus(JoystickStatus.Position.ZPlus, isRapid)
+                zMinus -> JoystickStatus(JoystickStatus.Position.ZMinus, isRapid)
+                else -> JoystickStatus(JoystickStatus.Position.Neutral, false)
+            }
+        }.distinctUntilChanged()
     }
 
     override fun getJoystickPosition(): Flow<JoystickPosition> {
-        if (pinJoystickXPlus != null && pinJoystickXMinus != null && pinJoystickZPlus != null && pinJoystickZMinus != null) {
-            return combine(
-                pinJoystickXPlus!!.valueFlow(RefreshRate),
-                pinJoystickXMinus!!.valueFlow(RefreshRate),
-                pinJoystickZPlus!!.valueFlow(RefreshRate),
-                pinJoystickZMinus!!.valueFlow(RefreshRate),
-            ) { xPlus, xMinus, zPlus, zMinus ->
-                when {
-                    xPlus -> JoystickPosition.XPlus
-                    xMinus -> JoystickPosition.XMinus
-                    zPlus -> JoystickPosition.ZPlus
-                    zMinus -> JoystickPosition.ZMinus
-                    else -> JoystickPosition.Neutral
-                }
-            }.distinctUntilChanged()
-        } else {
-            return flowOf(JoystickPosition.Neutral).distinctUntilChanged()
-        }
+        fun neutralFlow() = flowOf(JoystickPosition.Neutral).distinctUntilChanged()
+        val pinJoyXPlus = pinJoystickXPlus ?: return neutralFlow()
+        val pinJoyXMinus = pinJoystickXMinus ?: return neutralFlow()
+        val pinJoyZPlus = pinJoystickZPlus ?: return neutralFlow()
+        val pinJoyZMinus = pinJoystickZMinus ?: return neutralFlow()
+
+        return combine(
+            pinJoyXPlus.valueFlow(RefreshRate),
+            pinJoyXMinus.valueFlow(RefreshRate),
+            pinJoyZPlus.valueFlow(RefreshRate),
+            pinJoyZMinus.valueFlow(RefreshRate),
+        ) { xPlus, xMinus, zPlus, zMinus ->
+            when {
+                xPlus -> JoystickPosition.XPlus
+                xMinus -> JoystickPosition.XMinus
+                zPlus -> JoystickPosition.ZPlus
+                zMinus -> JoystickPosition.ZMinus
+                else -> JoystickPosition.Neutral
+            }
+        }.distinctUntilChanged()
     }
 
     override fun getJoystickRapidState(): Flow<Boolean> {
@@ -173,5 +191,21 @@ class HalRepositoryImpl(
 
     override fun setToolChangedResponse() {
         pinToolChangeResponse?.setPinValue(true)
+    }
+
+    override fun setVirtualLimitXMin(value: Double) {
+        pinVirtualLimitXMin?.setPinValue(value.toFloat())
+    }
+
+    override fun setVirtualLimitXMax(value: Double) {
+        pinVirtualLimitXMax?.setPinValue(value.toFloat())
+    }
+
+    override fun setVirtualLimitZMin(value: Double) {
+        pinVirtualLimitZMin?.setPinValue(value.toFloat())
+    }
+
+    override fun setVirtualLimitZMax(value: Double) {
+        pinVirtualLimitZMax?.setPinValue(value.toFloat())
     }
 }

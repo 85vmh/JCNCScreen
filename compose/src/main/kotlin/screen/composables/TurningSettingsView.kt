@@ -2,8 +2,8 @@ package screen.composables
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Checkbox
-import androidx.compose.material.RadioButton
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -11,6 +11,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import screen.uimodel.InputType
+import screen.uimodel.NumericInputs
 import usecase.ManualTurningUseCase
 import usecase.model.FeedRateMode
 import usecase.model.FeedState
@@ -78,7 +80,7 @@ fun SpindleDisplay(
         RadioBoxSetting(settingName = "Constant Spindle Speed (RPM)",
             selected = spindleType == SpindleControlMode.RPM,
             value = rpmValue,
-            units = "rev/min",
+            inputType = InputType.RPM,
             modifier = Modifier.fillMaxWidth().clickable(onClick = onRpmClicked).padding(start = 16.dp),
             onClicked = onRpmClicked,
             onValueChanged = {
@@ -88,26 +90,26 @@ fun SpindleDisplay(
         RadioBoxSetting(settingName = "Constant Surface Speed (CSS)",
             selected = spindleType == SpindleControlMode.CSS,
             value = cssValue,
-            units = "m/min",
+            inputType = InputType.CSS,
             modifier = Modifier.fillMaxWidth().clickable(onClick = onCssClicked).padding(start = 16.dp),
             onClicked = onCssClicked,
             onValueChanged = {
                 val doubleValue = it.toDoubleOrNull() ?: return@RadioBoxSetting
                 cssValue = it
             })
-        ValueSetting(settingName = "Maximum spindle speed",
-            active = spindleType == SpindleControlMode.CSS,
+        ValueSetting(
+            settingName = "Maximum spindle speed",
             value = maxSpeed,
-            units = "rev/min",
-            onValueChanged = {
-                val doubleValue = it.toDoubleOrNull() ?: return@ValueSetting
-                maxSpeed = it
-            })
+            inputType = InputType.CSS_MAX_RPM
+        ) {
+            val doubleValue = it.toDoubleOrNull() ?: return@ValueSetting
+            maxSpeed = it
+        }
 
         CheckBoxSetting(settingName = "Oriented spindle stop",
             checked = orientedStop,
             value = stopAngle,
-            units = "degrees",
+            inputType = InputType.ORIENTED_STOP,
             modifier = Modifier.padding(top = 16.dp, bottom = 16.dp),
             onCheckedChange = {
                 orientedStop = it
@@ -142,7 +144,7 @@ fun FeedDisplay(
         RadioBoxSetting(settingName = "Units per revolution",
             selected = feedMode == FeedRateMode.UNITS_PER_REVOLUTION,
             value = unitsPerRev,
-            units = "mm/rev",
+            inputType = InputType.FEED_PER_REV,
             modifier = Modifier.fillMaxWidth().clickable(onClick = onUnitsPerRevClicked).padding(start = 16.dp),
             onClicked = onUnitsPerRevClicked,
             onValueChanged = {
@@ -152,7 +154,7 @@ fun FeedDisplay(
         RadioBoxSetting(settingName = "Units per minute",
             selected = feedMode == FeedRateMode.UNITS_PER_MINUTE,
             value = unitsPerMin,
-            units = "mm/min",
+            inputType = InputType.FEED_PER_MIN,
             modifier = Modifier.fillMaxWidth().clickable(onClick = onUnitsPerMinClicked).padding(start = 16.dp),
             onClicked = onUnitsPerMinClicked,
             onValueChanged = {
@@ -164,7 +166,13 @@ fun FeedDisplay(
 
 @Composable
 fun RadioBoxSetting(
-    settingName: String, selected: Boolean, value: String, units: String, modifier: Modifier = Modifier, onClicked: () -> Unit, onValueChanged: (String) -> Unit
+    settingName: String,
+    selected: Boolean,
+    value: String,
+    inputType: InputType,
+    modifier: Modifier = Modifier,
+    onClicked: () -> Unit,
+    onValueChanged: (String) -> Unit
 ) {
     val alignment = Alignment.CenterVertically
 
@@ -181,7 +189,7 @@ fun RadioBoxSetting(
                 modifier = Modifier.padding(start = 16.dp), text = settingName
             )
         }
-        ValueAndUnit(value, units, selected, alignment, modifier = Modifier.width(200.dp)) {
+        ValueAndUnit(value, inputType, alignment, modifier = Modifier.width(200.dp)) {
             onValueChanged(it)
         }
     }
@@ -189,10 +197,10 @@ fun RadioBoxSetting(
 
 @Composable
 fun CheckBoxSetting(
+    inputType: InputType,
     settingName: String,
     checked: Boolean,
     value: String,
-    units: String,
     modifier: Modifier = Modifier,
     onCheckedChange: (Boolean) -> Unit,
     onValueChanged: (String) -> Unit
@@ -211,7 +219,7 @@ fun CheckBoxSetting(
                 modifier = Modifier.padding(start = 16.dp), text = settingName
             )
         }
-        ValueAndUnit(value, units, checked, alignment, modifier = Modifier.width(200.dp)) {
+        ValueAndUnit(value, inputType, alignment, modifier = Modifier.width(200.dp)) {
             onValueChanged(it)
         }
     }
@@ -219,7 +227,7 @@ fun CheckBoxSetting(
 
 @Composable
 fun ValueSetting(
-    settingName: String, active: Boolean, value: String, units: String, onValueChanged: (String) -> Unit
+    settingName: String, value: String, inputType: InputType, onValueChanged: (String) -> Unit
 ) {
     val alignment = Alignment.CenterVertically
     Row(
@@ -233,7 +241,7 @@ fun ValueSetting(
                 modifier = Modifier.padding(start = 16.dp), text = settingName
             )
         }
-        ValueAndUnit(value, units, active, alignment, modifier = Modifier.width(200.dp)) {
+        ValueAndUnit(value, inputType, alignment, modifier = Modifier.width(200.dp)) {
             onValueChanged(it)
         }
     }
@@ -241,20 +249,22 @@ fun ValueSetting(
 
 @Composable
 fun ValueAndUnit(
-    value: String, units: String?, selected: Boolean, alignment: Alignment.Vertical, modifier: Modifier = Modifier, onValueChanged: (String) -> Unit
+    value: String, inputType: InputType, alignment: Alignment.Vertical, modifier: Modifier = Modifier, onValueChanged: (String) -> Unit
 ) {
+    val params = NumericInputs.entries[inputType]!!
+
     Row(
         verticalAlignment = alignment, modifier = modifier
     ) {
         NumTextField(
-            modifier = Modifier.width(80.dp), numValue = value, enabled = selected
+            numValue = value,
+            inputType = inputType,
+            modifier = Modifier.width(80.dp)
         ) {
             onValueChanged(it)
         }
-        if (units != null) {
-            Text(
-                modifier = Modifier.padding(start = 8.dp), text = units
-            )
-        }
+        Text(
+            modifier = Modifier.padding(start = 8.dp), text = params.unit
+        )
     }
 }

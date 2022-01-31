@@ -1,14 +1,13 @@
 package screen.composables
 
-import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Button
+import androidx.compose.material3.Button
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,17 +21,10 @@ import androidx.compose.ui.unit.sp
 import extensions.trimDigits
 import org.kodein.di.compose.rememberInstance
 import screen.uimodel.AxisPosition
+import screen.uimodel.InputType
+import screen.uimodel.NumericInputs
 import themes.ComposeFonts
 import usecase.ManualPositionUseCase
-
-@Composable
-@Preview
-private fun CoordinatesPreview() {
-    Column {
-        //AxisCoordinate(AxisPosition(axis = AxisPosition.Axis.X, primaryValue = 123.562788993, secondaryValue = -23.2213, units = AxisPosition.Units.MM), )
-        //AxisCoordinate(AxisPosition(axis = AxisPosition.Axis.Z, primaryValue = 123.562788993, units = AxisPosition.Units.MM))
-    }
-}
 
 private enum class PositionType(
     val fontSize: TextUnit,
@@ -42,10 +34,25 @@ private enum class PositionType(
     SECONDARY(18.sp, 110.dp),
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun CoordinatesView(modifier: Modifier = Modifier) {
     val useCase: ManualPositionUseCase by rememberInstance()
     val model = useCase.uiModel.collectAsState(null).value
+
+
+    var openKeyboardState by remember { mutableStateOf<NumPadState?>(null) }
+
+    openKeyboardState?.let {
+        InputDialogView(
+            numPadState = it,
+            onCancel = { openKeyboardState = null },
+            onSubmit = {
+                println("Value is: $it")
+                openKeyboardState = null
+            }
+        )
+    }
 
     Row(
         modifier = modifier
@@ -61,15 +68,24 @@ fun CoordinatesView(modifier: Modifier = Modifier) {
 
         ) {
             model?.let {
-
                 AxisCoordinate(
                     it.xAxisPos,
                     it.isDiameterMode,
+                    touchOffClicked = {
+                        openKeyboardState = NumPadState(
+                            numInputParameters = NumericInputs.entries[InputType.TOUCH_OFF_X]!!
+                        )
+                    },
                     zeroPosClicked = { useCase.setZeroPosX() },
                     absRelClicked = { useCase.toggleXAbsRel() }
                 )
                 AxisCoordinate(
                     it.zAxisPos,
+                    touchOffClicked = {
+                        openKeyboardState = NumPadState(
+                            numInputParameters = NumericInputs.entries[InputType.TOUCH_OFF_Z]!!
+                        )
+                    },
                     zeroPosClicked = { useCase.setZeroPosZ() },
                     absRelClicked = { useCase.toggleZAbsRel() }
                 )
@@ -83,6 +99,7 @@ private fun AxisCoordinate(
     axisPosition: AxisPosition,
     isDiameterMode: Boolean = false,
     modifier: Modifier = Modifier,
+    touchOffClicked: () -> Unit,
     zeroPosClicked: () -> Unit,
     absRelClicked: () -> Unit
 ) {
@@ -97,7 +114,9 @@ private fun AxisCoordinate(
                 .background(Color(0xffd8e6ff))
         ) {
             //val line = HorizontalAlignmentLine()
-
+            TouchOff(axisPosition, modifier = Modifier.padding(start = 16.dp)) {
+                touchOffClicked.invoke()
+            }
             Position(PositionType.SECONDARY, axisPosition, isDiameterMode, modifier = Modifier.alignByBaseline())
             AxisLetter(axisPosition)
             SpacerOrDiameter(axisPosition.axis == AxisPosition.Axis.X && isDiameterMode, modifier = Modifier.alignByBaseline())
@@ -168,6 +187,16 @@ private fun Units(units: AxisPosition.Units, modifier: Modifier = Modifier) {
         fontSize = 18.sp,
         fontWeight = FontWeight.Medium
     )
+}
+
+@Composable
+private fun TouchOff(axisPosition: AxisPosition, modifier: Modifier = Modifier, onClick: () -> Unit) {
+    Button(
+        onClick = onClick,
+        modifier.fillMaxHeight()
+    ) {
+        Text("Touch\nOff ${axisPosition.axis.name}")
+    }
 }
 
 @Composable

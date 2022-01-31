@@ -10,7 +10,10 @@ import org.kodein.di.compose.rememberInstance
 import usecase.ConversationalUseCase
 
 @Composable
-fun NewOperationView(modifier: Modifier) {
+fun NewOperationView(
+    conversationalOperation: ConversationalOperation,
+    modifier: Modifier
+) {
     val useCase: ConversationalUseCase by rememberInstance()
     val scope = rememberCoroutineScope()
 
@@ -18,7 +21,15 @@ fun NewOperationView(modifier: Modifier) {
         modifier = modifier.padding(16.dp),
         tabs = listOf(
             TabItem("Technology Data") { TechnologyDataView() },
-            TabItem("Geometry Data") { Text("Geometry Data") }
+            TabItem("Geometry Data") { GeometryData(conversationalOperation) }
         )
     )
+}
+
+@Composable
+fun GeometryData(conversationalOperation: ConversationalOperation) {
+    when (conversationalOperation) {
+        ConversationalOperation.OdTurning -> OdTurningGeometryData()
+        else -> Text("Geometry Data: ${conversationalOperation.displayableString}")
+    }
 }

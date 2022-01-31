@@ -1,8 +1,11 @@
 package com.mindovercnc.linuxcnc.nml
 
+import java.util.*
+import kotlin.collections.HashMap
+
 
 class BuffDescriptorV29() : BuffDescriptor {
-    private val map: MutableMap<Key, DecodingInfo> = HashMap()
+    private val map: MutableMap<Key, DecodingInfo> = EnumMap(Key::class.java)
 
     init {
         //Mapping for the fields of EMC_TASK_STAT

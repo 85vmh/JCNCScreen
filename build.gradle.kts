@@ -6,12 +6,12 @@ buildscript {
     }
 
     dependencies {
-        classpath("org.jetbrains.compose:compose-gradle-plugin:1.0.1")
+        classpath("org.jetbrains.compose:compose-gradle-plugin:${Versions.compose}")
     }
 }
 
 plugins {
-    kotlin("jvm") version "1.6.10" apply false
+    kotlin("jvm") version Versions.kotlin apply false
     //id("org.jetbrains.compose") version "1.0.0-alpha3" apply false
 }
 

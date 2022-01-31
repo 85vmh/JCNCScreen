@@ -1,46 +1,46 @@
-package screen.composables.extension
+package com.mindovercnc.linuxcnc
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import com.mindovercnc.base.data.AppFile
+import com.mindovercnc.base.data.TextLines
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import screen.composables.platform.File
-import screen.composables.util.TextLines
-import java.io.FileInputStream
-import java.io.FilenameFilter
-import java.io.IOException
-import java.io.RandomAccessFile
+import java.io.*
 import java.nio.channels.FileChannel
 import java.nio.charset.StandardCharsets
 
-fun java.io.File.toProjectFile(): File = object : File {
-    override val name: String get() = this@toProjectFile.name
+fun File.toAppFile(): AppFile = object : AppFile {
+    override val name: String get() = this@toAppFile.name
 
-    override val isDirectory: Boolean get() = this@toProjectFile.isDirectory
+    override val path: String get() = this@toAppFile.path
 
-    override val children: List<File>
-        get() = this@toProjectFile
-            .listFiles(FilenameFilter { _, name -> name.startsWith(".").not() && name.endsWith(".ngc") })
+    override val size: Long get() = this@toAppFile.length()
+
+    override val lastModified: Long get() = this@toAppFile.lastModified()
+
+    override val isDirectory: Boolean get() = this@toAppFile.isDirectory
+
+    override val children: List<AppFile>
+        get() = this@toAppFile
+            .listFiles()
             .orEmpty()
-            .map { it.toProjectFile() }
+            .map { it.toAppFile() }
 
     override val hasChildren: Boolean
-        get() = isDirectory && listFiles()?.size ?: 0 > 0
+        get() = isDirectory && (listFiles()?.size ?: 0) > 0
 
 
     override fun readLines(scope: CoroutineScope): TextLines {
         var byteBufferSize: Int
-        val byteBuffer = RandomAccessFile(this@toProjectFile, "r").use { file ->
+        val byteBuffer = RandomAccessFile(this@toAppFile, "r").use { file ->
             byteBufferSize = file.length().toInt()
             file.channel.map(FileChannel.MapMode.READ_ONLY, 0, file.length())
         }
 
         val lineStartPositions = IntList()
 
-        var size by mutableStateOf(0)
+        var size = 0
 
         val refreshJob = scope.launch {
             delay(100)
@@ -74,7 +74,7 @@ fun java.io.File.toProjectFile(): File = object : File {
     }
 }
 
-private fun java.io.File.readLinePositions(
+private fun File.readLinePositions(
     starts: IntList
 ) {
     require(length() <= Int.MAX_VALUE) {
@@ -114,7 +114,7 @@ private fun java.io.File.readLinePositions(
 /**
  * Compact version of List<Int> (without unboxing Int and using IntArray under the hood)
  */
-private class IntList(initialCapacity: Int = 16) {
+class IntList(initialCapacity: Int = 16) {
     @Volatile
     private var array = IntArray(initialCapacity)
 

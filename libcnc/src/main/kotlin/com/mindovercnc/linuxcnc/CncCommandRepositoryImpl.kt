@@ -87,4 +87,8 @@ class CncCommandRepositoryImpl() : CncCommandRepository {
     override fun executeMdiCommand(command: String) {
         commandWriter.sendMDICommand(command)
     }
+
+    override fun loadProgramFile(filePath: String) {
+        commandWriter.loadTaskPlan(filePath)
+    }
 }

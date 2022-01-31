@@ -26,7 +26,7 @@ fun EditorEmptyView() = Box(Modifier.fillMaxSize()) {
         )
 
         Text(
-            "To view file open it from the file tree",
+            "Select a program to view & load",
             color = LocalContentColor.current.copy(alpha = 0.60f),
             fontSize = 20.sp,
             modifier = Modifier.align(Alignment.CenterHorizontally).padding(16.dp)

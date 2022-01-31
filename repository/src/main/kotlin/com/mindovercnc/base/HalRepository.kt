@@ -31,4 +31,12 @@ interface HalRepository {
     fun getToolChangeRequest(): Flow<Boolean>
 
     fun setToolChangedResponse()
+
+    fun setVirtualLimitXMin(value: Double)
+
+    fun setVirtualLimitXMax(value: Double)
+
+    fun setVirtualLimitZMin(value: Double)
+
+    fun setVirtualLimitZMax(value: Double)
 }

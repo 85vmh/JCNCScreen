@@ -1,9 +1,8 @@
 package com.mindovercnc.base.data
 
-enum class UiMessageType {
-    MachineInEstop,
-    MachineNotON,
-    MachineNotHomed,
+enum class UiMessageType(val isError: Boolean = false) {
+    MachineInEstop(true),
+    MachineNotON(false),
     SpindleOperationNotAllowed,
     SpindleForwardNotAllowed,
     SpindleReverseNotAllowed,

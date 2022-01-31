@@ -11,7 +11,7 @@ version = "1.0"
 
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutines}")
     implementation(compose.desktop.currentOs)
     implementation(compose.uiTooling)
     @OptIn(ExperimentalComposeLibrary::class)
@@ -19,7 +19,7 @@ dependencies {
     implementation(fileTree(mapOf("dir" to "lib", "include" to listOf("*.jar"))))
     implementation(project(":libcnc"))
     implementation(project(":repository"))
-    implementation("org.kodein.di:kodein-di-framework-compose:7.9.0")
+    implementation("org.kodein.di:kodein-di-framework-compose:${Versions.kodein}")
 }
 
 compose.desktop {

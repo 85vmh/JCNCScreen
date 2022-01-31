@@ -5,35 +5,53 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.Button
 import androidx.compose.material3.Text
-import androidx.compose.material.TextField
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import screen.uimodel.InputType
+import screen.uimodel.NumInputParameters
+import screen.uimodel.NumericInputs
+import java.text.DecimalFormat
 
 @Composable
 @Preview
 private fun NumPadViewPreview() {
     NumPadView(
         modifier = Modifier.fillMaxSize(),
-        state = NumPadState()
+        state = NumPadState(numInputParameters = NumericInputs.entries[InputType.RPM]!!)
     )
 }
 
-class NumPadState {
-    var selectedTextState = mutableStateOf<MutableState<String>?>(null)
-        private set
+class NumPadState(
+    initialValue: Double? = null,
+    val numInputParameters: NumInputParameters
+) {
+    val stringValueState = mutableStateOf(initialValue?.toString() ?: "")
 
-    fun setFieldState(state: MutableState<String>?) {
-        selectedTextState.value = state
-        value.value = state?.value
+    fun toggleSign() {
+        stringValueState.value = if (stringValueState.value.startsWith('-')) {
+            stringValueState.value.drop(1)
+        } else {
+            "-${stringValueState.value}"
+        }
     }
 
-    var value = mutableStateOf<String?>(null)
+    fun addDecimalPlace() {
+        if (stringValueState.value.contains('.')) {
+            return
+        }
+        stringValueState.value += "."
+    }
+
+    fun deleteChar() {
+        if (stringValueState.value.isNotEmpty()) {
+            stringValueState.value = stringValueState.value.dropLast(1)
+        }
+    }
 }
 
 @Composable
@@ -41,57 +59,55 @@ fun NumPadView(
     state: NumPadState,
     modifier: Modifier = Modifier,
 ) {
-    var numPadValue by state.value
-    val enabled = numPadValue != null
+    var numPadValue by state.stringValueState
+    val signKey = if (state.numInputParameters.allowsNegativeValues) "+/-" else ""
+    val dotKey = if (state.numInputParameters.maxDecimalPlaces > 0) "." else ""
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
-        Text(numPadValue ?: "")
-
-        NumPadRow("1", "2", "3", enabled = enabled) { if (numPadValue != null) numPadValue += it }
-        NumPadRow("4", "5", "6", enabled = enabled) { if (numPadValue != null) numPadValue += it }
-        NumPadRow("7", "8", "9", enabled = enabled) { if (numPadValue != null) numPadValue += it }
-        NumPadRow("+/-", "0", ".", enabled = enabled) { if (numPadValue != null) numPadValue += it }
-
-        Button(
-            enabled = enabled,
-            onClick = {
-                numPadValue?.let {
-                    state.selectedTextState.value?.value = it
-                }
-                state.setFieldState(null)
+        NumPadRow("1", "2", "3") { numPadValue += it }
+        NumPadRow("4", "5", "6") { numPadValue += it }
+        NumPadRow("7", "8", "9") { numPadValue += it }
+        NumPadRow(signKey, "0", dotKey) {
+            when (it) {
+                "+/-" -> state.toggleSign()
+                "." -> state.addDecimalPlace()
+                else -> numPadValue += it
             }
-        ) {
-            Text("Submit")
         }
     }
 }
 
 @Composable
-fun NumPadKey(key: String, enabled: Boolean, onClick: (String) -> Unit) {
-    val shape = CircleShape
-    Box(modifier = Modifier.padding(16.dp)) {
-        Box(
-            modifier = Modifier
-                .size(width = 50.dp, height = 50.dp)
-                .background(Color.Gray, shape = shape)
-                .clip(shape)
-                .clickable { onClick(key) },
-            contentAlignment = Alignment.Center
-        ) {
-            Text(key)
-        }
-    }
-
-}
-
-@Composable
-fun NumPadRow(vararg keys: String, enabled: Boolean, onClick: (String) -> Unit) {
+fun NumPadRow(vararg keys: String, onClick: (String) -> Unit) {
     Row(modifier = Modifier) {
         keys.forEach {
-            NumPadKey(it, enabled, onClick)
+            NumPadKey(it, onClick)
+        }
+    }
+}
+
+@Composable
+fun NumPadKey(key: String, onClick: (String) -> Unit) {
+    val shape = CircleShape
+    Box(modifier = Modifier.padding(16.dp)) {
+        if (key.isNotEmpty()) {
+            Box(
+                modifier = Modifier
+                    .size(width = 50.dp, height = 50.dp)
+                    .background(Color.Gray, shape = shape)
+                    .clip(shape)
+                    .clickable { onClick(key) },
+                contentAlignment = Alignment.Center
+            ) {
+                Text(key)
+            }
+        } else {
+            Box(
+                modifier = Modifier
+                    .size(width = 50.dp, height = 50.dp)
+            )
         }
     }
 }

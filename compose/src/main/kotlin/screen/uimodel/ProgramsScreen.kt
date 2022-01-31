@@ -10,9 +10,10 @@ sealed class ProgramsScreen(
     )
 
     class ProgramLoadedScreen(
+        programName: String,
         previousScreen: ProgramsScreen?
     ) : ProgramsScreen(
-        title = "Program Loaded",
+        title = "Program Loaded: $programName",
         previousScreen = previousScreen
     )
 }

@@ -9,17 +9,13 @@ import androidx.compose.material.NavigationRailItem
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AccountBox
 import androidx.compose.material.icons.outlined.AccountCircle
-import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import org.kodein.di.compose.rememberInstance
 import screen.composables.common.AppTheme
@@ -33,19 +29,10 @@ fun ManualTurningView(
 
     val useCase: ManualTurningUseCase by rememberInstance()
 
-    val scope = rememberCoroutineScope()
-//
-//    val snackbarHostState = remember{ SnackbarHostState().apply {
-//        scope.launch {
-//            showSnackbar("Test Mesage", duration = SnackbarDuration.Short)
-//        }
-//    }}
-//    SnackbarHost(snackbarHostState, modifier = Modifier.fillMaxWidth())
-
     val taperTurningActive by useCase.taperTurningActive.collectAsState()
 
     //Touch Off: G10 L20
-    //Tool Touch Off: G10 L10/11, apoi un G43
+    //Tool Touch Off: G10 L10/11, then a G43
 
 
     Row {
@@ -59,8 +46,7 @@ fun ManualTurningView(
         ) {
             NavigationRailItem(
                 icon = { Icon(Icons.Outlined.AccountBox, contentDescription = "") },
-                label = { Text( if (taperTurningActive) "TaperOn" else "Taper") },
-                selectedContentColor = Color(130, 200, 10),
+                label = { Text(if (taperTurningActive) "TaperOn" else "Taper") },
                 selected = taperTurningActive,
                 onClick = { useCase.toggleTaperTurning() },
             )
@@ -98,15 +84,12 @@ fun ManualTurningView(
                 )
             }
 
-//        Row(
-//            modifier = Modifier.height(50.dp)
-//        ) {
-//            HandwheelStatus()
-//            JoystickStatus()
-//            ToolStatus()
-
+            Row(
+                modifier = Modifier.height(60.dp)
+            ) {
+                HandwheelStatus()
+                JoystickStatus()
+            }
         }
     }
-
-    //}
 }

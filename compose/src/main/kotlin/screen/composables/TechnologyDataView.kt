@@ -5,7 +5,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import screen.uimodel.InputType
 
 class TechnologyDataState(
     offset: String,
@@ -98,6 +99,12 @@ fun TechnologyDataView() {
                 InputSetting("Surface Speed", true, "200", "m/min") {}
                 InputSetting("Feed Rate", true, "0.2", "mm/rev") {}
                 InputSetting("Depth of Cut", true, "2", "mm") {}
+            }
+            Column {
+                Button(
+                    onClick = {}) { Text("Fill same values ->") }
+                Button(
+                    onClick = {}) { Text("Fill half values ->") }
             }
             CardWithTitle(
                 cardTitle = "Finishing Parameters",
@@ -197,7 +204,7 @@ fun InputSetting(
                 text = settingName
             )
         }
-        ValueAndUnit(value, units, active, alignment, modifier = Modifier.width(170.dp)) {
+        ValueAndUnit(value, InputType.RPM, alignment, modifier = Modifier.width(170.dp)) {
             onValueChanged(it)
         }
     }

@@ -25,35 +25,33 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import screen.composables.platform.VerticalScrollbar
 import screen.composables.common.AppTheme
 import screen.composables.common.Fonts
 import screen.composables.common.Settings
+import screen.composables.platform.VerticalScrollbar
 import screen.composables.util.loadableScoped
 import screen.composables.util.withoutWidthConstraints
 import kotlin.text.Regex.Companion.fromLiteral
 
 @Composable
 fun EditorView(model: Editor, settings: Settings) = key(model) {
-    with(LocalDensity.current) {
-        SelectionContainer {
-            Surface(
-                Modifier.fillMaxSize(),
-                //color = AppTheme.colors.backgroundLight,
-            ) {
-                val lines by loadableScoped(model.lines)
+    SelectionContainer {
+        Surface(
+            Modifier.fillMaxSize(),
+            //color = AppTheme.colors.backgroundLight,
+        ) {
+            val lines by loadableScoped(model.lines)
 
-                if (lines != null) {
-                    Box {
-                        Lines(lines!!, settings)
-                    }
-                } else {
-                    CircularProgressIndicator(
-                        modifier = Modifier
-                            .size(36.dp)
-                            .padding(4.dp)
-                    )
+            if (lines != null) {
+                Box {
+                    Lines(lines!!, settings)
                 }
+            } else {
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .size(36.dp)
+                        .padding(4.dp)
+                )
             }
         }
     }
@@ -65,7 +63,9 @@ private fun Lines(lines: Editor.Lines, settings: Settings) = with(LocalDensity.c
         (1..lines.lineNumberDigitCount).joinToString(separator = "") { "9" }
     }
 
-    Box(Modifier.fillMaxSize()) {
+    Box(
+        Modifier.fillMaxSize()
+    ) {
         val scrollState = rememberLazyListState()
         val lineHeight = settings.fontSize.toDp() * 2f
 
@@ -76,7 +76,7 @@ private fun Lines(lines: Editor.Lines, settings: Settings) = with(LocalDensity.c
             items(lines.size) { index ->
 //                val selectedModifier = when {
 //                    index == 5 -> Modifier.height(lineHeight)
-//                        .align(Alignment.Center)
+//                        //.align(Alignment.Center)
 //                        .border(BorderStroke(1.dp, Color.Blue))
 //                    else -> Modifier.height(lineHeight)
 //                }
@@ -100,7 +100,10 @@ private fun Lines(lines: Editor.Lines, settings: Settings) = with(LocalDensity.c
 
 @Composable
 private fun Line(modifier: Modifier, maxNum: String, line: Editor.Line, settings: Settings) {
-    Row(modifier = modifier) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier
+    ) {
         DisableSelection {
             Box {
                 LineNumber(maxNum, Modifier.alpha(0f), settings)
@@ -159,6 +162,8 @@ private fun codeString(str: String) = buildAnnotatedString {
         addStyle(AppTheme.code.keyword, strFormatted, "ENDSUB")
         addStyle(AppTheme.code.keyword, strFormatted, "G0")
         addStyle(AppTheme.code.keyword, strFormatted, "G1")
+        addStyle(AppTheme.code.keyword, strFormatted, "G2")
+        addStyle(AppTheme.code.keyword, strFormatted, "G3")
         addStyle(AppTheme.code.keyword, strFormatted, "G54")
         addStyle(AppTheme.code.keyword, strFormatted, "G18")
         addStyle(AppTheme.code.keyword, strFormatted, "G21")

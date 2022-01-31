@@ -36,7 +36,7 @@ fun HandwheelStatus() {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
-            painter = painterResource("handwheel.svg"),
+            painter = painterResource("hwheel.svg"),
             contentDescription = ""
         )
         Column(

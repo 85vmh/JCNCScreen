@@ -2,9 +2,9 @@ package screen.composables.editor
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import com.mindovercnc.base.data.AppFile
 import kotlinx.coroutines.CoroutineScope
-import screen.composables.platform.File
-import screen.composables.util.EmptyTextLines
+import com.mindovercnc.base.data.EmptyTextLines
 import screen.composables.util.SingleSelection
 
 class Editor(
@@ -32,7 +32,7 @@ class Editor(
     class Content(val value: State<String>, val isGCode: Boolean)
 }
 
-fun Editor(file: File) = Editor(
+fun Editor(file: AppFile) = Editor(
     fileName = file.name
 ) { backgroundScope ->
     val textLines = try {

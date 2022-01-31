@@ -38,11 +38,21 @@ interface CncCommandRepository {
 
     fun jogStop(jogMode: JogMode = JogMode.AXIS, axisOrJoint: Int)
 
+    /**
+     * Warning: this does stop the joint at the specified limit, but it errors out when reaching it,
+     * so the machine needs to be re-homed.
+     */
     fun setMinPositionLimit(jointNumber: Int, limit: Double)
 
+    /**
+     * Warning: this does stop the joint at the specified limit, but it errors out when reaching it,
+     * so the machine needs to be re-homed.
+     */
     fun setMaxPositionLimit(jointNumber: Int, limit: Double)
 
     fun setBacklash(jointNumber: Int, backlash: Double)
 
     fun executeMdiCommand(command: String)
+
+    fun loadProgramFile(filePath: String)
 }

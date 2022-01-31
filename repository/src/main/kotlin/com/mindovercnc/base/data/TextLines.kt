@@ -1,4 +1,4 @@
-package screen.composables.util
+package com.mindovercnc.base.data
 
 interface TextLines {
     val size: Int

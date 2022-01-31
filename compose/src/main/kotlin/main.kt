@@ -14,6 +14,7 @@ import kotlinx.coroutines.Dispatchers
 import org.kodein.di.compose.withDI
 import screen.BaseScreenView
 import themes.AppTheme
+import vtk.vtkNativeLibrary
 import java.io.File
 import java.lang.IllegalArgumentException
 
@@ -22,14 +23,14 @@ fun main(args: Array<String>) {
     //val process = Runtime.getRuntime().exec("linuxcnc '/home/vasimihalca/Work/linuxcnc-dev/configs/sim/axis/lathe.ini'")
     //Thread.sleep(1000L)
 
-//    if (!vtkNativeLibrary.LoadAllNativeLibraries()) {
-//        for (lib in vtkNativeLibrary.values()) {
-//            if (!lib.IsLoaded()) {
-//                println(lib.GetLibraryName() + " not loaded")
-//            }
-//        }
-//    }
-//    vtkNativeLibrary.DisableOutputWindow(null)
+    if (!vtkNativeLibrary.LoadAllNativeLibraries()) {
+        for (lib in vtkNativeLibrary.values()) {
+            if (!lib.IsLoaded()) {
+                println(lib.GetLibraryName() + " not loaded")
+            }
+        }
+    }
+    vtkNativeLibrary.DisableOutputWindow(null)
 
     val iniFilePath = args.firstOrNull()?.takeIf { File(it).exists() } ?: throw IllegalArgumentException(".ini file not found")
     application {
@@ -71,19 +72,6 @@ fun MyWindow(
 
         AppTheme {
             BaseScreenView()
-
-//            val state = remember {
-//                val cone = vtkConeSource()
-//                cone.SetResolution(8)
-//
-//                val coneMapper = vtkPolyDataMapper()
-//                coneMapper.SetInputConnection(cone.GetOutputPort())
-//
-//                val coneActor = vtkActor()
-//                coneActor.SetMapper(coneMapper)
-//                VtkState(coneActor)
-//            }
-//            VtkView(state, modifier = Modifier.fillMaxSize())
         }
     }
 }

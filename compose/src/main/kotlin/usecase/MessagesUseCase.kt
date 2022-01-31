@@ -22,12 +22,13 @@ class MessagesUseCase(
                     }
                 }
                 it.uiMessages.forEach { uiMsg ->
-                    result.add(Message(uiMsg.key.name, Message.Level.WARNING))
+                    val level = if (uiMsg.key.isError) Message.Level.ERROR else Message.Level.WARNING
+                    result.add(Message(uiMsg.key.name, level))
                 }
                 result
             }
             .onEach {
-                //println("Message list is: $it")
+                println("Message list is: $it")
             }
     }
 }
