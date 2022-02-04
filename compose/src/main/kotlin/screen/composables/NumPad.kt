@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import extensions.trimDigits
 import screen.uimodel.InputType
 import screen.uimodel.NumInputParameters
 import screen.uimodel.NumericInputs
@@ -30,7 +31,10 @@ class NumPadState(
     initialValue: Double? = null,
     val numInputParameters: NumInputParameters
 ) {
-    val stringValueState = mutableStateOf(initialValue?.toString() ?: "")
+    private val defaultValue = initialValue?.trimDigits(numInputParameters.maxDecimalPlaces)
+        ?: numInputParameters.initialValue.trimDigits(numInputParameters.maxDecimalPlaces)
+
+    val stringValueState = mutableStateOf(defaultValue)
 
     fun toggleSign() {
         stringValueState.value = if (stringValueState.value.startsWith('-')) {

@@ -19,6 +19,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.kodein.di.compose.rememberInstance
 import screen.composables.common.AppTheme
+import screen.composables.tabmanual.HandwheelStatus
+import screen.composables.tabmanual.JoystickStatus
 import usecase.ManualTurningUseCase
 
 @Composable

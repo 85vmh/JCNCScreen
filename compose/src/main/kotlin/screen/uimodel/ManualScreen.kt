@@ -1,6 +1,7 @@
 package screen.uimodel
 
-import screen.composables.TurningSettingsViewModel
+import screen.composables.tabmanual.TurningSettingsViewModel
+
 
 sealed class ManualScreen(
     title: String,

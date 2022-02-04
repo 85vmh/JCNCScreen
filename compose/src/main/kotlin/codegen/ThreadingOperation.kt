@@ -20,8 +20,16 @@ class ThreadingOperation(
     private val taper: Taper? = null
 ) : Operation {
 
-    override fun getComment(): List<String> {
-        TODO("Not yet implemented")
+    override fun getStartComment(): List<String> {
+        return mutableListOf<String>().apply {
+            add("(---BEGIN---Threading operation-----------)")
+        }
+    }
+
+    override fun getEndComment(): List<String> {
+        return mutableListOf<String>().apply {
+            add("(----END----Threading operation-----------)")
+        }
     }
 
     override fun getOperationCode(): List<String> {

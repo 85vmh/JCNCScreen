@@ -7,6 +7,9 @@ import com.mindovercnc.base.data.currentToolNo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import screen.uimodel.AllowedSpindleDirection
+import screen.uimodel.ToolType
+import usecase.model.AddEditToolState
 
 class ToolsUseCase(
     private val scope: CoroutineScope,
@@ -31,10 +34,27 @@ class ToolsUseCase(
         toolTouchOff("Z$value")
     }
 
+    fun loadTool(toolNo: Int) {
+        scope.launch {
+            val initialTaskMode = statusRepository.cncStatusFlow().map { it.taskStatus.taskMode }.first()
+            commandRepository.setTaskMode(TaskMode.TaskModeMDI)
+            commandRepository.executeMdiCommand("M61 Q$toolNo G43")
+            commandRepository.setTaskMode(initialTaskMode)
+        }
+    }
+
+    fun deleteTool(toolNo: Int) {
+        toolFileRepository.removeTool(toolNo)
+    }
+
+    fun getCurrentToolNo(): Flow<Int> {
+        return statusRepository.cncStatusFlow().map { it.currentToolNo }.distinctUntilChanged()
+    }
+
     fun getCurrentTool(): Flow<LatheTool?> {
         return combine(
             toolFileRepository.getTools().distinctUntilChanged(),
-            statusRepository.cncStatusFlow().map { it.currentToolNo }.distinctUntilChanged()
+            getCurrentToolNo()
         ) { toolsList, loadedToolNo ->
             toolsList.find { it.toolNo == loadedToolNo }
         }
@@ -50,4 +70,16 @@ class ToolsUseCase(
             commandRepository.setTaskMode(initialTaskMode)
         }
     }
+
+    val toolState = AddEditToolState(
+        toolNo = 1,
+        toolType = ToolType.PROFILING,
+        spindleDirection = AllowedSpindleDirection.CCW,
+        xOffset = 0.0,
+        zOffset = 0.0,
+        tipRadius = 0.1,
+        diameter = 6.0,
+        bladeWidth = 0.0,
+        orientation = 1
+    )
 }

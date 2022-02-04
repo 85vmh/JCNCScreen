@@ -9,34 +9,51 @@ class TurningOperation(
     private val startingZPosition: Double,
 ) : Operation {
 
-    override fun getComment(): List<String> {
+    override fun getStartComment(): List<String> {
         return mutableListOf<String>().apply {
-            add("(Turning operation)")
+            add("(---BEGIN---Turning operation-----------)")
+        }
+    }
+
+    override fun getEndComment(): List<String> {
+        return mutableListOf<String>().apply {
+            add("(----END----Turning operation-----------)")
         }
     }
 
     override fun getOperationCode(): List<String> {
         return mutableListOf<String>().apply {
-            add("(The subroutine above, defines the profile of the cut)")
+            add("(Profile of the cut)")
             addAll(subroutineLines)
-            add("\n")
+            var previousToolNumber = 0
+            var previousFeedRate = 0.0
             turningStrategies.forEach {
                 when (it) {
                     is TurningStrategy.Roughing -> {
+                        add("\r")
                         add("(Roughing)")
                         add("G40 M6 T${it.toolNumber} G43")
+                        previousToolNumber = it.toolNumber
+                        add("F${it.feedRate.stripZeros()}")
+                        previousFeedRate = it.feedRate
                         add(it.direction.code + it.cutType.prefix + commonParams + it.strategyParams)
                     }
                     is TurningStrategy.Finishing -> {
+                        add("\r")
                         add("(Finishing)")
-                        add("G40 M6 T${it.toolNumber} G43")
-                        it.feedRate?.let { feed ->
-                            add("F${feed.stripZeros()}")
+                        if (it.toolNumber != previousToolNumber) {
+                            add("G40 M6 T${it.toolNumber} G43")
+                            previousToolNumber = it.toolNumber
+                        }
+                        if (it.feedRate != previousFeedRate) {
+                            add("F${it.feedRate.stripZeros()}")
+                            previousFeedRate = it.feedRate
                         }
                         add("G70" + commonParams + it.strategyParams)
                     }
                 }
             }
+            add("G0 X$startingXPosition Z$startingZPosition")
         }
     }
 
@@ -58,7 +75,8 @@ class TurningOperation(
             val cuttingIncrement: Double,
             val retractDistance: Double,
             val cutType: CutType,
-            val direction: TraverseDirection
+            val direction: TraverseDirection,
+            val feedRate: Double
         ) : TurningStrategy() {
             override val strategyParams: String
                 get() = " D${remainingDistance.stripZeros()}" +
@@ -72,7 +90,7 @@ class TurningOperation(
             val endingDistance: Double,
             val numberOfPasses: Int,
             val pathBlendingTolerance: Double = 0.01,
-            val feedRate: Double? = null
+            val feedRate: Double
         ) : TurningStrategy() {
             override val strategyParams: String
                 get() = " D${startingDistance.stripZeros()}" +

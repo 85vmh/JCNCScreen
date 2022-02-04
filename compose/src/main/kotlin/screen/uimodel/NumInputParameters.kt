@@ -2,7 +2,7 @@ package screen.uimodel
 
 data class NumInputParameters(
     val valueDescription: String = "Input Name",
-    val unit: String = "N/A",
+    val unit: String? = null,
     val minValue: Double = Double.MIN_VALUE,
     val maxValue: Double = Double.MAX_VALUE,
     val allowsNegativeValues: Boolean = false,

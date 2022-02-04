@@ -81,7 +81,12 @@ class ToolFileRepositoryImpl(
 
     private fun updateToolTableFile() {
         scope.launch(Dispatchers.IO) {
-            File(toolTableFilePath).writeText(toolMap.entries.joinToString("\n"))
+            File(toolTableFilePath).printWriter().use {
+                toolMap.entries.forEach { line ->
+                    it.println(line.value)
+                }
+                it.close()
+            }
         }
     }
 }

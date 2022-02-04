@@ -1,16 +1,37 @@
 package codegen
 
-class ProfileGeometry {
+import extensions.stripZeros
 
-    fun getProfile(): List<String> {
-        val result = mutableListOf<String>()
-        result.add("G0 X1 Z3")
-        result.add("G1 X10 Z-30")
-        result.add("G0 X15.0")
-        return result
+interface ProfileGeometry {
+
+    fun getProfile(): List<String>
+
+    val subroutineNumber: Int
+
+    val hasPockets: Boolean
+}
+
+class OdProfileGeometry(
+    private val xInitial: Double,
+    private val xFinal: Double,
+    val zStart: Double,
+    private val zEnd: Double,
+    private val filletRadius: Double
+) : ProfileGeometry {
+
+    override fun getProfile(): List<String> {
+        return mutableListOf<String>().apply {
+            add("G0 X${xFinal.stripZeros()}")
+            add("G1 Z${(filletRadius + zEnd).stripZeros()}")
+            add("G2 X${(filletRadius + xFinal).stripZeros()} Z${(zEnd).stripZeros()} R${filletRadius.stripZeros()}")
+            add("G1 X${xInitial.stripZeros()}")
+        }
     }
 
-    val subroutineNumber = 100
+    override val subroutineNumber: Int
+        get() = 100
 
-    val hasPockets = false
+    override val hasPockets: Boolean
+        get() = false
+
 }

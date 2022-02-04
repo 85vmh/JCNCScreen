@@ -1,7 +1,9 @@
 package com.mindovercnc.base
 
-import com.mindovercnc.base.data.AppFile
+import java.io.File
 
 interface FileSystemRepository {
-    fun getNcRootAppFile() : AppFile
+    fun getNcRootAppFile() : File
+
+    fun writeProgramLines(lines: List<String>, programName: String)
 }

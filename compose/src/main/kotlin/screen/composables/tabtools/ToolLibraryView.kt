@@ -1,46 +1,43 @@
-package screen.composables
+package screen.composables.tabtools
 
-import androidx.compose.animation.core.AnimationState
-import androidx.compose.animation.core.DecayAnimationSpec
-import androidx.compose.animation.core.animateDecay
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.*
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material.AlertDialog
 import androidx.compose.material.Divider
-import androidx.compose.material.Icon
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.IconButton
-import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.ExitToApp
+import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.mindovercnc.base.data.LatheTool
 import extensions.draggableScroll
 import extensions.trimDigits
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import navigation.AppNavigator
 import org.kodein.di.compose.rememberInstance
+import screen.composables.LabelWithValue
+import screen.composables.VerticalDivider
 import screen.composables.platform.VerticalScrollbar
+import screen.uimodel.ToolsScreen
 import usecase.ToolsUseCase
-import kotlin.math.abs
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun ToolLibraryView(
     modifier: Modifier
@@ -48,6 +45,44 @@ fun ToolLibraryView(
     val useCase: ToolsUseCase by rememberInstance()
     val scope = rememberCoroutineScope()
     val toolsList by useCase.getTools().collectAsState(emptyList())
+    val currentToolNo by useCase.getCurrentToolNo().collectAsState(null)
+    val appNavigator by rememberInstance<AppNavigator>()
+    val currentScreen by appNavigator.currentScreen.collectAsState(null)
+
+    var toolToDelete by remember { mutableStateOf(0) }
+
+    if (toolToDelete > 0) {
+        AlertDialog(
+            onDismissRequest = { toolToDelete = 0 },
+            title = {
+                Text(text = "Confirmation", fontWeight = FontWeight.Bold)
+            },
+            text = {
+                Row(
+                    modifier = Modifier.width(250.dp)
+                ) {
+                    Text("Delete tool $toolToDelete ?")
+                }
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        useCase.deleteTool(toolToDelete)
+                        toolToDelete = 0
+                    }) {
+                    Text("Delete")
+                }
+            },
+            dismissButton = {
+                Button(
+                    onClick = {
+                        toolToDelete = 0
+                    }) {
+                    Text("Cancel")
+                }
+            }
+        )
+    }
 
     Box(
         modifier = modifier
@@ -63,7 +98,21 @@ fun ToolLibraryView(
                 Divider(color = Color.LightGray, thickness = 0.5.dp)
             }
             items(toolsList) { item ->
-                ToolRow(item)
+                ToolRow(
+                    item = item,
+                    isCurrent = item.toolNo == currentToolNo,
+                    onEditClicked = {
+                        currentScreen?.let {
+                            appNavigator.navigate(ToolsScreen.AddEditToolScreen(it as ToolsScreen))
+                        }
+                    },
+                    onDeleteClicked = {
+                        toolToDelete = it.toolNo
+                    },
+                    onLoadClicked = {
+                        useCase.loadTool(it.toolNo)
+                    }
+                )
                 Divider(color = Color.LightGray, thickness = 0.5.dp)
             }
         }
@@ -127,16 +176,34 @@ fun ToolsHeader(modifier: Modifier = Modifier) {
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ToolRow(item: LatheTool, modifier: Modifier = Modifier) {
+fun ToolRow(
+    item: LatheTool,
+    isCurrent: Boolean,
+    modifier: Modifier = Modifier,
+    onEditClicked: (LatheTool) -> Unit,
+    onDeleteClicked: (LatheTool) -> Unit,
+    onLoadClicked: (LatheTool) -> Unit
+) {
+    val nonSelectedModifier = modifier.height(60.dp)
+    val selectedModifier = nonSelectedModifier.border(BorderStroke(1.dp, Color.Blue))
+
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = modifier
-            .height(60.dp)
-            .clickable {
-
-            }
+        modifier = if (isCurrent) selectedModifier else nonSelectedModifier
+//            .combinedClickable(
+//                onClick = {
+//                    println("--Clicked")
+//                },
+//                onDoubleClick = {
+//                    println("--Double Clicked")
+//                },
+//                onLongClick = {
+//                    println("--Long Clicked")
+//                }
+//            )
     ) {
         Text(
             modifier = ToolsColumnModifier.ToolNo.modifier,
@@ -172,48 +239,28 @@ fun ToolRow(item: LatheTool, modifier: Modifier = Modifier) {
         VerticalDivider()
         IconButton(
             modifier = Modifier.padding(start = 16.dp, end = 16.dp),
-            onClick = { }) {
+            onClick = {
+                onEditClicked.invoke(item)
+            }) {
             Icon(Icons.Default.Edit, contentDescription = "")
         }
         VerticalDivider()
         IconButton(
             modifier = Modifier.padding(start = 16.dp, end = 16.dp),
-            onClick = { }) {
+            onClick = {
+                onDeleteClicked.invoke(item)
+            }) {
             Icon(Icons.Default.Delete, contentDescription = "")
         }
         VerticalDivider()
         IconButton(
             modifier = Modifier.padding(start = 16.dp, end = 16.dp),
-            onClick = { }) {
+            onClick = {
+                onLoadClicked.invoke(item)
+            }) {
             Icon(Icons.Default.ExitToApp, contentDescription = "")
         }
         VerticalDivider()
-    }
-}
-
-class DefaultFlingBehavior(
-    private val flingDecay: DecayAnimationSpec<Float>
-) : FlingBehavior {
-    override suspend fun ScrollScope.performFling(initialVelocity: Float): Float {
-        // come up with the better threshold, but we need it since spline curve gives us NaNs
-        return if (abs(initialVelocity) > 1f) {
-            var velocityLeft = initialVelocity
-            var lastValue = 0f
-            AnimationState(
-                initialValue = 0f,
-                initialVelocity = initialVelocity,
-            ).animateDecay(flingDecay) {
-                val delta = value - lastValue
-                val consumed = scrollBy(delta)
-                lastValue = value
-                velocityLeft = this.velocity
-                // avoid rounding errors and stop if anything is unconsumed
-                if (abs(delta - consumed) > 0.5f) this.cancelAnimation()
-            }
-            velocityLeft
-        } else {
-            initialVelocity
-        }
     }
 }
 

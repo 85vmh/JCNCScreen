@@ -1,14 +1,13 @@
-package screen.composables
+package screen.composables.tabconversational
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -23,6 +22,7 @@ import org.kodein.di.compose.rememberInstance
 import screen.composables.common.AppTheme
 import usecase.ConversationalUseCase
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ConversationalView(modifier: Modifier, onNewOpClicked: (ConversationalOperation) -> Unit) {
     val useCase: ConversationalUseCase by rememberInstance()
@@ -34,7 +34,7 @@ fun ConversationalView(modifier: Modifier, onNewOpClicked: (ConversationalOperat
                 .padding(top = 16.dp),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            ConversationalOperation.values().iterator().forEach {
+            ConversationalOperation.values().forEach {
                 Operation(it) {
                     onNewOpClicked.invoke(it)
                 }
@@ -55,14 +55,13 @@ enum class ConversationalOperation(val displayableString: String, val imgName: S
 }
 
 @Composable
-fun Operation(op: ConversationalOperation, clicked: () -> Unit) {
-    Card(
-        modifier = Modifier.clickable {
-            clicked.invoke()
-        },
+fun Operation(op: ConversationalOperation, modifier: Modifier = Modifier, onClick: () -> Unit) {
+    Surface(
+        modifier = modifier,
         border = BorderStroke(1.dp, SolidColor(Color.DarkGray)),
         shape = RoundedCornerShape(8.dp),
-        elevation = 8.dp,
+        shadowElevation = 8.dp,
+        onClick = onClick
     ) {
         Column(
             modifier = Modifier.padding(4.dp),

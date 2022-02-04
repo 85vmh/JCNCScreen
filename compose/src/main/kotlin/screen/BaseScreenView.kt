@@ -22,7 +22,15 @@ import navigation.AppNavigator
 import org.kodein.di.compose.localDI
 import org.kodein.di.instance
 import screen.composables.common.AppTheme
+import screen.composables.tabconversational.ConversationalView
+import screen.composables.tabconversational.NewOperationView
+import screen.composables.tabmanual.TurningSettingsView
+import screen.composables.tabmanual.TurningSettingsViewModel
+import screen.composables.tabtools.AddEditToolView
+import screen.composables.tabtools.ToolLibraryView
 import screen.uimodel.*
+import screen.viewmodel.ConversationalViewModel
+import usecase.ConversationalUseCase
 import usecase.ManualTurningUseCase
 import usecase.OffsetsUseCase
 import usecase.ProgramsUseCase
@@ -47,35 +55,6 @@ fun BaseScreenView() {
 
     val selectedTool by statusRepository.cncStatusFlow().map { it.currentToolNo }.collectAsState(0)
     val currentWcs by offsetsUseCase.currentWcs.collectAsState("")
-
-//    var openDialog by remember { mutableStateOf(false) }
-//    var openKeyboard by remember { mutableStateOf(false) }
-//
-//    if (openDialog) {
-//        Dialog(
-//
-//            title = "Messages",
-//            onCloseRequest = { openDialog = false },
-//            state = rememberDialogState(position = WindowPosition(Alignment.Center))
-//        ) {
-//            Text("Here I'll display a list of messages")
-//        }
-//    }
-//
-//    if (openKeyboard) {
-//        AlertDialog(
-//            onDismissRequest = { /*TODO*/ },
-//            text = {
-//                NumPadView(
-//                    modifier = Modifier.fillMaxWidth().fillMaxHeight(), state = numPadState
-//                )
-//            },
-//            buttons = {},
-//            shape = RoundedCornerShape(8.dp),
-//            modifier = Modifier.height(500.dp).width(300.dp)
-//        )
-//    }
-
 
 //    val snackbarHostState = remember {
 //        SnackbarHostState().apply {
@@ -127,6 +106,8 @@ fun BaseScreenView() {
 @Composable
 private fun ScreenContent(tabScreen: TabScreen, appNavigator: AppNavigator, modifier: Modifier = Modifier) {
     val manualTurningUseCase by localDI().instance<ManualTurningUseCase>()
+    val conversationalUseCase by localDI().instance<ConversationalUseCase>()
+
     when (tabScreen) {
         ManualScreen.ManualRootScreen -> {
             ManualTurningView(modifier) {
@@ -144,10 +125,12 @@ private fun ScreenContent(tabScreen: TabScreen, appNavigator: AppNavigator, modi
         }
         ConversationalScreen.ConversationalRootScreen -> {
             ConversationalView(modifier) {
+                val viewModel = ConversationalViewModel(conversationalUseCase)
                 appNavigator.navigate(
                     ConversationalScreen.NewOperationScreen(
                         conversationalOperation = it,
-                        previousScreen = tabScreen as ConversationalScreen
+                        previousScreen = tabScreen as ConversationalScreen,
+                        viewModel = viewModel
                     )
                 )
             }
@@ -164,6 +147,9 @@ private fun ScreenContent(tabScreen: TabScreen, appNavigator: AppNavigator, modi
         ToolsScreen.ToolsRootScreen -> {
             ToolLibraryView(modifier)
         }
+        is ToolsScreen.AddEditToolScreen -> {
+            AddEditToolView(modifier)
+        }
         SettingsScreen.SettingsRootScreen -> {
             OffsetsView(modifier)
         }
@@ -173,6 +159,7 @@ private fun ScreenContent(tabScreen: TabScreen, appNavigator: AppNavigator, modi
 @Composable
 private fun ScreenActions(screen: TabScreen, appNavigator: AppNavigator, modifier: Modifier = Modifier) {
     val programsUseCase by localDI().instance<ProgramsUseCase>()
+    val conversationalUseCase by localDI().instance<ConversationalUseCase>()
 
     when (screen) {
         ManualScreen.ManualRootScreen -> {
@@ -209,6 +196,21 @@ private fun ScreenActions(screen: TabScreen, appNavigator: AppNavigator, modifie
             }
         }
         is ConversationalScreen.ConversationalRootScreen -> {}
+        is ConversationalScreen.NewOperationScreen -> {
+            val isInputValid by conversationalUseCase.isInputValid.collectAsState()
+            IconButton(
+                modifier = modifier,
+                enabled = isInputValid,
+                onClick = {
+                    screen.viewModel.processData()
+                }
+            ) {
+                Icon(
+                    Icons.Default.KeyboardArrowRight,
+                    contentDescription = "",
+                )
+            }
+        }
         is ProgramsScreen.ProgramsRootScreen -> {
             val currentFile by programsUseCase.currentFile.collectAsState()
 
@@ -234,10 +236,29 @@ private fun ScreenActions(screen: TabScreen, appNavigator: AppNavigator, modifie
         is ToolsScreen.ToolsRootScreen -> {
             IconButton(
                 modifier = modifier,
-                onClick = {}
+                onClick = {
+                    appNavigator.navigate(
+                        ToolsScreen.AddEditToolScreen(
+                            previousScreen = screen as ToolsScreen
+                        )
+                    )
+                }
             ) {
                 Icon(
                     Icons.Default.Add,
+                    contentDescription = "",
+                )
+            }
+        }
+        is ToolsScreen.AddEditToolScreen -> {
+            IconButton(
+                modifier = modifier,
+                onClick = {
+                    //screen.viewModel.save()
+                    appNavigator.navigateUp()
+                }) {
+                Icon(
+                    Icons.Default.Check,
                     contentDescription = "",
                 )
             }

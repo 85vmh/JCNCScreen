@@ -1,6 +1,8 @@
 package screen.uimodel
 
-import screen.composables.ConversationalOperation
+import screen.composables.tabconversational.ConversationalOperation
+import screen.viewmodel.ConversationalViewModel
+
 
 sealed class ConversationalScreen(
     title: String,
@@ -13,7 +15,8 @@ sealed class ConversationalScreen(
 
     class NewOperationScreen(
         val conversationalOperation: ConversationalOperation,
-        previousScreen: ConversationalScreen?
+        previousScreen: ConversationalScreen?,
+        val viewModel: ConversationalViewModel
     ) : ConversationalScreen(
         title = conversationalOperation.displayableString,
         previousScreen = previousScreen

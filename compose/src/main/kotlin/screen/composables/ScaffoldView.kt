@@ -1,15 +1,14 @@
 package screen.composables
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Badge
-import androidx.compose.material.BadgedBox
-import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import screen.composables.common.AppTheme
 import screen.uimodel.BottomNavTab
 
@@ -36,18 +35,22 @@ fun ScaffoldView(
             )
         },
         bottomBar = {
-            BottomNavigation(
-                elevation = 8.dp,
+            NavigationBar(
                 modifier = Modifier.height(60.dp),
-                backgroundColor = MaterialTheme.colorScheme.surface
             ) {
                 BottomNavTab.values().forEach { bottomTab ->
+                    val isSelected = selectedTab == bottomTab
+                    val selectedColor = AppTheme.colors.material.secondary
                     BottomNavigationItem(
-                        icon = { TabIcon(bottomTab, selectedTool, selectedWcs) },
-                        selected = selectedTab == bottomTab,
-                        selectedContentColor = MaterialTheme.colorScheme.primary,
+                        icon = { TabIcon(bottomTab, isSelected, selectedTool, selectedWcs) },
+                        selected = isSelected,
                         onClick = { onTabClicked(bottomTab) },
-                        label = { Text(text = bottomTab.tabText) },
+                        label = {
+                            Text(
+                                text = bottomTab.tabText,
+                                color = if (isSelected) selectedColor else Color.Unspecified
+                            )
+                        },
                     )
                 }
             }
@@ -57,42 +60,39 @@ fun ScaffoldView(
 }
 
 @Composable
-private fun TabIcon(bottomNavTab: BottomNavTab, selectedTool: Int, selectedWcs: String) {
-    when (bottomNavTab) {
-        BottomNavTab.ManualTurning,
-        BottomNavTab.Conversational,
-        BottomNavTab.Programs -> {
-            Icon(bottomNavTab.tabImage, contentDescription = "")
-        }
-        BottomNavTab.Tools -> {
-            BadgedBox(
-                badge = {
-                    Row {
-                        Badge(
-                            backgroundColor = AppTheme.colors.material.secondary
-                        ) {
-                            Text(selectedTool.toString())
-                        }
+private fun TabIcon(bottomNavTab: BottomNavTab, isSelected: Boolean, selectedTool: Int, selectedWcs: String) {
+    val iconTint = if (isSelected) AppTheme.colors.material.secondary else LocalContentColor.current
+    val badgeText = when (bottomNavTab) {
+        BottomNavTab.Tools -> "T$selectedTool"
+        BottomNavTab.Settings -> selectedWcs
+        else -> null
+    }
+    if (badgeText != null) {
+        BadgedBox(
+            badge = {
+                Row {
+                    Badge(
+                        containerColor = AppTheme.colors.material.secondary
+                    ) {
+                        Text(
+                            fontSize = 14.sp,
+                            text = badgeText
+                        )
                     }
                 }
-            ) {
-                Icon(bottomNavTab.tabImage, contentDescription = "")
             }
+        ) {
+            Icon(
+                tint = iconTint,
+                imageVector = bottomNavTab.tabImage,
+                contentDescription = ""
+            )
         }
-        BottomNavTab.Settings -> {
-            BadgedBox(
-                badge = {
-                    Row {
-                        Badge(
-                            backgroundColor = AppTheme.colors.material.secondary
-                        ) {
-                            Text(selectedWcs)
-                        }
-                    }
-                }
-            ) {
-                Icon(bottomNavTab.tabImage, contentDescription = "")
-            }
-        }
+    } else {
+        Icon(
+            tint = iconTint,
+            imageVector = bottomNavTab.tabImage,
+            contentDescription = ""
+        )
     }
 }

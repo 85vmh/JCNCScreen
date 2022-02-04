@@ -1,6 +1,5 @@
 package com.mindovercnc.linuxcnc
 
-import com.mindovercnc.base.data.AppFile
 import com.mindovercnc.base.data.TextLines
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -10,66 +9,65 @@ import java.io.*
 import java.nio.channels.FileChannel
 import java.nio.charset.StandardCharsets
 
-fun File.toAppFile(): AppFile = object : AppFile {
-    override val name: String get() = this@toAppFile.name
+//fun File.toAppFile(): AppFile = object : AppFile {
+//    override val name: String get() = this@toAppFile.name
+//
+//    override val path: String get() = this@toAppFile.path
+//
+//    override val size: Long get() = this@toAppFile.length()
+//
+//    override val lastModified: Long get() = this@toAppFile.lastModified()
+//
+//    override val isDirectory: Boolean get() = this@toAppFile.isDirectory
+//
+//    override val children: List<AppFile>
+//        get() = this@toAppFile
+//            .listFiles()
+//            .orEmpty()
+//            .map { it.toAppFile() }
+//
+//    override val hasChildren: Boolean
+//        get() = isDirectory && (listFiles()?.size ?: 0) > 0
+//}
 
-    override val path: String get() = this@toAppFile.path
+fun File.readTextLines(scope: CoroutineScope): TextLines {
+    var byteBufferSize: Int
+    val byteBuffer = RandomAccessFile(this, "r").use { file ->
+        byteBufferSize = file.length().toInt()
+        file.channel.map(FileChannel.MapMode.READ_ONLY, 0, file.length())
+    }
 
-    override val size: Long get() = this@toAppFile.length()
+    val lineStartPositions = IntList()
 
-    override val lastModified: Long get() = this@toAppFile.lastModified()
+    var size = 0
 
-    override val isDirectory: Boolean get() = this@toAppFile.isDirectory
-
-    override val children: List<AppFile>
-        get() = this@toAppFile
-            .listFiles()
-            .orEmpty()
-            .map { it.toAppFile() }
-
-    override val hasChildren: Boolean
-        get() = isDirectory && (listFiles()?.size ?: 0) > 0
-
-
-    override fun readLines(scope: CoroutineScope): TextLines {
-        var byteBufferSize: Int
-        val byteBuffer = RandomAccessFile(this@toAppFile, "r").use { file ->
-            byteBufferSize = file.length().toInt()
-            file.channel.map(FileChannel.MapMode.READ_ONLY, 0, file.length())
-        }
-
-        val lineStartPositions = IntList()
-
-        var size = 0
-
-        val refreshJob = scope.launch {
-            delay(100)
-            size = lineStartPositions.size
-            while (true) {
-                delay(1000)
-                size = lineStartPositions.size
-            }
-        }
-
-        scope.launch(Dispatchers.IO) {
-            readLinePositions(lineStartPositions)
-            refreshJob.cancel()
+    val refreshJob = scope.launch {
+        delay(100)
+        size = lineStartPositions.size
+        while (true) {
+            delay(1000)
             size = lineStartPositions.size
         }
+    }
 
-        return object : TextLines {
-            override val size get() = size
+    scope.launch(Dispatchers.IO) {
+        readLinePositions(lineStartPositions)
+        refreshJob.cancel()
+        size = lineStartPositions.size
+    }
 
-            override fun get(index: Int): String {
-                val startPosition = lineStartPositions[index]
-                val length = if (index + 1 < size) lineStartPositions[index + 1] - startPosition else
-                    byteBufferSize - startPosition
-                // Only JDK since 13 has slice() method we need, so do ugly for now.
-                byteBuffer.position(startPosition)
-                val slice = byteBuffer.slice()
-                slice.limit(length)
-                return StandardCharsets.UTF_8.decode(slice).toString()
-            }
+    return object : TextLines {
+        override val size get() = size
+
+        override fun get(index: Int): String {
+            val startPosition = lineStartPositions[index]
+            val length = if (index + 1 < size) lineStartPositions[index + 1] - startPosition else
+                byteBufferSize - startPosition
+            // Only JDK since 13 has slice() method we need, so do ugly for now.
+            byteBuffer.position(startPosition)
+            val slice = byteBuffer.slice()
+            slice.limit(length)
+            return StandardCharsets.UTF_8.decode(slice).toString()
         }
     }
 }
@@ -114,7 +112,7 @@ private fun File.readLinePositions(
 /**
  * Compact version of List<Int> (without unboxing Int and using IntArray under the hood)
  */
-class IntList(initialCapacity: Int = 16) {
+internal class IntList(initialCapacity: Int = 16) {
     @Volatile
     private var array = IntArray(initialCapacity)
 

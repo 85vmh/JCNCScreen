@@ -10,15 +10,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.mindovercnc.base.data.AppFile
-import com.mindovercnc.linuxcnc.toAppFile
 import org.kodein.di.compose.rememberInstance
 import screen.composables.common.Settings
 import screen.composables.editor.EditorEmptyView
 import screen.composables.editor.EditorView
-import screen.composables.filesystem.BreadcrumbView
-import screen.composables.filesystem.FileSystemView
+import screen.composables.tabprograms.filesystem.BreadcrumbView
+import screen.composables.tabprograms.filesystem.FileSystemView
 import usecase.ProgramsUseCase
+import usecase.model.FileSystemItem
 
 @Composable
 fun ProgramsView(
@@ -51,7 +50,7 @@ fun ProgramsView(
                     .width(400.dp)
             ) {
                 fileSystemItem?.let {
-                    FileSystemView(it)
+                    FileSystemView(it as FileSystemItem.FolderItem)
                 }
             }
             if (currentEditor != null) {
@@ -61,15 +60,6 @@ fun ProgramsView(
             } else {
                 EditorEmptyView()
             }
-
-            //TODO: why this is not working?
-//            currentEditor?.let {
-//                Column(Modifier.weight(1f)) {
-//                    EditorView(it, settings)
-//                }
-//            } ?: kotlin.run {
-//                EditorEmptyView()
-//            }
         }
     }
 }

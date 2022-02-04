@@ -1,4 +1,4 @@
-package screen.composables.filesystem
+package screen.composables.tabprograms.filesystem
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -32,7 +32,7 @@ import usecase.model.FileSystemItem
 
 @Composable
 fun FileSystemView(
-    fileSystemItem: FileSystemItem
+    fileSystemItem: FileSystemItem.FolderItem
 ) = Surface(
     modifier = Modifier.fillMaxSize()
 ) {
@@ -69,7 +69,10 @@ private fun FileSystemItemView(item: FileSystemItem, modifier: Modifier = Modifi
         modifier = modifier
             .background(Color.White)
             .clickable {
-                item.clicked.invoke()
+                when (item) {
+                    is FileSystemItem.FolderItem -> item.clicked.invoke()
+                    is FileSystemItem.FileItem -> item.clicked.invoke()
+                }
             }
             .padding(start = 8.dp)
             .fillMaxWidth()
@@ -77,9 +80,9 @@ private fun FileSystemItemView(item: FileSystemItem, modifier: Modifier = Modifi
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
     ) {
-        val resourcePath = when {
-            item.isDirectory -> "folder-icon.png"
-            else -> "gcode.png"
+        val resourcePath = when (item) {
+            is FileSystemItem.FolderItem -> "folder-icon.png"
+            is FileSystemItem.FileItem -> "gcode.png"
         }
         Image(
             modifier = Modifier

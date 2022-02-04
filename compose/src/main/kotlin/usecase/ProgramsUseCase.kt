@@ -1,15 +1,16 @@
 package usecase
 
-import com.mindovercnc.base.*
-import com.mindovercnc.base.data.AppFile
-import com.mindovercnc.linuxcnc.toAppFile
+import com.mindovercnc.base.CncCommandRepository
+import com.mindovercnc.base.CncStatusRepository
+import com.mindovercnc.base.FileSystemRepository
+import com.mindovercnc.base.SettingsRepository
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
 import screen.composables.editor.Editor
 import usecase.model.FileSystemItem
 import java.io.File
-import java.time.Instant
-import java.util.*
 
 class ProgramsUseCase(
     private val scope: CoroutineScope,
@@ -20,7 +21,7 @@ class ProgramsUseCase(
 ) {
 
     private val selectedFolder = MutableStateFlow(fileSystemRepository.getNcRootAppFile())
-    private val selectedFile = MutableStateFlow<AppFile?>(null)
+    private val selectedFile = MutableStateFlow<File?>(null)
 
     val currentFileSystemItem = selectedFolder.asStateFlow().map { it.toFileSystemItem() }
 
@@ -31,30 +32,47 @@ class ProgramsUseCase(
     val currentFile = selectedFile.asStateFlow()
 
     fun loadFolderContents(path: String) {
-        selectedFolder.value = File(path).toAppFile()
+        selectedFolder.value = File(path)
         selectedFile.value = null
     }
 
-    private fun AppFile.toFileSystemItem(loadChildren: Boolean = true): FileSystemItem {
-        return FileSystemItem(
-            name = this.name,
-            path = this.path,
-            isDirectory = this.isDirectory,
-            children = when {
-                loadChildren -> this.children
-                    .map { it.toFileSystemItem(false) }
-                    .sortedWith(compareBy({ it.isDirectory }, { it.name }))
-                else -> emptyList()
-            },
-            lastModified = Date.from(Instant.ofEpochMilli(this.lastModified)),
-        ) {
-            if (isDirectory) {
+    private fun File.toFileSystemItem(loadChildren: Boolean = true): FileSystemItem {
+        return if (this.isDirectory) {
+            FileSystemItem.FolderItem(
+                name = this.name,
+                path = this.path,
+                lastModified = this.lastModified(),
+                size = this.length(),
+                children = when {
+                    loadChildren -> this.listFiles().orEmpty()
+                        .filter { it.isDisplayable() }
+                        .map { it.toFileSystemItem(false) }
+                        .sortedWith(compareBy({ it is FileSystemItem.FolderItem }, { it.lastModified }))
+                    else -> emptyList()
+                }
+            ) {
                 println("---Folder clicked: ${this.path}")
-                selectedFolder.value = File(this.path).toAppFile()
+                selectedFolder.value = File(this.path)
                 selectedFile.value = null
-            } else {
-                selectedFile.value = File(this.path).toAppFile()
             }
+        } else {
+            FileSystemItem.FileItem(
+                name = this.name,
+                path = this.path,
+                extension = this.extension,
+                lastModified = this.lastModified(),
+                size = this.length()
+            ) {
+                selectedFile.value = File(this.path)
+            }
+        }
+    }
+
+    private fun File.isDisplayable(): Boolean {
+        return if (isDirectory) {
+            !isHidden
+        } else {
+            !isHidden && extension.equals("ngc", true)
         }
     }
 

@@ -2,10 +2,11 @@ package screen.composables.editor
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import com.mindovercnc.base.data.AppFile
 import kotlinx.coroutines.CoroutineScope
 import com.mindovercnc.base.data.EmptyTextLines
+import com.mindovercnc.linuxcnc.readTextLines
 import screen.composables.util.SingleSelection
+import java.io.File
 
 class Editor(
     val fileName: String,
@@ -32,16 +33,16 @@ class Editor(
     class Content(val value: State<String>, val isGCode: Boolean)
 }
 
-fun Editor(file: AppFile) = Editor(
+fun Editor(file: File) = Editor(
     fileName = file.name
 ) { backgroundScope ->
     val textLines = try {
-        file.readLines(backgroundScope)
+        file.readTextLines(backgroundScope)
     } catch (e: Throwable) {
         e.printStackTrace()
         EmptyTextLines
     }
-    val isGCode = file.name.endsWith(".ngc", ignoreCase = true) || file.name.endsWith(".nc", ignoreCase = true)
+    val isGCode = file.extension.endsWith("ngc", ignoreCase = true) || file.extension.endsWith("nc", ignoreCase = true)
 
     fun content(index: Int): Editor.Content {
         val text = textLines.get(index)

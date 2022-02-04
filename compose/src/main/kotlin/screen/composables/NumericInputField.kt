@@ -14,12 +14,13 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import extensions.trimDigits
 import screen.uimodel.InputType
 import screen.uimodel.NumericInputs
 
 @Composable
-fun NumTextField(
-    numValue: String,
+fun NumericInputField(
+    numericValue: String,
     inputType: InputType,
     modifier: Modifier = Modifier,
     valueChanged: (String) -> Unit
@@ -31,11 +32,13 @@ fun NumTextField(
         textStyle = TextStyle(fontSize = 16.sp),
         readOnly = true,
         enabled = false,
-        value = numValue,
+        value = numericValue.toDouble().trimDigits(numInputParameters.maxDecimalPlaces),
         singleLine = true,
         modifier = modifier.width(100.dp)
-            .clickable { numPadState = NumPadState(numValue.toDouble(), numInputParameters) },
-        onValueChange = { valueChanged(it) },
+            .clickable { numPadState = NumPadState(numericValue.toDouble(), numInputParameters) },
+        onValueChange = {
+            valueChanged(it)
+        },
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Number
         ),

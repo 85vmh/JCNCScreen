@@ -1,4 +1,4 @@
-package screen.composables
+package screen.composables.tabmanual
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -11,6 +11,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import screen.composables.CardWithTitle
+import screen.composables.NumericInputField
 import screen.uimodel.InputType
 import screen.uimodel.NumericInputs
 import usecase.ManualTurningUseCase
@@ -189,7 +191,7 @@ fun RadioBoxSetting(
                 modifier = Modifier.padding(start = 16.dp), text = settingName
             )
         }
-        ValueAndUnit(value, inputType, alignment, modifier = Modifier.width(200.dp)) {
+        NumericInputWithUnit(value, inputType, alignment, modifier = Modifier.width(200.dp)) {
             onValueChanged(it)
         }
     }
@@ -219,7 +221,7 @@ fun CheckBoxSetting(
                 modifier = Modifier.padding(start = 16.dp), text = settingName
             )
         }
-        ValueAndUnit(value, inputType, alignment, modifier = Modifier.width(200.dp)) {
+        NumericInputWithUnit(value, inputType, alignment, modifier = Modifier.width(200.dp)) {
             onValueChanged(it)
         }
     }
@@ -241,14 +243,14 @@ fun ValueSetting(
                 modifier = Modifier.padding(start = 16.dp), text = settingName
             )
         }
-        ValueAndUnit(value, inputType, alignment, modifier = Modifier.width(200.dp)) {
+        NumericInputWithUnit(value, inputType, alignment, modifier = Modifier.width(200.dp)) {
             onValueChanged(it)
         }
     }
 }
 
 @Composable
-fun ValueAndUnit(
+fun NumericInputWithUnit(
     value: String, inputType: InputType, alignment: Alignment.Vertical, modifier: Modifier = Modifier, onValueChanged: (String) -> Unit
 ) {
     val params = NumericInputs.entries[inputType]!!
@@ -256,15 +258,17 @@ fun ValueAndUnit(
     Row(
         verticalAlignment = alignment, modifier = modifier
     ) {
-        NumTextField(
-            numValue = value,
+        NumericInputField(
+            numericValue = value,
             inputType = inputType,
             modifier = Modifier.width(80.dp)
         ) {
             onValueChanged(it)
         }
-        Text(
-            modifier = Modifier.padding(start = 8.dp), text = params.unit
-        )
+        params.unit?.let {
+            Text(
+                modifier = Modifier.padding(start = 8.dp), text = it
+            )
+        }
     }
 }
