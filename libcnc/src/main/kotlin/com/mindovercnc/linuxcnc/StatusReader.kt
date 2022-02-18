@@ -36,7 +36,7 @@ class StatusReader {
 
     init {
         statusBuffer = init()
-        statusBuffer!!.order(ByteOrder.LITTLE_ENDIAN)
+        statusBuffer?.order(ByteOrder.LITTLE_ENDIAN)
     }
 
     fun refresh(interval: Long) = flow {

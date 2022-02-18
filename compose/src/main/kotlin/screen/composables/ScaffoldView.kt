@@ -19,6 +19,7 @@ fun ScaffoldView(
     selectedTab: BottomNavTab,
     selectedTool: Int,
     selectedWcs: String,
+    enabledTabs: List<BottomNavTab> = BottomNavTab.values().asList(),
     onTabClicked: (tab: BottomNavTab) -> Unit,
     navigationIcon: @Composable (() -> Unit) = {},
     actions: @Composable RowScope.() -> Unit = {},
@@ -40,15 +41,21 @@ fun ScaffoldView(
             ) {
                 BottomNavTab.values().forEach { bottomTab ->
                     val isSelected = selectedTab == bottomTab
+                    val isEnabled = bottomTab in enabledTabs
                     val selectedColor = AppTheme.colors.material.secondary
                     BottomNavigationItem(
-                        icon = { TabIcon(bottomTab, isSelected, selectedTool, selectedWcs) },
+                        icon = { TabIcon(bottomTab, isSelected, isEnabled, selectedTool, selectedWcs) },
                         selected = isSelected,
+                        enabled = isEnabled,
                         onClick = { onTabClicked(bottomTab) },
                         label = {
                             Text(
                                 text = bottomTab.tabText,
-                                color = if (isSelected) selectedColor else Color.Unspecified
+                                color = when {
+                                    isSelected -> selectedColor
+                                    isEnabled.not() -> AppTheme.colors.textDisabled
+                                    else -> Color.Unspecified
+                                }
                             )
                         },
                     )
@@ -60,11 +67,15 @@ fun ScaffoldView(
 }
 
 @Composable
-private fun TabIcon(bottomNavTab: BottomNavTab, isSelected: Boolean, selectedTool: Int, selectedWcs: String) {
-    val iconTint = if (isSelected) AppTheme.colors.material.secondary else LocalContentColor.current
+private fun TabIcon(bottomNavTab: BottomNavTab, isSelected: Boolean, isEnabled: Boolean, selectedTool: Int, selectedWcs: String) {
+    val iconTint = when {
+        isSelected -> AppTheme.colors.material.secondary
+        isEnabled.not() -> AppTheme.colors.textDisabled
+        else -> LocalContentColor.current
+    }
     val badgeText = when (bottomNavTab) {
         BottomNavTab.Tools -> "T$selectedTool"
-        BottomNavTab.Settings -> selectedWcs
+        BottomNavTab.Status -> selectedWcs
         else -> null
     }
     if (badgeText != null) {

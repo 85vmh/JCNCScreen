@@ -1,4 +1,4 @@
-package screen.composables
+package screen.composables.tabstatus
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -6,31 +6,28 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Button
 import androidx.compose.material.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import extensions.trimDigits
 import org.kodein.di.compose.rememberInstance
-import usecase.OffsetsUseCase
-import usecase.model.OffsetEntry
+import screen.composables.VerticalDivider
+import usecase.MessagesUseCase
+import usecase.model.Message
 
 @Composable
 @OptIn(ExperimentalFoundationApi::class)
-fun OffsetsView(
+fun MessagesView(
     modifier: Modifier
 ) {
-    val useCase: OffsetsUseCase by rememberInstance()
-    val scope = rememberCoroutineScope()
-    val offsets by useCase.getOffsets().collectAsState(emptyList())
+    val messagesUseCase by rememberInstance<MessagesUseCase>()
+    val messageList by messagesUseCase.getAllMessages().collectAsState(emptyList())
 
     Box(
         modifier = modifier
@@ -40,11 +37,11 @@ fun OffsetsView(
 
         ) {
             stickyHeader {
-                OffsetsHeader()
+                MessagesHeader()
                 Divider(color = Color.LightGray, thickness = 0.5.dp)
             }
-            items(offsets) { item ->
-                OffsetRow(item)
+            items(messageList) { item ->
+                MessageRow(item)
                 Divider(color = Color.LightGray, thickness = 0.5.dp)
             }
         }
@@ -52,7 +49,7 @@ fun OffsetsView(
 }
 
 @Composable
-fun OffsetsHeader(modifier: Modifier = Modifier) {
+fun MessagesHeader(modifier: Modifier = Modifier) {
     Row(
         modifier = modifier
             .background(Color.White)
@@ -61,22 +58,22 @@ fun OffsetsHeader(modifier: Modifier = Modifier) {
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
-            modifier = Modifier.width(70.dp),
+            modifier = Modifier.width(100.dp),
             textAlign = TextAlign.Center,
-            text = "WCS"
+            text = "Type"
         )
         VerticalDivider()
         Text(
-            modifier = Modifier.width(130.dp),
+            modifier = Modifier.width(300.dp),
             textAlign = TextAlign.Center,
-            text = "Offset"
+            text = "Message"
         )
         VerticalDivider()
     }
 }
 
 @Composable
-fun OffsetRow(item: OffsetEntry, modifier: Modifier = Modifier) {
+fun MessageRow(item: Message, modifier: Modifier = Modifier) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -87,16 +84,15 @@ fun OffsetRow(item: OffsetEntry, modifier: Modifier = Modifier) {
             }
     ) {
         Text(
-            modifier = Modifier.width(70.dp),
+            modifier = Modifier.width(100.dp),
             textAlign = TextAlign.Center,
-            text = item.coordinateSystem
+            text = item.level.name
         )
         VerticalDivider()
         Column(
-            modifier = Modifier.width(130.dp),
+            modifier = Modifier.width(300.dp),
         ) {
-            LabelWithValue("X:", item.xOffset.trimDigits())
-            LabelWithValue("Z:", item.zOffset.trimDigits())
+            Text(item.text)
         }
         VerticalDivider()
     }

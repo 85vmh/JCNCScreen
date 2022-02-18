@@ -6,7 +6,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.*
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 @Composable
 fun SettingStatusRow(
@@ -26,9 +27,11 @@ fun SettingStatusRow(
         )
         Row(
             modifier = Modifier.width(250.dp),
+            verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.End
         ) {
             Text(
+                modifier = Modifier,
                 text = settingValue,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.SemiBold
@@ -37,9 +40,9 @@ fun SettingStatusRow(
                 Spacer(Modifier.size(8.dp))
                 Text(
                     text = it,
-                    modifier = Modifier.width(100.dp).align(Alignment.CenterVertically),
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Normal
+                    modifier = Modifier.width(100.dp),
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Light
                 )
             }
         }

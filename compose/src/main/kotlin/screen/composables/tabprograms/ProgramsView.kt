@@ -1,4 +1,4 @@
-package screen.composables
+package screen.composables.tabprograms
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*

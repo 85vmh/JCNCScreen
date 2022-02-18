@@ -221,5 +221,13 @@ object NumericInputs {
             initialValue = 0.0,
             maxDecimalPlaces = 3
         )
+        map[InputType.TAPER_ANGLE] = NumInputParameters(
+            valueDescription = "Taper Angle",
+            unit = "degrees",
+            minValue = 1.0,
+            maxValue = 89.0,
+            initialValue = 45.0,
+            maxDecimalPlaces = 0
+        )
     }
 }

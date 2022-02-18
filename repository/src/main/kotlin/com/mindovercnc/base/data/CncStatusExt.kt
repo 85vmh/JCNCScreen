@@ -11,6 +11,12 @@ fun CncStatus.isHomed(): Boolean {
     return true
 }
 
+val CncStatus.isXHomed get() = motionStatus.jointsStatus[0].isHomed
+val CncStatus.isZHomed get() = motionStatus.jointsStatus[1].isHomed
+
+val CncStatus.isXHoming get() = motionStatus.jointsStatus[0].isHoming
+val CncStatus.isZHoming get() = motionStatus.jointsStatus[1].isHoming
+
 val CncStatus.isInterpreterIdle get() = taskStatus.interpreterState == InterpreterState.Idle
 val CncStatus.isInMdiMode get() = taskStatus.taskMode == TaskMode.TaskModeMDI
 val CncStatus.isInManualMode get() = taskStatus.taskMode == TaskMode.TaskModeManual

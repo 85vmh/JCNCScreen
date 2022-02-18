@@ -30,4 +30,5 @@ enum class InputType {
     TIP_RADIUS,
     BLADE_WIDTH,
     DIAMETER,
+    TAPER_ANGLE,
 }

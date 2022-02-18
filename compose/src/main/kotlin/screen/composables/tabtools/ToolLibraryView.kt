@@ -28,7 +28,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.mindovercnc.base.data.LatheTool
 import extensions.draggableScroll
-import extensions.trimDigits
+import extensions.toFixedDigits
 import navigation.AppNavigator
 import org.kodein.di.compose.rememberInstance
 import screen.composables.LabelWithValue
@@ -102,8 +102,13 @@ fun ToolLibraryView(
                     item = item,
                     isCurrent = item.toolNo == currentToolNo,
                     onEditClicked = {
-                        currentScreen?.let {
-                            appNavigator.navigate(ToolsScreen.AddEditToolScreen(it as ToolsScreen))
+                        currentScreen?.let { screen ->
+                            appNavigator.navigate(
+                                ToolsScreen.AddEditToolScreen(
+                                    previousScreen = screen as ToolsScreen,
+                                    latheTool = it
+                                )
+                            )
                         }
                     },
                     onDeleteClicked = {
@@ -214,21 +219,21 @@ fun ToolRow(
         Column(
             modifier = ToolsColumnModifier.Offset.modifier
         ) {
-            LabelWithValue("X:", item.xOffset.trimDigits())
-            LabelWithValue("Z:", item.zOffset.trimDigits())
+            LabelWithValue("X:", item.xOffset.toFixedDigits())
+            LabelWithValue("Z:", item.zOffset.toFixedDigits())
         }
         VerticalDivider()
         Column(
             modifier = ToolsColumnModifier.Offset.modifier
         ) {
-            LabelWithValue("X:", item.xWear.trimDigits())
-            LabelWithValue("Z:", item.zWear.trimDigits())
+            LabelWithValue("X:", item.xWear.toFixedDigits())
+            LabelWithValue("Z:", item.zWear.toFixedDigits())
         }
         VerticalDivider()
         Text(
             modifier = ToolsColumnModifier.TipRadius.modifier,
             textAlign = TextAlign.Center,
-            text = item.tipRadius.trimDigits()
+            text = item.tipRadius.toFixedDigits()
         )
         VerticalDivider()
         Text(

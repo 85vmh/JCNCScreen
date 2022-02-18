@@ -15,7 +15,7 @@ class AppNavigator {
     private val _conversationalScreen = MutableStateFlow<ConversationalScreen>(ConversationalScreen.ConversationalRootScreen)
     private val _programsScreen = MutableStateFlow<ProgramsScreen>(ProgramsScreen.ProgramsRootScreen)
     private val _toolsScreen = MutableStateFlow<ToolsScreen>(ToolsScreen.ToolsRootScreen)
-    private val _settingsScreen = MutableStateFlow<SettingsScreen>(SettingsScreen.SettingsRootScreen)
+    private val _statusScreen = MutableStateFlow<StatusScreen>(StatusScreen.StatusRootScreen)
 
     val currentTab = _currentTab.asStateFlow()
 
@@ -26,7 +26,7 @@ class AppNavigator {
             BottomNavTab.Conversational -> _conversationalScreen
             BottomNavTab.Programs -> _programsScreen
             BottomNavTab.Tools -> _toolsScreen
-            BottomNavTab.Settings -> _settingsScreen
+            BottomNavTab.Status -> _statusScreen
         }
     }
 
@@ -40,7 +40,7 @@ class AppNavigator {
             is ConversationalScreen -> _conversationalScreen.value = to
             is ProgramsScreen -> _programsScreen.value = to
             is ToolsScreen -> _toolsScreen.value = to
-            is SettingsScreen -> _settingsScreen.value = to
+            is StatusScreen -> _statusScreen.value = to
         }
         _currentTab.value = to.tab
     }
@@ -67,8 +67,8 @@ class AppNavigator {
                     it.previousScreen ?: it
                 }
             }
-            BottomNavTab.Settings -> {
-                _settingsScreen.update {
+            BottomNavTab.Status -> {
+                _statusScreen.update {
                     it.previousScreen ?: it
                 }
             }

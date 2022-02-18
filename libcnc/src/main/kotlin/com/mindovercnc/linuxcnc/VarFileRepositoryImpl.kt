@@ -4,9 +4,7 @@ import com.mindovercnc.base.VarFileRepository
 import com.mindovercnc.base.data.ParametersState
 import com.mindovercnc.base.data.Position
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.*
 import java.io.File
 
 const val numCoordinateSystems = 9
@@ -39,6 +37,10 @@ class VarFileRepositoryImpl constructor(
 
     override fun getParametersState(): Flow<ParametersState> {
         return parametersState.filterNotNull()
+            .distinctUntilChanged()
+            .onEach {
+                println("---emitted new parameters state")
+            }
     }
 
     init {

@@ -14,7 +14,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import extensions.trimDigits
+import extensions.toFixedDigits
 import screen.uimodel.InputType
 import screen.uimodel.NumericInputs
 
@@ -32,7 +32,7 @@ fun NumericInputField(
         textStyle = TextStyle(fontSize = 16.sp),
         readOnly = true,
         enabled = false,
-        value = numericValue.toDouble().trimDigits(numInputParameters.maxDecimalPlaces),
+        value = numericValue.toDouble().toFixedDigits(numInputParameters.maxDecimalPlaces),
         singleLine = true,
         modifier = modifier.width(100.dp)
             .clickable { numPadState = NumPadState(numericValue.toDouble(), numInputParameters) },

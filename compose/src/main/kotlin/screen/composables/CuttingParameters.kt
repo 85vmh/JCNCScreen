@@ -16,7 +16,7 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import extensions.trimDigits
+import extensions.toFixedDigits
 import screen.composables.tabconversational.InputSetting
 import screen.uimodel.CuttingStrategy
 import screen.uimodel.InputType
@@ -68,10 +68,10 @@ fun CuttingParametersView(
                 InputSetting(inputType = InputType.CSS, value = cssSpeed.toString()) {
                     cssSpeed = it.toDouble().toInt()
                 }
-                InputSetting(inputType = InputType.FEED_PER_REV, value = feed.trimDigits()) {
+                InputSetting(inputType = InputType.FEED_PER_REV, value = feed.toFixedDigits()) {
                     feed = it.toDouble()
                 }
-                InputSetting(inputType = InputType.DOC, value = doc.trimDigits()) {
+                InputSetting(inputType = InputType.DOC, value = doc.toFixedDigits()) {
                     doc = it.toDouble()
                 }
             }

@@ -19,6 +19,8 @@ object AppTheme {
             surface = backgroundMedium,
             primary = Color.White
         ),
+
+        val textDisabled: Color = Color(0x772B2B2B)
     )
 
     class Code(

@@ -1,4 +1,4 @@
-package screen.composables
+package screen.composables.tabmanual
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.BorderStroke
@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Divider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -14,10 +15,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.unit.*
-import com.mindovercnc.base.data.FeedMode
+import androidx.compose.ui.unit.dp
+import extensions.toFixedDigits
 import kotlinx.coroutines.flow.map
 import org.kodein.di.compose.rememberInstance
+import screen.composables.SettingStatusRow
 import usecase.ManualTurningUseCase
 import usecase.model.FeedRateMode
 
@@ -53,7 +55,6 @@ fun FeedStatusView(modifier: Modifier = Modifier) {
 
     val actualSpeed by useCase.actualFeedRate.collectAsState(0.0)
 
-
     Card(
         shape = RoundedCornerShape(8.dp),
         modifier = modifier,
@@ -65,20 +66,30 @@ fun FeedStatusView(modifier: Modifier = Modifier) {
             .padding(8.dp)
 
         Column {
-            Text(
-                modifier = Modifier.align(Alignment.CenterHorizontally),
-                fontSize = 20.sp,
-                text = "Feed"
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
             )
+            {
+                Text(
+                    modifier = Modifier,
+                    style = MaterialTheme.typography.titleMedium,
+                    text = "Feed"
+                )
+                Text(
+                    modifier = Modifier.padding(start = 8.dp),
+                    style = MaterialTheme.typography.bodyMedium,
+                    text = "(${feedOverride}%)"
+                )
+            }
             Divider(
-                modifier = Modifier.padding(top = 8.dp, bottom = 16.dp),
+                modifier = Modifier.padding(vertical = 8.dp),
                 color = Color.DarkGray,
                 thickness = 1.dp
             )
             SettingStatusRow("Mode:", feed.mode, modifier = settingsModifier)
             SettingStatusRow("Set feed:", setFeed, feed.units, modifier = settingsModifier)
-            SettingStatusRow("Override:", feedOverride.toString(), "%", modifier = settingsModifier)
-            SettingStatusRow("Actual feed:", actualSpeed.toString(), feed.units, modifier = settingsModifier)
+            SettingStatusRow("Actual feed:", actualSpeed.toFixedDigits(), feed.units, modifier = settingsModifier)
         }
     }
 }

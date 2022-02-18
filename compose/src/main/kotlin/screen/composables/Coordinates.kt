@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import extensions.trimDigits
+import extensions.toFixedDigits
 import org.kodein.di.compose.rememberInstance
 import screen.uimodel.AxisPosition
 import screen.uimodel.InputType
@@ -168,7 +168,7 @@ private fun Position(positionType: PositionType, axisPosition: AxisPosition, isD
     if (value != null) {
         Text(
             modifier = modifier.width(positionType.width),
-            text = (value * (if (isDiameterMode) 2 else 1)).trimDigits(axisPosition.units.displayDigits),
+            text = (value * (if (isDiameterMode) 2 else 1)).toFixedDigits(axisPosition.units.displayDigits),
             fontSize = positionType.fontSize,
             fontFamily = ComposeFonts.Family.position,
             fontWeight = FontWeight.Thin,

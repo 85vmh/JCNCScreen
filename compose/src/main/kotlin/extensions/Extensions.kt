@@ -8,10 +8,16 @@ import kotlinx.coroutines.launch
 import java.math.BigDecimal
 import java.math.RoundingMode
 
-fun Double.trimDigits(maxDigits: Int = 3): String {
+/**
+ * Sets the displayable digits to max digits, which will be shown even if they are zero.
+ */
+fun Double.toFixedDigits(maxDigits: Int = 3): String {
     return BigDecimal(this).setScale(maxDigits, RoundingMode.HALF_EVEN).toString()
 }
 
+/**
+ * Strips the decimal points digits that are zero.
+ */
 fun Double.stripZeros(maxDigits: Int = 3): String {
     return BigDecimal(this).setScale(maxDigits, RoundingMode.HALF_EVEN).stripTrailingZeros().toPlainString()
 }

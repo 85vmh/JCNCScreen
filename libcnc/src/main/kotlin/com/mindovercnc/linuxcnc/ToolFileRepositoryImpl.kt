@@ -20,6 +20,7 @@ class ToolFileRepositoryImpl(
 
     init {
         FileWatcher.watchChanges(scope, toolTableFilePath, true) {
+            println("---$toolTableFilePath changed, reloading")
             readFile()
         }
     }

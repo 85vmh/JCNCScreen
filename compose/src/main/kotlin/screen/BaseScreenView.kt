@@ -14,21 +14,24 @@ import com.mindovercnc.base.MessagesRepository
 import com.mindovercnc.base.data.currentToolNo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.map
-import org.kodein.di.compose.rememberInstance
-import screen.composables.*
-import screen.viewmodel.BaseScreenViewModel
-
 import navigation.AppNavigator
 import org.kodein.di.compose.localDI
+import org.kodein.di.compose.rememberInstance
 import org.kodein.di.instance
+import screen.composables.*
 import screen.composables.common.AppTheme
 import screen.composables.tabconversational.ConversationalView
 import screen.composables.tabconversational.NewOperationView
-import screen.composables.tabmanual.TurningSettingsView
-import screen.composables.tabmanual.TurningSettingsViewModel
+import screen.composables.tabmanual.*
+import screen.composables.tabprograms.ProgramLoadedView
+import screen.composables.tabprograms.ProgramsView
+import screen.composables.tabstatus.MessagesView
+import screen.composables.tabstatus.OffsetsView
+import screen.composables.tabstatus.StatusView
 import screen.composables.tabtools.AddEditToolView
 import screen.composables.tabtools.ToolLibraryView
 import screen.uimodel.*
+import screen.viewmodel.BaseScreenViewModel
 import screen.viewmodel.ConversationalViewModel
 import usecase.ConversationalUseCase
 import usecase.ManualTurningUseCase
@@ -50,11 +53,11 @@ fun BaseScreenView() {
         Dispatchers.Main
     }
     val viewModel = remember {
-        BaseScreenViewModel(scope, statusRepository, messagesRepository, BaseScreen.NotHomedScreen)
+        BaseScreenViewModel(scope, statusRepository, messagesRepository)
     }
 
     val selectedTool by statusRepository.cncStatusFlow().map { it.currentToolNo }.collectAsState(0)
-    val currentWcs by offsetsUseCase.currentWcs.collectAsState("")
+    val currentWcs by offsetsUseCase.currentWcs.collectAsState("--")
 
 //    val snackbarHostState = remember {
 //        SnackbarHostState().apply {
@@ -67,38 +70,33 @@ fun BaseScreenView() {
 
     //var showSnackBar by remember { mutableStateOf(false) }
 
-    when (viewModel.screen) {
-        BaseScreen.NotHomedScreen -> NotHomedView()
-        else -> {
-            val selectedTab by appNavigator.currentTab.collectAsState()
-            val currentScreen by appNavigator.currentScreen.collectAsState(LoadingScreen)
-            val iconButtonModifier = Modifier.size(48.dp)
+    val selectedTab by appNavigator.currentTab.collectAsState()
+    val currentScreen by appNavigator.currentScreen.collectAsState(LoadingScreen)
+    val iconButtonModifier = Modifier.size(48.dp)
 
-            ScaffoldView(
-                screenTitle = currentScreen.title,
-                selectedTab = selectedTab,
-                selectedTool = selectedTool,
-                selectedWcs = currentWcs,
-                onTabClicked = { appNavigator.selectTab(it) },
-                navigationIcon = {
-                    if (currentScreen.isBackEnabled) {
-                        IconButton(
-                            modifier = iconButtonModifier,
-                            onClick = { appNavigator.navigateUp() })
-                        {
-                            Icon(Icons.Default.ArrowBack, contentDescription = "")
-                        }
-                    }
-                },
-                actions = { ScreenActions(currentScreen, appNavigator, iconButtonModifier) }
-            ) {
-                Box(
-                    modifier = Modifier.fillMaxSize().padding(it)
-                ) {
-                    ScreenContent(currentScreen, appNavigator)
-                    NotificationsView()
+    ScaffoldView(
+        screenTitle = currentScreen.title,
+        selectedTab = selectedTab,
+        selectedTool = selectedTool,
+        selectedWcs = currentWcs,
+        //enabledTabs = listOf(BottomNavTab.ManualTurning, BottomNavTab.Tools),
+        onTabClicked = { appNavigator.selectTab(it) },
+        navigationIcon = {
+            if (currentScreen.isBackEnabled) {
+                IconButton(
+                    modifier = iconButtonModifier,
+                    onClick = { appNavigator.navigateUp() })
+                {
+                    Icon(Icons.Default.ArrowBack, contentDescription = "")
                 }
             }
+        },
+        actions = { ScreenActions(currentScreen, appNavigator, iconButtonModifier) }
+    ) {
+        Box(
+            modifier = Modifier.fillMaxSize().padding(it)
+        ) {
+            ScreenContent(currentScreen, appNavigator)
         }
     }
 }
@@ -110,18 +108,33 @@ private fun ScreenContent(tabScreen: TabScreen, appNavigator: AppNavigator, modi
 
     when (tabScreen) {
         ManualScreen.ManualRootScreen -> {
-            ManualTurningView(modifier) {
-                val viewModel = TurningSettingsViewModel(manualTurningUseCase)
-                appNavigator.navigate(
-                    ManualScreen.TurningSettingsScreen(
-                        viewModel = viewModel,
-                        previousScreen = tabScreen as ManualScreen
+            ManualTurningView(
+                modifier,
+                turningSettingsClicked = {
+                    val viewModel = TurningSettingsViewModel(manualTurningUseCase)
+                    appNavigator.navigate(
+                        ManualScreen.TurningSettingsScreen(
+                            viewModel = viewModel,
+                            previousScreen = tabScreen as ManualScreen
+                        )
                     )
-                )
-            }
+                },
+                taperSettingsClicked = {
+                    val viewModel = TaperSettingsViewModel(manualTurningUseCase)
+                    appNavigator.navigate(
+                        ManualScreen.TaperSettingsScreen(
+                            viewModel = viewModel,
+                            previousScreen = tabScreen as ManualScreen
+                        )
+                    )
+                }
+            )
         }
         is ManualScreen.TurningSettingsScreen -> {
             TurningSettingsView(tabScreen.viewModel, modifier)
+        }
+        is ManualScreen.TaperSettingsScreen -> {
+            TaperSettingsView(tabScreen.viewModel, modifier)
         }
         ConversationalScreen.ConversationalRootScreen -> {
             ConversationalView(modifier) {
@@ -150,8 +163,8 @@ private fun ScreenContent(tabScreen: TabScreen, appNavigator: AppNavigator, modi
         is ToolsScreen.AddEditToolScreen -> {
             AddEditToolView(modifier)
         }
-        SettingsScreen.SettingsRootScreen -> {
-            OffsetsView(modifier)
+        StatusScreen.StatusRootScreen -> {
+           StatusView(modifier)
         }
     }
 }
@@ -162,27 +175,21 @@ private fun ScreenActions(screen: TabScreen, appNavigator: AppNavigator, modifie
     val conversationalUseCase by localDI().instance<ConversationalUseCase>()
 
     when (screen) {
-        ManualScreen.ManualRootScreen -> {
+        ManualScreen.ManualRootScreen -> {}
+        is ManualScreen.TurningSettingsScreen -> {
             IconButton(
                 modifier = modifier,
-                onClick = {}
-            ) {
-                BadgedBox(
-                    badge = {
-                        Row {
-                            Badge(
-                                backgroundColor = AppTheme.colors.material.secondary
-                            ) {
-                                Text("1")
-                            }
-                        }
-                    }
-                ) {
-                    Icon(Icons.Outlined.Notifications, contentDescription = "")
-                }
+                onClick = {
+                    screen.viewModel.save()
+                    appNavigator.navigateUp()
+                }) {
+                Icon(
+                    Icons.Default.Check,
+                    contentDescription = "",
+                )
             }
         }
-        is ManualScreen.TurningSettingsScreen -> {
+        is ManualScreen.TaperSettingsScreen -> {
             IconButton(
                 modifier = modifier,
                 onClick = {

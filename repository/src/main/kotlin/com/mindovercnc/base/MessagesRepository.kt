@@ -1,7 +1,7 @@
 package com.mindovercnc.base
 
 import com.mindovercnc.base.data.MessageBundle
-import com.mindovercnc.base.data.UiMessageType
+import com.mindovercnc.base.data.UiMessage
 import kotlinx.coroutines.flow.Flow
 
 interface MessagesRepository {
@@ -9,15 +9,15 @@ interface MessagesRepository {
 
     fun clearEmcMessages()
 
-    fun pushMessage(uiMessageType: UiMessageType)
+    fun pushMessage(uiMessage: UiMessage)
 
-    fun popMessage(uiMessageType: UiMessageType)
+    fun popMessage(uiMessage: UiMessage)
 }
 
-fun MessagesRepository.handleMessage(isNeeded: Boolean, uiMessageType: UiMessageType) {
+fun MessagesRepository.handleMessage(isNeeded: Boolean, uiMessage: UiMessage) {
     if (isNeeded) {
-        pushMessage(uiMessageType)
+        pushMessage(uiMessage)
     } else {
-        popMessage(uiMessageType)
+        popMessage(uiMessage)
     }
 }

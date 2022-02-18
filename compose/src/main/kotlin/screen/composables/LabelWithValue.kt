@@ -15,10 +15,11 @@ fun LabelWithValue(
     label: String,
     value: String,
     paddingStart: Dp = 16.dp,
-    paddingEnd: Dp = 16.dp
+    paddingEnd: Dp = 16.dp,
+    modifier: Modifier = Modifier
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(

@@ -1,7 +1,7 @@
 package codegen
 
 import extensions.stripZeros
-import extensions.trimDigits
+import extensions.toFixedDigits
 import kotlin.math.sqrt
 
 class ThreadingOperation(
@@ -42,7 +42,7 @@ class ThreadingOperation(
         for (lead in 1..threadStarts) {
             val zOffset = (leadOffset * (lead - 1))
             lines.add("(Cutting thread lead [$lead] of [$threadStarts], zOffset is: $zOffset)")
-            lines.add("G0 X${startPoint.x.trimDigits()} Z${(startPoint.z + zOffset).trimDigits()}")
+            lines.add("G0 X${startPoint.x.toFixedDigits()} Z${(startPoint.z + zOffset).toFixedDigits()}")
             lines.add(buildThreadingCode(finalZPosition + zOffset))
         }
         return lines

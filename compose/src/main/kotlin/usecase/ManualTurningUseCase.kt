@@ -27,7 +27,7 @@ class ManualTurningUseCase(
     private var joystickResetRequired = false
 
     private val isTaperTurning = MutableStateFlow(false)
-    private val taperAngle = MutableStateFlow(45.0)
+    private val taperAngle get() = getTaperState().taperAngle.value
 
     enum class JoystickFunction {
         None, Feeding, Jogging
@@ -61,8 +61,8 @@ class ManualTurningUseCase(
                 spindleAllowed -> sendSpindleCommand(switchStatus)
                 spindleAllowed.not() -> {
                     when (switchStatus) {
-                        SpindleSwitchStatus.NEUTRAL -> messagesRepository.popMessage(UiMessageType.SpindleOperationNotAllowed)
-                        else -> messagesRepository.pushMessage(UiMessageType.SpindleOperationNotAllowed)
+                        SpindleSwitchStatus.NEUTRAL -> messagesRepository.popMessage(UiMessage.SpindleOperationNotAllowed)
+                        else -> messagesRepository.pushMessage(UiMessage.SpindleOperationNotAllowed)
                     }
                 }
             }
@@ -114,7 +114,7 @@ class ManualTurningUseCase(
         if (isSpindleOn) {
             if (joystickResetRequired) {
                 println("---Joystick is not in neutral state")
-                messagesRepository.pushMessage(UiMessageType.JoystickResetRequired)
+                messagesRepository.pushMessage(UiMessage.JoystickResetRequired)
             } else {
                 startFeeding(axis, direction)
             }
@@ -131,7 +131,7 @@ class ManualTurningUseCase(
                 }
                 JoystickFunction.None -> {
                     println("---Feed attempted while spindle is off")
-                    messagesRepository.pushMessage(UiMessageType.JoystickCannotFeedWithSpindleOff)
+                    messagesRepository.pushMessage(UiMessage.JoystickCannotFeedWithSpindleOff)
                 }
             }
         }
@@ -143,12 +143,12 @@ class ManualTurningUseCase(
             JoystickFunction.Jogging -> joggedAxis?.let { stopJogging(it) }
             JoystickFunction.None -> {
                 joggedAxis = null
-                messagesRepository.popMessage(UiMessageType.JoystickCannotFeedWithSpindleOff)
+                messagesRepository.popMessage(UiMessage.JoystickCannotFeedWithSpindleOff)
             }
         }
         if (joystickResetRequired) {
             joystickResetRequired = false
-            messagesRepository.popMessage(UiMessageType.JoystickResetRequired)
+            messagesRepository.popMessage(UiMessage.JoystickResetRequired)
         }
     }
 
@@ -157,7 +157,7 @@ class ManualTurningUseCase(
             isTaperTurning.value -> {
                 val startPoint = statusRepository.cncStatusFlow().map { it.g53Position }.map { Point(it.x * 2, it.z) } // *2 due to diameter mode
                     .first()
-                manualTurningHelper.getTaperTurningCommand(axis, direction, startPoint, taperAngle.value)
+                manualTurningHelper.getTaperTurningCommand(axis, direction, startPoint, taperAngle)
             }
             else -> manualTurningHelper.getStraightTurningCommand(axis, direction)
         }
@@ -203,6 +203,10 @@ class ManualTurningUseCase(
         commandRepository.executeMdiCommand(command)
     }
 
+    fun getTaperState() = TaperState(
+        taperAngle = settingsRepository.get(DoubleKey.TaperAngle, 45.0)
+    )
+
     fun getSpindleState() = SpindleState(
         defaultControlMode = SpindleControlMode.values()[settingsRepository.get(IntegerKey.SpindleMode, SpindleControlMode.RPM.ordinal)],
         defaultRpmValue = settingsRepository.get(IntegerKey.RpmValue, 300),
@@ -221,9 +225,9 @@ class ManualTurningUseCase(
     fun applySpindleSettings(spindleState: SpindleState) {
         settingsRepository.apply {
             put(IntegerKey.SpindleMode, spindleState.spindleMode.value.ordinal)
-            put(IntegerKey.RpmValue, spindleState.rpmValue.value.toInt())
-            put(IntegerKey.CssValue, spindleState.cssValue.value.toInt())
-            put(IntegerKey.MaxCssRpm, spindleState.maxCssRpm.value.toInt())
+            put(IntegerKey.RpmValue, spindleState.rpmValue.value)
+            put(IntegerKey.CssValue, spindleState.cssValue.value)
+            put(IntegerKey.MaxCssRpm, spindleState.maxCssRpm.value)
             put(BooleanKey.OrientedStop, spindleState.orientedStop.value)
             put(DoubleKey.OrientAngle, spindleState.stopAngle.value.toDouble())
         }
@@ -234,6 +238,12 @@ class ManualTurningUseCase(
             put(IntegerKey.FeedMode, feedState.feedRateMode.value.ordinal)
             put(DoubleKey.FeedPerRev, feedState.unitsPerRevValue.value.toDouble())
             put(DoubleKey.FeedPerMin, feedState.unitsPerMinValue.value.toDouble())
+        }
+    }
+
+    fun applyTaperSettings(taperState: TaperState) {
+        settingsRepository.apply {
+            put(DoubleKey.TaperAngle, taperState.taperAngle.value)
         }
     }
 

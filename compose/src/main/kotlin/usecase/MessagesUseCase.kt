@@ -2,6 +2,7 @@ package usecase
 
 import com.mindovercnc.base.MessagesRepository
 import com.mindovercnc.base.data.SystemMessage
+import com.mindovercnc.base.data.UiMessage
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
@@ -22,7 +23,11 @@ class MessagesUseCase(
                     }
                 }
                 it.uiMessages.forEach { uiMsg ->
-                    val level = if (uiMsg.key.isError) Message.Level.ERROR else Message.Level.WARNING
+                    val level = when (uiMsg.key.level) {
+                        UiMessage.Level.Error -> Message.Level.ERROR
+                        UiMessage.Level.Warning -> Message.Level.WARNING
+                        UiMessage.Level.Info -> Message.Level.INFO
+                    }
                     result.add(Message(uiMsg.key.name, level))
                 }
                 result

@@ -11,9 +11,9 @@ class SpindleState(
     defaultStopAngle: Double,
 ) {
     val spindleMode = mutableStateOf(defaultControlMode)
-    val cssValue = mutableStateOf(defaultCssValue.toString())
-    val rpmValue = mutableStateOf(defaultRpmValue.toString())
-    val maxCssRpm = mutableStateOf(defaultMaxCssRpm.toString())
+    val cssValue = mutableStateOf(defaultCssValue)
+    val rpmValue = mutableStateOf(defaultRpmValue)
+    val maxCssRpm = mutableStateOf(defaultMaxCssRpm)
     val orientedStop = mutableStateOf(orientedStop)
     val stopAngle = mutableStateOf(defaultStopAngle.toString())
 }

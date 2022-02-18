@@ -1,5 +1,7 @@
 package screen.uimodel
 
+import com.mindovercnc.base.data.LatheTool
+
 sealed class ToolsScreen(
     title: String,
     val previousScreen: ToolsScreen? = null,
@@ -10,9 +12,12 @@ sealed class ToolsScreen(
     )
 
     class AddEditToolScreen(
-        previousScreen: ToolsScreen?
+        previousScreen: ToolsScreen?,
+        latheTool: LatheTool? = null
     ) : ToolsScreen(
-        title = "Add/Edit Tool",
+        title = latheTool?.let {
+            "Edit Tool #${it.toolNo}"
+        } ?: "Add new Tool",
         previousScreen = previousScreen
     )
 }

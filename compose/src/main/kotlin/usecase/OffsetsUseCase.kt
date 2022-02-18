@@ -45,6 +45,7 @@ class OffsetsUseCase(
             commandRepository.setTaskMode(TaskMode.TaskModeMDI)
             commandRepository.executeMdiCommand(cmd)
             commandRepository.setTaskMode(initialTaskMode)
+            commandRepository.setTeleopEnable(true)
         }
     }
 

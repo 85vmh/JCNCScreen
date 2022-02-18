@@ -12,7 +12,7 @@ object FileWatcher {
         val dir = filePath.substring(0, filePath.lastIndexOf("/") + 1)
         val file = filePath.substring(filePath.lastIndexOf("/") + 1)
         val watchService = FileSystems.getDefault().newWatchService()
-        Paths.get(dir).register(watchService, StandardWatchEventKinds.ENTRY_MODIFY)
+        Paths.get(dir).register(watchService, StandardWatchEventKinds.ENTRY_MODIFY, StandardWatchEventKinds.ENTRY_CREATE)
 
         scope.launch(Dispatchers.IO) {
             if (emitWhenCalled) {
@@ -23,7 +23,7 @@ object FileWatcher {
                 val key = watchService.take()
                 for (event in key.pollEvents()) {
                     if (event.context().toString() == file) {
-                        println("---File changed: $filePath")
+                        //println("---File changed: $filePath")
                         onChanged.invoke()
                     }
                 }

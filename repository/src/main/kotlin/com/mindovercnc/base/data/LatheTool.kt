@@ -34,7 +34,8 @@ data class LatheTool(
         Position5(5, 180),
         Position6(6, 90),
         Position7(7, 0),
-        Position8(8, 270);
+        Position8(8, 270),
+        Position9(9, 0);
 
         companion object {
             fun getOrientation(orient: Int): Orientation? {

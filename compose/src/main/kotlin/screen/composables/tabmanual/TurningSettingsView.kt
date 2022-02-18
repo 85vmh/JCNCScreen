@@ -81,31 +81,31 @@ fun SpindleDisplay(
     ) {
         RadioBoxSetting(settingName = "Constant Spindle Speed (RPM)",
             selected = spindleType == SpindleControlMode.RPM,
-            value = rpmValue,
+            value = rpmValue.toString(),
             inputType = InputType.RPM,
             modifier = Modifier.fillMaxWidth().clickable(onClick = onRpmClicked).padding(start = 16.dp),
             onClicked = onRpmClicked,
             onValueChanged = {
                 val doubleValue = it.toDoubleOrNull() ?: return@RadioBoxSetting
-                rpmValue = it
+                rpmValue = doubleValue.toInt()
             })
         RadioBoxSetting(settingName = "Constant Surface Speed (CSS)",
             selected = spindleType == SpindleControlMode.CSS,
-            value = cssValue,
+            value = cssValue.toString(),
             inputType = InputType.CSS,
             modifier = Modifier.fillMaxWidth().clickable(onClick = onCssClicked).padding(start = 16.dp),
             onClicked = onCssClicked,
             onValueChanged = {
                 val doubleValue = it.toDoubleOrNull() ?: return@RadioBoxSetting
-                cssValue = it
+                cssValue = doubleValue.toInt()
             })
         ValueSetting(
             settingName = "Maximum spindle speed",
-            value = maxSpeed,
+            value = maxSpeed.toString(),
             inputType = InputType.CSS_MAX_RPM
         ) {
             val doubleValue = it.toDoubleOrNull() ?: return@ValueSetting
-            maxSpeed = it
+            maxSpeed = doubleValue.toInt()
         }
 
         CheckBoxSetting(settingName = "Oriented spindle stop",

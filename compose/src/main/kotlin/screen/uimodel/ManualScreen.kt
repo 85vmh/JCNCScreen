@@ -1,5 +1,6 @@
 package screen.uimodel
 
+import screen.composables.tabmanual.TaperSettingsViewModel
 import screen.composables.tabmanual.TurningSettingsViewModel
 
 
@@ -17,6 +18,14 @@ sealed class ManualScreen(
         previousScreen: ManualScreen?
     ) : ManualScreen(
         title = "Turning Settings",
+        previousScreen = previousScreen
+    )
+
+    class TaperSettingsScreen(
+        val viewModel: TaperSettingsViewModel,
+        previousScreen: ManualScreen?
+    ) : ManualScreen(
+        title = "Taper Settings",
         previousScreen = previousScreen
     )
 }

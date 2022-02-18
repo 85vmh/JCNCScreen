@@ -3,11 +3,10 @@ package com.mindovercnc.linuxcnc
 import com.mindovercnc.base.MessagesRepository
 import com.mindovercnc.base.data.MessageBundle
 import com.mindovercnc.base.data.SystemMessage
-import com.mindovercnc.base.data.UiMessageType
+import com.mindovercnc.base.data.UiMessage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
-import java.time.Instant
 import java.util.*
 
 class MessagesRepositoryImpl(
@@ -15,7 +14,7 @@ class MessagesRepositoryImpl(
 ) : MessagesRepository {
     private val errorReader: ErrorReader = ErrorReader()
     private val emcMessages = MutableStateFlow(emptyList<SystemMessage>())
-    private val uiMessages = MutableStateFlow(mapOf<UiMessageType, Date>())
+    private val uiMessages = MutableStateFlow(mapOf<UiMessage, Date>())
 
     init {
         errorReader.refresh(10L)
@@ -37,15 +36,15 @@ class MessagesRepositoryImpl(
         emcMessages.value = emptyList()
     }
 
-    override fun pushMessage(uiMessageType: UiMessageType) {
+    override fun pushMessage(uiMessage: UiMessage) {
         uiMessages.update {
-            it.plus((uiMessageType to Date()))
+            it.plus((uiMessage to Date()))
         }
     }
 
-    override fun popMessage(uiMessageType: UiMessageType) {
+    override fun popMessage(uiMessage: UiMessage) {
         uiMessages.update {
-            it.minus(uiMessageType)
+            it.minus(uiMessage)
         }
     }
 }

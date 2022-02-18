@@ -13,7 +13,8 @@ enum class IntegerKey() : SettingKey {
 enum class DoubleKey() : SettingKey {
     OrientAngle,
     FeedPerRev,
-    FeedPerMin;
+    FeedPerMin,
+    TaperAngle;
 }
 
 enum class BooleanKey() : SettingKey {

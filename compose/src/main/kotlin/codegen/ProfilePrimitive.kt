@@ -1,6 +1,6 @@
 package codegen
 
-import extensions.trimDigits
+import extensions.toFixedDigits
 
 sealed class ProfilePrimitive {
 
@@ -16,8 +16,8 @@ sealed class ProfilePrimitive {
 
         override fun toString(): String {
             return type.gCode +
-                    xDest?.let { " X${it.trimDigits()}" } +
-                    zDest?.let { " Z${it.trimDigits()}" }
+                    xDest?.let { " X${it.toFixedDigits()}" } +
+                    zDest?.let { " Z${it.toFixedDigits()}" }
         }
     }
 
@@ -35,10 +35,10 @@ sealed class ProfilePrimitive {
 
         override fun toString(): String {
             return type.gCode +
-                    xDest?.let { " X${it.trimDigits()}" } +
-                    zDest?.let { " Z${it.trimDigits()}" } +
-                    " I${xOffset.trimDigits()}" +
-                    " K${zOffset.trimDigits()}"
+                    xDest?.let { " X${it.toFixedDigits()}" } +
+                    zDest?.let { " Z${it.toFixedDigits()}" } +
+                    " I${xOffset.toFixedDigits()}" +
+                    " K${zOffset.toFixedDigits()}"
         }
     }
 }
