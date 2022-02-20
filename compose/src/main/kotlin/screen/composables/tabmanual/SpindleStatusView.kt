@@ -20,6 +20,7 @@ import org.kodein.di.compose.rememberInstance
 import screen.composables.SettingStatusRow
 import usecase.ManualTurningUseCase
 import usecase.model.SpindleControlMode
+import java.lang.Math.abs
 
 @Composable
 @Preview
@@ -94,7 +95,7 @@ fun SpindleStatusView(
             if (useCase.getSpindleState().spindleMode.value == SpindleControlMode.CSS) {
                 SettingStatusRow("Max RPM:", useCase.getSpindleState().maxCssRpm.value.toString(), "rev/min", modifier = settingsModifier)
             }
-            SettingStatusRow("Actual RPM:", actualSpeed.toString(), "rev/min", modifier = settingsModifier)
+            SettingStatusRow("Actual RPM:", kotlin.math.abs(actualSpeed).toString(), "rev/min", modifier = settingsModifier)
             if (orientedStopActive) {
                 SettingStatusRow("Oriented stop:", orientedStopAngle, "degrees", modifier = settingsModifier)
             }

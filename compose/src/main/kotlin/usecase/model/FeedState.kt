@@ -8,6 +8,6 @@ class FeedState(
     defaultUnitsPerMinValue: Double,
 ) {
     val feedRateMode = mutableStateOf(defaultFeedRateMode)
-    val unitsPerRevValue = mutableStateOf(defaultUnitsPerRevValue.toString())
-    val unitsPerMinValue = mutableStateOf(defaultUnitsPerMinValue.toString())
+    val unitsPerRevValue = mutableStateOf(defaultUnitsPerRevValue)
+    val unitsPerMinValue = mutableStateOf(defaultUnitsPerMinValue)
 }

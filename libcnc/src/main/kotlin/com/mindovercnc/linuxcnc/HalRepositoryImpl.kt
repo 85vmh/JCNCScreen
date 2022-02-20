@@ -174,7 +174,7 @@ class HalRepositoryImpl(
     }
 
     override fun actualSpindleSpeed(): Flow<Float> {
-        return pinSpindleActualRpm?.valueFlow(RefreshRate)?.distinctUntilChanged() ?: flowOf(0.0f)
+        return pinSpindleActualRpm?.valueFlow(500)?.distinctUntilChanged() ?: flowOf(0.0f)
     }
 
     override fun jogIncrementValue(): Flow<Float> {

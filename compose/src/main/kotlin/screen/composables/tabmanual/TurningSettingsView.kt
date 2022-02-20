@@ -145,23 +145,21 @@ fun FeedDisplay(
     ) {
         RadioBoxSetting(settingName = "Units per revolution",
             selected = feedMode == FeedRateMode.UNITS_PER_REVOLUTION,
-            value = unitsPerRev,
+            value = unitsPerRev.toString(),
             inputType = InputType.FEED_PER_REV,
             modifier = Modifier.fillMaxWidth().clickable(onClick = onUnitsPerRevClicked).padding(start = 16.dp),
             onClicked = onUnitsPerRevClicked,
             onValueChanged = {
-                val doubleValue = it.toDoubleOrNull() ?: return@RadioBoxSetting
-                unitsPerRev = it
+                unitsPerRev = it.toDoubleOrNull() ?: return@RadioBoxSetting
             })
         RadioBoxSetting(settingName = "Units per minute",
             selected = feedMode == FeedRateMode.UNITS_PER_MINUTE,
-            value = unitsPerMin,
+            value = unitsPerMin.toString(),
             inputType = InputType.FEED_PER_MIN,
             modifier = Modifier.fillMaxWidth().clickable(onClick = onUnitsPerMinClicked).padding(start = 16.dp),
             onClicked = onUnitsPerMinClicked,
             onValueChanged = {
-                val doubleValue = it.toDoubleOrNull() ?: return@RadioBoxSetting
-                unitsPerMin = it
+                unitsPerMin = it.toDoubleOrNull() ?: return@RadioBoxSetting
             })
     }
 }

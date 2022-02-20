@@ -36,7 +36,7 @@ fun FeedStatusView(modifier: Modifier = Modifier) {
 
     data class FeedModeAndUnits(val mode: String, val units: String)
 
-    var setFeed = "0.0"
+    var setFeed = 0.0
     val feed = when (useCase.getFeedState().feedRateMode.value) {
         FeedRateMode.UNITS_PER_REVOLUTION -> {
             setFeed = useCase.getFeedState().unitsPerRevValue.value
@@ -88,7 +88,7 @@ fun FeedStatusView(modifier: Modifier = Modifier) {
                 thickness = 1.dp
             )
             SettingStatusRow("Mode:", feed.mode, modifier = settingsModifier)
-            SettingStatusRow("Set feed:", setFeed, feed.units, modifier = settingsModifier)
+            SettingStatusRow("Set feed:", setFeed.toFixedDigits(), feed.units, modifier = settingsModifier)
             SettingStatusRow("Actual feed:", actualSpeed.toFixedDigits(), feed.units, modifier = settingsModifier)
         }
     }
