@@ -9,14 +9,21 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import navigation.AppNavigator
 
 class BaseScreenViewModel(
     scope: CoroutineScope,
     cncStatusRepository: CncStatusRepository,
-    messagesRepository: MessagesRepository
+    messagesRepository: MessagesRepository,
+    appNavigator: AppNavigator
 ) {
 
     init {
+        cncStatusRepository.cncStatusFlow()
+            .map { it.isEstop.not() && it.isOn && it.isHomed() }
+            .onEach { appNavigator.setReady(it) }
+            .launchIn(scope)
+
         cncStatusRepository.cncStatusFlow()
             .map { it.isXHomed.not() }
             .distinctUntilChanged()

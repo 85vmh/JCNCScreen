@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material.NavigationRail
 import androidx.compose.material.NavigationRailItem
 import androidx.compose.material.icons.Icons
@@ -21,21 +22,23 @@ import androidx.compose.ui.unit.dp
 import org.kodein.di.compose.rememberInstance
 import screen.composables.CoordinatesView
 import usecase.ManualTurningUseCase
+import usecase.OffsetsUseCase
+import usecase.VirtualLimitsUseCase
 
 @Composable
 fun ManualTurningView(
     modifier: Modifier,
     turningSettingsClicked: () -> Unit,
-    taperSettingsClicked: () -> Unit
+    taperSettingsClicked: () -> Unit,
+    limitsSettingsClicked: () -> Unit
 ) {
 
-    val useCase: ManualTurningUseCase by rememberInstance()
+    val manualTurningUseCase: ManualTurningUseCase by rememberInstance()
+    val offsetsUseCase: OffsetsUseCase by rememberInstance()
+    val virtualLimitsUseCase: VirtualLimitsUseCase by rememberInstance()
 
-    val taperTurningActive by useCase.taperTurningActive.collectAsState()
-
-    //Touch Off: G10 L20
-    //Tool Touch Off: G10 L10/11, then a G43
-
+    val taperTurningActive by manualTurningUseCase.taperTurningActive.collectAsState()
+    val virtualLimitsActive by virtualLimitsUseCase.isLimitsActive.collectAsState()
 
     Row {
         NavigationRail(
@@ -50,7 +53,7 @@ fun ManualTurningView(
                 icon = { Icon(Icons.Outlined.AccountBox, contentDescription = "") },
                 label = { Text("Taper") },
                 selected = taperTurningActive,
-                onClick = { useCase.toggleTaperTurning() },
+                onClick = { manualTurningUseCase.toggleTaperTurning() },
             )
             NavigationRailItem(
                 icon = { Icon(Icons.Outlined.Notifications, contentDescription = "") },
@@ -60,9 +63,9 @@ fun ManualTurningView(
             )
             NavigationRailItem(
                 icon = { Icon(Icons.Outlined.Star, contentDescription = "") },
-                label = { Text("Stops") },
-                selected = false,
-                onClick = {},
+                label = { Text("Limits") },
+                selected = virtualLimitsActive,
+                onClick = { virtualLimitsUseCase.toggleLimitsActive() },
             )
             NavigationRailItem(
                 icon = { Icon(Icons.Outlined.Star, contentDescription = "") },
@@ -90,6 +93,11 @@ fun ManualTurningView(
                         .padding(8.dp)
                         .clickable(onClick = turningSettingsClicked)
                 )
+                Button(onClick = {
+                    offsetsUseCase.touchOffZ(0.0)
+                }) {
+                    Text("Set Workpiece Zero")
+                }
             }
             if (taperTurningActive) {
                 TaperStatusView(
@@ -98,7 +106,13 @@ fun ManualTurningView(
                         .clickable(onClick = taperSettingsClicked)
                 )
             }
-
+            if (virtualLimitsActive) {
+                VirtualLimitsStatusView(
+                    Modifier.width(380.dp)
+                        .padding(8.dp)
+                        .clickable(onClick = limitsSettingsClicked)
+                )
+            }
             Row(
                 modifier = Modifier.height(60.dp)
             ) {

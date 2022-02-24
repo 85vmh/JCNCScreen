@@ -9,6 +9,7 @@ import com.mindovercnc.base.data.*
 import extensions.stripZeros
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
 import usecase.model.*
 
@@ -18,8 +19,8 @@ class ManualTurningUseCase(
     private val commandRepository: CncCommandRepository,
     private val messagesRepository: MessagesRepository,
     private val halRepository: HalRepository,
-    private val manualTurningHelper: ManualTurningHelper,
     private val settingsRepository: SettingsRepository,
+    private val iniFileRepository: IniFileRepository
 ) {
 
     private var joystickFunction = JoystickFunction.None
@@ -155,11 +156,13 @@ class ManualTurningUseCase(
     private suspend fun startFeeding(axis: Axis, direction: Direction) {
         val command = when {
             isTaperTurning.value -> {
-                val startPoint = statusRepository.cncStatusFlow().map { it.g53Position }.map { Point(it.x * 2, it.z) } // *2 due to diameter mode
+                val startPoint = statusRepository.cncStatusFlow()
+                    .map { it.g53Position }
+                    .map { Point(it.x * 2, it.z) } // *2 due to diameter mode
                     .first()
-                manualTurningHelper.getTaperTurningCommand(axis, direction, startPoint, taperAngle)
+                ManualTurningHelper.getTaperTurningCommand(axis, direction, iniFileRepository.getActiveLimits(), startPoint, taperAngle)
             }
-            else -> manualTurningHelper.getStraightTurningCommand(axis, direction)
+            else -> ManualTurningHelper.getStraightTurningCommand(axis, direction, iniFileRepository.getActiveLimits())
         }
         val feedRate = setFeedRate.firstOrNull() ?: 0.0
         joystickFunction = JoystickFunction.Feeding
@@ -236,8 +239,8 @@ class ManualTurningUseCase(
     fun applyFeedSettings(feedState: FeedState) {
         settingsRepository.apply {
             put(IntegerKey.FeedMode, feedState.feedRateMode.value.ordinal)
-            put(DoubleKey.FeedPerRev, feedState.unitsPerRevValue.value.toDouble())
-            put(DoubleKey.FeedPerMin, feedState.unitsPerMinValue.value.toDouble())
+            put(DoubleKey.FeedPerRev, feedState.unitsPerRevValue.value)
+            put(DoubleKey.FeedPerMin, feedState.unitsPerMinValue.value)
         }
     }
 
@@ -258,12 +261,11 @@ class ManualTurningUseCase(
 
     val actualSpindleSpeed = halRepository.actualSpindleSpeed().map { it.toInt() }.distinctUntilChanged()
 
+    @OptIn(FlowPreview::class)
     val handwheelsState = combine(
         statusRepository.cncStatusFlow().map { it.isInManualMode },
-        halRepository.jogIncrementValue()
-            .onEach { println("---Jog Increment value $it") }
-            .map { if (it > 0) it / 1000 else it })
-    { isManualMode, jogIncrement -> HandwheelsState(isManualMode, jogIncrement) }
+        halRepository.jogIncrementValue().debounce(500L)
+    ) { isManualMode, jogIncrement -> HandwheelsState(isManualMode, jogIncrement) }
 
     private fun SettingsRepository.getSpindleStartParameters(): String {
         val parameters = StringBuilder()

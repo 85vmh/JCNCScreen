@@ -14,9 +14,18 @@ enum class DoubleKey() : SettingKey {
     OrientAngle,
     FeedPerRev,
     FeedPerMin,
-    TaperAngle;
+    TaperAngle,
+    VirtualLimitXMinus,
+    VirtualLimitXPlus,
+    VirtualLimitZMinus,
+    VirtualLimitZPlus;
 }
 
 enum class BooleanKey() : SettingKey {
-    OrientedStop
+    OrientedStop,
+    VirtualLimitsActive,
+    VirtualLimitXMinusActive,
+    VirtualLimitXPlusActive,
+    VirtualLimitZMinusActive,
+    VirtualLimitZPlusActive
 }

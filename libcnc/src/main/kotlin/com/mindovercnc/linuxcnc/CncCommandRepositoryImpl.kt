@@ -85,6 +85,7 @@ class CncCommandRepositoryImpl() : CncCommandRepository {
     }
 
     override fun executeMdiCommand(command: String) {
+        println("----MDI: $command")
         commandWriter.sendMDICommand(command)
     }
 

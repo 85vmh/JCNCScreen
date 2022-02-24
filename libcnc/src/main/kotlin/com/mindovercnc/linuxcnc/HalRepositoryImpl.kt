@@ -3,12 +3,10 @@ package com.mindovercnc.linuxcnc
 import com.mindovercnc.base.HalRepository
 import com.mindovercnc.base.data.*
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.*
 
 private const val RefreshRate = 5L
+private const val RpmRefreshRate = 300L
 private const val ComponentName = "weiler-e30"
 private const val PinJoystickXPlus = "joystick-x-plus"
 private const val PinJoystickXMinus = "joystick-x-minus"
@@ -26,10 +24,10 @@ private const val PinJogIncrement = "jog-increment-value"
 private const val PinToolChangeToolNo = "tool-change.number"
 private const val PinToolChangeRequest = "tool-change.change"
 private const val PinToolChangeResponse = "tool-change.changed"
-private const val PinVirtualLimitXMin = "virtual-limits.x-min"
-private const val PinVirtualLimitXMax = "virtual-limits.x-max"
-private const val PinVirtualLimitZMin = "virtual-limits.z-min"
-private const val PinVirtualLimitZMax = "virtual-limits.z-max"
+private const val PinAxisLimitXMin = "axis-limits.x-min"
+private const val PinAxisLimitXMax = "axis-limits.x-max"
+private const val PinAxisLimitZMin = "axis-limits.z-min"
+private const val PinAxisLimitZMax = "axis-limits.z-max"
 
 class HalRepositoryImpl(
     private val scope: CoroutineScope
@@ -50,10 +48,10 @@ class HalRepositoryImpl(
     private var pinSpindleStarted: HalPin<Boolean>? = null
     private var pinJogIncrementValue: HalPin<Float>? = null
     private var pinSpindleActualRpm: HalPin<Float>? = null
-    private var pinVirtualLimitXMin: HalPin<Float>? = null
-    private var pinVirtualLimitXMax: HalPin<Float>? = null
-    private var pinVirtualLimitZMin: HalPin<Float>? = null
-    private var pinVirtualLimitZMax: HalPin<Float>? = null
+    private var pinAxisLimitXMin: HalPin<Float>? = null
+    private var pinAxisLimitXMax: HalPin<Float>? = null
+    private var pinAxisLimitZMin: HalPin<Float>? = null
+    private var pinAxisLimitZMax: HalPin<Float>? = null
     private var pinToolChangeToolNo: HalPin<Int>? = null
     private var pinToolChangeRequest: HalPin<Boolean>? = null
     private var pinToolChangeResponse: HalPin<Boolean>? = null
@@ -75,10 +73,10 @@ class HalRepositoryImpl(
             pinJogIncrementValue = it.addPin(PinJogIncrement, HalPin.Type.FLOAT, HalPin.Dir.IN) as? HalPin<Float>
             pinSpindleActualRpm = it.addPin(PinSpindleActualRpm, HalPin.Type.FLOAT, HalPin.Dir.IN) as? HalPin<Float>
 
-            pinVirtualLimitXMin = it.addPin(PinVirtualLimitXMin, HalPin.Type.FLOAT, HalPin.Dir.OUT) as? HalPin<Float>
-            pinVirtualLimitXMax = it.addPin(PinVirtualLimitXMax, HalPin.Type.FLOAT, HalPin.Dir.OUT) as? HalPin<Float>
-            pinVirtualLimitZMin = it.addPin(PinVirtualLimitZMin, HalPin.Type.FLOAT, HalPin.Dir.OUT) as? HalPin<Float>
-            pinVirtualLimitZMax = it.addPin(PinVirtualLimitZMax, HalPin.Type.FLOAT, HalPin.Dir.OUT) as? HalPin<Float>
+            pinAxisLimitXMin = it.addPin(PinAxisLimitXMin, HalPin.Type.FLOAT, HalPin.Dir.OUT) as? HalPin<Float>
+            pinAxisLimitXMax = it.addPin(PinAxisLimitXMax, HalPin.Type.FLOAT, HalPin.Dir.OUT) as? HalPin<Float>
+            pinAxisLimitZMin = it.addPin(PinAxisLimitZMin, HalPin.Type.FLOAT, HalPin.Dir.OUT) as? HalPin<Float>
+            pinAxisLimitZMax = it.addPin(PinAxisLimitZMax, HalPin.Type.FLOAT, HalPin.Dir.OUT) as? HalPin<Float>
 
             pinToolChangeToolNo = it.addPin(PinToolChangeToolNo, HalPin.Type.S32, HalPin.Dir.IN) as? HalPin<Int>
             pinToolChangeRequest = it.addPin(PinToolChangeRequest, HalPin.Type.BIT, HalPin.Dir.IN) as? HalPin<Boolean>
@@ -174,7 +172,7 @@ class HalRepositoryImpl(
     }
 
     override fun actualSpindleSpeed(): Flow<Float> {
-        return pinSpindleActualRpm?.valueFlow(500)?.distinctUntilChanged() ?: flowOf(0.0f)
+        return pinSpindleActualRpm?.valueFlow(RpmRefreshRate)?.distinctUntilChanged() ?: flowOf(0.0f)
     }
 
     override fun jogIncrementValue(): Flow<Float> {
@@ -193,19 +191,19 @@ class HalRepositoryImpl(
         pinToolChangeResponse?.setPinValue(true)
     }
 
-    override fun setVirtualLimitXMin(value: Double) {
-        pinVirtualLimitXMin?.setPinValue(value.toFloat())
+    override fun setAxisLimitXMin(value: Double) {
+        pinAxisLimitXMin?.setPinValue(value.toFloat())
     }
 
-    override fun setVirtualLimitXMax(value: Double) {
-        pinVirtualLimitXMax?.setPinValue(value.toFloat())
+    override fun setAxisLimitXMax(value: Double) {
+        pinAxisLimitXMax?.setPinValue(value.toFloat())
     }
 
-    override fun setVirtualLimitZMin(value: Double) {
-        pinVirtualLimitZMin?.setPinValue(value.toFloat())
+    override fun setAxisLimitZMin(value: Double) {
+        pinAxisLimitZMin?.setPinValue(value.toFloat())
     }
 
-    override fun setVirtualLimitZMax(value: Double) {
-        pinVirtualLimitZMax?.setPinValue(value.toFloat())
+    override fun setAxisLimitZMax(value: Double) {
+        pinAxisLimitZMax?.setPinValue(value.toFloat())
     }
 }

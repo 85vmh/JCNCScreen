@@ -1,6 +1,7 @@
 package com.mindovercnc.linuxcnc
 
 import com.mindovercnc.base.IniFileRepository
+import com.mindovercnc.base.data.AxisLimits
 import com.mindovercnc.base.data.IniFile
 import java.io.BufferedReader
 import java.io.FileNotFoundException
@@ -12,6 +13,20 @@ class IniFileRepositoryImpl(
 ) : IniFileRepository {
     private var parsedFile: Map<String, Map<String, String>>
     private val rootPath = iniFilePath.substring(0, iniFilePath.lastIndexOf("/") + 1)
+
+    private var useCustomLimits: Boolean = false
+
+    private val machineLimits: AxisLimits
+        get() = with(getIniFile()) {
+            return AxisLimits(
+                xMinLimit = joints[0].minLimit,
+                xMaxLimit = joints[0].maxLimit,
+                zMinLimit = joints[1].minLimit,
+                zMaxLimit = joints[1].maxLimit
+            )
+        }
+
+    private var customLimits: AxisLimits? = null
 
     init {
         parsedFile = parseIniFile(iniFilePath)
@@ -65,6 +80,43 @@ class IniFileRepositoryImpl(
             joints = jointParameters
         )
     }
+
+    override fun getActiveLimits(): AxisLimits {
+        return when {
+            isCustomLimitsActive() -> customLimits!!
+            else -> machineLimits
+        }
+    }
+
+    override fun setCustomAxisLimits(axisLimits: AxisLimits) {
+        customLimits = AxisLimits(
+            xMinLimit = axisLimits.xMinLimit ?: machineLimits.xMinLimit,
+            xMaxLimit = axisLimits.xMaxLimit ?: machineLimits.xMaxLimit,
+            zMinLimit = axisLimits.zMinLimit ?: machineLimits.zMinLimit,
+            zMaxLimit = axisLimits.zMaxLimit ?: machineLimits.zMaxLimit
+        )
+    }
+
+    override fun toggleCustomLimits() {
+//        if (useCustomLimits.not() && hasSomethingCustom.not()) {
+//            return
+//        }
+        useCustomLimits = useCustomLimits.not()
+    }
+
+    override fun isCustomLimitsActive(): Boolean {
+        return useCustomLimits
+    }
+
+    private val hasSomethingCustom: Boolean
+        get() = customLimits != null &&
+                (
+                        machineLimits.xMinLimit != customLimits!!.xMinLimit ||
+                                machineLimits.xMaxLimit != customLimits!!.xMaxLimit ||
+                                machineLimits.zMinLimit != customLimits!!.zMinLimit ||
+                                machineLimits.zMaxLimit != customLimits!!.zMaxLimit
+                        )
+
 
     private fun getJointParameters(jointIndex: Section): IniFile.JointParameters? {
         if (parsedFile.keys.contains(jointIndex.name)) {

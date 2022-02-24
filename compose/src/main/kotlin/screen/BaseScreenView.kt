@@ -33,10 +33,7 @@ import screen.composables.tabtools.ToolLibraryView
 import screen.uimodel.*
 import screen.viewmodel.BaseScreenViewModel
 import screen.viewmodel.ConversationalViewModel
-import usecase.ConversationalUseCase
-import usecase.ManualTurningUseCase
-import usecase.OffsetsUseCase
-import usecase.ProgramsUseCase
+import usecase.*
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -53,7 +50,7 @@ fun BaseScreenView() {
         Dispatchers.Main
     }
     val viewModel = remember {
-        BaseScreenViewModel(scope, statusRepository, messagesRepository)
+        BaseScreenViewModel(scope, statusRepository, messagesRepository, appNavigator)
     }
 
     val selectedTool by statusRepository.cncStatusFlow().map { it.currentToolNo }.collectAsState(0)
@@ -73,13 +70,14 @@ fun BaseScreenView() {
     val selectedTab by appNavigator.currentTab.collectAsState()
     val currentScreen by appNavigator.currentScreen.collectAsState(LoadingScreen)
     val iconButtonModifier = Modifier.size(48.dp)
+    val enabledTabs by appNavigator.enabledTabs.collectAsState()
 
     ScaffoldView(
         screenTitle = currentScreen.title,
         selectedTab = selectedTab,
         selectedTool = selectedTool,
         selectedWcs = currentWcs,
-        //enabledTabs = listOf(BottomNavTab.ManualTurning, BottomNavTab.Tools),
+        enabledTabs = enabledTabs,
         onTabClicked = { appNavigator.selectTab(it) },
         navigationIcon = {
             if (currentScreen.isBackEnabled) {
@@ -105,6 +103,7 @@ fun BaseScreenView() {
 private fun ScreenContent(tabScreen: TabScreen, appNavigator: AppNavigator, modifier: Modifier = Modifier) {
     val manualTurningUseCase by localDI().instance<ManualTurningUseCase>()
     val conversationalUseCase by localDI().instance<ConversationalUseCase>()
+    val virtualLimitsUseCase by localDI().instance<VirtualLimitsUseCase>()
 
     when (tabScreen) {
         ManualScreen.ManualRootScreen -> {
@@ -127,6 +126,15 @@ private fun ScreenContent(tabScreen: TabScreen, appNavigator: AppNavigator, modi
                             previousScreen = tabScreen as ManualScreen
                         )
                     )
+                },
+                limitsSettingsClicked = {
+                    val viewModel = LimitsSettingsViewModel(virtualLimitsUseCase)
+                    appNavigator.navigate(
+                        ManualScreen.LimitsSettingsScreen(
+                            viewModel = viewModel,
+                            previousScreen = tabScreen as ManualScreen
+                        )
+                    )
                 }
             )
         }
@@ -135,6 +143,9 @@ private fun ScreenContent(tabScreen: TabScreen, appNavigator: AppNavigator, modi
         }
         is ManualScreen.TaperSettingsScreen -> {
             TaperSettingsView(tabScreen.viewModel, modifier)
+        }
+        is ManualScreen.LimitsSettingsScreen -> {
+            VirtualLimitsSettingsView(tabScreen.viewModel, modifier)
         }
         ConversationalScreen.ConversationalRootScreen -> {
             ConversationalView(modifier) {
@@ -164,7 +175,7 @@ private fun ScreenContent(tabScreen: TabScreen, appNavigator: AppNavigator, modi
             AddEditToolView(modifier)
         }
         StatusScreen.StatusRootScreen -> {
-           StatusView(modifier)
+            StatusView(modifier)
         }
     }
 }
@@ -190,6 +201,19 @@ private fun ScreenActions(screen: TabScreen, appNavigator: AppNavigator, modifie
             }
         }
         is ManualScreen.TaperSettingsScreen -> {
+            IconButton(
+                modifier = modifier,
+                onClick = {
+                    screen.viewModel.save()
+                    appNavigator.navigateUp()
+                }) {
+                Icon(
+                    Icons.Default.Check,
+                    contentDescription = "",
+                )
+            }
+        }
+        is ManualScreen.LimitsSettingsScreen -> {
             IconButton(
                 modifier = modifier,
                 onClick = {

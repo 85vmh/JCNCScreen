@@ -5,6 +5,7 @@ import com.mindovercnc.base.data.LatheTool
 import com.mindovercnc.base.data.TaskMode
 import com.mindovercnc.base.data.currentToolNo
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import screen.uimodel.AllowedSpindleDirection
@@ -63,11 +64,15 @@ class ToolsUseCase(
     private fun toolTouchOff(axisWithValue: String) {
         scope.launch {
             val initialTaskMode = statusRepository.cncStatusFlow().map { it.taskStatus.taskMode }.first()
-            val currentTool = statusRepository.cncStatusFlow().map { it.currentToolNo }
+            val currentTool = statusRepository.cncStatusFlow().map { it.currentToolNo }.first()
             commandRepository.setTaskMode(TaskMode.TaskModeMDI)
             commandRepository.executeMdiCommand("G10 L10 P$currentTool $axisWithValue")
+            //TODO: make this based on status channel
+            delay(200)
             commandRepository.executeMdiCommand("G43")
+            delay(200)
             commandRepository.setTaskMode(initialTaskMode)
+            commandRepository.setTeleopEnable(true)
         }
     }
 

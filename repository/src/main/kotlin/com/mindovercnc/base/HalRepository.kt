@@ -32,11 +32,11 @@ interface HalRepository {
 
     fun setToolChangedResponse()
 
-    fun setVirtualLimitXMin(value: Double)
+    fun setAxisLimitXMin(value: Double)
 
-    fun setVirtualLimitXMax(value: Double)
+    fun setAxisLimitXMax(value: Double)
 
-    fun setVirtualLimitZMin(value: Double)
+    fun setAxisLimitZMin(value: Double)
 
-    fun setVirtualLimitZMax(value: Double)
+    fun setAxisLimitZMax(value: Double)
 }

@@ -25,6 +25,7 @@ import screen.uimodel.InputType
 import screen.uimodel.NumericInputs
 import themes.ComposeFonts
 import usecase.ManualPositionUseCase
+import usecase.ToolsUseCase
 
 private enum class PositionType(
     val fontSize: TextUnit,
@@ -38,17 +39,27 @@ private enum class PositionType(
 @Composable
 fun CoordinatesView(modifier: Modifier = Modifier) {
     val useCase: ManualPositionUseCase by rememberInstance()
+    val toolsUseCase: ToolsUseCase by rememberInstance()
     val model = useCase.uiModel.collectAsState(null).value
 
 
     var openKeyboardState by remember { mutableStateOf<NumPadState?>(null) }
 
-    openKeyboardState?.let {
+    openKeyboardState?.let { numPadState ->
         InputDialogView(
-            numPadState = it,
+            numPadState = numPadState,
             onCancel = { openKeyboardState = null },
             onSubmit = {
                 println("Value is: $it")
+                when (numPadState.inputType) {
+                    InputType.TOOL_X_COORDINATE -> {
+                        toolsUseCase.toolTouchOffX(it)
+                    }
+                    InputType.TOOL_Z_COORDINATE -> {
+                        toolsUseCase.toolTouchOffZ(it)
+                    }
+                    else -> Unit
+                }
                 openKeyboardState = null
             }
         )
@@ -73,7 +84,8 @@ fun CoordinatesView(modifier: Modifier = Modifier) {
                     it.isDiameterMode,
                     touchOffClicked = {
                         openKeyboardState = NumPadState(
-                            numInputParameters = NumericInputs.entries[InputType.TOUCH_OFF_X]!!
+                            numInputParameters = NumericInputs.entries[InputType.TOOL_X_COORDINATE]!!,
+                            inputType = InputType.TOOL_X_COORDINATE
                         )
                     },
                     zeroPosClicked = { useCase.setZeroPosX() },
@@ -83,7 +95,8 @@ fun CoordinatesView(modifier: Modifier = Modifier) {
                     it.zAxisPos,
                     touchOffClicked = {
                         openKeyboardState = NumPadState(
-                            numInputParameters = NumericInputs.entries[InputType.TOUCH_OFF_Z]!!
+                            numInputParameters = NumericInputs.entries[InputType.TOOL_Z_COORDINATE]!!,
+                            inputType = InputType.TOOL_Z_COORDINATE
                         )
                     },
                     zeroPosClicked = { useCase.setZeroPosZ() },

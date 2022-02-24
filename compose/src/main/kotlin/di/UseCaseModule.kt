@@ -1,6 +1,5 @@
 package di
 
-import codegen.ManualTurningHelper
 import navigation.AppNavigator
 import org.kodein.di.DI
 import org.kodein.di.bindSingleton
@@ -21,8 +20,19 @@ val UseCaseModule = DI.Module("UseCase") {
             commandRepository = instance(),
             messagesRepository = instance(),
             halRepository = instance(),
-            manualTurningHelper = instance(),
-            settingsRepository = instance()
+            settingsRepository = instance(),
+            iniFileRepository = instance()
+        )
+    }
+
+    bindSingleton {
+        VirtualLimitsUseCase(
+            scope = instance(tag = "app_scope"),
+            statusRepository = instance(),
+            commandRepository = instance(),
+            halRepository = instance(),
+            settingsRepository = instance(),
+            iniFileRepository = instance()
         )
     }
 
@@ -73,10 +83,5 @@ val UseCaseModule = DI.Module("UseCase") {
             settingsRepository = instance(),
             fileSystemRepository = instance()
         )
-    }
-
-
-    bindSingleton {
-        ManualTurningHelper(iniFileRepository = instance())
     }
 }

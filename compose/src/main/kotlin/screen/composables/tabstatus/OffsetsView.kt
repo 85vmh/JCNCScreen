@@ -1,6 +1,7 @@
 package screen.composables.tabstatus
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.*
@@ -44,20 +45,33 @@ fun OffsetsView(
     val offsets by useCase.getOffsets().collectAsState(emptyList())
     val scrollState = rememberLazyListState()
 
+    val currentWcs by useCase.currentWcs.collectAsState("--")
+
     LazyRow(
         modifier = Modifier.draggableScroll(scrollState, scope, Orientation.Horizontal)
     ) {
         items(items = offsets) {
-            WorkpieceOffset(it)
+            WorkpieceOffset(it, currentWcs == it.coordinateSystem) {
+                useCase.setActiveOffset(it.coordinateSystem)
+            }
         }
     }
 }
 
 @Composable
-fun WorkpieceOffset(item: OffsetEntry, modifier: Modifier = Modifier) {
+fun WorkpieceOffset(item: OffsetEntry, isActive: Boolean, modifier: Modifier = Modifier, wcsSelected: () -> Unit) {
     Card(
-        modifier = Modifier.width(130.dp).padding(horizontal = 8.dp).clickable { },
-        elevation = 8.dp
+        backgroundColor = when {
+            isActive -> MaterialTheme.colorScheme.primary
+            else -> MaterialTheme.colorScheme.surface
+        },
+        modifier = Modifier
+            .width(150.dp)
+            .padding(horizontal = 8.dp)
+            .clickable {
+                wcsSelected.invoke()
+            },
+        elevation = 16.dp
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
@@ -69,6 +83,11 @@ fun WorkpieceOffset(item: OffsetEntry, modifier: Modifier = Modifier) {
                 text = item.coordinateSystem
             )
             Divider(color = Color.LightGray, thickness = 0.5.dp)
+            LabelWithValue(
+                label = "X:",
+                value = item.xOffset.toFixedDigits(),
+                modifier = Modifier.padding(vertical = 8.dp)
+            )
             LabelWithValue(
                 label = "Z:",
                 value = item.zOffset.toFixedDigits(),

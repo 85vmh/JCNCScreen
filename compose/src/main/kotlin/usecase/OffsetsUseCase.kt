@@ -39,6 +39,10 @@ class OffsetsUseCase(
         executeMdiCommand("G10 L20 P0 Z$value")
     }
 
+    fun setActiveOffset(cmd: String) {
+        executeMdiCommand(cmd)
+    }
+
     private fun executeMdiCommand(cmd: String) {
         scope.launch {
             val initialTaskMode = statusRepository.cncStatusFlow().map { it.taskStatus.taskMode }.first()

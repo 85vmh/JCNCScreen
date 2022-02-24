@@ -1,16 +1,11 @@
 package codegen
 
-import com.mindovercnc.base.IniFileRepository
+import com.mindovercnc.base.data.AxisLimits
 import extensions.stripZeros
 import kotlin.math.abs
 import kotlin.math.tan
 
-class ManualTurningHelper(
-    iniFileRepository: IniFileRepository
-) {
-    private val xAxisParam = iniFileRepository.getIniFile().joints[0]
-    private val zAxisParam = iniFileRepository.getIniFile().joints[1]
-
+object ManualTurningHelper {
     enum class Axis(val index: Int) {
         //When jogging, the axes are considered as X=0, Y=1, Z=2
         X(0), Z(2)
@@ -20,29 +15,29 @@ class ManualTurningHelper(
         Negative, Positive
     }
 
-    fun getStraightTurningCommand(axis: Axis, feedDirection: Direction): String {
+    fun getStraightTurningCommand(axis: Axis, feedDirection: Direction, limits: AxisLimits): String {
         val limit = when (axis) {
             Axis.X -> when (feedDirection) {
-                Direction.Negative -> xAxisParam.minLimit * 2 //because lathes work in diameter mode
-                Direction.Positive -> xAxisParam.maxLimit * 2 //because lathes work in diameter mode
+                Direction.Negative -> limits.xMinLimit!! * 2 //because lathes work in diameter mode
+                Direction.Positive -> limits.xMaxLimit!! * 2 //because lathes work in diameter mode
             }
             Axis.Z -> when (feedDirection) {
-                Direction.Negative -> zAxisParam.minLimit
-                Direction.Positive -> zAxisParam.maxLimit
+                Direction.Negative -> limits.zMinLimit
+                Direction.Positive -> limits.zMaxLimit
             }
         }
         return "G53 G1 ${axis.name + limit}"
     }
 
-    fun getTaperTurningCommand(axis: Axis, feedDirection: Direction, startPoint: Point, angle: Double): String {
+    fun getTaperTurningCommand(axis: Axis, feedDirection: Direction, limits: AxisLimits, startPoint: Point, angle: Double): String {
         val cornerPoint = when (axis) {
             Axis.X -> when (feedDirection) {
-                Direction.Positive -> Point(xAxisParam.maxLimit * 2, zAxisParam.minLimit)
-                Direction.Negative -> Point(xAxisParam.minLimit * 2, zAxisParam.maxLimit)
+                Direction.Positive -> Point(limits.xMaxLimit!! * 2, limits.zMinLimit!!)
+                Direction.Negative -> Point(limits.xMinLimit!! * 2, limits.zMaxLimit!!)
             }
             Axis.Z -> when (feedDirection) {
-                Direction.Positive -> Point(xAxisParam.maxLimit * 2, zAxisParam.maxLimit)
-                Direction.Negative -> Point(xAxisParam.minLimit * 2, zAxisParam.minLimit)
+                Direction.Positive -> Point(limits.xMaxLimit!! * 2, limits.zMaxLimit!!)
+                Direction.Negative -> Point(limits.xMinLimit!! * 2, limits.zMinLimit!!)
             }
         }
 

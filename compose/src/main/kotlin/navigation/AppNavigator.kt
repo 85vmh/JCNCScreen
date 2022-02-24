@@ -9,6 +9,14 @@ import screen.uimodel.*
 
 
 class AppNavigator {
+    private val allTabs = listOf(
+        BottomNavTab.ManualTurning,
+        BottomNavTab.Conversational,
+        BottomNavTab.Programs,
+        BottomNavTab.Tools,
+        BottomNavTab.Status
+    )
+
     private val _currentTab = MutableStateFlow(BottomNavTab.ManualTurning)
 
     private val _manualScreen = MutableStateFlow<ManualScreen>(ManualScreen.ManualRootScreen)
@@ -16,6 +24,7 @@ class AppNavigator {
     private val _programsScreen = MutableStateFlow<ProgramsScreen>(ProgramsScreen.ProgramsRootScreen)
     private val _toolsScreen = MutableStateFlow<ToolsScreen>(ToolsScreen.ToolsRootScreen)
     private val _statusScreen = MutableStateFlow<StatusScreen>(StatusScreen.StatusRootScreen)
+    private val _enabledTabs = MutableStateFlow(allTabs)
 
     val currentTab = _currentTab.asStateFlow()
 
@@ -30,8 +39,25 @@ class AppNavigator {
         }
     }
 
+    val enabledTabs = _enabledTabs.asStateFlow()
+
     fun selectTab(tab: BottomNavTab) {
         _currentTab.value = tab
+    }
+
+    fun setReady(isReady: Boolean) {
+        when {
+            isReady -> {
+                _enabledTabs.value = allTabs
+                if (_currentTab.value == BottomNavTab.Status) {
+                    selectTab(BottomNavTab.ManualTurning)
+                }
+            }
+            else -> {
+                _enabledTabs.value = listOf(BottomNavTab.Status)
+                selectTab(BottomNavTab.Status)
+            }
+        }
     }
 
     fun navigate(to: TabScreen) {

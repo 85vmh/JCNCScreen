@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.jme3.input.Input
 import extensions.toFixedDigits
 import screen.uimodel.InputType
 import screen.uimodel.NumInputParameters
@@ -28,12 +29,13 @@ private fun NumPadViewPreview() {
 
 class NumPadState(
     initialValue: Double? = null,
-    val numInputParameters: NumInputParameters
+    val numInputParameters: NumInputParameters,
+    val inputType: InputType? = null
 ) {
-    private val defaultValue = initialValue?.toFixedDigits(numInputParameters.maxDecimalPlaces)
-        ?: numInputParameters.initialValue.toFixedDigits(numInputParameters.maxDecimalPlaces)
+//    private val defaultValue = initialValue?.toFixedDigits(numInputParameters.maxDecimalPlaces)
+//        ?: numInputParameters.initialValue.toFixedDigits(numInputParameters.maxDecimalPlaces)
 
-    val stringValueState = mutableStateOf(defaultValue)
+    val stringValueState = mutableStateOf("")
 
     fun toggleSign() {
         stringValueState.value = if (stringValueState.value.startsWith('-')) {
