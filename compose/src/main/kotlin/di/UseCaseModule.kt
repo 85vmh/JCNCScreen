@@ -29,7 +29,6 @@ val UseCaseModule = DI.Module("UseCase") {
         VirtualLimitsUseCase(
             scope = instance(tag = "app_scope"),
             statusRepository = instance(),
-            commandRepository = instance(),
             halRepository = instance(),
             settingsRepository = instance(),
             iniFileRepository = instance()

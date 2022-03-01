@@ -21,6 +21,7 @@ class BaseScreenViewModel(
     init {
         cncStatusRepository.cncStatusFlow()
             .map { it.isEstop.not() && it.isOn && it.isHomed() }
+            .distinctUntilChanged()
             .onEach { appNavigator.setReady(it) }
             .launchIn(scope)
 

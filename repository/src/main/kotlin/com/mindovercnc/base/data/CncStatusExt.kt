@@ -46,22 +46,22 @@ val CncStatus.isSpindleOn
 val CncStatus.currentToolNo get() = ioStatus.toolStatus.currentLoadedTool
 
 fun CncStatus.getDisplayablePosition(): Position {
-    val actualPosition = motionStatus.trajectoryStatus.currentCommandedPosition
+    val machinePosition = g53Position
     val g5xOffset = taskStatus.g5xOffset
     val toolOffset = taskStatus.toolOffset
     val rotationXY = taskStatus.rotationXY
     val g92Offset = taskStatus.g92Offset
 
     val builder = Position.Builder()
-    builder.x = actualPosition.x - g5xOffset.x - toolOffset.x
-    builder.y = actualPosition.y - g5xOffset.y - toolOffset.y
-    builder.z = actualPosition.z - g5xOffset.z - toolOffset.z
-    builder.a = actualPosition.a - g5xOffset.a - toolOffset.a
-    builder.b = actualPosition.b - g5xOffset.b - toolOffset.b
-    builder.c = actualPosition.c - g5xOffset.c - toolOffset.c
-    builder.u = actualPosition.u - g5xOffset.u - toolOffset.u
-    builder.v = actualPosition.v - g5xOffset.v - toolOffset.v
-    builder.w = actualPosition.w - g5xOffset.w - toolOffset.w
+    builder.x = machinePosition.x - g5xOffset.x - toolOffset.x
+    builder.y = machinePosition.y - g5xOffset.y - toolOffset.y
+    builder.z = machinePosition.z - g5xOffset.z - toolOffset.z
+    builder.a = machinePosition.a - g5xOffset.a - toolOffset.a
+    builder.b = machinePosition.b - g5xOffset.b - toolOffset.b
+    builder.c = machinePosition.c - g5xOffset.c - toolOffset.c
+    builder.u = machinePosition.u - g5xOffset.u - toolOffset.u
+    builder.v = machinePosition.v - g5xOffset.v - toolOffset.v
+    builder.w = machinePosition.w - g5xOffset.w - toolOffset.w
 
     if (rotationXY != 0.0) {
         val ang = Math.toRadians(-1 * rotationXY)
@@ -80,6 +80,44 @@ fun CncStatus.getDisplayablePosition(): Position {
     builder.u -= g92Offset.u
     builder.v -= g92Offset.v
     builder.w -= g92Offset.w
+
+    return builder.build()
+}
+
+fun CncStatus.getRelativeToolPosition(): Position {
+    val g5xOffset = taskStatus.g5xOffset
+    val toolOffset = taskStatus.toolOffset
+    val rotationXY = taskStatus.rotationXY
+    val g92Offset = taskStatus.g92Offset
+
+    val builder = Position.Builder()
+    builder.x = g5xOffset.x + toolOffset.x
+    builder.y = g5xOffset.y + toolOffset.y
+    builder.z = g5xOffset.z + toolOffset.z
+    builder.a = g5xOffset.a + toolOffset.a
+    builder.b = g5xOffset.b + toolOffset.b
+    builder.c = g5xOffset.c + toolOffset.c
+    builder.u = g5xOffset.u + toolOffset.u
+    builder.v = g5xOffset.v + toolOffset.v
+    builder.w = g5xOffset.w + toolOffset.w
+
+    if (rotationXY != 0.0) {
+        val ang = Math.toRadians(-1 * rotationXY)
+        val xr: Double = builder.x * cos(ang) - sin(ang)
+        val yr: Double = builder.y * sin(ang) + acos(ang)
+        builder.x = xr
+        builder.y = yr
+    }
+
+    builder.x += g92Offset.x
+    builder.y += g92Offset.y
+    builder.z += g92Offset.z
+    builder.a += g92Offset.a
+    builder.b += g92Offset.b
+    builder.c += g92Offset.c
+    builder.u += g92Offset.u
+    builder.v += g92Offset.v
+    builder.w += g92Offset.w
 
     return builder.build()
 }

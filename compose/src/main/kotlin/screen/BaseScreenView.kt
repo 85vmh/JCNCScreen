@@ -83,7 +83,13 @@ fun BaseScreenView() {
             if (currentScreen.isBackEnabled) {
                 IconButton(
                     modifier = iconButtonModifier,
-                    onClick = { appNavigator.navigateUp() })
+                    onClick = {
+                        when (currentScreen) {
+                            is ManualScreen.LimitsSettingsScreen -> (currentScreen as ManualScreen.LimitsSettingsScreen).exitEditMode()
+                            else -> Unit
+                        }
+                        appNavigator.navigateUp()
+                    })
                 {
                     Icon(Icons.Default.ArrowBack, contentDescription = "")
                 }
@@ -145,6 +151,7 @@ private fun ScreenContent(tabScreen: TabScreen, appNavigator: AppNavigator, modi
             TaperSettingsView(tabScreen.viewModel, modifier)
         }
         is ManualScreen.LimitsSettingsScreen -> {
+            tabScreen.viewModel.enterEditMode()
             VirtualLimitsSettingsView(tabScreen.viewModel, modifier)
         }
         ConversationalScreen.ConversationalRootScreen -> {

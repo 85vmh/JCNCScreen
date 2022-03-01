@@ -29,7 +29,7 @@ import usecase.VirtualLimitsUseCase
 fun VirtualLimitsStatusView(modifier: Modifier = Modifier) {
     val useCase: VirtualLimitsUseCase by rememberInstance()
 
-    val virtualLimitsState = useCase.getVirtualLimitsState()
+    val virtualLimitsState = useCase.virtualLimitsState
 
     val xMinus by virtualLimitsState.xMinus
     val xMinusActive by virtualLimitsState.xMinusActive

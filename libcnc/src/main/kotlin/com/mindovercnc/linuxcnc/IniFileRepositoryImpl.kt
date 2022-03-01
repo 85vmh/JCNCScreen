@@ -1,7 +1,7 @@
 package com.mindovercnc.linuxcnc
 
 import com.mindovercnc.base.IniFileRepository
-import com.mindovercnc.base.data.AxisLimits
+import com.mindovercnc.base.data.G53AxisLimits
 import com.mindovercnc.base.data.IniFile
 import java.io.BufferedReader
 import java.io.FileNotFoundException
@@ -16,9 +16,9 @@ class IniFileRepositoryImpl(
 
     private var useCustomLimits: Boolean = false
 
-    private val machineLimits: AxisLimits
+    private val machineLimits: G53AxisLimits
         get() = with(getIniFile()) {
-            return AxisLimits(
+            return G53AxisLimits(
                 xMinLimit = joints[0].minLimit,
                 xMaxLimit = joints[0].maxLimit,
                 zMinLimit = joints[1].minLimit,
@@ -26,7 +26,7 @@ class IniFileRepositoryImpl(
             )
         }
 
-    private var customLimits: AxisLimits? = null
+    private var customLimits: G53AxisLimits? = null
 
     init {
         parsedFile = parseIniFile(iniFilePath)
@@ -81,19 +81,20 @@ class IniFileRepositoryImpl(
         )
     }
 
-    override fun getActiveLimits(): AxisLimits {
+    override fun getActiveLimits(): G53AxisLimits {
         return when {
             isCustomLimitsActive() -> customLimits!!
             else -> machineLimits
         }
     }
 
-    override fun setCustomAxisLimits(axisLimits: AxisLimits) {
-        customLimits = AxisLimits(
-            xMinLimit = axisLimits.xMinLimit ?: machineLimits.xMinLimit,
-            xMaxLimit = axisLimits.xMaxLimit ?: machineLimits.xMaxLimit,
-            zMinLimit = axisLimits.zMinLimit ?: machineLimits.zMinLimit,
-            zMaxLimit = axisLimits.zMaxLimit ?: machineLimits.zMaxLimit
+    override fun setCustomG53AxisLimits(g53AxisLimits: G53AxisLimits) {
+        println("---setCustomG53AxisLimits(): $g53AxisLimits")
+        customLimits = G53AxisLimits(
+            xMinLimit = g53AxisLimits.xMinLimit ?: machineLimits.xMinLimit,
+            xMaxLimit = g53AxisLimits.xMaxLimit ?: machineLimits.xMaxLimit,
+            zMinLimit = g53AxisLimits.zMinLimit ?: machineLimits.zMinLimit,
+            zMaxLimit = g53AxisLimits.zMaxLimit ?: machineLimits.zMaxLimit
         )
     }
 

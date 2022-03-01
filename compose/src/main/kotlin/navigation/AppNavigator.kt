@@ -17,6 +17,7 @@ class AppNavigator {
         BottomNavTab.Status
     )
 
+    private val _previousTab = MutableStateFlow(BottomNavTab.ManualTurning)
     private val _currentTab = MutableStateFlow(BottomNavTab.ManualTurning)
 
     private val _manualScreen = MutableStateFlow<ManualScreen>(ManualScreen.ManualRootScreen)
@@ -50,10 +51,11 @@ class AppNavigator {
             isReady -> {
                 _enabledTabs.value = allTabs
                 if (_currentTab.value == BottomNavTab.Status) {
-                    selectTab(BottomNavTab.ManualTurning)
+                    selectTab(_previousTab.value)
                 }
             }
             else -> {
+                _previousTab.value = _currentTab.value
                 _enabledTabs.value = listOf(BottomNavTab.Status)
                 selectTab(BottomNavTab.Status)
             }

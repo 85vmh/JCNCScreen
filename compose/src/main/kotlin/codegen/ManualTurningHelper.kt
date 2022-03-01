@@ -1,6 +1,6 @@
 package codegen
 
-import com.mindovercnc.base.data.AxisLimits
+import com.mindovercnc.base.data.G53AxisLimits
 import extensions.stripZeros
 import kotlin.math.abs
 import kotlin.math.tan
@@ -15,7 +15,7 @@ object ManualTurningHelper {
         Negative, Positive
     }
 
-    fun getStraightTurningCommand(axis: Axis, feedDirection: Direction, limits: AxisLimits): String {
+    fun getStraightTurningCommand(axis: Axis, feedDirection: Direction, limits: G53AxisLimits): String {
         val limit = when (axis) {
             Axis.X -> when (feedDirection) {
                 Direction.Negative -> limits.xMinLimit!! * 2 //because lathes work in diameter mode
@@ -29,7 +29,7 @@ object ManualTurningHelper {
         return "G53 G1 ${axis.name + limit}"
     }
 
-    fun getTaperTurningCommand(axis: Axis, feedDirection: Direction, limits: AxisLimits, startPoint: Point, angle: Double): String {
+    fun getTaperTurningCommand(axis: Axis, feedDirection: Direction, limits: G53AxisLimits, startPoint: Point, angle: Double): String {
         val cornerPoint = when (axis) {
             Axis.X -> when (feedDirection) {
                 Direction.Positive -> Point(limits.xMaxLimit!! * 2, limits.zMinLimit!!)

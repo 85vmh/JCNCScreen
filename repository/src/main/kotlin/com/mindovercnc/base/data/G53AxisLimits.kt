@@ -1,6 +1,6 @@
 package com.mindovercnc.base.data
 
-data class AxisLimits(
+data class G53AxisLimits(
     val xMinLimit: Double? = null,
     val xMaxLimit: Double? = null,
     val zMinLimit: Double? = null,

@@ -36,5 +36,9 @@ sealed class ManualScreen(
     ) : ManualScreen(
         title = "Virtual Limits",
         previousScreen = previousScreen
-    )
+    ) {
+        fun exitEditMode() {
+            viewModel.exitEditMode()
+        }
+    }
 }
