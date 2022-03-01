@@ -28,7 +28,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.mindovercnc.base.data.LatheTool
 import extensions.draggableScroll
-import extensions.toFixedDigits
+import extensions.toFixedDigitsString
 import navigation.AppNavigator
 import org.kodein.di.compose.rememberInstance
 import screen.composables.LabelWithValue
@@ -219,21 +219,21 @@ fun ToolRow(
         Column(
             modifier = ToolsColumnModifier.Offset.modifier
         ) {
-            LabelWithValue("X:", item.xOffset.toFixedDigits())
-            LabelWithValue("Z:", item.zOffset.toFixedDigits())
+            LabelWithValue("X:", item.xOffset.toFixedDigitsString())
+            LabelWithValue("Z:", item.zOffset.toFixedDigitsString())
         }
         VerticalDivider()
         Column(
             modifier = ToolsColumnModifier.Offset.modifier
         ) {
-            LabelWithValue("X:", item.xWear.toFixedDigits())
-            LabelWithValue("Z:", item.zWear.toFixedDigits())
+            LabelWithValue("X:", item.xWear.toFixedDigitsString())
+            LabelWithValue("Z:", item.zWear.toFixedDigitsString())
         }
         VerticalDivider()
         Text(
             modifier = ToolsColumnModifier.TipRadius.modifier,
             textAlign = TextAlign.Center,
-            text = item.tipRadius.toFixedDigits()
+            text = item.tipRadius.toFixedDigitsString()
         )
         VerticalDivider()
         Text(

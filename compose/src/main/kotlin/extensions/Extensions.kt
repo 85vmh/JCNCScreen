@@ -11,8 +11,12 @@ import java.math.RoundingMode
 /**
  * Sets the displayable digits to max digits, which will be shown even if they are zero.
  */
-fun Double.toFixedDigits(maxDigits: Int = 3): String {
+fun Double.toFixedDigitsString(maxDigits: Int = 3): String {
     return BigDecimal(this).setScale(maxDigits, RoundingMode.HALF_EVEN).toString()
+}
+
+fun Double.toFixedDigits(maxDigits: Int = 3): Double {
+    return BigDecimal(this).setScale(maxDigits, RoundingMode.HALF_EVEN).toDouble()
 }
 
 /**

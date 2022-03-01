@@ -1,6 +1,6 @@
 package codegen
 
-import extensions.toFixedDigits
+import extensions.toFixedDigitsString
 
 sealed class ProfilePrimitive {
 
@@ -16,8 +16,8 @@ sealed class ProfilePrimitive {
 
         override fun toString(): String {
             return type.gCode +
-                    xDest?.let { " X${it.toFixedDigits()}" } +
-                    zDest?.let { " Z${it.toFixedDigits()}" }
+                    xDest?.let { " X${it.toFixedDigitsString()}" } +
+                    zDest?.let { " Z${it.toFixedDigitsString()}" }
         }
     }
 
@@ -35,10 +35,10 @@ sealed class ProfilePrimitive {
 
         override fun toString(): String {
             return type.gCode +
-                    xDest?.let { " X${it.toFixedDigits()}" } +
-                    zDest?.let { " Z${it.toFixedDigits()}" } +
-                    " I${xOffset.toFixedDigits()}" +
-                    " K${zOffset.toFixedDigits()}"
+                    xDest?.let { " X${it.toFixedDigitsString()}" } +
+                    zDest?.let { " Z${it.toFixedDigitsString()}" } +
+                    " I${xOffset.toFixedDigitsString()}" +
+                    " K${zOffset.toFixedDigitsString()}"
         }
     }
 }

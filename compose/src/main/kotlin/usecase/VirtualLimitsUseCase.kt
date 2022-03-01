@@ -3,6 +3,7 @@ package usecase
 import codegen.Point
 import com.mindovercnc.base.*
 import com.mindovercnc.base.data.*
+import extensions.toFixedDigits
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -107,10 +108,10 @@ class VirtualLimitsUseCase(
         val g53ZPlus = relativeToolPosition.z + limits.zPlus.value
 
         val g53AxisLimits = G53AxisLimits(
-            xMinLimit = if (limits.xMinusActive.value) g53XMinus / 2 else null,
-            xMaxLimit = if (limits.xPlusActive.value) g53XPlus / 2 else null,
-            zMinLimit = if (limits.zMinusActive.value) g53ZMinus else null,
-            zMaxLimit = if (limits.zPlusActive.value) g53ZPlus else null
+            xMinLimit = if (limits.xMinusActive.value) (g53XMinus / 2).toFixedDigits() else null,
+            xMaxLimit = if (limits.xPlusActive.value) (g53XPlus / 2).toFixedDigits() else null,
+            zMinLimit = if (limits.zMinusActive.value) g53ZMinus.toFixedDigits() else null,
+            zMaxLimit = if (limits.zPlusActive.value) g53ZPlus.toFixedDigits() else null
         )
         iniFileRepository.setCustomG53AxisLimits(g53AxisLimits)
     }

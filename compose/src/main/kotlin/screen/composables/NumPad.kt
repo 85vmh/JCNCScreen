@@ -12,8 +12,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.jme3.input.Input
-import extensions.toFixedDigits
 import screen.uimodel.InputType
 import screen.uimodel.NumInputParameters
 import screen.uimodel.NumericInputs

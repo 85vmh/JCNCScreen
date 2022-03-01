@@ -1,20 +1,14 @@
 package screen.composables.tabstatus
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Card
 import androidx.compose.material.Divider
-import androidx.compose.material.IconButton
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,11 +21,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import extensions.draggableScroll
-import extensions.toFixedDigits
+import extensions.toFixedDigitsString
 import org.kodein.di.compose.rememberInstance
 import screen.composables.LabelWithValue
-import screen.composables.VerticalDivider
-import screen.composables.tabprograms.filesystem.BreadcrumbItem
 import usecase.OffsetsUseCase
 import usecase.model.OffsetEntry
 
@@ -85,12 +77,12 @@ fun WorkpieceOffset(item: OffsetEntry, isActive: Boolean, modifier: Modifier = M
             Divider(color = Color.LightGray, thickness = 0.5.dp)
             LabelWithValue(
                 label = "X:",
-                value = item.xOffset.toFixedDigits(),
+                value = item.xOffset.toFixedDigitsString(),
                 modifier = Modifier.padding(vertical = 8.dp)
             )
             LabelWithValue(
                 label = "Z:",
-                value = item.zOffset.toFixedDigits(),
+                value = item.zOffset.toFixedDigitsString(),
                 modifier = Modifier.padding(vertical = 8.dp)
             )
         }

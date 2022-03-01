@@ -13,7 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import extensions.toFixedDigits
+import extensions.toFixedDigitsString
 import usecase.VirtualLimitsUseCase
 import usecase.model.VirtualLimitsState
 
@@ -85,7 +85,7 @@ fun Limit(
             modifier = Modifier.padding(start = 16.dp), text = axisDirection
         )
         TextField(
-            value = value.toFixedDigits(),
+            value = value.toFixedDigitsString(),
             onValueChange = {
                 valueChange.invoke(it.toDouble())
             }

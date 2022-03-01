@@ -7,7 +7,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import extensions.toFixedDigits
+import extensions.toFixedDigitsString
 import screen.composables.CardWithTitle
 import screen.uimodel.InputType
 import usecase.ManualTurningUseCase
@@ -26,7 +26,7 @@ fun TaperSettingsView(
         CardWithTitle("Known Angle") {
             ValueSetting(
                 settingName = "Taper Angle",
-                value = viewModel.taperState.taperAngle.value.toFixedDigits(),
+                value = viewModel.taperState.taperAngle.value.toFixedDigitsString(),
                 inputType = InputType.TAPER_ANGLE
             ) {
                 val doubleValue = it.toDoubleOrNull() ?: return@ValueSetting

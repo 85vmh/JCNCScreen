@@ -1,6 +1,6 @@
 package codegen
 
-import extensions.toFixedDigits
+import extensions.toFixedDigitsString
 
 class DrillingOperation(
     private val toolNumber: Int,
@@ -27,16 +27,16 @@ class DrillingOperation(
 
     override fun getOperationCode() = mutableListOf<String>()
         .apply {
-            add("G95 F${feedRate.toFixedDigits()}")
+            add("G95 F${feedRate.toFixedDigitsString()}")
             add("G97 S$spindleSpeed")
 
             add("M6 T$toolNumber G43")
-            add("G0 Z${zStartPosition.toFixedDigits()} (move to Z start position)")
+            add("G0 Z${zStartPosition.toFixedDigitsString()} (move to Z start position)")
             add("G0 X0") //when drilling always move to x=0
             add(
                 "G73 " +
-                        "Z${zEndPosition.toFixedDigits()} " +
-                        "R${zStartPosition.toFixedDigits()} " +
+                        "Z${zEndPosition.toFixedDigitsString()} " +
+                        "R${zStartPosition.toFixedDigitsString()} " +
                         "Q$increment " +
                         if (repeat != null) "L$repeat" else ""
             )
