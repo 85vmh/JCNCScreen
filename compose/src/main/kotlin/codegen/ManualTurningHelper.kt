@@ -6,6 +6,9 @@ import kotlin.math.abs
 import kotlin.math.tan
 
 object ManualTurningHelper {
+    // this constant needs to be added or subtracted based on direction
+    // the need for this is caused by the oscillation of the servos, so the position is not fully stable
+    // this is only reproducible when the limits are entered with teach-in.
     private const val safetyThreshold = 0.005
 
     enum class Axis(val index: Int) {
@@ -25,8 +28,8 @@ object ManualTurningHelper {
                 Direction.Positive -> limits.xMaxLimit!! * 2 - safetyThreshold//because lathes work in diameter mode
             }
             Axis.Z -> when (feedDirection) {
-                Direction.Negative -> limits.zMinLimit
-                Direction.Positive -> limits.zMaxLimit
+                Direction.Negative -> limits.zMinLimit!! + safetyThreshold
+                Direction.Positive -> limits.zMaxLimit!! - safetyThreshold
             }
         }
         return "G53 G1 ${axis.name + limit}"
@@ -36,12 +39,12 @@ object ManualTurningHelper {
         println("----G53 Axis Limits: $limits")
         val cornerPoint = when (axis) {
             Axis.X -> when (feedDirection) {
-                Direction.Positive -> Point(limits.xMaxLimit!! * 2 + safetyThreshold, limits.zMinLimit!!)
-                Direction.Negative -> Point(limits.xMinLimit!! * 2 - safetyThreshold, limits.zMaxLimit!!)
+                Direction.Positive -> Point(limits.xMaxLimit!! * 2 - safetyThreshold, limits.zMinLimit!! + safetyThreshold)
+                Direction.Negative -> Point(limits.xMinLimit!! * 2 + safetyThreshold, limits.zMaxLimit!! - safetyThreshold)
             }
             Axis.Z -> when (feedDirection) {
-                Direction.Positive -> Point(limits.xMaxLimit!! * 2, limits.zMaxLimit!!)
-                Direction.Negative -> Point(limits.xMinLimit!! * 2, limits.zMinLimit!!)
+                Direction.Positive -> Point(limits.xMaxLimit!! * 2 - safetyThreshold, limits.zMaxLimit!! - safetyThreshold)
+                Direction.Negative -> Point(limits.xMinLimit!! * 2 + safetyThreshold, limits.zMinLimit!! + safetyThreshold)
             }
         }
 
