@@ -1,19 +1,19 @@
 package screen.composables.tabmanual
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
-import androidx.compose.material.TextField
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import extensions.toFixedDigitsString
+import screen.composables.NumericInputField
+import screen.uimodel.InputType
 import usecase.VirtualLimitsUseCase
 import usecase.model.VirtualLimitsState
 
@@ -32,6 +32,7 @@ fun VirtualLimitsSettingsView(
     var xMaxActive by viewModel.limitsState.xPlusActive
     var zMinActive by viewModel.limitsState.zMinusActive
     var zMaxActive by viewModel.limitsState.zPlusActive
+    var zMaxToolRelated by viewModel.limitsState.zPlusIsToolRelated
 
     Column(
         modifier = modifier.padding(16.dp),
@@ -65,6 +66,24 @@ fun VirtualLimitsSettingsView(
             }) {
             viewModel.teachInZPlus()
         }
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            RadioButton(
+                selected = zMaxToolRelated,
+                onClick = { zMaxToolRelated = true }
+            )
+            Text("Tool Limit")
+        }
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            RadioButton(
+                selected = zMaxToolRelated.not(),
+                onClick = { zMaxToolRelated = false }
+            )
+            Text("Slide Limit")
+        }
     }
 }
 
@@ -77,20 +96,33 @@ fun Limit(
     valueChange: (Double) -> Unit,
     teachIn: () -> Unit
 ) {
-    Row {
+    Row(
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         Checkbox(
             checked = active, activeChange
         )
         Text(
-            modifier = Modifier.padding(start = 16.dp), text = axisDirection
+            modifier = Modifier.padding(start = 8.dp), text = axisDirection
         )
-        TextField(
-            value = value.toFixedDigitsString(),
-            onValueChange = {
-                valueChange.invoke(it.toDouble())
-            }
-        )
-        Button(onClick = teachIn) {
+        NumericInputField(
+            numericValue = value.toFixedDigitsString(),
+            inputType = when (axisDirection) {
+                "X-" -> InputType.VIRTUAL_LIMIT_X_MINUS
+                "X+" -> InputType.VIRTUAL_LIMIT_X_PLUS
+                "Z-" -> InputType.VIRTUAL_LIMIT_Z_MINUS
+                else -> InputType.VIRTUAL_LIMIT_Z_PLUS
+            },
+            modifier = Modifier.width(100.dp).padding(start = 16.dp)
+        ) {
+            valueChange.invoke(it.toDouble())
+        }
+
+        Button(
+            modifier = Modifier.padding(start = 16.dp),
+            enabled = active,
+            onClick = teachIn
+        ) {
             Text("Teach In $axisDirection")
         }
     }

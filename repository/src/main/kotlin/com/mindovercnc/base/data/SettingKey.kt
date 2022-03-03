@@ -2,7 +2,7 @@ package com.mindovercnc.base.data
 
 interface SettingKey
 
-enum class IntegerKey() : SettingKey {
+enum class IntegerKey : SettingKey {
     SpindleMode,
     FeedMode,
     RpmValue,
@@ -10,7 +10,7 @@ enum class IntegerKey() : SettingKey {
     MaxCssRpm,
 }
 
-enum class DoubleKey() : SettingKey {
+enum class DoubleKey : SettingKey {
     OrientAngle,
     FeedPerRev,
     FeedPerMin,
@@ -21,11 +21,11 @@ enum class DoubleKey() : SettingKey {
     VirtualLimitZPlus;
 }
 
-enum class BooleanKey() : SettingKey {
+enum class BooleanKey : SettingKey {
     OrientedStop,
-    VirtualLimitsActive,
     VirtualLimitXMinusActive,
     VirtualLimitXPlusActive,
     VirtualLimitZMinusActive,
-    VirtualLimitZPlusActive
+    VirtualLimitZPlusActive,
+    LimitZPlusIsToolRelated
 }

@@ -10,7 +10,8 @@ class VirtualLimitsState(
     xMinusActive: Boolean,
     xPlusActive: Boolean,
     zMinusActive: Boolean,
-    zPlusActive: Boolean
+    zPlusActive: Boolean,
+    zPlusIsToolRelated: Boolean
 ) {
     val xMinus = mutableStateOf(xMinus)
     val xPlus = mutableStateOf(xPlus)
@@ -20,4 +21,5 @@ class VirtualLimitsState(
     val xPlusActive = mutableStateOf(xPlusActive)
     val zMinusActive = mutableStateOf(zMinusActive)
     val zPlusActive = mutableStateOf(zPlusActive)
+    val zPlusIsToolRelated = mutableStateOf(zPlusIsToolRelated)
 }

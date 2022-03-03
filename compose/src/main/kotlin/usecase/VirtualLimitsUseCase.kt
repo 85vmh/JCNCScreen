@@ -40,6 +40,7 @@ class VirtualLimitsUseCase(
                     xPlusActive = settingsRepository.get(BooleanKey.VirtualLimitXPlusActive),
                     zMinusActive = settingsRepository.get(BooleanKey.VirtualLimitZMinusActive),
                     zPlusActive = settingsRepository.get(BooleanKey.VirtualLimitZPlusActive),
+                    zPlusIsToolRelated = settingsRepository.get(BooleanKey.LimitZPlusIsToolRelated)
                 )
                 setCustomLimits(storedLimits)
                 applyActiveLimits()
@@ -69,6 +70,7 @@ class VirtualLimitsUseCase(
         xPlusActive = settingsRepository.get(BooleanKey.VirtualLimitXPlusActive),
         zMinusActive = settingsRepository.get(BooleanKey.VirtualLimitZMinusActive),
         zPlusActive = settingsRepository.get(BooleanKey.VirtualLimitZPlusActive),
+        zPlusIsToolRelated = settingsRepository.get(BooleanKey.LimitZPlusIsToolRelated)
     )
 
     fun saveVirtualLimits(limits: VirtualLimitsState) {
@@ -81,6 +83,7 @@ class VirtualLimitsUseCase(
             put(BooleanKey.VirtualLimitXPlusActive, limits.xPlusActive.value)
             put(BooleanKey.VirtualLimitZMinusActive, limits.zMinusActive.value)
             put(BooleanKey.VirtualLimitZPlusActive, limits.zPlusActive.value)
+            put(BooleanKey.LimitZPlusIsToolRelated, limits.zPlusIsToolRelated.value)
         }
         scope.launch {
             setCustomLimits(limits)
@@ -89,14 +92,6 @@ class VirtualLimitsUseCase(
     }
 
     private suspend fun setCustomLimits(limits: VirtualLimitsState) {
-        //z display position = machinePosition.z - g5xOffset.z - toolOffset.z
-        //z display position + g5xOffset.z + toolOffset.z = machinePosition.z
-
-        //am un tool position, sa zicem Z=-30 -> fatza bacurilor
-        //teach in -> ia absolute position pt T1 si il seteaza ca virtual limit.
-        //         -> stocheaza Z-30 ca si valoare de referinta pentru sistemul de coordonate curent
-        //load T2, (-30 + g5xOffset + toolOffset) -> noul absolute position pt T2 -> seteaza new virtual limit
-
         val relativeToolPosition = statusRepository.cncStatusFlow()
             .map { it.getRelativeToolPosition() }
             .map { Point(it.x * 2, it.z) } // *2 due to diameter mode
@@ -105,7 +100,10 @@ class VirtualLimitsUseCase(
         val g53XMinus = relativeToolPosition.x + limits.xMinus.value
         val g53XPlus = relativeToolPosition.x + limits.xPlus.value
         val g53ZMinus = relativeToolPosition.z + limits.zMinus.value
-        val g53ZPlus = relativeToolPosition.z + limits.zPlus.value
+        val g53ZPlus = when(limits.zPlusIsToolRelated.value){
+            true -> relativeToolPosition.z + limits.zPlus.value
+            false -> limits.zPlus.value
+        }
 
         val g53AxisLimits = G53AxisLimits(
             xMinLimit = if (limits.xMinusActive.value) (g53XMinus / 2).toFixedDigits() else null,
@@ -131,6 +129,11 @@ class VirtualLimitsUseCase(
         .map { Point(it.x * 2, it.z) } // *2 due to diameter mode
         .first()
 
+    private suspend fun getZMachinePosition() = statusRepository.cncStatusFlow()
+        .map { it.g53Position }
+        .map { it.z }
+        .first()
+
     fun teachInXMinus() {
         scope.launch {
             virtualLimitsState.xMinus.value = getCurrentPoint().x
@@ -151,7 +154,10 @@ class VirtualLimitsUseCase(
 
     fun teachInZPlus() {
         scope.launch {
-            virtualLimitsState.zPlus.value = getCurrentPoint().z
+            virtualLimitsState.zPlus.value = when (virtualLimitsState.zPlusIsToolRelated.value) {
+                true -> getCurrentPoint().z
+                false -> getZMachinePosition()
+            }
         }
     }
 }

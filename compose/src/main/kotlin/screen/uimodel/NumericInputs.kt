@@ -229,5 +229,25 @@ object NumericInputs {
             initialValue = 45.0,
             maxDecimalPlaces = 0
         )
+        map[InputType.VIRTUAL_LIMIT_X_MINUS] = NumInputParameters(
+            valueDescription = "X Minus Limit",
+            allowsNegativeValues = true,
+            maxDecimalPlaces = 3
+        )
+        map[InputType.VIRTUAL_LIMIT_X_PLUS] = NumInputParameters(
+            valueDescription = "X Plus Limit",
+            allowsNegativeValues = true,
+            maxDecimalPlaces = 3
+        )
+        map[InputType.VIRTUAL_LIMIT_Z_MINUS] = NumInputParameters(
+            valueDescription = "Z Minus Limit",
+            allowsNegativeValues = true,
+            maxDecimalPlaces = 3
+        )
+        map[InputType.VIRTUAL_LIMIT_Z_PLUS] = NumInputParameters(
+            valueDescription = "Z Plus Limit",
+            allowsNegativeValues = true,
+            maxDecimalPlaces = 3
+        )
     }
 }

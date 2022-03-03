@@ -28,6 +28,9 @@ fun AddEditToolView(
     val useCase: ToolsUseCase by rememberInstance()
     val toolState = remember { useCase.toolState }
 
+    //insert type
+    //feed, doc, css speed
+
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(8.dp)

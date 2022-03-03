@@ -6,6 +6,8 @@ import kotlin.math.abs
 import kotlin.math.tan
 
 object ManualTurningHelper {
+    private const val safetyThreshold = 0.005
+
     enum class Axis(val index: Int) {
         //When jogging, the axes are considered as X=0, Y=1, Z=2
         X(0), Z(2)
@@ -16,10 +18,11 @@ object ManualTurningHelper {
     }
 
     fun getStraightTurningCommand(axis: Axis, feedDirection: Direction, limits: G53AxisLimits): String {
+        println("----G53 Axis Limits: $limits")
         val limit = when (axis) {
             Axis.X -> when (feedDirection) {
-                Direction.Negative -> limits.xMinLimit!! * 2 //because lathes work in diameter mode
-                Direction.Positive -> limits.xMaxLimit!! * 2 //because lathes work in diameter mode
+                Direction.Negative -> limits.xMinLimit!! * 2 + safetyThreshold //because lathes work in diameter mode
+                Direction.Positive -> limits.xMaxLimit!! * 2 - safetyThreshold//because lathes work in diameter mode
             }
             Axis.Z -> when (feedDirection) {
                 Direction.Negative -> limits.zMinLimit
@@ -30,10 +33,11 @@ object ManualTurningHelper {
     }
 
     fun getTaperTurningCommand(axis: Axis, feedDirection: Direction, limits: G53AxisLimits, startPoint: Point, angle: Double): String {
+        println("----G53 Axis Limits: $limits")
         val cornerPoint = when (axis) {
             Axis.X -> when (feedDirection) {
-                Direction.Positive -> Point(limits.xMaxLimit!! * 2, limits.zMinLimit!!)
-                Direction.Negative -> Point(limits.xMinLimit!! * 2, limits.zMaxLimit!!)
+                Direction.Positive -> Point(limits.xMaxLimit!! * 2 + safetyThreshold, limits.zMinLimit!!)
+                Direction.Negative -> Point(limits.xMinLimit!! * 2 - safetyThreshold, limits.zMaxLimit!!)
             }
             Axis.Z -> when (feedDirection) {
                 Direction.Positive -> Point(limits.xMaxLimit!! * 2, limits.zMaxLimit!!)
