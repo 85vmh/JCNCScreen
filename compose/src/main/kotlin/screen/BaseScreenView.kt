@@ -17,6 +17,7 @@ import com.mindovercnc.base.CncStatusRepository
 import com.mindovercnc.base.MessagesRepository
 import com.mindovercnc.base.data.currentToolNo
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import navigation.AppNavigator
@@ -60,7 +61,7 @@ fun BaseScreenView() {
         BaseScreenViewModel(scope, statusRepository, messagesRepository, appNavigator)
     }
 
-    val selectedTool by toolsUseCase.getCurrentTool().mapNotNull { it!!.toolNo }.collectAsState(0)
+    val selectedTool by toolsUseCase.getCurrentTool().map { it?.toolNo ?: 0 }.collectAsState(0)
     val currentWcs by offsetsUseCase.currentWcs.collectAsState("--")
 
 //    val snackbarHostState = remember {
