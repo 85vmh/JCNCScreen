@@ -15,7 +15,7 @@ import screen.composables.CardWithTitle
 import screen.composables.NumericInputField
 import screen.uimodel.InputType
 import screen.uimodel.NumericInputs
-import usecase.ManualTurningUseCase
+import screen.viewmodel.TurningSettingsViewModel
 import usecase.model.FeedRateMode
 import usecase.model.FeedState
 import usecase.model.SpindleControlMode
@@ -42,18 +42,6 @@ fun TurningSettingsView(
                 modifier = Modifier.padding(top = 8.dp, bottom = 8.dp)
             )
         }
-    }
-}
-
-class TurningSettingsViewModel(
-    val useCase: ManualTurningUseCase
-) {
-    val spindleState: SpindleState = useCase.getSpindleState()
-    val feedState: FeedState = useCase.getFeedState()
-
-    fun save() {
-        useCase.applyFeedSettings(feedState)
-        useCase.applySpindleSettings(spindleState)
     }
 }
 

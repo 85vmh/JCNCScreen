@@ -1,11 +1,15 @@
 package screen
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -14,25 +18,27 @@ import com.mindovercnc.base.MessagesRepository
 import com.mindovercnc.base.data.currentToolNo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
 import navigation.AppNavigator
 import org.kodein.di.compose.localDI
 import org.kodein.di.compose.rememberInstance
 import org.kodein.di.instance
-import screen.composables.*
-import screen.composables.common.AppTheme
+import screen.composables.ScaffoldView
 import screen.composables.tabconversational.ConversationalView
 import screen.composables.tabconversational.NewOperationView
-import screen.composables.tabmanual.*
+import screen.composables.tabmanual.ManualTurningView
+import screen.composables.tabmanual.TaperSettingsView
+import screen.composables.tabmanual.TurningSettingsView
+import screen.composables.tabmanual.VirtualLimitsSettingsView
 import screen.composables.tabprograms.ProgramLoadedView
 import screen.composables.tabprograms.ProgramsView
-import screen.composables.tabstatus.MessagesView
-import screen.composables.tabstatus.OffsetsView
 import screen.composables.tabstatus.StatusView
 import screen.composables.tabtools.AddEditToolView
 import screen.composables.tabtools.ToolLibraryView
+import screen.composables.tabtools.ToolOffsetsView
+import screen.composables.tabtools.WorkOffsetsView
 import screen.uimodel.*
-import screen.viewmodel.BaseScreenViewModel
-import screen.viewmodel.ConversationalViewModel
+import screen.viewmodel.*
 import usecase.*
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -43,6 +49,7 @@ fun BaseScreenView() {
     val statusRepository by rememberInstance<CncStatusRepository>()
     val messagesRepository by rememberInstance<MessagesRepository>()
     val offsetsUseCase by rememberInstance<OffsetsUseCase>()
+    val toolsUseCase by rememberInstance<ToolsUseCase>()
 
     val appNavigator by rememberInstance<AppNavigator>()
 
@@ -53,7 +60,7 @@ fun BaseScreenView() {
         BaseScreenViewModel(scope, statusRepository, messagesRepository, appNavigator)
     }
 
-    val selectedTool by statusRepository.cncStatusFlow().map { it.currentToolNo }.collectAsState(0)
+    val selectedTool by toolsUseCase.getCurrentTool().mapNotNull { it!!.toolNo }.collectAsState(0)
     val currentWcs by offsetsUseCase.currentWcs.collectAsState("--")
 
 //    val snackbarHostState = remember {
@@ -76,7 +83,6 @@ fun BaseScreenView() {
         screenTitle = currentScreen.title,
         selectedTab = selectedTab,
         selectedTool = selectedTool,
-        selectedWcs = currentWcs,
         enabledTabs = enabledTabs,
         onTabClicked = { appNavigator.selectTab(it) },
         navigationIcon = {
@@ -110,6 +116,7 @@ private fun ScreenContent(tabScreen: TabScreen, appNavigator: AppNavigator, modi
     val manualTurningUseCase by localDI().instance<ManualTurningUseCase>()
     val conversationalUseCase by localDI().instance<ConversationalUseCase>()
     val virtualLimitsUseCase by localDI().instance<VirtualLimitsUseCase>()
+    val angleFinderUseCase by localDI().instance<AngleFinderUseCase>()
 
     when (tabScreen) {
         ManualScreen.ManualRootScreen -> {
@@ -125,7 +132,7 @@ private fun ScreenContent(tabScreen: TabScreen, appNavigator: AppNavigator, modi
                     )
                 },
                 taperSettingsClicked = {
-                    val viewModel = TaperSettingsViewModel(manualTurningUseCase)
+                    val viewModel = TaperSettingsViewModel(manualTurningUseCase, angleFinderUseCase)
                     appNavigator.navigate(
                         ManualScreen.TaperSettingsScreen(
                             viewModel = viewModel,
@@ -175,11 +182,17 @@ private fun ScreenContent(tabScreen: TabScreen, appNavigator: AppNavigator, modi
         is ProgramsScreen.ProgramLoadedScreen -> {
             ProgramLoadedView(modifier)
         }
-        ToolsScreen.ToolsRootScreen -> {
+        ToolsOffsetsScreen.ToolsRootScreen -> {
             ToolLibraryView(modifier)
         }
-        is ToolsScreen.AddEditToolScreen -> {
+        is ToolsOffsetsScreen.AddEditToolScreen -> {
             AddEditToolView(modifier)
+        }
+        is ToolsOffsetsScreen.ToolOffsetsScreen -> {
+            ToolOffsetsView(modifier)
+        }
+        is ToolsOffsetsScreen.WorkOffsetsScreen -> {
+            WorkOffsetsView(modifier)
         }
         StatusScreen.StatusRootScreen -> {
             StatusView(modifier)
@@ -211,7 +224,7 @@ private fun ScreenActions(screen: TabScreen, appNavigator: AppNavigator, modifie
             IconButton(
                 modifier = modifier,
                 onClick = {
-                    screen.viewModel.save()
+                    screen.viewModel.applySetAngle()
                     appNavigator.navigateUp()
                 }) {
                 Icon(
@@ -271,13 +284,13 @@ private fun ScreenActions(screen: TabScreen, appNavigator: AppNavigator, modifie
                 )
             }
         }
-        is ToolsScreen.ToolsRootScreen -> {
+        is ToolsOffsetsScreen.ToolsRootScreen -> {
             IconButton(
                 modifier = modifier,
                 onClick = {
                     appNavigator.navigate(
-                        ToolsScreen.AddEditToolScreen(
-                            previousScreen = screen as ToolsScreen
+                        ToolsOffsetsScreen.AddEditToolScreen(
+                            previousScreen = screen as ToolsOffsetsScreen
                         )
                     )
                 }
@@ -288,7 +301,9 @@ private fun ScreenActions(screen: TabScreen, appNavigator: AppNavigator, modifie
                 )
             }
         }
-        is ToolsScreen.AddEditToolScreen -> {
+        is ToolsOffsetsScreen.ToolOffsetsScreen,
+        is ToolsOffsetsScreen.WorkOffsetsScreen,
+        is ToolsOffsetsScreen.AddEditToolScreen -> {
             IconButton(
                 modifier = modifier,
                 onClick = {

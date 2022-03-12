@@ -23,7 +23,7 @@ class ProgramsUseCase(
     private val selectedFolder = MutableStateFlow(fileSystemRepository.getNcRootAppFile())
     private val selectedFile = MutableStateFlow<File?>(null)
 
-    val currentFileSystemItem = selectedFolder.asStateFlow().map { it.toFileSystemItem() }
+    val currentFolder = selectedFolder.asStateFlow().map { it.toFileSystemItem() }
 
     val currentEditor = selectedFile.asStateFlow().map {
         if (it != null) Editor(it) else null

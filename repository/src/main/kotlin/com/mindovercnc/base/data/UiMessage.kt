@@ -15,7 +15,9 @@ enum class UiMessage(val level: Level = Level.Warning) {
     ReachedMinSoftLimitX,
     ReachedMaxSoftLimitX,
     ReachedMinSoftLimitZ,
-    ReachedMaxSoftLimitZ;
+    ReachedMaxSoftLimitZ,
+    JoystickDisabledOnXAxis,
+    JoystickDisabledOnZAxis;
 
     enum class Level {
         Error, Warning, Info

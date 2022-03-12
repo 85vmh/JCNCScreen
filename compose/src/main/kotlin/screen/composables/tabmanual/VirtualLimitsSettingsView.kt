@@ -14,8 +14,7 @@ import androidx.compose.ui.unit.dp
 import extensions.toFixedDigitsString
 import screen.composables.NumericInputField
 import screen.uimodel.InputType
-import usecase.VirtualLimitsUseCase
-import usecase.model.VirtualLimitsState
+import screen.viewmodel.LimitsSettingsViewModel
 
 @Composable
 fun VirtualLimitsSettingsView(
@@ -73,7 +72,7 @@ fun VirtualLimitsSettingsView(
                 selected = zMaxToolRelated,
                 onClick = { zMaxToolRelated = true }
             )
-            Text("Tool Limit")
+            Text("Tool Tip Limit")
         }
         Row(
             verticalAlignment = Alignment.CenterVertically
@@ -82,7 +81,7 @@ fun VirtualLimitsSettingsView(
                 selected = zMaxToolRelated.not(),
                 onClick = { zMaxToolRelated = false }
             )
-            Text("Slide Limit")
+            Text("Tailstock Limit")
         }
     }
 }
@@ -125,40 +124,5 @@ fun Limit(
         ) {
             Text("Teach In $axisDirection")
         }
-    }
-}
-
-class LimitsSettingsViewModel(
-    val useCase: VirtualLimitsUseCase
-) {
-    val limitsState: VirtualLimitsState = useCase.virtualLimitsState
-
-    fun enterEditMode() {
-        useCase.isInEditMode = true
-    }
-
-    fun exitEditMode() {
-        useCase.isInEditMode = false
-    }
-
-    fun save() {
-        useCase.saveVirtualLimits(limitsState)
-        useCase.isInEditMode = false
-    }
-
-    fun teachInXMinus() {
-        useCase.teachInXMinus()
-    }
-
-    fun teachInXPlus() {
-        useCase.teachInXPlus()
-    }
-
-    fun teachInZMinus() {
-        useCase.teachInZMinus()
-    }
-
-    fun teachInZPlus() {
-        useCase.teachInZPlus()
     }
 }

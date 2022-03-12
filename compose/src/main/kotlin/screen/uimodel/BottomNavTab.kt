@@ -11,6 +11,6 @@ enum class BottomNavTab(
     ManualTurning("Manual", Icons.Outlined.Home),
     Conversational("Conversational", Icons.Outlined.Build),
     Programs("Programs", Icons.Outlined.List),
-    Tools("Tools", Icons.Outlined.Place),
+    ToolsOffsets("Tools & Offsets", Icons.Outlined.Place),
     Status("Status", Icons.Outlined.Info)
 }

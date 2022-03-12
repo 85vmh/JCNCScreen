@@ -11,8 +11,6 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun StatusView(modifier: Modifier) {
     Column {
-        OffsetsView(Modifier)
-        Divider(color = Color.LightGray, thickness = 0.5.dp, modifier = Modifier.padding(vertical = 8.dp))
         MessagesView(Modifier)
     }
 }

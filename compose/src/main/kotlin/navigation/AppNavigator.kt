@@ -13,7 +13,7 @@ class AppNavigator {
         BottomNavTab.ManualTurning,
         BottomNavTab.Conversational,
         BottomNavTab.Programs,
-        BottomNavTab.Tools,
+        BottomNavTab.ToolsOffsets,
         BottomNavTab.Status
     )
 
@@ -23,7 +23,7 @@ class AppNavigator {
     private val _manualScreen = MutableStateFlow<ManualScreen>(ManualScreen.ManualRootScreen)
     private val _conversationalScreen = MutableStateFlow<ConversationalScreen>(ConversationalScreen.ConversationalRootScreen)
     private val _programsScreen = MutableStateFlow<ProgramsScreen>(ProgramsScreen.ProgramsRootScreen)
-    private val _toolsScreen = MutableStateFlow<ToolsScreen>(ToolsScreen.ToolsRootScreen)
+    private val _toolsOffsetsScreen = MutableStateFlow<ToolsOffsetsScreen>(ToolsOffsetsScreen.ToolsRootScreen)
     private val _statusScreen = MutableStateFlow<StatusScreen>(StatusScreen.StatusRootScreen)
     private val _enabledTabs = MutableStateFlow(allTabs)
 
@@ -35,7 +35,7 @@ class AppNavigator {
             BottomNavTab.ManualTurning -> _manualScreen
             BottomNavTab.Conversational -> _conversationalScreen
             BottomNavTab.Programs -> _programsScreen
-            BottomNavTab.Tools -> _toolsScreen
+            BottomNavTab.ToolsOffsets -> _toolsOffsetsScreen
             BottomNavTab.Status -> _statusScreen
         }
     }
@@ -67,7 +67,7 @@ class AppNavigator {
             is ManualScreen -> _manualScreen.value = to
             is ConversationalScreen -> _conversationalScreen.value = to
             is ProgramsScreen -> _programsScreen.value = to
-            is ToolsScreen -> _toolsScreen.value = to
+            is ToolsOffsetsScreen -> _toolsOffsetsScreen.value = to
             is StatusScreen -> _statusScreen.value = to
         }
         _currentTab.value = to.tab
@@ -90,8 +90,8 @@ class AppNavigator {
                     it.previousScreen ?: it
                 }
             }
-            BottomNavTab.Tools -> {
-                _toolsScreen.update {
+            BottomNavTab.ToolsOffsets -> {
+                _toolsOffsetsScreen.update {
                     it.previousScreen ?: it
                 }
             }

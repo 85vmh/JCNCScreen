@@ -61,14 +61,6 @@ fun AddEditToolView(
             }
         )
 
-        InputSetting(inputType = InputType.TOOL_X_COORDINATE, value = toolState.xOffset.value.toString()) {
-            toolState.xOffset.value = it.toDouble()
-        }
-
-        InputSetting(inputType = InputType.TOOL_Z_COORDINATE, value = toolState.zOffset.value.toString()) {
-            toolState.zOffset.value = it.toDouble()
-        }
-
         when (toolState.toolType.value) {
             ToolType.PROFILING -> ProfilingView(toolState)
             ToolType.PARTING_GROOVING -> PartingGroovingView(toolState)

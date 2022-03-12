@@ -1,4 +1,4 @@
-package screen.composables.tabstatus
+package screen.composables.tabtools
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
@@ -43,7 +43,11 @@ fun OffsetsView(
         modifier = Modifier.draggableScroll(scrollState, scope, Orientation.Horizontal)
     ) {
         items(items = offsets) {
-            WorkpieceOffset(it, currentWcs == it.coordinateSystem) {
+            WorkpieceOffset(
+                item = it,
+                isActive = currentWcs == it.coordinateSystem,
+                modifier = modifier
+            ) {
                 useCase.setActiveOffset(it.coordinateSystem)
             }
         }

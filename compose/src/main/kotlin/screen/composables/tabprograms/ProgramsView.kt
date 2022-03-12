@@ -24,7 +24,7 @@ fun ProgramsView(
     modifier: Modifier
 ) {
     val useCase: ProgramsUseCase by rememberInstance()
-    val fileSystemItem by useCase.currentFileSystemItem.collectAsState(null)
+    val currentFolder by useCase.currentFolder.collectAsState(null)
     val currentEditor by useCase.currentEditor.collectAsState(null)
 
     val settings = Settings()
@@ -34,7 +34,7 @@ fun ProgramsView(
             modifier = Modifier.height(50.dp).padding(horizontal = 16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            fileSystemItem?.let {
+            currentFolder?.let {
                 BreadcrumbView(it) { clickedPath ->
                     useCase.loadFolderContents(clickedPath)
                 }
@@ -49,7 +49,7 @@ fun ProgramsView(
                     .background(color = Color.Green)
                     .width(400.dp)
             ) {
-                fileSystemItem?.let {
+                currentFolder?.let {
                     FileSystemView(it as FileSystemItem.FolderItem)
                 }
             }

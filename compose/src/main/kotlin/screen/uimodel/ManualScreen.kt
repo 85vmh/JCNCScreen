@@ -1,8 +1,8 @@
 package screen.uimodel
 
-import screen.composables.tabmanual.LimitsSettingsViewModel
-import screen.composables.tabmanual.TaperSettingsViewModel
-import screen.composables.tabmanual.TurningSettingsViewModel
+import screen.viewmodel.LimitsSettingsViewModel
+import screen.viewmodel.TaperSettingsViewModel
+import screen.viewmodel.TurningSettingsViewModel
 
 
 sealed class ManualScreen(

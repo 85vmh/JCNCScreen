@@ -1,9 +1,7 @@
 package usecase
 
 import com.mindovercnc.base.*
-import com.mindovercnc.base.data.LatheTool
-import com.mindovercnc.base.data.TaskMode
-import com.mindovercnc.base.data.currentToolNo
+import com.mindovercnc.base.data.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
@@ -22,6 +20,20 @@ class ToolsUseCase(
     private val toolFileRepository: ToolFileRepository,
     private val varFileRepository: VarFileRepository
 ) {
+
+    init {
+        statusRepository.cncStatusFlow()
+            .map { it.isHomed() }
+            .filter { it }
+            .distinctUntilChanged()
+            .onEach {
+                val lastTool = settingsRepository.get(IntegerKey.LastToolUsed)
+                if (lastTool != 0) {
+                    loadTool(lastTool)
+                }
+            }
+            .launchIn(scope)
+    }
 
     fun getTools(): Flow<List<LatheTool>> {
         return toolFileRepository.getTools()
@@ -49,7 +61,10 @@ class ToolsUseCase(
     }
 
     fun getCurrentToolNo(): Flow<Int> {
-        return statusRepository.cncStatusFlow().map { it.currentToolNo }.distinctUntilChanged()
+        return statusRepository.cncStatusFlow()
+            .map { it.currentToolNo }
+            .distinctUntilChanged()
+            .onEach { settingsRepository.put(IntegerKey.LastToolUsed, it) }
     }
 
     fun getCurrentTool(): Flow<LatheTool?> {

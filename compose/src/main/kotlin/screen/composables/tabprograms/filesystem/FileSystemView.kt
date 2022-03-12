@@ -29,6 +29,9 @@ import extensions.draggableScroll
 import kotlinx.coroutines.runBlocking
 import screen.composables.platform.VerticalScrollbar
 import usecase.model.FileSystemItem
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.util.*
 
 @Composable
 fun FileSystemView(
@@ -105,8 +108,17 @@ private fun FileSystemItemView(item: FileSystemItem, modifier: Modifier = Modifi
                 textAlign = TextAlign.Left,
                 fontSize = 10.sp,
                 fontWeight = FontWeight.Light,
-                text = item.lastModified.toString()
+                text = millisToLastModified(item.lastModified)
             )
         }
     }
+}
+
+private fun millisToLastModified(millis: Long): String {
+//    when{
+//        DateUtils.isToday(long timeInMilliseconds)
+//    }
+
+
+    return SimpleDateFormat("dd/MM/yyyy").format(Date(millis))
 }

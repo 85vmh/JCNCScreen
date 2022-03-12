@@ -8,6 +8,7 @@ enum class IntegerKey : SettingKey {
     RpmValue,
     CssValue,
     MaxCssRpm,
+    LastToolUsed,
 }
 
 enum class DoubleKey : SettingKey {

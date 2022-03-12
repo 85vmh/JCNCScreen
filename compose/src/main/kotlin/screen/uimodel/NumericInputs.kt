@@ -249,5 +249,15 @@ object NumericInputs {
             allowsNegativeValues = true,
             maxDecimalPlaces = 3
         )
+        map[InputType.DIAL_INDICATOR_DISTANCE] = NumInputParameters(
+            valueDescription = "Dial indicator distance",
+            allowsNegativeValues = true,
+            maxDecimalPlaces = 3
+        )
+        map[InputType.WORKPIECE_ZERO_COORDINATE] = NumInputParameters(
+            valueDescription = "ToolTip to Z0 distance",
+            allowsNegativeValues = true,
+            maxDecimalPlaces = 3
+        )
     }
 }

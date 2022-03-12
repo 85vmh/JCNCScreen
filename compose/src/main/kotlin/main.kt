@@ -53,7 +53,7 @@ fun MyWindow(
     onCloseRequest = onCloseRequest,
     title = "KtCnc",
     focusable = false,
-    //undecorated = true,
+    undecorated = true,
     state = windowState
 ) {
 

@@ -26,6 +26,18 @@ val UseCaseModule = DI.Module("UseCase") {
     }
 
     bindSingleton {
+        AngleFinderUseCase(
+            scope = instance(tag = "app_scope"),
+            statusRepository = instance(),
+            commandRepository = instance(),
+            messagesRepository = instance(),
+            halRepository = instance(),
+            settingsRepository = instance(),
+            iniFileRepository = instance()
+        )
+    }
+
+    bindSingleton {
         VirtualLimitsUseCase(
             scope = instance(tag = "app_scope"),
             statusRepository = instance(),

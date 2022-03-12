@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material.NavigationRail
 import androidx.compose.material.NavigationRailItem
 import androidx.compose.material.icons.Icons
@@ -22,7 +21,6 @@ import androidx.compose.ui.unit.dp
 import org.kodein.di.compose.rememberInstance
 import screen.composables.CoordinatesView
 import usecase.ManualTurningUseCase
-import usecase.OffsetsUseCase
 import usecase.VirtualLimitsUseCase
 
 @Composable
@@ -34,7 +32,6 @@ fun ManualTurningView(
 ) {
 
     val manualTurningUseCase: ManualTurningUseCase by rememberInstance()
-    val offsetsUseCase: OffsetsUseCase by rememberInstance()
     val virtualLimitsUseCase: VirtualLimitsUseCase by rememberInstance()
 
     val taperTurningActive by manualTurningUseCase.taperTurningActive.collectAsState()
@@ -93,11 +90,6 @@ fun ManualTurningView(
                         .padding(8.dp)
                         .clickable(onClick = turningSettingsClicked)
                 )
-                Button(onClick = {
-                    offsetsUseCase.touchOffZ(0.0)
-                }) {
-                    Text("Set Workpiece Zero")
-                }
             }
             if (taperTurningActive) {
                 TaperStatusView(

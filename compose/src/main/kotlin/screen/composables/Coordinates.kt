@@ -39,31 +39,7 @@ private enum class PositionType(
 @Composable
 fun CoordinatesView(modifier: Modifier = Modifier) {
     val useCase: ManualPositionUseCase by rememberInstance()
-    val toolsUseCase: ToolsUseCase by rememberInstance()
     val model = useCase.uiModel.collectAsState(null).value
-
-
-    var openKeyboardState by remember { mutableStateOf<NumPadState?>(null) }
-
-    openKeyboardState?.let { numPadState ->
-        InputDialogView(
-            numPadState = numPadState,
-            onCancel = { openKeyboardState = null },
-            onSubmit = {
-                println("Value is: $it")
-                when (numPadState.inputType) {
-                    InputType.TOOL_X_COORDINATE -> {
-                        toolsUseCase.toolTouchOffX(it)
-                    }
-                    InputType.TOOL_Z_COORDINATE -> {
-                        toolsUseCase.toolTouchOffZ(it)
-                    }
-                    else -> Unit
-                }
-                openKeyboardState = null
-            }
-        )
-    }
 
     Row(
         modifier = modifier
@@ -82,23 +58,11 @@ fun CoordinatesView(modifier: Modifier = Modifier) {
                 AxisCoordinate(
                     it.xAxisPos,
                     it.isDiameterMode,
-                    touchOffClicked = {
-                        openKeyboardState = NumPadState(
-                            numInputParameters = NumericInputs.entries[InputType.TOOL_X_COORDINATE]!!,
-                            inputType = InputType.TOOL_X_COORDINATE
-                        )
-                    },
                     zeroPosClicked = { useCase.setZeroPosX() },
                     absRelClicked = { useCase.toggleXAbsRel() }
                 )
                 AxisCoordinate(
                     it.zAxisPos,
-                    touchOffClicked = {
-                        openKeyboardState = NumPadState(
-                            numInputParameters = NumericInputs.entries[InputType.TOOL_Z_COORDINATE]!!,
-                            inputType = InputType.TOOL_Z_COORDINATE
-                        )
-                    },
                     zeroPosClicked = { useCase.setZeroPosZ() },
                     absRelClicked = { useCase.toggleZAbsRel() }
                 )
@@ -112,7 +76,6 @@ private fun AxisCoordinate(
     axisPosition: AxisPosition,
     isDiameterMode: Boolean = false,
     modifier: Modifier = Modifier,
-    touchOffClicked: () -> Unit,
     zeroPosClicked: () -> Unit,
     absRelClicked: () -> Unit
 ) {
@@ -127,9 +90,6 @@ private fun AxisCoordinate(
                 .background(Color(0xffd8e6ff))
         ) {
             //val line = HorizontalAlignmentLine()
-            TouchOff(axisPosition, modifier = Modifier.padding(start = 16.dp)) {
-                touchOffClicked.invoke()
-            }
             Position(PositionType.SECONDARY, axisPosition, isDiameterMode, modifier = Modifier.alignByBaseline())
             AxisLetter(axisPosition)
             SpacerOrDiameter(axisPosition.axis == AxisPosition.Axis.X && isDiameterMode, modifier = Modifier.alignByBaseline())
@@ -200,16 +160,6 @@ private fun Units(units: AxisPosition.Units, modifier: Modifier = Modifier) {
         fontSize = 18.sp,
         fontWeight = FontWeight.Medium
     )
-}
-
-@Composable
-private fun TouchOff(axisPosition: AxisPosition, modifier: Modifier = Modifier, onClick: () -> Unit) {
-    Button(
-        onClick = onClick,
-        modifier.fillMaxHeight()
-    ) {
-        Text("Touch\nOff ${axisPosition.axis.name}")
-    }
 }
 
 @Composable

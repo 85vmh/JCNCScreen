@@ -18,7 +18,6 @@ fun ScaffoldView(
     screenTitle: String,
     selectedTab: BottomNavTab,
     selectedTool: Int,
-    selectedWcs: String,
     enabledTabs: List<BottomNavTab> = BottomNavTab.values().asList(),
     onTabClicked: (tab: BottomNavTab) -> Unit,
     navigationIcon: @Composable (() -> Unit) = {},
@@ -44,7 +43,7 @@ fun ScaffoldView(
                     val isEnabled = bottomTab in enabledTabs
                     val selectedColor = AppTheme.colors.material.secondary
                     BottomNavigationItem(
-                        icon = { TabIcon(bottomTab, isSelected, isEnabled, selectedTool, selectedWcs) },
+                        icon = { TabIcon(bottomTab, isSelected, isEnabled, selectedTool) },
                         selected = isSelected,
                         enabled = isEnabled,
                         onClick = { onTabClicked(bottomTab) },
@@ -67,15 +66,14 @@ fun ScaffoldView(
 }
 
 @Composable
-private fun TabIcon(bottomNavTab: BottomNavTab, isSelected: Boolean, isEnabled: Boolean, selectedTool: Int, selectedWcs: String) {
+private fun TabIcon(bottomNavTab: BottomNavTab, isSelected: Boolean, isEnabled: Boolean, selectedTool: Int) {
     val iconTint = when {
         isSelected -> AppTheme.colors.material.secondary
         isEnabled.not() -> AppTheme.colors.textDisabled
         else -> LocalContentColor.current
     }
     val badgeText = when (bottomNavTab) {
-        BottomNavTab.Tools -> "T$selectedTool"
-        BottomNavTab.Status -> selectedWcs
+        BottomNavTab.ToolsOffsets -> "T$selectedTool"
         else -> null
     }
     if (badgeText != null) {

@@ -49,6 +49,7 @@ object ManualTurningHelper {
         }
 
         println("---Start point: $startPoint")
+        println("---Corner point: $cornerPoint")
         val destPoint = computeDestinationPoint(startPoint, cornerPoint, angle)
         println("---End point: $destPoint")
         return "G53 G1 X${destPoint.x.stripZeros()} Z${destPoint.z.stripZeros()}"
