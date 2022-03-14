@@ -21,11 +21,8 @@ import androidx.compose.ui.unit.sp
 import extensions.toFixedDigitsString
 import org.kodein.di.compose.rememberInstance
 import screen.uimodel.AxisPosition
-import screen.uimodel.InputType
-import screen.uimodel.NumericInputs
 import themes.ComposeFonts
 import usecase.ManualPositionUseCase
-import usecase.ToolsUseCase
 
 private enum class PositionType(
     val fontSize: TextUnit,
@@ -37,22 +34,17 @@ private enum class PositionType(
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun CoordinatesView(modifier: Modifier = Modifier) {
+fun ManualCoordinatesView(modifier: Modifier = Modifier) {
     val useCase: ManualPositionUseCase by rememberInstance()
     val model = useCase.uiModel.collectAsState(null).value
 
     Row(
         modifier = modifier
-            .fillMaxWidth()
-            .padding(16.dp)
             .border(BorderStroke(0.5.dp, SolidColor(Color.DarkGray))),
         horizontalArrangement = Arrangement.End
     ) {
         Column(
             horizontalAlignment = Alignment.End,
-            modifier = modifier.padding(16.dp),
-            verticalArrangement = Arrangement.SpaceEvenly
-
         ) {
             model?.let {
                 AxisCoordinate(
@@ -61,6 +53,7 @@ fun CoordinatesView(modifier: Modifier = Modifier) {
                     zeroPosClicked = { useCase.setZeroPosX() },
                     absRelClicked = { useCase.toggleXAbsRel() }
                 )
+                //Spacer(modifier = Modifier.height(16.dp))
                 AxisCoordinate(
                     it.zAxisPos,
                     zeroPosClicked = { useCase.setZeroPosZ() },
@@ -86,13 +79,12 @@ private fun AxisCoordinate(
         contentAlignment = Alignment.Center
     ) {
         Row(
-            modifier = modifier
-                .background(Color(0xffd8e6ff))
+            modifier = modifier.background(Color(0xffd8e6ff))
         ) {
             //val line = HorizontalAlignmentLine()
             Position(PositionType.SECONDARY, axisPosition, isDiameterMode, modifier = Modifier.alignByBaseline())
             AxisLetter(axisPosition)
-            SpacerOrDiameter(axisPosition.axis == AxisPosition.Axis.X && isDiameterMode, modifier = Modifier.alignByBaseline())
+            SpacerOrDiameter(axisPosition.axis == AxisPosition.Axis.X && isDiameterMode, modifier = Modifier.align(Alignment.CenterVertically))
             Position(PositionType.PRIMARY, axisPosition, isDiameterMode, modifier = Modifier.alignByBaseline())
             Units(axisPosition.units, modifier = Modifier.alignByBaseline())
             ZeroPos(axisPosition, modifier = Modifier.padding(start = 16.dp)) {
@@ -121,6 +113,7 @@ private fun SpacerOrDiameter(showDiameter: Boolean, modifier: Modifier = Modifie
         Text(
             modifier = modifier
                 .width(sizeToFill)
+                .padding(top = 16.dp)
                 .fillMaxHeight(),
             text = "\u2300",
             textAlign = TextAlign.Center,

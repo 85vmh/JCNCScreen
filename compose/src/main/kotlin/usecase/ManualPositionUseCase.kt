@@ -7,7 +7,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import screen.uimodel.AxisPosition
-import screen.uimodel.ManualPositionUiModel
+import screen.uimodel.PositionUiModel
 
 class ManualPositionUseCase(
     private val scope: CoroutineScope,
@@ -35,7 +35,7 @@ class ManualPositionUseCase(
                 true -> AxisPosition(AxisPosition.Axis.Z, it.position.z - zZeroPos, it.position.z, AxisPosition.Units.MM)
                 false -> AxisPosition(AxisPosition.Axis.Z, it.position.z, null, AxisPosition.Units.MM)
             }
-            ManualPositionUiModel(xAxisPosition, zAxisPosition, true)
+            PositionUiModel(xAxisPosition, zAxisPosition, true)
         }
 
 

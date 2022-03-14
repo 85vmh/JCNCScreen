@@ -15,11 +15,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 import org.kodein.di.compose.rememberInstance
-import screen.composables.CoordinatesView
+import screen.composables.ManualCoordinatesView
 import usecase.ManualTurningUseCase
 import usecase.VirtualLimitsUseCase
 
@@ -72,10 +74,11 @@ fun ManualTurningView(
             )
         }
         Column(
-            modifier = modifier.weight(1f),
-            verticalArrangement = Arrangement.SpaceBetween
+            verticalArrangement = Arrangement.SpaceBetween,
+            horizontalAlignment = Alignment.End,
+            modifier = modifier.weight(1f)
         ) {
-            CoordinatesView()
+            ManualCoordinatesView(modifier = Modifier.padding(top = 16.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly

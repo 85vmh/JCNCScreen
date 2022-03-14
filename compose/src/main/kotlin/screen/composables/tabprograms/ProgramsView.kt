@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import org.kodein.di.compose.rememberInstance
+import screen.composables.VerticalDivider
 import screen.composables.common.Settings
 import screen.composables.editor.EditorEmptyView
 import screen.composables.editor.EditorView
@@ -46,13 +47,13 @@ fun ProgramsView(
         ) {
             Column(
                 modifier = Modifier
-                    .background(color = Color.Green)
                     .width(400.dp)
             ) {
                 currentFolder?.let {
                     FileSystemView(it as FileSystemItem.FolderItem)
                 }
             }
+            VerticalDivider()
             if (currentEditor != null) {
                 Column(Modifier.weight(1f)) {
                     EditorView(currentEditor!!, settings)

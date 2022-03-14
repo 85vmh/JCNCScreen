@@ -4,4 +4,8 @@ data class CncStatus(
     val taskStatus: TaskStatus,
     val motionStatus: MotionStatus,
     val ioStatus: IoStatus
-)
+){
+    val isSpindleOn
+        get() = motionStatus.spindlesStatus[0].direction == SpindleStatus.Direction.REVERSE ||
+                motionStatus.spindlesStatus[0].direction == SpindleStatus.Direction.FORWARD
+}

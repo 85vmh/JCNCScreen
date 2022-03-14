@@ -27,6 +27,8 @@ class TurningOperation(
             addAll(subroutineLines)
             var previousToolNumber = 0
             var previousFeedRate = 0.0
+            var previousCssSpeed = 0
+            var previousMaxSpindleSpeed = 0
             turningStrategies.forEach {
                 when (it) {
                     is TurningStrategy.Roughing -> {
@@ -34,6 +36,9 @@ class TurningOperation(
                         add("(Roughing)")
                         add("G40 M6 T${it.toolNumber} G43")
                         previousToolNumber = it.toolNumber
+                        add("G96 S${it.cssSpeed} D${it.maxSpindleSpeed}")
+                        previousCssSpeed = it.cssSpeed
+                        previousMaxSpindleSpeed = it.maxSpindleSpeed
                         add("F${it.feedRate.stripZeros()}")
                         previousFeedRate = it.feedRate
                         add(it.direction.code + it.cutType.prefix + commonParams + it.strategyParams)
@@ -44,6 +49,11 @@ class TurningOperation(
                         if (it.toolNumber != previousToolNumber) {
                             add("G40 M6 T${it.toolNumber} G43")
                             previousToolNumber = it.toolNumber
+                        }
+                        if(it.cssSpeed != previousCssSpeed || it.maxSpindleSpeed != previousMaxSpindleSpeed){
+                            add("G96 S${it.cssSpeed} D${it.maxSpindleSpeed}")
+                            previousCssSpeed = it.cssSpeed
+                            previousMaxSpindleSpeed = it.maxSpindleSpeed
                         }
                         if (it.feedRate != previousFeedRate) {
                             add("F${it.feedRate.stripZeros()}")
@@ -71,6 +81,8 @@ class TurningOperation(
 
         data class Roughing(
             val toolNumber: Int,
+            val cssSpeed: Int,
+            val maxSpindleSpeed: Int,
             val remainingDistance: Double,
             val cuttingIncrement: Double,
             val retractDistance: Double,
@@ -86,6 +98,8 @@ class TurningOperation(
 
         data class Finishing(
             val toolNumber: Int,
+            val cssSpeed: Int,
+            val maxSpindleSpeed: Int,
             val startingDistance: Double,
             val endingDistance: Double,
             val numberOfPasses: Int,

@@ -11,10 +11,7 @@ import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Surface
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -25,6 +22,7 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import extensions.draggableScroll
 import screen.composables.common.AppTheme
 import screen.composables.common.Fonts
 import screen.composables.common.Settings
@@ -63,6 +61,8 @@ private fun Lines(lines: Editor.Lines, settings: Settings) = with(LocalDensity.c
         (1..lines.lineNumberDigitCount).joinToString(separator = "") { "9" }
     }
 
+    val scope = rememberCoroutineScope()
+
     Box(
         Modifier.fillMaxSize()
     ) {
@@ -70,7 +70,9 @@ private fun Lines(lines: Editor.Lines, settings: Settings) = with(LocalDensity.c
         val lineHeight = settings.fontSize.toDp() * 2f
 
         LazyColumn(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .draggableScroll(scrollState, scope),
             state = scrollState
         ) {
             items(lines.size) { index ->
@@ -80,7 +82,6 @@ private fun Lines(lines: Editor.Lines, settings: Settings) = with(LocalDensity.c
 //                        .border(BorderStroke(1.dp, Color.Blue))
 //                    else -> Modifier.height(lineHeight)
 //                }
-
                 Box(
                     modifier = Modifier.height(lineHeight)
                 ) {
@@ -90,7 +91,7 @@ private fun Lines(lines: Editor.Lines, settings: Settings) = with(LocalDensity.c
         }
 
         VerticalScrollbar(
-            Modifier.align(Alignment.CenterEnd).width(30.dp),
+            Modifier.align(Alignment.CenterEnd),
             scrollState,
             lines.size,
             lineHeight
@@ -109,15 +110,15 @@ private fun Line(modifier: Modifier, maxNum: String, line: Editor.Line, settings
                 LineNumber(maxNum, Modifier.alpha(0f), settings)
                 LineNumber(line.number.toString(), Modifier.align(Alignment.CenterEnd), settings)
             }
+            LineContent(
+                line.content,
+                modifier = Modifier
+                    .weight(1f)
+                    .withoutWidthConstraints()
+                    .padding(start = 28.dp, end = 12.dp),
+                settings = settings
+            )
         }
-        LineContent(
-            line.content,
-            modifier = Modifier
-                .weight(1f)
-                .withoutWidthConstraints()
-                .padding(start = 28.dp, end = 12.dp),
-            settings = settings
-        )
     }
 }
 
@@ -126,7 +127,7 @@ private fun LineNumber(number: String, modifier: Modifier, settings: Settings) =
     text = number,
     fontSize = settings.fontSize,
     fontFamily = Fonts.jetbrainsMono(),
-    color = Color.DarkGray.copy(alpha = 0.50f),
+    color = Color.DarkGray.copy(alpha = 0.70f),
     modifier = modifier.padding(start = 12.dp)
 )
 

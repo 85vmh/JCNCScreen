@@ -150,6 +150,7 @@ object NumericInputs {
             minValue = 0.0,
             maxValue = 300.0,
             initialValue = 0.0,
+            allowsNegativeValues = true,
             maxDecimalPlaces = 3
         )
         map[InputType.FINAL_X] = NumInputParameters(
@@ -157,6 +158,7 @@ object NumericInputs {
             minValue = 0.0,
             maxValue = 300.0,
             initialValue = 0.0,
+            allowsNegativeValues = true,
             maxDecimalPlaces = 3
         )
         map[InputType.Z_START] = NumInputParameters(
@@ -164,6 +166,7 @@ object NumericInputs {
             minValue = -500.0,
             maxValue = 500.0,
             initialValue = 0.0,
+            allowsNegativeValues = true,
             maxDecimalPlaces = 3
         )
         map[InputType.Z_END] = NumInputParameters(
@@ -171,6 +174,7 @@ object NumericInputs {
             minValue = -500.0,
             maxValue = 500.0,
             initialValue = 0.0,
+            allowsNegativeValues = true,
             maxDecimalPlaces = 3
         )
         map[InputType.FILLET_RADIUS] = NumInputParameters(
@@ -187,6 +191,7 @@ object NumericInputs {
             minValue = -500.0,
             maxValue = 500.0,
             initialValue = 0.0,
+            allowsNegativeValues = true,
             maxDecimalPlaces = 3
         )
         map[InputType.TOOL_Z_COORDINATE] = NumInputParameters(
@@ -195,6 +200,7 @@ object NumericInputs {
             minValue = -500.0,
             maxValue = 500.0,
             initialValue = 0.0,
+            allowsNegativeValues = true,
             maxDecimalPlaces = 3
         )
         map[InputType.TIP_RADIUS] = NumInputParameters(

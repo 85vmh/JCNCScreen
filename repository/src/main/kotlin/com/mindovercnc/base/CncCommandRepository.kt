@@ -26,7 +26,11 @@ interface CncCommandRepository {
 
     fun setFeedOverride(double: Double)
 
-    fun pause()
+    fun runProgram()
+
+    fun pauseProgram()
+
+    fun resumeProgram()
 
     fun setTeleopEnable(enabled: Boolean)
 
@@ -55,4 +59,6 @@ interface CncCommandRepository {
     fun executeMdiCommand(command: String)
 
     fun loadProgramFile(filePath: String)
+    fun stepProgram()
+    fun stopProgram()
 }

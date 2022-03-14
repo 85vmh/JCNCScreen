@@ -18,6 +18,7 @@ import screen.composables.tabmanual.NumericInputWithUnit
 import screen.uimodel.*
 import usecase.ConversationalUseCase
 import usecase.model.CuttingParametersState
+import usecase.model.TeachInAxis
 
 @Composable
 fun TurningTechnologyDataView() {
@@ -152,6 +153,8 @@ fun InputSetting(
     inputType: InputType,
     alternativeLabel: String? = null,
     modifier: Modifier = Modifier,
+    teachInAxis: TeachInAxis? = null,
+    onTeachInClicked: () -> Unit = {},
     onValueChanged: (String) -> Unit
 ) {
     val alignment = Alignment.CenterVertically
@@ -171,6 +174,11 @@ fun InputSetting(
         }
         NumericInputWithUnit(value, inputType, alignment, modifier = Modifier.width(170.dp)) {
             onValueChanged(it)
+        }
+        teachInAxis?.let {
+            Button(onClick = onTeachInClicked) {
+                Text("Teach ${it.name} Pos")
+            }
         }
     }
 }

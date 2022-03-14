@@ -54,16 +54,19 @@ class ManualTurningUseCase(
         }.flowOn(Dispatchers.Main).launchIn(scope)
 
         combine(
+            statusRepository.cncStatusFlow().map { it.isInAutoMode },
             halRepository.getSpindleSwitchStatus().onEach {
                 println("---Spindle switch is: $it")
             }, spindleOpAllowed
-        ) { switchStatus, spindleAllowed ->
-            when {
-                spindleAllowed -> sendSpindleCommand(switchStatus)
-                spindleAllowed.not() -> {
-                    when (switchStatus) {
-                        SpindleSwitchStatus.NEUTRAL -> messagesRepository.popMessage(UiMessage.SpindleOperationNotAllowed)
-                        else -> messagesRepository.pushMessage(UiMessage.SpindleOperationNotAllowed)
+        ) { inAutoMode, switchStatus, spindleAllowed ->
+            if (inAutoMode.not()) {
+                when {
+                    spindleAllowed -> sendSpindleCommand(switchStatus)
+                    spindleAllowed.not() -> {
+                        when (switchStatus) {
+                            SpindleSwitchStatus.NEUTRAL -> messagesRepository.popMessage(UiMessage.SpindleOperationNotAllowed)
+                            else -> messagesRepository.pushMessage(UiMessage.SpindleOperationNotAllowed)
+                        }
                     }
                 }
             }
@@ -264,7 +267,7 @@ class ManualTurningUseCase(
     @OptIn(FlowPreview::class)
     val handwheelsState = combine(
         statusRepository.cncStatusFlow().map { it.isInManualMode },
-        halRepository.jogIncrementValue().debounce(500L)
+        halRepository.jogIncrementValue().debounce(200L)
     ) { isManualMode, jogIncrement -> HandwheelsState(isManualMode, jogIncrement) }
 
     private fun SettingsRepository.getSpindleStartParameters(): String {

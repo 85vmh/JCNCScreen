@@ -39,11 +39,9 @@ val CncStatus.isDiameterMode get() = taskStatus.activeCodes.gCodes.contains(7.0f
 
 val CncStatus.g53Position get() = motionStatus.trajectoryStatus.currentActualPosition
 
-val CncStatus.isSpindleOn
-    get() = motionStatus.spindlesStatus[0].direction == SpindleStatus.Direction.REVERSE ||
-            motionStatus.spindlesStatus[0].direction == SpindleStatus.Direction.FORWARD
-
 val CncStatus.currentToolNo get() = ioStatus.toolStatus.currentLoadedTool
+
+val CncStatus.dtg get() = motionStatus.trajectoryStatus.distance2Go
 
 fun CncStatus.getDisplayablePosition(): Position {
     val machinePosition = g53Position

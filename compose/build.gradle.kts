@@ -20,6 +20,9 @@ dependencies {
     implementation(project(":libcnc"))
     implementation(project(":repository"))
     implementation("org.kodein.di:kodein-di-framework-compose:${Versions.kodein}")
+    testImplementation(compose("org.jetbrains.compose.ui:ui-test-junit4"))
+    testImplementation("io.mockk:mockk:1.12.3")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.0")
 }
 
 compose.desktop {

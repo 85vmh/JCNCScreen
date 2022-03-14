@@ -72,7 +72,7 @@ class CommandWriter {
     external fun loadTaskPlan(fileName: String?)
     external fun loadToolTable(fileName: String?)
     external fun sendMDICommand(command: String?)
-    external fun setAuto(autoMode: Int, fromLine: Int)
+    external fun setAuto(autoMode: Int, fromLine: Int = 0)
     external fun setBlockDelete(enable: Boolean)
     external fun setFeedOverride(rate: Double)
     external fun setFlood(enable: Boolean)

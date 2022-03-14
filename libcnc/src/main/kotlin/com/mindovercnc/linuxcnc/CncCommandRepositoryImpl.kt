@@ -44,8 +44,35 @@ class CncCommandRepositoryImpl() : CncCommandRepository {
         commandWriter.setFeedHold(if (hold) 1 else 0)
     }
 
-    override fun pause() {
-        commandWriter.setAuto(1, 0)
+    enum class AutoMode(val code: Int){
+        RUN(0),
+        PAUSE(1),
+        RESUME(2),
+        STEP(3),
+        REVERSE(4),
+        FORWARD(5)
+    }
+
+    override fun runProgram() {
+        setTaskMode(TaskMode.TaskModeAuto)
+        commandWriter.setAuto(AutoMode.RUN.code)
+    }
+
+    override fun stopProgram(){
+        setTaskMode(TaskMode.TaskModeManual)
+        taskAbort()
+    }
+
+    override fun pauseProgram() {
+        commandWriter.setAuto(AutoMode.PAUSE.code)
+    }
+
+    override fun resumeProgram() {
+        commandWriter.setAuto(AutoMode.RESUME.code)
+    }
+
+    override fun stepProgram() {
+        commandWriter.setAuto(AutoMode.STEP.code)
     }
 
     override fun setFeedOverride(double: Double) {

@@ -1,16 +1,16 @@
 package usecase
 
-import codegen.ConversationalProgram
-import codegen.OdProfileGeometry
-import codegen.ProfileGeometry
-import codegen.TurningOperation
+import codegen.*
 import com.mindovercnc.base.CncCommandRepository
 import com.mindovercnc.base.CncStatusRepository
 import com.mindovercnc.base.FileSystemRepository
 import com.mindovercnc.base.SettingsRepository
+import com.mindovercnc.base.data.getDisplayablePosition
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import screen.uimodel.CutDirection
 import screen.uimodel.CuttingStrategy
 import screen.uimodel.Wcs
@@ -50,6 +50,11 @@ class ConversationalUseCase(
         fillet = 3.0
     )
 
+//    private suspend fun getCurrentPoint() = statusRepository.cncStatusFlow()
+//        .map { it.getDisplayablePosition() }
+//        .map { Point(it.x * 2, it.z) } // *2 due to diameter mode
+//        .first()
+
     fun getOdTurningDataState(): OdTurningDataState {
         return odTurning
     }
@@ -67,6 +72,8 @@ class ConversationalUseCase(
             strategies.add(
                 TurningOperation.TurningStrategy.Roughing(
                     toolNumber = it.toolNo.value,
+                    cssSpeed = it.cssSpeed.value,
+                    maxSpindleSpeed = odTurning.spindleMaxSpeed.value,
                     feedRate = it.feed.value,
                     remainingDistance = odTurning.finishingParameters?.doc?.value ?: 0.0,
                     cuttingIncrement = it.doc.value,
@@ -83,6 +90,8 @@ class ConversationalUseCase(
             strategies.add(
                 TurningOperation.TurningStrategy.Finishing(
                     toolNumber = it.toolNo.value,
+                    cssSpeed = it.cssSpeed.value,
+                    maxSpindleSpeed = odTurning.spindleMaxSpeed.value,
                     startingDistance = 0.0,
                     endingDistance = 0.0,
                     numberOfPasses = 1,

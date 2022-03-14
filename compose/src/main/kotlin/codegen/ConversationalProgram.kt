@@ -14,7 +14,11 @@ class ConversationalProgram(
         lines.add("(Program Name: $programName)")
         lines.add("(Creation Date: $creationDate)")
         lines.add("\r")
-        lines.add("G7 G18 G21 (Diameter Mode, XZ Plane, Metric Units)")
+        lines.add("G7  (Diameter Mode)")
+        lines.add("G18 (XZ Plane)")
+        lines.add("G21 (Metric Units)")
+        lines.add("G90 (Absolute Distance Mode)")
+        lines.add("G95 (Feed in units/rev)")
         lines.add("\r")
         operations.forEach {
             with(it) {

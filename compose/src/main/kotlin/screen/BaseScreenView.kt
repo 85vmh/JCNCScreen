@@ -42,7 +42,6 @@ import screen.uimodel.*
 import screen.viewmodel.*
 import usecase.*
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 @Preview
 fun BaseScreenView() {

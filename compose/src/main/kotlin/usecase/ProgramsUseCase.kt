@@ -4,11 +4,14 @@ import com.mindovercnc.base.CncCommandRepository
 import com.mindovercnc.base.CncStatusRepository
 import com.mindovercnc.base.FileSystemRepository
 import com.mindovercnc.base.SettingsRepository
+import com.mindovercnc.base.data.Position
+import com.mindovercnc.base.data.dtg
+import com.mindovercnc.base.data.getDisplayablePosition
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 import screen.composables.editor.Editor
+import screen.uimodel.AxisPosition
+import screen.uimodel.PositionUiModel
 import usecase.model.FileSystemItem
 import java.io.File
 
@@ -19,6 +22,27 @@ class ProgramsUseCase(
     private val settingsRepository: SettingsRepository,
     fileSystemRepository: FileSystemRepository
 ) {
+
+    private fun getG5xPosition(): Flow<Position> {
+        return statusRepository.cncStatusFlow()
+            .map { it.getDisplayablePosition() }
+            .distinctUntilChanged()
+    }
+
+    private fun getDtgPosition(): Flow<Position> {
+        return statusRepository.cncStatusFlow()
+            .map { it.dtg }
+            .distinctUntilChanged()
+    }
+
+    val uiModel = combine(
+        getG5xPosition(),
+        getDtgPosition(),
+    ) { g5xPos, dtgPos ->
+        val xAxisPos = AxisPosition(AxisPosition.Axis.X, g5xPos.x, dtgPos.x, units = AxisPosition.Units.MM)
+        val zAxisPos = AxisPosition(AxisPosition.Axis.Z, g5xPos.z, dtgPos.z, units = AxisPosition.Units.MM)
+        PositionUiModel(xAxisPos, zAxisPos, true)
+    }
 
     private val selectedFolder = MutableStateFlow(fileSystemRepository.getNcRootAppFile())
     private val selectedFile = MutableStateFlow<File?>(null)
@@ -82,5 +106,13 @@ class ProgramsUseCase(
             commandRepository.loadProgramFile(it.path)
         }
         return true
+    }
+
+    fun runProgram(){
+        commandRepository.runProgram()
+    }
+
+    fun stopProgram(){
+        commandRepository.stopProgram()
     }
 }
