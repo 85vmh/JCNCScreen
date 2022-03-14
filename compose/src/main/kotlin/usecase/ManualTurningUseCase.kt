@@ -59,14 +59,13 @@ class ManualTurningUseCase(
                 println("---Spindle switch is: $it")
             }, spindleOpAllowed
         ) { inAutoMode, switchStatus, spindleAllowed ->
-            if (inAutoMode.not()) {
-                when {
-                    spindleAllowed -> sendSpindleCommand(switchStatus)
-                    spindleAllowed.not() -> {
-                        when (switchStatus) {
-                            SpindleSwitchStatus.NEUTRAL -> messagesRepository.popMessage(UiMessage.SpindleOperationNotAllowed)
-                            else -> messagesRepository.pushMessage(UiMessage.SpindleOperationNotAllowed)
-                        }
+            when {
+                inAutoMode -> setHalSpindleStatus(switchStatus)
+                spindleAllowed -> sendSpindleCommand(switchStatus)
+                spindleAllowed.not() -> {
+                    when (switchStatus) {
+                        SpindleSwitchStatus.NEUTRAL -> messagesRepository.popMessage(UiMessage.SpindleOperationNotAllowed)
+                        else -> messagesRepository.pushMessage(UiMessage.SpindleOperationNotAllowed)
                     }
                 }
             }
@@ -97,6 +96,14 @@ class ManualTurningUseCase(
             commandRepository.executeMdiCommand(cmd)
             halRepository.setSpindleStarted(true)
             commandRepository.setTaskMode(TaskMode.TaskModeManual)
+        }
+    }
+
+    private fun setHalSpindleStatus(status: SpindleSwitchStatus) {
+        when (status) {
+            SpindleSwitchStatus.REV,
+            SpindleSwitchStatus.FWD -> halRepository.setSpindleStarted(true)
+            SpindleSwitchStatus.NEUTRAL -> halRepository.setSpindleStarted(false)
         }
     }
 
