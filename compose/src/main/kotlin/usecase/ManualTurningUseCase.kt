@@ -54,7 +54,7 @@ class ManualTurningUseCase(
         }.flowOn(Dispatchers.Main).launchIn(scope)
 
         combine(
-            statusRepository.cncStatusFlow().map { it.isInAutoMode },
+            statusRepository.cncStatusFlow().map { it.isInAutoMode }.distinctUntilChanged(),
             halRepository.getSpindleSwitchStatus().onEach {
                 println("---Spindle switch is: $it")
             }, spindleOpAllowed
