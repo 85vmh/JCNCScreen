@@ -11,23 +11,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import org.kodein.di.compose.rememberInstance
 import screen.composables.CuttingParametersView
 import screen.composables.DropDownSetting
 import screen.composables.tabmanual.NumericInputWithUnit
 import screen.uimodel.*
-import usecase.ConversationalUseCase
-import usecase.model.CuttingParametersState
+import screen.viewmodel.OdTurningViewModel
+import screen.viewmodel.createViewModel
 import usecase.model.TeachInAxis
 
 @Composable
 fun TurningTechnologyDataView() {
-
-    val useCase: ConversationalUseCase by rememberInstance()
-
-    val odTurningDataState = remember { useCase.getOdTurningDataState() }
-//    val roughingState = remember { CuttingParametersState(1, 200, 0.100, 2.500) }
-//    val finishState = remember { CuttingParametersState(1, 200, 0.05, 0.500) }
+        val odTurningViewModel: OdTurningViewModel = createViewModel()
+        val data = remember { odTurningViewModel.getOdTurningDataState() }
 
     Box(
         modifier = Modifier.padding(8.dp)
@@ -46,9 +41,9 @@ fun TurningTechnologyDataView() {
                     settingName = "Work Offset",
                     items = Wcs.values().map { it.text },
                     dropDownWidth = 90.dp,
-                    selected = odTurningDataState.wcs.value.text,
+                    selected = data.wcs.value.text,
                     onValueChanged = {
-                        odTurningDataState.wcs.value = Wcs.fromString(it)!!
+                        data.wcs.value = Wcs.fromString(it)!!
                     }
                 )
                 DropDownSetting(
@@ -56,9 +51,9 @@ fun TurningTechnologyDataView() {
                     settingName = "Material",
                     items = WorkpieceMaterial.values().map { it.text },
                     dropDownWidth = 180.dp,
-                    selected = odTurningDataState.material.value.name,
+                    selected = data.material.value.name,
                     onValueChanged = {
-                        odTurningDataState.material.value = WorkpieceMaterial.fromString(it)!!
+                        data.material.value = WorkpieceMaterial.fromString(it)!!
                     }
                 )
                 DropDownSetting(
@@ -66,9 +61,9 @@ fun TurningTechnologyDataView() {
                     settingName = "Cut Direction",
                     items = CutDirection.values().map { it.name },
                     dropDownWidth = 150.dp,
-                    selected = odTurningDataState.cutDirection.value.name,
+                    selected = data.cutDirection.value.name,
                     onValueChanged = {
-                        odTurningDataState.cutDirection.value = CutDirection.fromString(it)!!
+                        data.cutDirection.value = CutDirection.fromString(it)!!
                     }
                 )
 
@@ -77,8 +72,8 @@ fun TurningTechnologyDataView() {
                     settingName = "Strategy",
                     items = CuttingStrategy.values().map { it.text },
                     dropDownWidth = 220.dp,
-                    selected = odTurningDataState.cuttingStrategy.value.text, onValueChanged = {
-                        odTurningDataState.cuttingStrategy.value = CuttingStrategy.fromText(it)!!
+                    selected = data.cuttingStrategy.value.text, onValueChanged = {
+                        data.cuttingStrategy.value = CuttingStrategy.fromText(it)!!
                     })
             }
             Column(
@@ -86,15 +81,15 @@ fun TurningTechnologyDataView() {
             ) {
                 InputSetting(
                     modifier = Modifier.width(400.dp),
-                    inputType = InputType.TOOL_CLEARANCE, value = odTurningDataState.toolClearance.value.toString()
+                    inputType = InputType.TOOL_CLEARANCE, value = data.toolClearance.value.toString()
                 ) {
-                    odTurningDataState.toolClearance.value = it.toDouble()
+                    data.toolClearance.value = it.toDouble()
                 }
                 InputSetting(
                     modifier = Modifier.width(400.dp),
-                    inputType = InputType.CSS_MAX_RPM, value = odTurningDataState.spindleMaxSpeed.value.toString()
+                    inputType = InputType.CSS_MAX_RPM, value = data.spindleMaxSpeed.value.toString()
                 ) {
-                    odTurningDataState.spindleMaxSpeed.value = it.toDouble().toInt()
+                    data.spindleMaxSpeed.value = it.toDouble().toInt()
                 }
             }
         }
@@ -106,14 +101,14 @@ fun TurningTechnologyDataView() {
 
             val cuttingParamsModifier = Modifier.width(400.dp)
 
-            if (odTurningDataState.cuttingStrategy.value.isRoughing) {
+            if (data.cuttingStrategy.value.isRoughing) {
                 CuttingParametersView(
-                    state = odTurningDataState.roughingParameters!!,
+                    state = data.roughingParameters!!,
                     cuttingStrategy = CuttingStrategy.Roughing,
                     modifier = cuttingParamsModifier
                 )
             }
-            if (odTurningDataState.cuttingStrategy.value == CuttingStrategy.RoughingAndFinishing) {
+            if (data.cuttingStrategy.value == CuttingStrategy.RoughingAndFinishing) {
                 Column(
                     verticalArrangement = Arrangement.SpaceAround,
                     modifier = Modifier
@@ -136,48 +131,12 @@ fun TurningTechnologyDataView() {
                     }
                 }
             }
-            if (odTurningDataState.cuttingStrategy.value.isFinishing) {
+            if (data.cuttingStrategy.value.isFinishing) {
                 CuttingParametersView(
-                    state = odTurningDataState.finishingParameters!!,
+                    state = data.finishingParameters!!,
                     cuttingStrategy = CuttingStrategy.Finishing,
                     modifier = cuttingParamsModifier
                 )
-            }
-        }
-    }
-}
-
-@Composable
-fun InputSetting(
-    value: String,
-    inputType: InputType,
-    alternativeLabel: String? = null,
-    modifier: Modifier = Modifier,
-    teachInAxis: TeachInAxis? = null,
-    onTeachInClicked: () -> Unit = {},
-    onValueChanged: (String) -> Unit
-) {
-    val alignment = Alignment.CenterVertically
-    val params = NumericInputs.entries[inputType]!!
-
-    Row(
-        verticalAlignment = alignment,
-        modifier = modifier
-    ) {
-        Row(
-            verticalAlignment = alignment,
-            modifier = Modifier.weight(1f)
-        ) {
-            Text(
-                text = alternativeLabel ?: params.valueDescription
-            )
-        }
-        NumericInputWithUnit(value, inputType, alignment, modifier = Modifier.width(170.dp)) {
-            onValueChanged(it)
-        }
-        teachInAxis?.let {
-            Button(onClick = onTeachInClicked) {
-                Text("Teach ${it.name} Pos")
             }
         }
     }

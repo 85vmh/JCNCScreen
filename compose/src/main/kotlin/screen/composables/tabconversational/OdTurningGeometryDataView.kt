@@ -7,16 +7,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import org.kodein.di.compose.rememberInstance
 import screen.uimodel.InputType
-import usecase.ConversationalUseCase
+import screen.viewmodel.OdTurningViewModel
+import screen.viewmodel.createViewModel
 import usecase.model.TeachInAxis
 
 @Composable
 fun OdTurningGeometryData() {
-
-    val useCase: ConversationalUseCase by rememberInstance()
-    val odTurningDataState = remember { useCase.getOdTurningDataState() }
+    val odTurningViewModel: OdTurningViewModel = createViewModel()
+    val data = remember { odTurningViewModel.getOdTurningDataState() }
 
     Column(
         modifier = Modifier.padding(horizontal = 8.dp),
@@ -24,42 +23,42 @@ fun OdTurningGeometryData() {
     ) {
         InputSetting(
             inputType = InputType.INITIAL_X,
-            value = odTurningDataState.xInitial.value.toString(),
+            value = data.xInitial.value.toString(),
             teachInAxis = TeachInAxis.X,
             onTeachInClicked = {}
         ) {
-            odTurningDataState.xInitial.value = it.toDouble()
+            data.xInitial.value = it.toDouble()
         }
         InputSetting(
             inputType = InputType.FINAL_X,
-            value = odTurningDataState.xFinal.value.toString(),
+            value = data.xFinal.value.toString(),
             teachInAxis = TeachInAxis.X,
             onTeachInClicked = {}
         ) {
-            odTurningDataState.xFinal.value = it.toDouble()
+            data.xFinal.value = it.toDouble()
         }
         InputSetting(
             inputType = InputType.Z_START,
-            value = odTurningDataState.zStart.value.toString(),
+            value = data.zStart.value.toString(),
             teachInAxis = TeachInAxis.Z,
             onTeachInClicked = {}
         ) {
-            odTurningDataState.zStart.value = it.toDouble()
+            data.zStart.value = it.toDouble()
         }
         InputSetting(
             inputType = InputType.Z_END,
-            value = odTurningDataState.zEnd.value.toString(),
+            value = data.zEnd.value.toString(),
             teachInAxis = TeachInAxis.Z,
             onTeachInClicked = {}
         ) {
-            odTurningDataState.zEnd.value = it.toDouble()
+            data.zEnd.value = it.toDouble()
         }
         InputSetting(
             inputType = InputType.FILLET_RADIUS,
-            value = odTurningDataState.fillet.value.toString(),
+            value = data.fillet.value.toString(),
             onTeachInClicked = {}
         ) {
-            odTurningDataState.fillet.value = it.toDouble()
+            data.fillet.value = it.toDouble()
         }
     }
 }

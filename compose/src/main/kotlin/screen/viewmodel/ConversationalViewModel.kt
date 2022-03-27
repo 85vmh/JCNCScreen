@@ -7,6 +7,6 @@ class ConversationalViewModel(
 ) {
 
     fun processData(){
-        conversationalUseCase.processValues()
+        //conversationalUseCase.processValues()
     }
 }

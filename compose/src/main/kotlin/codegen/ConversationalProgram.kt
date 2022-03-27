@@ -29,6 +29,7 @@ class ConversationalProgram(
                 lines.addAll(this.getEndComment())
             }
         }
+        lines.add("M5 (Stop Spindle)")
         lines.add("M2")
         return lines
     }

@@ -1,11 +1,10 @@
 package usecase
 
 import com.mindovercnc.base.*
-import com.mindovercnc.base.data.CncStatus
-import com.mindovercnc.base.data.JoystickStatus
-import com.mindovercnc.base.data.SpindleSwitchStatus
+import com.mindovercnc.base.data.*
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,9 +19,10 @@ class ManualTurningUseCaseTest {
     private val spindleSwitchStatusFlow = MutableStateFlow(SpindleSwitchStatus.NEUTRAL)
     private val cycleStopStatusFlow = MutableStateFlow(false)
     private val actualSpindleSpeed = MutableStateFlow(1f)
+    private val jogIncrementValue = MutableStateFlow(1f)
     private val cncStatusFlow = MutableSharedFlow<CncStatus>()
 
-    private val statusRepository = mockk<CncStatusRepository>() {
+    private val statusRepository = mockk<CncStatusRepository> {
         every { cncStatusFlow() } returns cncStatusFlow
     }
     private val commandRepository = mockk<CncCommandRepository>()
@@ -32,6 +32,7 @@ class ManualTurningUseCaseTest {
         every { getSpindleSwitchStatus() } returns spindleSwitchStatusFlow
         every { getCycleStopStatus() } returns cycleStopStatusFlow
         every { actualSpindleSpeed() } returns actualSpindleSpeed
+        every { jogIncrementValue() } returns jogIncrementValue
     }
     private val settingsRepository = mockk<SettingsRepository>()
     private val iniFileRepository = mockk<IniFileRepository>()
@@ -62,8 +63,11 @@ class ManualTurningUseCaseTest {
 
     @Test
     fun `Test Something`() {
+        println("start")
+        joystickStatusFlow.tryEmit(JoystickStatus(JoystickStatus.Position.XMinus, false))
 
-        assert(1 + 1 == 2)
-
+        verify {
+            messagesRepository.pushMessage(UiMessage.JoystickCannotFeedWithSpindleOff)
+        }
     }
 }
