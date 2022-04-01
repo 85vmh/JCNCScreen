@@ -43,7 +43,6 @@ class ManualTurningUseCase(
             halRepository.getJoystickStatus(),
             spindleIsOn
         ) { joystickStatus, spindleOn ->
-            //println("---Spindle: $spindleOn")
             println("---Joystick: $joystickStatus")
             handleJoystick(joystickStatus, spindleOn)
         }.launchIn(scope)
@@ -98,11 +97,7 @@ class ManualTurningUseCase(
     }
 
     private fun setHalSpindleStatus(status: SpindleSwitchStatus) {
-        when (status) {
-            SpindleSwitchStatus.REV,
-            SpindleSwitchStatus.FWD -> halRepository.setSpindleStarted(true)
-            SpindleSwitchStatus.NEUTRAL -> halRepository.setSpindleStarted(false)
-        }
+        halRepository.setSpindleStarted(status != SpindleSwitchStatus.NEUTRAL)
     }
 
     private suspend fun handleJoystick(joystickStatus: JoystickStatus, isSpindleOn: Boolean) {
@@ -117,11 +112,9 @@ class ManualTurningUseCase(
         if (joystickStatus.isRapid) {
             startJogging(axis, direction)
             joystickResetRequired = true
-        } else {
-            if (joystickFunction == JoystickFunction.Jogging) {
-                stopJogging(axis)
-                joystickResetRequired = true
-            }
+        } else if (joystickFunction == JoystickFunction.Jogging) {
+            stopJogging(axis)
+            joystickResetRequired = true
         }
 
         if (isSpindleOn) {
@@ -154,32 +147,8 @@ class ManualTurningUseCase(
         feedJob?.cancel()
         feedJob = scope.launch {
             delay(500L)
-            println("---Start feeding")
+            println("---Delay passed, start feeding")
             startFeeding(axis, direction)
-        }
-        println("---Post launch delayed")
-    }
-
-    private fun handleBackToNeutral() {
-        println("---handleBackToNeutral()")
-        if (feedJob != null) {
-            println("Cancel feed job: $feedJob")
-            feedJob?.cancel()
-        } else {
-            println("No job to cancel")
-        }
-
-        when (joystickFunction) {
-            JoystickFunction.Feeding -> stopFeeding()
-            JoystickFunction.Jogging -> joggedAxis?.let { stopJogging(it) }
-            JoystickFunction.None -> {
-                joggedAxis = null
-                messagesRepository.popMessage(UiMessage.JoystickCannotFeedWithSpindleOff)
-            }
-        }
-        if (joystickResetRequired) {
-            joystickResetRequired = false
-            messagesRepository.popMessage(UiMessage.JoystickResetRequired)
         }
     }
 
@@ -200,6 +169,25 @@ class ManualTurningUseCase(
         halRepository.setPowerFeedingStatus(true)
     }
 
+    private fun handleBackToNeutral() {
+        println("---handleBackToNeutral()")
+        if (feedJob != null) {
+            feedJob?.cancel()
+        }
+        when (joystickFunction) {
+            JoystickFunction.Feeding -> stopFeeding()
+            JoystickFunction.Jogging -> joggedAxis?.let { stopJogging(it) }
+            JoystickFunction.None -> {
+                joggedAxis = null
+                messagesRepository.popMessage(UiMessage.JoystickCannotFeedWithSpindleOff)
+            }
+        }
+        if (joystickResetRequired) {
+            joystickResetRequired = false
+            messagesRepository.popMessage(UiMessage.JoystickResetRequired)
+        }
+    }
+
     private fun stopFeeding() {
         feedJob?.cancel()
         if (joystickFunction == JoystickFunction.Feeding) {
@@ -210,6 +198,7 @@ class ManualTurningUseCase(
     }
 
     private suspend fun startJogging(axis: Axis, feedDirection: Direction) {
+        println("---Start jogging")
         stopFeeding()
         commandRepository.setTaskMode(TaskMode.TaskModeManual)
         val jogVelocity = statusRepository.cncStatusFlow().map { it.jogVelocity }.first()
