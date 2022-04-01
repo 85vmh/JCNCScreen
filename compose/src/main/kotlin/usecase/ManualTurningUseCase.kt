@@ -152,13 +152,12 @@ class ManualTurningUseCase(
     private suspend fun delayedFeed(axis: Axis, direction: Direction) {
         println("---Delayed feed")
         feedJob?.cancel()
-        feedJob = coroutineScope {
-            launch(Dispatchers.IO) {
-                delay(1000L)
-                println("---Start feeding")
-                startFeeding(axis, direction)
-            }
+        feedJob = scope.launch {
+            delay(10000L)
+            println("---Start feeding")
+            startFeeding(axis, direction)
         }
+        println("---Post launch delayed")
     }
 
     private fun handleBackToNeutral() {
