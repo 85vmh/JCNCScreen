@@ -53,9 +53,7 @@ fun BaseScreenView() {
 
     val appNavigator by rememberInstance<AppNavigator>()
 
-    val scope = rememberCoroutineScope {
-        Dispatchers.Main
-    }
+    val scope = rememberCoroutineScope()
     val viewModel = remember {
         BaseScreenViewModel(scope, statusRepository, messagesRepository, appNavigator)
     }

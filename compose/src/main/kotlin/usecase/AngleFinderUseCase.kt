@@ -56,7 +56,6 @@ class AngleFinderUseCase(
 //                    JoystickStatus.Position.Neutral -> handleBackToNeutral()
 //                }
             }
-            .flowOn(Dispatchers.Main)
             .launchIn(scope)
     }
 

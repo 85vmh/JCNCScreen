@@ -153,7 +153,7 @@ class ManualTurningUseCase(
         println("---Delayed feed")
         feedJob?.cancel()
         feedJob = scope.launch {
-            delay(10000L)
+            delay(500L)
             println("---Start feeding")
             startFeeding(axis, direction)
         }
