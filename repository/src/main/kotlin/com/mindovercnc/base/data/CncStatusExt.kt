@@ -18,9 +18,6 @@ val CncStatus.isXHoming get() = motionStatus.jointsStatus[0].isHoming
 val CncStatus.isZHoming get() = motionStatus.jointsStatus[1].isHoming
 
 val CncStatus.isInterpreterIdle get() = taskStatus.interpreterState == InterpreterState.Idle
-val CncStatus.isInMdiMode get() = taskStatus.taskMode == TaskMode.TaskModeMDI
-val CncStatus.isInManualMode get() = taskStatus.taskMode == TaskMode.TaskModeManual
-val CncStatus.isInAutoMode get() = taskStatus.taskMode == TaskMode.TaskModeAuto
 
 val CncStatus.jogVelocity get() = motionStatus.trajectoryStatus.maxVelocity
 

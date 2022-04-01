@@ -48,13 +48,13 @@ class AngleFinderUseCase(
             .filter { this::startPoint.isInitialized && this::endPoint.isInitialized && this::axisToTraverse.isInitialized }
             .onEach { joystickStatus ->
                 println("---Joystick: $joystickStatus")
-                when (joystickStatus.position) {
-                    JoystickStatus.Position.ZMinus -> handleJoystick(ManualTurningHelper.Axis.Z, ManualTurningHelper.Direction.Negative)
-                    JoystickStatus.Position.ZPlus -> handleJoystick(ManualTurningHelper.Axis.Z, ManualTurningHelper.Direction.Positive)
-                    JoystickStatus.Position.XMinus -> handleJoystick(ManualTurningHelper.Axis.X, ManualTurningHelper.Direction.Negative)
-                    JoystickStatus.Position.XPlus -> handleJoystick(ManualTurningHelper.Axis.X, ManualTurningHelper.Direction.Positive)
-                    JoystickStatus.Position.Neutral -> handleBackToNeutral()
-                }
+//                when (joystickStatus.position) {
+//                    JoystickStatus.Position.ZMinus -> handleJoystick(ManualTurningHelper.Axis.Z, ManualTurningHelper.Direction.Negative)
+//                    JoystickStatus.Position.ZPlus -> handleJoystick(ManualTurningHelper.Axis.Z, ManualTurningHelper.Direction.Positive)
+//                    JoystickStatus.Position.XMinus -> handleJoystick(ManualTurningHelper.Axis.X, ManualTurningHelper.Direction.Negative)
+//                    JoystickStatus.Position.XPlus -> handleJoystick(ManualTurningHelper.Axis.X, ManualTurningHelper.Direction.Positive)
+//                    JoystickStatus.Position.Neutral -> handleBackToNeutral()
+//                }
             }
             .flowOn(Dispatchers.Main)
             .launchIn(scope)
@@ -100,41 +100,41 @@ class AngleFinderUseCase(
         return "G0 X${point.x.stripZeros()} Z${point.z.stripZeros()}"
     }
 
-    private fun handleJoystick(axis: ManualTurningHelper.Axis, direction: ManualTurningHelper.Direction) {
-        val positivePoint: Point
-        val negativePoint: Point
-
-        when (axisToTraverse) {
-            TraverseAxis.X -> {
-                positivePoint = if (startPoint.x > endPoint.x) startPoint else endPoint
-                negativePoint = if (startPoint.x < endPoint.x) startPoint else endPoint
-
-                when (axis) {
-                    ManualTurningHelper.Axis.Z -> messagesRepository.pushMessage(UiMessage.JoystickDisabledOnZAxis)
-                    ManualTurningHelper.Axis.X -> {
-                        when (direction) {
-                            ManualTurningHelper.Direction.Positive -> feedToPoint(positivePoint)
-                            ManualTurningHelper.Direction.Negative -> feedToPoint(negativePoint)
-                        }
-                    }
-                }
-            }
-            TraverseAxis.Z -> {
-                positivePoint = if (startPoint.z > endPoint.z) startPoint else endPoint
-                negativePoint = if (startPoint.z < endPoint.z) startPoint else endPoint
-
-                when (axis) {
-                    ManualTurningHelper.Axis.X -> messagesRepository.pushMessage(UiMessage.JoystickDisabledOnXAxis)
-                    ManualTurningHelper.Axis.Z -> {
-                        when (direction) {
-                            ManualTurningHelper.Direction.Positive -> feedToPoint(positivePoint)
-                            ManualTurningHelper.Direction.Negative -> feedToPoint(negativePoint)
-                        }
-                    }
-                }
-            }
-        }
-    }
+//    private fun handleJoystick(axis: ManualTurningHelper.Axis, direction: ManualTurningHelper.Direction) {
+//        val positivePoint: Point
+//        val negativePoint: Point
+//
+//        when (axisToTraverse) {
+//            TraverseAxis.X -> {
+//                positivePoint = if (startPoint.x > endPoint.x) startPoint else endPoint
+//                negativePoint = if (startPoint.x < endPoint.x) startPoint else endPoint
+//
+//                when (axis) {
+//                    ManualTurningHelper.Axis.Z -> messagesRepository.pushMessage(UiMessage.JoystickDisabledOnZAxis)
+//                    ManualTurningHelper.Axis.X -> {
+//                        when (direction) {
+//                            ManualTurningHelper.Direction.Positive -> feedToPoint(positivePoint)
+//                            ManualTurningHelper.Direction.Negative -> feedToPoint(negativePoint)
+//                        }
+//                    }
+//                }
+//            }
+//            TraverseAxis.Z -> {
+//                positivePoint = if (startPoint.z > endPoint.z) startPoint else endPoint
+//                negativePoint = if (startPoint.z < endPoint.z) startPoint else endPoint
+//
+//                when (axis) {
+//                    ManualTurningHelper.Axis.X -> messagesRepository.pushMessage(UiMessage.JoystickDisabledOnXAxis)
+//                    ManualTurningHelper.Axis.Z -> {
+//                        when (direction) {
+//                            ManualTurningHelper.Direction.Positive -> feedToPoint(positivePoint)
+//                            ManualTurningHelper.Direction.Negative -> feedToPoint(negativePoint)
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
 
     private fun feedToPoint(destinationPoint: Point) {
         executeMdi("G94 G1 X${destinationPoint.x.stripZeros()} Z${destinationPoint.z.stripZeros()} F$traverseFeedInUnitsPerMinute")

@@ -1,10 +1,13 @@
 package codegen
 
+import screen.uimodel.Wcs
 import java.util.*
 
 class ConversationalProgram(
     private val programName: String,
     private val creationDate: Date,
+    private val wcs: Wcs = Wcs.G54,
+//    private val stockDetails: StockDetails,
     private val operations: List<Operation>
 ) {
 
@@ -19,6 +22,7 @@ class ConversationalProgram(
         lines.add("G21 (Metric Units)")
         lines.add("G90 (Absolute Distance Mode)")
         lines.add("G95 (Feed in units/rev)")
+        lines.add("${wcs.text} (Workpiece Coordinate System)")
         lines.add("\r")
         operations.forEach {
             with(it) {
@@ -30,7 +34,7 @@ class ConversationalProgram(
             }
         }
         lines.add("M5 (Stop Spindle)")
-        lines.add("M2")
+        lines.add("M2 (End Program)")
         return lines
     }
 }

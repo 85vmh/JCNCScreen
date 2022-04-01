@@ -1,7 +1,10 @@
 package usecase
 
 import com.mindovercnc.base.*
-import com.mindovercnc.base.data.*
+import com.mindovercnc.base.data.CncStatus
+import com.mindovercnc.base.data.JoystickStatus
+import com.mindovercnc.base.data.SpindleSwitchStatus
+import com.mindovercnc.base.data.UiMessage
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -64,7 +67,9 @@ class ManualTurningUseCaseTest {
     @Test
     fun `Test Something`() {
         println("start")
-        joystickStatusFlow.tryEmit(JoystickStatus(JoystickStatus.Position.XMinus, false))
+        runBlocking {
+            joystickStatusFlow.emit(JoystickStatus(JoystickStatus.Position.XMinus, false))
+        }
 
         verify {
             messagesRepository.pushMessage(UiMessage.JoystickCannotFeedWithSpindleOff)

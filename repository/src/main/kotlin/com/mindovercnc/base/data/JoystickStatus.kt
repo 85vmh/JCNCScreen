@@ -5,7 +5,14 @@ data class JoystickStatus(
     val isRapid: Boolean = false
 ) {
 
-    enum class Position {
-        Neutral, XPlus, XMinus, ZPlus, ZMinus
+    enum class Position(
+        val axis: Axis?,
+        val direction: Direction?
+    ) {
+        Neutral(null, null),
+        XPlus(Axis.X, Direction.Positive),
+        XMinus(Axis.X, Direction.Negative),
+        ZPlus(Axis.Z, Direction.Positive),
+        ZMinus(Axis.Z, Direction.Negative);
     }
 }

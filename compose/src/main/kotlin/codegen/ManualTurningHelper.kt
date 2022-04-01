@@ -1,20 +1,13 @@
 package codegen
 
+import com.mindovercnc.base.data.Axis
+import com.mindovercnc.base.data.Direction
 import com.mindovercnc.base.data.G53AxisLimits
 import extensions.stripZeros
 import kotlin.math.abs
 import kotlin.math.tan
 
 object ManualTurningHelper {
-
-    enum class Axis(val index: Int) {
-        //When jogging, the axes are considered as X=0, Y=1, Z=2
-        X(0), Z(2)
-    }
-
-    enum class Direction {
-        Negative, Positive
-    }
 
     fun getStraightTurningCommand(axis: Axis, feedDirection: Direction, limits: G53AxisLimits): String {
         println("----G53 Axis Limits: $limits")
