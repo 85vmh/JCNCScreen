@@ -43,7 +43,7 @@ class ManualTurningUseCase(
             halRepository.getJoystickStatus(),
             spindleIsOn
         ) { joystickStatus, spindleOn ->
-            println("---Joystick: $joystickStatus")
+            println("---Spindle: $spindleOn, Joystick: $joystickStatus")
             handleJoystick(joystickStatus, spindleOn)
         }.launchIn(scope)
 
@@ -102,7 +102,7 @@ class ManualTurningUseCase(
 
     private suspend fun handleJoystick(joystickStatus: JoystickStatus, isSpindleOn: Boolean) {
         if (joystickStatus.position == JoystickStatus.Position.Neutral) {
-            handleBackToNeutral()
+            handleJoystickNeutral()
             return
         }
 
@@ -159,7 +159,7 @@ class ManualTurningUseCase(
                     .map { it.g53Position }
                     .map { Point(it.x * 2, it.z) } // *2 due to diameter mode
                     .first()
-                ManualTurningHelper.getTaperTurningCommand(axis, direction, iniFileRepository.getActiveLimits().inSafeRange(), startPoint, taperAngle)
+                ManualTurningHelper.getTaperTurningCommand(axis, direction, iniFileRepository.getActiveLimits(), startPoint, taperAngle)
             }
             else -> ManualTurningHelper.getStraightTurningCommand(axis, direction, iniFileRepository.getActiveLimits().inSafeRange())
         }
@@ -169,8 +169,8 @@ class ManualTurningUseCase(
         halRepository.setPowerFeedingStatus(true)
     }
 
-    private fun handleBackToNeutral() {
-        println("---handleBackToNeutral()")
+    private fun handleJoystickNeutral() {
+        println("---handleJoystickNeutral()")
         if (feedJob != null) {
             feedJob?.cancel()
         }
@@ -188,18 +188,22 @@ class ManualTurningUseCase(
         }
     }
 
-    private fun stopFeeding() {
+    private fun stopFeeding(): Boolean {
         feedJob?.cancel()
         if (joystickFunction == JoystickFunction.Feeding) {
             halRepository.setPowerFeedingStatus(false)
             joystickFunction = JoystickFunction.None
             println("---Stop feeding")
+            return true
         }
+        return false
     }
 
     private suspend fun startJogging(axis: Axis, feedDirection: Direction) {
         println("---Start jogging")
-        stopFeeding()
+        if (stopFeeding()) {
+            delay(200L)
+        }
         commandRepository.setTaskMode(TaskMode.TaskModeManual)
         val jogVelocity = statusRepository.cncStatusFlow().map { it.jogVelocity }.first()
         val jogDirection = when (feedDirection) {
