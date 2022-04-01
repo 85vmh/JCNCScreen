@@ -43,7 +43,7 @@ class ManualTurningUseCase(
             halRepository.getJoystickStatus(),
             spindleIsOn
         ) { joystickStatus, spindleOn ->
-            println("---Spindle: $spindleOn")
+            //println("---Spindle: $spindleOn")
             println("---Joystick: $joystickStatus")
             handleJoystick(joystickStatus, spindleOn)
         }.launchIn(scope)
@@ -91,7 +91,6 @@ class ManualTurningUseCase(
 //                commandRepository.setTaskMode(TaskMode.TaskModeMDI)
 //            }
             commandRepository.setTaskMode(TaskMode.TaskModeMDI)
-            println("---Execute MDI: $cmd")
             commandRepository.executeMdiCommand(cmd)
             halRepository.setSpindleStarted(true)
             commandRepository.setTaskMode(TaskMode.TaskModeManual)
@@ -155,7 +154,7 @@ class ManualTurningUseCase(
         feedJob?.cancel()
         feedJob = coroutineScope {
             launch {
-                delay(500L)
+                delay(1000L)
                 println("---Start feeding")
                 startFeeding(axis, direction)
             }
@@ -163,7 +162,14 @@ class ManualTurningUseCase(
     }
 
     private fun handleBackToNeutral() {
-        feedJob?.cancel()
+        println("---handleBackToNeutral()")
+        if (feedJob != null) {
+            println("Cancel feed job: $feedJob")
+            feedJob?.cancel()
+        } else {
+            println("No job to cancel")
+        }
+
         when (joystickFunction) {
             JoystickFunction.Feeding -> stopFeeding()
             JoystickFunction.Jogging -> joggedAxis?.let { stopJogging(it) }
