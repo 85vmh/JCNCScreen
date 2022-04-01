@@ -153,7 +153,7 @@ class ManualTurningUseCase(
         println("---Delayed feed")
         feedJob?.cancel()
         feedJob = coroutineScope {
-            launch {
+            launch(Dispatchers.IO) {
                 delay(1000L)
                 println("---Start feeding")
                 startFeeding(axis, direction)

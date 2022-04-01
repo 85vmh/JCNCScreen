@@ -10,7 +10,7 @@ import kotlin.math.tan
 object ManualTurningHelper {
 
     fun getStraightTurningCommand(axis: Axis, feedDirection: Direction, limits: G53AxisLimits): String {
-        println("----G53 Axis Limits: $limits")
+        //println("----G53 Axis Limits: $limits")
         val limit = when (axis) {
             Axis.X -> when (feedDirection) {
                 Direction.Negative -> limits.xMinLimit!! * 2 //because lathes work in diameter mode
@@ -21,11 +21,11 @@ object ManualTurningHelper {
                 Direction.Positive -> limits.zMaxLimit!!
             }
         }
-        return "G53 G1 ${axis.name + limit.stripZeros()}"
+        return "G53 G1 ${axis.name + limit.stripZeros(4)}"
     }
 
     fun getTaperTurningCommand(axis: Axis, feedDirection: Direction, limits: G53AxisLimits, startPoint: Point, angle: Double): String {
-        println("----G53 Axis Limits: $limits")
+        //println("----G53 Axis Limits: $limits")
         val cornerPoint = when (axis) {
             Axis.X -> when (feedDirection) {
                 Direction.Positive -> Point(limits.xMaxLimit!! * 2, limits.zMinLimit!!)
@@ -41,7 +41,7 @@ object ManualTurningHelper {
         println("---Corner point: $cornerPoint")
         val destPoint = computeDestinationPoint(startPoint, cornerPoint, angle)
         println("---End point: $destPoint")
-        return "G53 G1 X${destPoint.x.stripZeros()} Z${destPoint.z.stripZeros()}"
+        return "G53 G1 X${destPoint.x.stripZeros(4)} Z${destPoint.z.stripZeros(4)}"
     }
 
     private fun computeDestinationPoint(
