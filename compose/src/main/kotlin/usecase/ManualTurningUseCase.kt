@@ -49,13 +49,13 @@ class ManualTurningUseCase(
         }.launchIn(scope)
 
         combine(
-            statusRepository.cncStatusFlow().map { it.isInAutoMode }.distinctUntilChanged(),
+            //statusRepository.cncStatusFlow().map { it.isInAutoMode }.distinctUntilChanged(),
             halRepository.getSpindleSwitchStatus().onEach {
                 println("---Spindle switch is: $it")
             }, spindleOpAllowed
-        ) { inAutoMode, switchStatus, spindleAllowed ->
+        ) { switchStatus, spindleAllowed ->
             when {
-                inAutoMode -> setHalSpindleStatus(switchStatus)
+                //inAutoMode -> setHalSpindleStatus(switchStatus)
                 spindleAllowed -> sendSpindleCommand(switchStatus)
                 spindleAllowed.not() -> {
                     when (switchStatus) {
