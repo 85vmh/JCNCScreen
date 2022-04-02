@@ -70,7 +70,7 @@ fun MessagesHeader(modifier: Modifier = Modifier) {
         )
         VerticalDivider()
         Text(
-            modifier = Modifier.width(300.dp),
+            modifier = Modifier.weight(1f),
             textAlign = TextAlign.Center,
             text = "Message"
         )
@@ -96,7 +96,7 @@ fun MessageRow(item: Message, modifier: Modifier = Modifier) {
         )
         VerticalDivider()
         Column(
-            modifier = Modifier.width(300.dp),
+            modifier = Modifier.weight(1f),
         ) {
             Text(item.text)
         }

@@ -22,7 +22,7 @@ fun OdTurningGeometryData() {
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         InputSetting(
-            inputType = InputType.INITIAL_X,
+            inputType = InputType.X_START,
             value = data.xInitial.value.toString(),
             teachInAxis = TeachInAxis.X,
             onTeachInClicked = {}
@@ -30,7 +30,7 @@ fun OdTurningGeometryData() {
             data.xInitial.value = it.toDouble()
         }
         InputSetting(
-            inputType = InputType.FINAL_X,
+            inputType = InputType.X_END,
             value = data.xFinal.value.toString(),
             teachInAxis = TeachInAxis.X,
             onTeachInClicked = {}

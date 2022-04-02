@@ -22,7 +22,9 @@ import androidx.compose.ui.unit.dp
 import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 import org.kodein.di.compose.rememberInstance
 import screen.composables.ManualCoordinatesView
+import screen.uimodel.SimpleCycle
 import usecase.ManualTurningUseCase
+import usecase.SimpleCyclesUseCase
 import usecase.VirtualLimitsUseCase
 
 @Composable
@@ -30,14 +32,18 @@ fun ManualTurningView(
     modifier: Modifier,
     turningSettingsClicked: () -> Unit,
     taperSettingsClicked: () -> Unit,
-    limitsSettingsClicked: () -> Unit
+    limitsSettingsClicked: () -> Unit,
+    simpleCyclesClicked: () -> Unit,
+    simpleCycleClicked: (SimpleCycle) -> Unit
 ) {
 
     val manualTurningUseCase: ManualTurningUseCase by rememberInstance()
     val virtualLimitsUseCase: VirtualLimitsUseCase by rememberInstance()
+    val simpleCycleUseCase: SimpleCyclesUseCase by rememberInstance()
 
     val taperTurningActive by manualTurningUseCase.taperTurningActive.collectAsState()
     val virtualLimitsActive by virtualLimitsUseCase.isLimitsActive.collectAsState()
+    val simpleCycleActive by simpleCycleUseCase.isSimpleCycleActive.collectAsState()
 
     Row {
         NavigationRail(
@@ -56,9 +62,9 @@ fun ManualTurningView(
             )
             NavigationRailItem(
                 icon = { Icon(Icons.Outlined.Notifications, contentDescription = "") },
-                label = { Text("Radius") },
+                label = { Text("Cycles") },
                 selected = false,
-                onClick = {},
+                onClick = simpleCyclesClicked,
             )
             NavigationRailItem(
                 icon = { Icon(Icons.Outlined.Star, contentDescription = "") },
@@ -106,6 +112,13 @@ fun ManualTurningView(
                     Modifier.width(380.dp)
                         .padding(8.dp)
                         .clickable(onClick = limitsSettingsClicked)
+                )
+            }
+            if (simpleCycleActive) {
+                SimpleCycleStatusView(
+                    Modifier.width(380.dp)
+                        .padding(8.dp)
+                        .clickable(onClick = simpleCyclesClicked)
                 )
             }
             Row(

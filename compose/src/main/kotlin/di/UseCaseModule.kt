@@ -48,6 +48,16 @@ val UseCaseModule = DI.Module("UseCase") {
     }
 
     bindSingleton {
+        SimpleCyclesUseCase(
+            scope = instance(tag = "app_scope"),
+            statusRepository = instance(),
+            commandRepository = instance(),
+            halRepository = instance(),
+            settingsRepository = instance(),
+        )
+    }
+
+    bindSingleton {
         ManualPositionUseCase(
             scope = instance(tag = "app_scope"),
             cncStatusRepository = instance(),

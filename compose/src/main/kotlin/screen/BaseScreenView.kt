@@ -27,10 +27,7 @@ import org.kodein.di.instance
 import screen.composables.ScaffoldView
 import screen.composables.tabconversational.ConversationalView
 import screen.composables.tabconversational.NewOperationView
-import screen.composables.tabmanual.ManualTurningView
-import screen.composables.tabmanual.TaperSettingsView
-import screen.composables.tabmanual.TurningSettingsView
-import screen.composables.tabmanual.VirtualLimitsSettingsView
+import screen.composables.tabmanual.*
 import screen.composables.tabprograms.ProgramLoadedView
 import screen.composables.tabprograms.ProgramsView
 import screen.composables.tabstatus.StatusView
@@ -90,6 +87,7 @@ fun BaseScreenView() {
                     onClick = {
                         when (currentScreen) {
                             is ManualScreen.LimitsSettingsScreen -> (currentScreen as ManualScreen.LimitsSettingsScreen).exitEditMode()
+                            is ManualScreen.CycleParametersScreen -> (currentScreen as ManualScreen.CycleParametersScreen).exitEditMode()
                             else -> Unit
                         }
                         appNavigator.navigateUp()
@@ -114,7 +112,9 @@ private fun ScreenContent(tabScreen: TabScreen, appNavigator: AppNavigator, modi
     val manualTurningUseCase by localDI().instance<ManualTurningUseCase>()
     val conversationalUseCase by localDI().instance<ConversationalUseCase>()
     val virtualLimitsUseCase by localDI().instance<VirtualLimitsUseCase>()
+    val simpleCyclesUseCase by localDI().instance<SimpleCyclesUseCase>()
     val angleFinderUseCase by localDI().instance<AngleFinderUseCase>()
+    val scope = rememberCoroutineScope()
 
     when (tabScreen) {
         ManualScreen.ManualRootScreen -> {
@@ -146,11 +146,41 @@ private fun ScreenContent(tabScreen: TabScreen, appNavigator: AppNavigator, modi
                             previousScreen = tabScreen as ManualScreen
                         )
                     )
+                },
+                simpleCyclesClicked = {
+                    appNavigator.navigate(
+                        ManualScreen.SimpleCyclesScreen(
+                            previousScreen = tabScreen as ManualScreen
+                        )
+                    )
+                },
+                simpleCycleClicked = {
+
                 }
             )
         }
         is ManualScreen.TurningSettingsScreen -> {
             TurningSettingsView(tabScreen.viewModel, modifier)
+        }
+        is ManualScreen.SimpleCyclesScreen -> {
+            SimpleCyclesView(modifier) {
+                val viewModel = CycleParametersViewModel(
+                    scope = scope,
+                    simpleCycle = it,
+                    useCase = simpleCyclesUseCase
+                )
+                viewModel.enterEditMode()
+                appNavigator.navigate(
+                    ManualScreen.CycleParametersScreen(
+                        viewModel = viewModel,
+                        simpleCycle = it,
+                        previousScreen = tabScreen as ManualScreen
+                    )
+                )
+            }
+        }
+        is ManualScreen.CycleParametersScreen -> {
+            CycleParametersView(tabScreen.viewModel, modifier)
         }
         is ManualScreen.TaperSettingsScreen -> {
             TaperSettingsView(tabScreen.viewModel, modifier)
@@ -237,6 +267,19 @@ private fun ScreenActions(screen: TabScreen, appNavigator: AppNavigator, modifie
                 onClick = {
                     screen.viewModel.save()
                     appNavigator.navigateUp()
+                }) {
+                Icon(
+                    Icons.Default.Check,
+                    contentDescription = "",
+                )
+            }
+        }
+        is ManualScreen.CycleParametersScreen -> {
+            IconButton(
+                modifier = modifier,
+                onClick = {
+                    screen.viewModel.save()
+                    appNavigator.navigate(ManualScreen.ManualRootScreen)
                 }) {
                 Icon(
                     Icons.Default.Check,

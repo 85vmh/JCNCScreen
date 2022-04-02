@@ -145,7 +145,7 @@ object NumericInputs {
             initialValue = 3.0,
             maxDecimalPlaces = 3
         )
-        map[InputType.INITIAL_X] = NumInputParameters(
+        map[InputType.X_START] = NumInputParameters(
             valueDescription = "Initial X",
             minValue = 0.0,
             maxValue = 300.0,
@@ -153,7 +153,7 @@ object NumericInputs {
             allowsNegativeValues = true,
             maxDecimalPlaces = 3
         )
-        map[InputType.FINAL_X] = NumInputParameters(
+        map[InputType.X_END] = NumInputParameters(
             valueDescription = "Final X",
             minValue = 0.0,
             maxValue = 300.0,
