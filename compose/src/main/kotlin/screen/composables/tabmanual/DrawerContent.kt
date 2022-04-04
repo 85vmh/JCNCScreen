@@ -1,14 +1,18 @@
 package screen.composables.tabmanual
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -17,21 +21,35 @@ import androidx.compose.ui.res.loadImageBitmap
 import androidx.compose.ui.res.useResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import extensions.draggableScroll
 import screen.composables.common.AppTheme
 import screen.uimodel.SimpleCycle
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun SimpleCyclesView(modifier: Modifier, onCycleClicked: (SimpleCycle) -> Unit) {
-    Surface {
-        Row(
-            modifier = Modifier.fillMaxWidth()
-                .padding(top = 16.dp),
-            horizontalArrangement = Arrangement.SpaceEvenly
+fun DrawerContent(
+    onCycleSelected: (SimpleCycle) -> Unit
+) {
+    val scrollState = rememberLazyListState()
+    val scope = rememberCoroutineScope()
+
+    Column(
+        modifier = Modifier.padding(16.dp).fillMaxWidth()
+    ) {
+        Text(
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Center,
+            text = "Simple Cycles",
+            style = MaterialTheme.typography.headlineMedium,
+        )
+        Spacer(modifier = Modifier.height(24.dp))
+
+        LazyColumn(
+            modifier = Modifier.draggableScroll(scrollState, scope),
+            state = scrollState
         ) {
-            SimpleCycle.values().forEach {
-                Cycle(it) {
-                    onCycleClicked.invoke(it)
+            items(SimpleCycle.values()) { item ->
+                Cycle(item, Modifier.padding(vertical = 8.dp)) {
+                    onCycleSelected.invoke(item)
                 }
             }
         }
@@ -47,15 +65,17 @@ fun Cycle(op: SimpleCycle, modifier: Modifier = Modifier, onClick: () -> Unit) {
         shadowElevation = 8.dp,
         onClick = onClick
     ) {
-        Column(
-            modifier = Modifier.padding(4.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            modifier = Modifier.padding(4.dp).fillMaxWidth(),
         ) {
+
+            val imageSize = 60.dp
             if (op.imgName != null) {
                 Image(
                     modifier = Modifier
-                        .width(100.dp)
-                        .height(100.dp)
+                        .size(imageSize)
                         .background(
                             color = AppTheme.colors.backgroundLight,
                             shape = RoundedCornerShape(6.dp),
@@ -66,8 +86,7 @@ fun Cycle(op: SimpleCycle, modifier: Modifier = Modifier, onClick: () -> Unit) {
             } else {
                 Box(
                     modifier = Modifier
-                        .width(100.dp)
-                        .height(100.dp)
+                        .size(imageSize)
                         .background(
                             color = AppTheme.colors.backgroundLight,
                             shape = RoundedCornerShape(6.dp),
@@ -76,10 +95,8 @@ fun Cycle(op: SimpleCycle, modifier: Modifier = Modifier, onClick: () -> Unit) {
             }
             Text(
                 text = op.displayableString,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .padding(top = 8.dp)
-                    .height(40.dp)
+                style = MaterialTheme.typography.bodyLarge,
+                textAlign = TextAlign.Center
             )
         }
     }

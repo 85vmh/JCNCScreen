@@ -4,7 +4,9 @@ enum class SimpleCycle(val displayableString: String, val imgName: String? = nul
     Turning("Turning", "od.png"),
     Boring("Boring", "id.png"),
     Facing("Facing", "facing.png"),
+    Chamfer("Chamfer"),
+    Radius("Radius"),
     Threading("Threading", "threading.png"),
-    Drilling("Drilling\nReaming"),
+    Drilling("Drilling/Reaming"),
     KeySlot("Slotting", "slotting.png"),
 }

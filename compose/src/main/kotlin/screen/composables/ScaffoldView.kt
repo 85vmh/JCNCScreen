@@ -1,6 +1,7 @@
 package screen.composables
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -21,48 +22,58 @@ fun ScaffoldView(
     enabledTabs: List<BottomNavTab> = BottomNavTab.values().asList(),
     onTabClicked: (tab: BottomNavTab) -> Unit,
     navigationIcon: @Composable (() -> Unit) = {},
+    drawerState: DrawerState,
+    drawerContent: @Composable ColumnScope.() -> Unit = {},
     actions: @Composable RowScope.() -> Unit = {},
     content: @Composable (PaddingValues) -> Unit
 ) {
-    Scaffold(
-        modifier = Modifier.fillMaxWidth(),
-        topBar = {
-            CenterAlignedTopAppBar(
-                title = { Text(text = screenTitle) },
-                navigationIcon = navigationIcon,
-                actions = actions,
-                modifier = Modifier.shadow(elevation = 8.dp)
-            )
-        },
-        bottomBar = {
-            NavigationBar(
-                modifier = Modifier.height(60.dp),
-            ) {
-                BottomNavTab.values().forEach { bottomTab ->
-                    val isSelected = selectedTab == bottomTab
-                    val isEnabled = bottomTab in enabledTabs
-                    val selectedColor = AppTheme.colors.material.secondary
-                    BottomNavigationItem(
-                        icon = { TabIcon(bottomTab, isSelected, isEnabled, selectedTool) },
-                        selected = isSelected,
-                        enabled = isEnabled,
-                        onClick = { onTabClicked(bottomTab) },
-                        label = {
-                            Text(
-                                text = bottomTab.tabText,
-                                color = when {
-                                    isSelected -> selectedColor
-                                    isEnabled.not() -> AppTheme.colors.textDisabled
-                                    else -> Color.Unspecified
-                                }
-                            )
-                        },
-                    )
+    NavigationDrawer(
+        modifier = Modifier,
+        drawerState = drawerState,
+        gesturesEnabled = selectedTab == BottomNavTab.ManualTurning,
+        drawerShape = RoundedCornerShape(0.dp, 8.dp, 8.dp, 0.dp),
+        drawerContent = drawerContent
+    ) {
+        Scaffold(
+            modifier = Modifier.fillMaxWidth(),
+            topBar = {
+                CenterAlignedTopAppBar(
+                    title = { Text(text = screenTitle) },
+                    navigationIcon = navigationIcon,
+                    actions = actions,
+                    modifier = Modifier.shadow(elevation = 8.dp)
+                )
+            },
+            bottomBar = {
+                NavigationBar(
+                    modifier = Modifier.height(60.dp),
+                ) {
+                    BottomNavTab.values().forEach { bottomTab ->
+                        val isSelected = selectedTab == bottomTab
+                        val isEnabled = bottomTab in enabledTabs
+                        val selectedColor = AppTheme.colors.material.secondary
+                        BottomNavigationItem(
+                            icon = { TabIcon(bottomTab, isSelected, isEnabled, selectedTool) },
+                            selected = isSelected,
+                            enabled = isEnabled,
+                            onClick = { onTabClicked(bottomTab) },
+                            label = {
+                                Text(
+                                    text = bottomTab.tabText,
+                                    color = when {
+                                        isSelected -> selectedColor
+                                        isEnabled.not() -> AppTheme.colors.textDisabled
+                                        else -> Color.Unspecified
+                                    }
+                                )
+                            },
+                        )
+                    }
                 }
-            }
-        },
-        content = content
-    )
+            },
+            content = content
+        )
+    }
 }
 
 @Composable

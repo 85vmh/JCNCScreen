@@ -31,13 +31,6 @@ sealed class ManualScreen(
         previousScreen = previousScreen
     )
 
-    class SimpleCyclesScreen(
-        previousScreen: ManualScreen?
-    ) : ManualScreen(
-        title = "Simple Cycles",
-        previousScreen = previousScreen
-    )
-
     class CycleParametersScreen(
         val viewModel: CycleParametersViewModel,
         simpleCycle: SimpleCycle,

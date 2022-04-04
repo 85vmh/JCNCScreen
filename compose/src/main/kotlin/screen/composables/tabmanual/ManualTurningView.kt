@@ -10,15 +10,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AccountBox
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.Star
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.launch
 import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 import org.kodein.di.compose.rememberInstance
 import screen.composables.ManualCoordinatesView
@@ -27,13 +25,13 @@ import usecase.ManualTurningUseCase
 import usecase.SimpleCyclesUseCase
 import usecase.VirtualLimitsUseCase
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ManualTurningView(
     modifier: Modifier,
     turningSettingsClicked: () -> Unit,
     taperSettingsClicked: () -> Unit,
     limitsSettingsClicked: () -> Unit,
-    simpleCyclesClicked: () -> Unit,
     simpleCycleClicked: (SimpleCycle) -> Unit
 ) {
 
@@ -59,18 +57,6 @@ fun ManualTurningView(
                 label = { Text("Taper") },
                 selected = taperTurningActive,
                 onClick = { manualTurningUseCase.toggleTaperTurning() },
-            )
-            NavigationRailItem(
-                icon = { Icon(Icons.Outlined.Notifications, contentDescription = "") },
-                label = { Text("Cycles") },
-                selected = false,
-                onClick = simpleCyclesClicked,
-            )
-            NavigationRailItem(
-                icon = { Icon(Icons.Outlined.Star, contentDescription = "") },
-                label = { Text("Limits") },
-                selected = virtualLimitsActive,
-                onClick = { virtualLimitsUseCase.toggleLimitsActive() },
             )
             NavigationRailItem(
                 icon = { Icon(Icons.Outlined.Star, contentDescription = "") },
@@ -118,7 +104,7 @@ fun ManualTurningView(
                 SimpleCycleStatusView(
                     Modifier.width(380.dp)
                         .padding(8.dp)
-                        .clickable(onClick = simpleCyclesClicked)
+                        .clickable(onClick = { simpleCycleClicked.invoke(SimpleCycle.Turning) })
                 )
             }
             Row(

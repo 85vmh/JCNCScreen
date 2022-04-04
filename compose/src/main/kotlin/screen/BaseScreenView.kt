@@ -5,13 +5,16 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.mindovercnc.base.CncStatusRepository
 import com.mindovercnc.base.MessagesRepository
@@ -20,11 +23,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.launch
 import navigation.AppNavigator
 import org.kodein.di.compose.localDI
 import org.kodein.di.compose.rememberInstance
 import org.kodein.di.instance
 import screen.composables.ScaffoldView
+import screen.composables.common.AppTheme
 import screen.composables.tabconversational.ConversationalView
 import screen.composables.tabconversational.NewOperationView
 import screen.composables.tabmanual.*
@@ -39,6 +44,7 @@ import screen.uimodel.*
 import screen.viewmodel.*
 import usecase.*
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 @Preview
 fun BaseScreenView() {
@@ -73,6 +79,9 @@ fun BaseScreenView() {
     val currentScreen by appNavigator.currentScreen.collectAsState(LoadingScreen)
     val iconButtonModifier = Modifier.size(48.dp)
     val enabledTabs by appNavigator.enabledTabs.collectAsState()
+    val simpleCyclesUseCase by localDI().instance<SimpleCyclesUseCase>()
+
+    val drawerState = rememberDrawerState(DrawerValue.Closed)
 
     ScaffoldView(
         screenTitle = currentScreen.title,
@@ -95,6 +104,29 @@ fun BaseScreenView() {
                 {
                     Icon(Icons.Default.ArrowBack, contentDescription = "")
                 }
+            }
+            if (currentScreen == ManualScreen.ManualRootScreen) {
+                IconButton(
+                    modifier = iconButtonModifier,
+                    onClick = {
+                        scope.launch { drawerState.open() }
+                    })
+                {
+                    Icon(Icons.Default.Menu, contentDescription = "")
+                }
+            }
+        },
+        drawerState = drawerState,
+        drawerContent = {
+            DrawerContent {
+                scope.launch { drawerState.close() }
+                appNavigator.navigate(
+                    ManualScreen.CycleParametersScreen(
+                        CycleParametersViewModel(scope, it, simpleCyclesUseCase),
+                        it,
+                        ManualScreen.ManualRootScreen
+                    )
+                )
             }
         },
         actions = { ScreenActions(currentScreen, appNavigator, iconButtonModifier) }
@@ -147,13 +179,6 @@ private fun ScreenContent(tabScreen: TabScreen, appNavigator: AppNavigator, modi
                         )
                     )
                 },
-                simpleCyclesClicked = {
-                    appNavigator.navigate(
-                        ManualScreen.SimpleCyclesScreen(
-                            previousScreen = tabScreen as ManualScreen
-                        )
-                    )
-                },
                 simpleCycleClicked = {
 
                 }
@@ -161,23 +186,6 @@ private fun ScreenContent(tabScreen: TabScreen, appNavigator: AppNavigator, modi
         }
         is ManualScreen.TurningSettingsScreen -> {
             TurningSettingsView(tabScreen.viewModel, modifier)
-        }
-        is ManualScreen.SimpleCyclesScreen -> {
-            SimpleCyclesView(modifier) {
-                val viewModel = CycleParametersViewModel(
-                    scope = scope,
-                    simpleCycle = it,
-                    useCase = simpleCyclesUseCase
-                )
-                viewModel.enterEditMode()
-                appNavigator.navigate(
-                    ManualScreen.CycleParametersScreen(
-                        viewModel = viewModel,
-                        simpleCycle = it,
-                        previousScreen = tabScreen as ManualScreen
-                    )
-                )
-            }
         }
         is ManualScreen.CycleParametersScreen -> {
             CycleParametersView(tabScreen.viewModel, modifier)
@@ -232,9 +240,26 @@ private fun ScreenContent(tabScreen: TabScreen, appNavigator: AppNavigator, modi
 private fun ScreenActions(screen: TabScreen, appNavigator: AppNavigator, modifier: Modifier = Modifier) {
     val programsUseCase by localDI().instance<ProgramsUseCase>()
     val conversationalUseCase by localDI().instance<ConversationalUseCase>()
+    val virtualLimitsUseCase: VirtualLimitsUseCase by rememberInstance()
+    val virtualLimitsActive by virtualLimitsUseCase.isLimitsActive.collectAsState()
 
     when (screen) {
-        ManualScreen.ManualRootScreen -> {}
+        ManualScreen.ManualRootScreen -> {
+            IconButton(
+                modifier = modifier,
+                onClick = {
+                    virtualLimitsUseCase.toggleLimitsActive()
+                }) {
+                Icon(
+                    tint = when {
+                        virtualLimitsActive -> AppTheme.colors.material.secondary
+                        else -> Color.Unspecified
+                    },
+                    imageVector = Icons.Default.Star,
+                    contentDescription = "",
+                )
+            }
+        }
         is ManualScreen.TurningSettingsScreen -> {
             IconButton(
                 modifier = modifier,
