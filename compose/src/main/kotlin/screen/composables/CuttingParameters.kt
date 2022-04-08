@@ -4,7 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
-import androidx.compose.material.Surface
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -38,7 +38,7 @@ fun CuttingParametersView(
         modifier = modifier,
         shape = RoundedCornerShape(8.dp),
         border = BorderStroke(1.dp, SolidColor(Color.DarkGray)),
-        elevation = 8.dp
+        shadowElevation = 8.dp
     ) {
         Column(
             modifier = Modifier.padding(top = 8.dp, bottom = 8.dp),

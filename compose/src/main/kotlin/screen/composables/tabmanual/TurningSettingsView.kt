@@ -3,6 +3,7 @@ package screen.composables.tabmanual
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -152,6 +153,7 @@ fun FeedDisplay(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RadioBoxSetting(
     settingName: String,
@@ -183,6 +185,7 @@ fun RadioBoxSetting(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CheckBoxSetting(
     inputType: InputType,

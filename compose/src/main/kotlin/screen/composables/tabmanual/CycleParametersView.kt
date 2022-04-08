@@ -1,9 +1,12 @@
 package screen.composables.tabmanual
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -14,6 +17,8 @@ import screen.viewmodel.CycleParametersViewModel
 import usecase.model.BoringParameterState
 import usecase.model.FacingParameterState
 import usecase.model.TurningParameterState
+import androidx.compose.runtime.*
+import usecase.model.ThreadingParameterState
 
 @Composable
 fun CycleParametersView(
@@ -25,6 +30,7 @@ fun CycleParametersView(
         is FacingParameterState -> FacingParametersView(viewModel, parameterState)
         is TurningParameterState -> TurningParametersView(viewModel, parameterState)
         is BoringParameterState -> BoringParametersView(viewModel, parameterState)
+        is ThreadingParameterState -> ThreadingParametersView(viewModel, parameterState)
     }
 }
 
@@ -57,6 +63,30 @@ fun FacingParametersView(viewModel: CycleParametersViewModel, parametersState: F
             teachInClicked = { }
         )
 
+        StepsSliderSample()
+
+    }
+}
+
+@Composable
+fun StepsSliderSample() {
+
+    Column {
+
+        var sliderPosition by remember { mutableStateOf(0f) }
+        val values = listOf(0.5f, 0.8f, 1f, 1.25f, 1.5f, 1.75f, 2f, 2.5f)
+
+        Text(sliderPosition.toString())
+        Slider(
+            value = sliderPosition,
+            onValueChange = { sliderPosition = it },
+            valueRange = 0f..values.lastIndex.toFloat(),
+            onValueChangeFinished = {
+                // launch some business logic update with the state you hold
+                // viewModel.updateSelectedSliderValue(sliderPosition)
+            },
+            steps = values.size
+        )
     }
 }
 
@@ -145,6 +175,29 @@ fun BoringParametersView(viewModel: CycleParametersViewModel, parametersState: B
             inputType = InputType.FILLET_RADIUS,
             value = parametersState.filletRadius.value,
             valueChange = { parametersState.filletRadius.value = it },
+            teachInClicked = { }
+        )
+    }
+}
+
+@Composable
+fun ThreadingParametersView(viewModel: CycleParametersViewModel, parametersState: ThreadingParameterState) {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        CycleParameter(
+            parameterLabel = "Z End",
+            inputType = InputType.Z_END,
+            value = parametersState.zEnd.value,
+            teachInLabel = "TeachIn Z",
+            valueChange = { parametersState.zEnd.value = it },
+            teachInClicked = { viewModel.teachInZ() }
+        )
+        CycleParameter(
+            parameterLabel = "Thread Pitch",
+            inputType = InputType.THREAD_PITCH,
+            value = parametersState.threadPitch.value,
+            valueChange = { parametersState.threadPitch.value = it },
             teachInClicked = { }
         )
     }

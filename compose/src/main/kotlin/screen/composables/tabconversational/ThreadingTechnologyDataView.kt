@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,6 +25,7 @@ private class ThreadTechnologyDataState(
     val metricPitch = mutableStateOf(metricPitch)
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ThreadingTechnologyData() {
     val workOffsets = remember { listOf("G54", "G55", "G56", "G57", "G58", "G59", "G59.1", "G59.2", "G59.3") }

@@ -1,0 +1,31 @@
+;outside diameter threading
+
+O<od-threading> sub
+
+G7  ; Lathe Diameter Mode
+G18 ; XZ Plane
+G21 ; Metric Units
+G90 ; Absolute Distance
+
+#<x_end> = #1
+#<z_end> = #2
+#<pitch> = #3
+#<initial_depth> = #4
+#<full_depth> = #5
+#<depth_degression> = #6
+#<compound_slide_angle> = #7
+#<taper_type> = #8
+#<taper_length> = #9
+#<spring_passes> = #10
+
+#<x_start> = [#<_x> * 2] (starting X)
+#<z_start> = #<_z> (starting Z)
+
+
+;Threading
+
+G76 P#<pitch> Z#<z_end> I#<x_start> J#<initial_depth> K#<full_depth> R#<depth_degression> Q#<compound_slide_angle> L#<taper_type> E#<taper_length> H#<spring_passes>
+G0 Z#<z_start>
+
+O<od-threading> endsub
+M2

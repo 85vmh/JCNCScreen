@@ -10,7 +10,6 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import screen.composables.common.AppTheme
 import screen.uimodel.BottomNavTab
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -51,7 +50,7 @@ fun ScaffoldView(
                     BottomNavTab.values().forEach { bottomTab ->
                         val isSelected = selectedTab == bottomTab
                         val isEnabled = bottomTab in enabledTabs
-                        val selectedColor = AppTheme.colors.material.secondary
+                        val selectedColor = MaterialTheme.colorScheme.secondary
                         BottomNavigationItem(
                             icon = { TabIcon(bottomTab, isSelected, isEnabled, selectedTool) },
                             selected = isSelected,
@@ -62,7 +61,7 @@ fun ScaffoldView(
                                     text = bottomTab.tabText,
                                     color = when {
                                         isSelected -> selectedColor
-                                        isEnabled.not() -> AppTheme.colors.textDisabled
+                                        isEnabled.not() -> Color.LightGray
                                         else -> Color.Unspecified
                                     }
                                 )
@@ -79,8 +78,8 @@ fun ScaffoldView(
 @Composable
 private fun TabIcon(bottomNavTab: BottomNavTab, isSelected: Boolean, isEnabled: Boolean, selectedTool: Int) {
     val iconTint = when {
-        isSelected -> AppTheme.colors.material.secondary
-        isEnabled.not() -> AppTheme.colors.textDisabled
+        isSelected -> MaterialTheme.colorScheme.secondary
+        isEnabled.not() -> Color.LightGray
         else -> LocalContentColor.current
     }
     val badgeText = when (bottomNavTab) {
@@ -92,7 +91,7 @@ private fun TabIcon(bottomNavTab: BottomNavTab, isSelected: Boolean, isEnabled: 
             badge = {
                 Row {
                     Badge(
-                        containerColor = AppTheme.colors.material.secondary
+                        containerColor = MaterialTheme.colorScheme.secondary
                     ) {
                         Text(
                             fontSize = 14.sp,

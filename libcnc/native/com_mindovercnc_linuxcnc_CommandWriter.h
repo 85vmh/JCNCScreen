@@ -68,7 +68,7 @@ JNIEXPORT void JNICALL Java_com_mindovercnc_linuxcnc_CommandWriter_loadToolTable
  * Method:    sendMDICommand
  * Signature: (Ljava/lang/String;)V
  */
-JNIEXPORT void JNICALL Java_com_mindovercnc_linuxcnc_CommandWriter_sendMDICommand
+JNIEXPORT jboolean JNICALL Java_com_mindovercnc_linuxcnc_CommandWriter_sendMDICommand
   (JNIEnv *, jobject, jstring);
 
 /*

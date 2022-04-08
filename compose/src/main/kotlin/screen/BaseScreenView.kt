@@ -5,10 +5,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -18,18 +14,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.mindovercnc.base.CncStatusRepository
 import com.mindovercnc.base.MessagesRepository
-import com.mindovercnc.base.data.currentToolNo
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch
 import navigation.AppNavigator
 import org.kodein.di.compose.localDI
 import org.kodein.di.compose.rememberInstance
 import org.kodein.di.instance
 import screen.composables.ScaffoldView
-import screen.composables.common.AppTheme
 import screen.composables.tabconversational.ConversationalView
 import screen.composables.tabconversational.NewOperationView
 import screen.composables.tabmanual.*
@@ -252,7 +243,7 @@ private fun ScreenActions(screen: TabScreen, appNavigator: AppNavigator, modifie
                 }) {
                 Icon(
                     tint = when {
-                        virtualLimitsActive -> AppTheme.colors.material.secondary
+                        virtualLimitsActive -> MaterialTheme.colorScheme.secondary
                         else -> Color.Unspecified
                     },
                     imageVector = Icons.Default.Star,

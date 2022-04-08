@@ -1,8 +1,7 @@
 package screen.composables.tabmanual
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
+import androidx.compose.foundation.*
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -12,9 +11,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.loadImageBitmap
@@ -22,7 +23,6 @@ import androidx.compose.ui.res.useResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import extensions.draggableScroll
-import screen.composables.common.AppTheme
 import screen.uimodel.SimpleCycle
 
 @Composable
@@ -58,12 +58,15 @@ fun DrawerContent(
 
 @Composable
 fun Cycle(op: SimpleCycle, modifier: Modifier = Modifier, onClick: () -> Unit) {
+    val interactionSource = remember { MutableInteractionSource() }
+    val shape = RoundedCornerShape(8.dp)
     Surface(
-        modifier = modifier,
+        modifier = modifier
+            .clip(shape)
+            .clickable(interactionSource, indication = LocalIndication.current, onClick = onClick),
         border = BorderStroke(1.dp, SolidColor(Color.DarkGray)),
         shape = RoundedCornerShape(8.dp),
         shadowElevation = 8.dp,
-        onClick = onClick
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -77,7 +80,7 @@ fun Cycle(op: SimpleCycle, modifier: Modifier = Modifier, onClick: () -> Unit) {
                     modifier = Modifier
                         .size(imageSize)
                         .background(
-                            color = AppTheme.colors.backgroundLight,
+                            color = MaterialTheme.colorScheme.background,
                             shape = RoundedCornerShape(6.dp),
                         ),
                     contentDescription = "",
@@ -88,7 +91,7 @@ fun Cycle(op: SimpleCycle, modifier: Modifier = Modifier, onClick: () -> Unit) {
                     modifier = Modifier
                         .size(imageSize)
                         .background(
-                            color = AppTheme.colors.backgroundLight,
+                            color = MaterialTheme.colorScheme.background,
                             shape = RoundedCornerShape(6.dp),
                         )
                 )

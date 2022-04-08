@@ -1,10 +1,7 @@
 package screen.composables.tabmanual
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Button
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.RadioButton
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
@@ -16,6 +13,7 @@ import screen.composables.NumericInputField
 import screen.uimodel.InputType
 import screen.viewmodel.LimitsSettingsViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun VirtualLimitsSettingsView(
     viewModel: LimitsSettingsViewModel,
@@ -86,6 +84,7 @@ fun VirtualLimitsSettingsView(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Limit(
     axisDirection: String,

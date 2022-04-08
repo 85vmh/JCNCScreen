@@ -79,7 +79,7 @@ class ManualTurningUseCase(
         isTaperTurning.value = isTaperTurning.value.not()
     }
 
-    private fun sendSpindleCommand(status: SpindleSwitchStatus) {
+    private suspend fun sendSpindleCommand(status: SpindleSwitchStatus) {
         when (status) {
             SpindleSwitchStatus.REV -> "M4"
             SpindleSwitchStatus.FWD -> "M3"
@@ -94,8 +94,10 @@ class ManualTurningUseCase(
 //                commandRepository.setTaskMode(TaskMode.TaskModeMDI)
 //            }
             commandRepository.setTaskMode(TaskMode.TaskModeMDI)
-            commandRepository.executeMdiCommand(cmd)
+            val result = commandRepository.executeMdiCommand(cmd)
+            println("---MDI spindle command is: $result")
             halRepository.setSpindleStarted(true)
+            delay(200L) //delay a bit switching to manual
             commandRepository.setTaskMode(TaskMode.TaskModeManual)
         }
     }
@@ -150,7 +152,7 @@ class ManualTurningUseCase(
         println("---Delayed feed")
         feedJob?.cancel()
         feedJob = scope.launch {
-            delay(500L)
+            delay(200L)
             println("---Delay passed, start feeding")
             startFeeding(axis, direction)
         }
@@ -206,7 +208,7 @@ class ManualTurningUseCase(
     private suspend fun startJogging(axis: Axis, feedDirection: Direction) {
         println("---Start jogging")
         if (stopFeeding()) {
-            delay(200L)
+            delay(100L)
         }
         commandRepository.setTaskMode(TaskMode.TaskModeManual)
         val jogVelocity = statusRepository.cncStatusFlow().map { it.jogVelocity }.first()

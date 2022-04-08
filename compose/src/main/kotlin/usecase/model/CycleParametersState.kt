@@ -1,6 +1,7 @@
 package usecase.model
 
 import androidx.compose.runtime.mutableStateOf
+import codegen.ThreadingOperation
 
 abstract class CycleParametersState(
     xEnd: Double,
@@ -40,4 +41,21 @@ class BoringParameterState(
 ) : CycleParametersState(xEnd, zEnd, doc) {
     val turnAngle = mutableStateOf(turnAngle)
     val filletRadius = mutableStateOf(filletRadius)
+}
+
+class ThreadingParameterState(
+    xEnd: Double = Double.MIN_VALUE,
+    zEnd: Double,
+    doc: Double = Double.MIN_VALUE,
+    taper: ThreadingOperation.Taper,
+    depthDegression: ThreadingOperation.DepthDegression,
+    compoundSlideAngle: ThreadingOperation.CompoundSlideAngle,
+    threadPitch: Double = 1.0,
+    springPasses: Int = 1
+) : CycleParametersState(xEnd, zEnd, doc) {
+    val threadPitch = mutableStateOf(threadPitch)
+    val springPasses = mutableStateOf(springPasses)
+    val taper = mutableStateOf(taper)
+    val depthDegression = mutableStateOf(depthDegression)
+    val compoundSlideAngle = mutableStateOf(compoundSlideAngle)
 }

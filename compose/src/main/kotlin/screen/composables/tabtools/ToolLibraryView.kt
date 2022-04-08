@@ -7,16 +7,16 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.AlertDialog
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.ripple.rememberRipple
-import androidx.compose.material3.Button
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,7 +39,6 @@ import navigation.AppNavigator
 import org.kodein.di.compose.rememberInstance
 import screen.composables.LabelWithValue
 import screen.composables.VerticalDivider
-import screen.composables.common.AppTheme
 import screen.composables.platform.VerticalScrollbar
 import screen.uimodel.ToolsOffsetsScreen
 import usecase.ToolsUseCase
@@ -131,7 +130,7 @@ fun ChildFab(
     fabScale: Float,
     onChildFabItemClicked: (ChildFabItem) -> Unit
 ) {
-    val buttonColor = AppTheme.colors.material.secondary
+    val buttonColor = MaterialTheme.colorScheme.secondary
     val shadowColor = Color.DarkGray.copy(alpha = .5f)
 
     Row(
@@ -143,7 +142,7 @@ fun ChildFab(
                 indication = rememberRipple(
                     bounded = false,
                     radius = 20.dp,
-                    color = AppTheme.colors.material.onSurface
+                    color = MaterialTheme.colorScheme.surface
                 ),
                 onClick = { onChildFabItemClicked.invoke(item) }
             )
@@ -181,7 +180,7 @@ fun ChildFab(
                     ).value
                 )
                 .shadow(textShadow)
-                .background(AppTheme.colors.backgroundLight)
+                .background(MaterialTheme.colorScheme.background)
                 .padding(8.dp)
         )
     }
@@ -234,7 +233,9 @@ fun ToolLibraryView(
                     }) {
                     Text("Cancel")
                 }
-            }
+            },
+            shape = RoundedCornerShape(32.dp),
+            backgroundColor = androidx.compose.material3.MaterialTheme.colorScheme.secondary,
         )
     }
 

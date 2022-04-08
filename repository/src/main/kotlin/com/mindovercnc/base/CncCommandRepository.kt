@@ -56,7 +56,7 @@ interface CncCommandRepository {
 
     fun setBacklash(jointNumber: Int, backlash: Double)
 
-    fun executeMdiCommand(command: String)
+    fun executeMdiCommand(command: String) : Boolean
 
     fun loadProgramFile(filePath: String)
     fun stepProgram()

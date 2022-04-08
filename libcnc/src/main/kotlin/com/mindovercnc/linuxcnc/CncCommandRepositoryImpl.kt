@@ -44,7 +44,7 @@ class CncCommandRepositoryImpl() : CncCommandRepository {
         commandWriter.setFeedHold(if (hold) 1 else 0)
     }
 
-    enum class AutoMode(val code: Int){
+    enum class AutoMode(val code: Int) {
         RUN(0),
         PAUSE(1),
         RESUME(2),
@@ -58,7 +58,7 @@ class CncCommandRepositoryImpl() : CncCommandRepository {
         commandWriter.setAuto(AutoMode.RUN.code)
     }
 
-    override fun stopProgram(){
+    override fun stopProgram() {
         setTaskMode(TaskMode.TaskModeManual)
         taskAbort()
     }
@@ -111,9 +111,13 @@ class CncCommandRepositoryImpl() : CncCommandRepository {
         commandWriter.setBacklash(jointNumber, backlash)
     }
 
-    override fun executeMdiCommand(command: String) {
+    override fun executeMdiCommand(command: String): Boolean {
         println("----MDI: $command")
-        commandWriter.sendMDICommand(command)
+        return commandWriter.sendMDICommand(command).also {
+            if (!it) {
+                println("-----MDI cmd failed: $command")
+            }
+        }
     }
 
     override fun loadProgramFile(filePath: String) {

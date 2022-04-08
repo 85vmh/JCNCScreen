@@ -1,17 +1,23 @@
 package screen.composables.tabprograms.filesystem
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.LocalIndication
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Outline
@@ -89,12 +95,13 @@ fun BreadcrumbView(
 
 @Composable
 fun BreadcrumbItem(shape: Shape, item: String, onClick: (String) -> Unit) {
+    val interactionSource = remember { MutableInteractionSource() }
     Surface(
-        onClick = { onClick.invoke(item) },
+        modifier = Modifier.fillMaxHeight()
+            .clip(shape)
+            .clickable(interactionSource, indication = LocalIndication.current, onClick = { onClick.invoke(item) }),
         border = BorderStroke(width = 1.dp, color = Color.LightGray),
-        shape = shape,
-        modifier = Modifier
-            .fillMaxHeight()
+        shape = shape
     ) {
         Box(
             contentAlignment = Alignment.Center,

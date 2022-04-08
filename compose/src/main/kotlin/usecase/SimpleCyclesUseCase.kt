@@ -1,6 +1,7 @@
 package usecase
 
 import codegen.Point
+import codegen.ThreadingOperation
 import com.mindovercnc.base.CncCommandRepository
 import com.mindovercnc.base.CncStatusRepository
 import com.mindovercnc.base.HalRepository
@@ -69,6 +70,16 @@ class SimpleCyclesUseCase(
                 zEnd = 0.0,
                 doc = 1.0
             )
+            SimpleCycle.Threading -> ThreadingParameterState(
+                xEnd = 0.0,
+                zEnd = 0.0,
+                doc = 1.0,
+                taper = ThreadingOperation.Taper.AtEnd(1.0),
+                depthDegression = ThreadingOperation.DepthDegression.ConstantArea,
+                compoundSlideAngle = ThreadingOperation.CompoundSlideAngle.Angle290,
+                threadPitch = 1.0,
+                springPasses = 1
+            )
             else -> DummyParameterState()
         }
     }
@@ -78,6 +89,7 @@ class SimpleCyclesUseCase(
             is TurningParameterState -> getTurningCommand(cycleParametersState)
             is BoringParameterState -> getBoringCommand(cycleParametersState)
             is FacingParameterState -> getFacingCommand(cycleParametersState)
+            is ThreadingParameterState -> getThreadingCommand(cycleParametersState)
             else -> "Not implemented yet"
         }
         println("---SimpleCycle MDI command: $mdiCommand")
@@ -108,6 +120,20 @@ class SimpleCyclesUseCase(
         val zEnd = parameters.zEnd.value.stripZeros()
         val doc = parameters.doc.value.stripZeros()
         return "o<facing> call [$xEnd] [$zEnd] [$doc]"
+    }
+
+    private fun getThreadingCommand(parameters: ThreadingParameterState): String {
+        val xEnd = parameters.xEnd.value.stripZeros()
+        val zEnd = parameters.zEnd.value.stripZeros()
+        val pitch = parameters.threadPitch.value.stripZeros()
+        val doc = parameters.doc.value.stripZeros()
+        val initialDepth = 0
+        val fullDepth = 0
+        val depthDegression = parameters.depthDegression.value.value
+        val compoundAngle = parameters.compoundSlideAngle.value.value
+        val taper = parameters.taper.value
+        val springPasses = parameters.springPasses.value
+        return "o<od_threading> call [$xEnd] [$zEnd] [$pitch] [$initialDepth] [$fullDepth] [$depthDegression] [$compoundAngle] [${taper.code}] [${taper.length}] [$springPasses]"
     }
 
     suspend fun getCurrentPoint() = statusRepository.cncStatusFlow()
