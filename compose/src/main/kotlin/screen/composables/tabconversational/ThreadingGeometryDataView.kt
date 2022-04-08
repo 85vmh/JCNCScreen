@@ -39,7 +39,7 @@ fun ThreadingGeometryData() {
         ) {}
         InputSetting(
             modifier = Modifier.weight(1f),
-            inputType = InputType.THREAD_X_END, value = "1"
+            inputType = InputType.THREAD_MINOR_DIAMETER, value = "1"
         ) {}
         InputSetting(
             modifier = Modifier.weight(1f),

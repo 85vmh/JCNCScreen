@@ -13,6 +13,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.*
 import screen.uimodel.SimpleCycle
 import usecase.model.*
+import kotlin.math.sqrt
 
 class SimpleCyclesUseCase(
     scope: CoroutineScope,
@@ -73,12 +74,13 @@ class SimpleCyclesUseCase(
             SimpleCycle.Threading -> ThreadingParameterState(
                 xEnd = 0.0,
                 zEnd = 0.0,
-                doc = 1.0,
+                firstPassDepth = 0.2,
                 taper = ThreadingOperation.Taper.AtEnd(1.0),
                 depthDegression = ThreadingOperation.DepthDegression.ConstantArea,
                 compoundSlideAngle = ThreadingOperation.CompoundSlideAngle.Angle290,
                 threadPitch = 1.0,
-                springPasses = 1
+                springPasses = 1,
+                majorDiameter = 0.0
             )
             else -> DummyParameterState()
         }
@@ -123,17 +125,22 @@ class SimpleCyclesUseCase(
     }
 
     private fun getThreadingCommand(parameters: ThreadingParameterState): String {
-        val xEnd = parameters.xEnd.value.stripZeros()
-        val zEnd = parameters.zEnd.value.stripZeros()
         val pitch = parameters.threadPitch.value.stripZeros()
-        val doc = parameters.doc.value.stripZeros()
-        val initialDepth = 0
-        val fullDepth = 0
+        val zEnd = parameters.zEnd.value.stripZeros()
+        val majorDiameter = parameters.majorDiameter.value.stripZeros()
+        val firstPassDiameter = (parameters.majorDiameter.value - 2 * parameters.doc.value).stripZeros()
+        //val minorDiameter = parameters.xEnd.value.stripZeros()
+        val minorDiameter = getMinorDiameter(parameters.majorDiameter.value, parameters.threadPitch.value).stripZeros()
         val depthDegression = parameters.depthDegression.value.value
         val compoundAngle = parameters.compoundSlideAngle.value.value
         val taper = parameters.taper.value
         val springPasses = parameters.springPasses.value
-        return "o<od_threading> call [$xEnd] [$zEnd] [$pitch] [$initialDepth] [$fullDepth] [$depthDegression] [$compoundAngle] [${taper.code}] [${taper.length}] [$springPasses]"
+        return "o<od_threading> call [$pitch] [$zEnd] [$majorDiameter] [$firstPassDiameter] [$minorDiameter] [$depthDegression] [$compoundAngle] [${taper.code}] [${taper.length}] [$springPasses]"
+    }
+
+    private fun getMinorDiameter(majorDiameter: Double, threadPitch: Double): Double {
+        val triangleHeight = sqrt(3.0) / 2 * threadPitch
+        return majorDiameter - (triangleHeight - (triangleHeight / 4) * 2)
     }
 
     suspend fun getCurrentPoint() = statusRepository.cncStatusFlow()

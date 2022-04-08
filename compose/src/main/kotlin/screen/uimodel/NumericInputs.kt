@@ -117,8 +117,15 @@ object NumericInputs {
             initialValue = 0.0,
             maxDecimalPlaces = 3
         )
-        map[InputType.THREAD_X_END] = NumInputParameters(
-            valueDescription = "X End",
+        map[InputType.THREAD_MAJOR_DIAMETER] = NumInputParameters(
+            valueDescription = "Major Diameter",
+            minValue = 0.0,
+            maxValue = 300.0,
+            initialValue = 0.0,
+            maxDecimalPlaces = 3
+        )
+        map[InputType.THREAD_MINOR_DIAMETER] = NumInputParameters(
+            valueDescription = "Minor Diameter",
             minValue = 0.0,
             maxValue = 300.0,
             initialValue = 0.0,

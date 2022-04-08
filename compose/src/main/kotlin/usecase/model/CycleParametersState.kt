@@ -44,15 +44,17 @@ class BoringParameterState(
 }
 
 class ThreadingParameterState(
-    xEnd: Double = Double.MIN_VALUE,
+    xEnd: Double,
     zEnd: Double,
-    doc: Double = Double.MIN_VALUE,
+    firstPassDepth: Double,
     taper: ThreadingOperation.Taper,
     depthDegression: ThreadingOperation.DepthDegression,
     compoundSlideAngle: ThreadingOperation.CompoundSlideAngle,
+    majorDiameter: Double,
     threadPitch: Double = 1.0,
     springPasses: Int = 1
-) : CycleParametersState(xEnd, zEnd, doc) {
+) : CycleParametersState(xEnd, zEnd, firstPassDepth) {
+    val majorDiameter = mutableStateOf(majorDiameter)
     val threadPitch = mutableStateOf(threadPitch)
     val springPasses = mutableStateOf(springPasses)
     val taper = mutableStateOf(taper)

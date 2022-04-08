@@ -186,6 +186,13 @@ fun ThreadingParametersView(viewModel: CycleParametersViewModel, parametersState
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         CycleParameter(
+            parameterLabel = "Thread Pitch",
+            inputType = InputType.THREAD_PITCH,
+            value = parametersState.threadPitch.value,
+            valueChange = { parametersState.threadPitch.value = it },
+            teachInClicked = { }
+        )
+        CycleParameter(
             parameterLabel = "Z End",
             inputType = InputType.Z_END,
             value = parametersState.zEnd.value,
@@ -194,10 +201,18 @@ fun ThreadingParametersView(viewModel: CycleParametersViewModel, parametersState
             teachInClicked = { viewModel.teachInZ() }
         )
         CycleParameter(
-            parameterLabel = "Thread Pitch",
-            inputType = InputType.THREAD_PITCH,
-            value = parametersState.threadPitch.value,
-            valueChange = { parametersState.threadPitch.value = it },
+            parameterLabel = "Major Diameter",
+            inputType = InputType.THREAD_MAJOR_DIAMETER,
+            value = parametersState.majorDiameter.value,
+            valueChange = { parametersState.majorDiameter.value = it },
+            teachInLabel = "TeachIn X",
+            teachInClicked = { viewModel.teachInX() }
+        )
+        CycleParameter(
+            parameterLabel = "Initial DOC",
+            inputType = InputType.DOC,
+            value = parametersState.doc.value,
+            valueChange = { parametersState.doc.value = it },
             teachInClicked = { }
         )
     }
