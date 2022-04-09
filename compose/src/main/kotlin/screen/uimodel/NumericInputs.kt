@@ -240,7 +240,7 @@ object NumericInputs {
             minValue = 1.0,
             maxValue = 89.0,
             initialValue = 45.0,
-            maxDecimalPlaces = 0
+            maxDecimalPlaces = 2
         )
         map[InputType.VIRTUAL_LIMIT_X_MINUS] = NumInputParameters(
             valueDescription = "X Minus Limit",

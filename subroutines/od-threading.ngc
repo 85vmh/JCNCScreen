@@ -12,8 +12,8 @@ G90 ; Absolute Distance
 
 #<pitch> = #1
 #<z_end> = #2
-#<major_diameter> = [#3 * -1]
-#<initial_depth> = #4
+#<major_diameter> = #3
+#<initial_doc> = #4
 #<minor_diameter> = #5
 #<depth_degression> = #6
 #<compound_slide_angle> = #7
@@ -23,7 +23,7 @@ G90 ; Absolute Distance
 
 ;Threading
 
-G76 P#<pitch> Z#<z_end> I#<major_diameter> J#<initial_depth> K#<minor_diameter> R#<depth_degression> Q#<compound_slide_angle> L#<taper_type> E#<taper_length> H#<spring_passes>
+G76 P#<pitch> Z#<z_end> I-1 J#<initial_doc> K#<minor_diameter> R#<depth_degression> Q#<compound_slide_angle> L#<taper_type> E#<taper_length> H#<spring_passes>
 G0 Z#<z_start>
 
 O<od-threading> endsub

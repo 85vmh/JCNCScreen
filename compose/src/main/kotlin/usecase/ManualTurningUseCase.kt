@@ -85,6 +85,7 @@ class ManualTurningUseCase(
             SpindleSwitchStatus.FWD -> "M3"
             SpindleSwitchStatus.NEUTRAL -> {
                 halRepository.setSpindleStarted(false)
+                isTaperTurning.value = false
                 null //for now spindle stop is done in HAL and Classic Ladder
             }
         }?.let {
