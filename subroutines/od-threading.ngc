@@ -23,8 +23,10 @@ G90 ; Absolute Distance
 
 ;Threading
 
+G0 X<#major_diameter>
 G76 P#<pitch> Z#<z_end> I-1 J#<initial_doc> K#<minor_diameter> R#<depth_degression> Q#<compound_slide_angle> L#<taper_type> E#<taper_length> H#<spring_passes>
 G0 Z#<z_start>
+G0 X#<x_start>
 
 O<od-threading> endsub
 M2

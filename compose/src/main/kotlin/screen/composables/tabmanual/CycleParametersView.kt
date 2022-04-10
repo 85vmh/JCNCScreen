@@ -45,7 +45,7 @@ fun FacingParametersView(viewModel: CycleParametersViewModel, parametersState: F
             value = parametersState.xEnd.value,
             teachInLabel = "TeachIn X",
             valueChange = { parametersState.xEnd.value = it },
-            teachInClicked = { viewModel.teachInX() }
+            teachInClicked = { viewModel.teachInXEnd() }
         )
         CycleParameter(
             parameterLabel = "Z End",
@@ -53,7 +53,7 @@ fun FacingParametersView(viewModel: CycleParametersViewModel, parametersState: F
             value = parametersState.zEnd.value,
             teachInLabel = "TeachIn Z",
             valueChange = { parametersState.zEnd.value = it },
-            teachInClicked = { viewModel.teachInZ() }
+            teachInClicked = { viewModel.teachInZEnd() }
         )
         CycleParameter(
             parameterLabel = "Depth of cut",
@@ -101,7 +101,7 @@ fun TurningParametersView(viewModel: CycleParametersViewModel, parametersState: 
             value = parametersState.xEnd.value,
             teachInLabel = "TeachIn X",
             valueChange = { parametersState.xEnd.value = it },
-            teachInClicked = { viewModel.teachInX() }
+            teachInClicked = { viewModel.teachInXEnd() }
         )
         CycleParameter(
             parameterLabel = "Z End",
@@ -109,7 +109,7 @@ fun TurningParametersView(viewModel: CycleParametersViewModel, parametersState: 
             value = parametersState.zEnd.value,
             teachInLabel = "TeachIn Z",
             valueChange = { parametersState.zEnd.value = it },
-            teachInClicked = { viewModel.teachInZ() }
+            teachInClicked = { viewModel.teachInZEnd() }
         )
         CycleParameter(
             parameterLabel = "Depth of cut",
@@ -146,7 +146,7 @@ fun BoringParametersView(viewModel: CycleParametersViewModel, parametersState: B
             value = parametersState.xEnd.value,
             teachInLabel = "TeachIn X",
             valueChange = { parametersState.xEnd.value = it },
-            teachInClicked = { viewModel.teachInX() }
+            teachInClicked = { viewModel.teachInXEnd() }
         )
         CycleParameter(
             parameterLabel = "Z End",
@@ -154,7 +154,7 @@ fun BoringParametersView(viewModel: CycleParametersViewModel, parametersState: B
             value = parametersState.zEnd.value,
             teachInLabel = "TeachIn Z",
             valueChange = { parametersState.zEnd.value = it },
-            teachInClicked = { viewModel.teachInZ() }
+            teachInClicked = { viewModel.teachInZEnd() }
         )
         CycleParameter(
             parameterLabel = "Depth of cut",
@@ -198,7 +198,7 @@ fun ThreadingParametersView(viewModel: CycleParametersViewModel, parametersState
             value = parametersState.zEnd.value,
             teachInLabel = "TeachIn Z",
             valueChange = { parametersState.zEnd.value = it },
-            teachInClicked = { viewModel.teachInZ() }
+            teachInClicked = { viewModel.teachInZEnd() }
         )
         CycleParameter(
             parameterLabel = "Major Diameter",
@@ -206,7 +206,7 @@ fun ThreadingParametersView(viewModel: CycleParametersViewModel, parametersState
             value = parametersState.majorDiameter.value,
             valueChange = { parametersState.majorDiameter.value = it },
             teachInLabel = "TeachIn X",
-            teachInClicked = { viewModel.teachInX() }
+            teachInClicked = { viewModel.teachInMajorDiameter() }
         )
         CycleParameter(
             parameterLabel = "Initial DOC",
@@ -214,6 +214,14 @@ fun ThreadingParametersView(viewModel: CycleParametersViewModel, parametersState
             value = parametersState.doc.value,
             valueChange = { parametersState.doc.value = it },
             teachInClicked = { }
+        )
+        CycleParameter(
+            parameterLabel = "Minor Diameter",
+            inputType = InputType.THREAD_MAJOR_DIAMETER,
+            value = parametersState.xEnd.value,
+            valueChange = { parametersState.xEnd.value = it },
+            teachInLabel = "Calculate",
+            teachInClicked = { viewModel.teachInMinorDiameter() }
         )
     }
 }
