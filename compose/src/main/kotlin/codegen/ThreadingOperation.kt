@@ -16,7 +16,7 @@ class ThreadingOperation(
     private val threadStarts: Int = 1,
     private val springPasses: Int? = null,
     private val depthDegression: DepthDegression? = null,
-    private val compoundSlideAngle: CompoundSlideAngle? = null,
+    private val infeedAngle: InfeedAngle? = null,
     private val taper: Taper? = null
 ) : Operation {
 
@@ -54,13 +54,19 @@ class ThreadingOperation(
         data class AtBoth(val both: Double) : Taper(3, both)
     }
 
+    sealed class TaperAngle(val code: Int, val angle: Double) {
+        data class AtStart(val startAngle: Double) : TaperAngle(1, startAngle)
+        data class AtEnd(val endAngle: Double) : TaperAngle(2, endAngle)
+        data class AtBoth(val bothAngle: Double) : TaperAngle(3, bothAngle)
+    }
+
     sealed class DepthDegression(val value: Double) {
         object ConstantDepth : DepthDegression(1.0)
         object ConstantArea : DepthDegression(2.0)
         data class Custom(val customValue: Double) : DepthDegression(customValue)
     }
 
-    enum class CompoundSlideAngle(val value: Double) {
+    enum class InfeedAngle(val value: Double) {
         Angle290(29.0),
         Angle295(29.5),
         Angle300(30.0)
@@ -79,8 +85,8 @@ class ThreadingOperation(
         if (depthDegression != null) {
             builder.append("R${depthDegression.value.stripZeros()} ")
         }
-        if (compoundSlideAngle != null) {
-            builder.append("Q${compoundSlideAngle.value.stripZeros()} ")
+        if (infeedAngle != null) {
+            builder.append("Q${infeedAngle.value.stripZeros()} ")
         }
         if (springPasses != null) {
             builder.append("H$springPasses ")

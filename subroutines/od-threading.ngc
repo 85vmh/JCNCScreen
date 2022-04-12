@@ -7,26 +7,31 @@ G18 ; XZ Plane
 G21 ; Metric Units
 G90 ; Absolute Distance
 
-#<x_start> = [#<_x> * 2] (starting X)
+#<drive_line> = [#<_x> * 2] (starting X)
 #<z_start> = #<_z> (starting Z)
 
 #<pitch> = #1
 #<z_end> = #2
 #<major_diameter> = #3
 #<initial_doc> = #4
-#<minor_diameter> = #5
+#<final_depth> = #5
 #<depth_degression> = #6
-#<compound_slide_angle> = #7
+#<infeed_angle> = #7
 #<taper_type> = #8
-#<taper_length> = #9
+#<taper_angle> = #9
 #<spring_passes> = #10
 
 ;Threading
 
-G0 X<#major_diameter>
-G76 P#<pitch> Z#<z_end> I-1 J#<initial_doc> K#<minor_diameter> R#<depth_degression> Q#<compound_slide_angle> L#<taper_type> E#<taper_length> H#<spring_passes>
+#<taper_length>  = [TAN[#<taper_angle>] * #<final_depth> / 2]
+#<thread_peak> = [#<major_diameter> - #<drive_line>] (we need a negative value for external threads)
+
+(debug, Drive line: [#<drive_line>])
+(debug, Major diameter: [#<major_diameter>])
+(debug, Taper Length: [#<taper_length>])
+
+G76 P#<pitch> Z#<z_end> I#<thread_peak> J#<initial_doc> K#<final_depth> R#<depth_degression> Q#<infeed_angle> L#<taper_type> E#<taper_length> H#<spring_passes>
 G0 Z#<z_start>
-G0 X#<x_start>
 
 O<od-threading> endsub
 M2

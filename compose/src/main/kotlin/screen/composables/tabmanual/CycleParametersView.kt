@@ -217,7 +217,7 @@ fun ThreadingParametersView(viewModel: CycleParametersViewModel, parametersState
         )
         CycleParameter(
             parameterLabel = "Minor Diameter",
-            inputType = InputType.THREAD_MAJOR_DIAMETER,
+            inputType = InputType.THREAD_MINOR_DIAMETER,
             value = parametersState.xEnd.value,
             valueChange = { parametersState.xEnd.value = it },
             teachInLabel = "Calculate",

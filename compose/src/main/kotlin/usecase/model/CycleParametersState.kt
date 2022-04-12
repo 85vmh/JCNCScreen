@@ -47,9 +47,9 @@ class ThreadingParameterState(
     xEnd: Double,
     zEnd: Double,
     firstPassDepth: Double,
-    taper: ThreadingOperation.Taper,
+    taperAngle: ThreadingOperation.TaperAngle,
     depthDegression: ThreadingOperation.DepthDegression,
-    compoundSlideAngle: ThreadingOperation.CompoundSlideAngle,
+    infeedAngle: ThreadingOperation.InfeedAngle,
     majorDiameter: Double,
     threadPitch: Double = 1.0,
     springPasses: Int = 1
@@ -57,7 +57,7 @@ class ThreadingParameterState(
     val majorDiameter = mutableStateOf(majorDiameter)
     val threadPitch = mutableStateOf(threadPitch)
     val springPasses = mutableStateOf(springPasses)
-    val taper = mutableStateOf(taper)
+    val taperAngle = mutableStateOf(taperAngle)
     val depthDegression = mutableStateOf(depthDegression)
-    val compoundSlideAngle = mutableStateOf(compoundSlideAngle)
+    val infeedAngle = mutableStateOf(infeedAngle)
 }

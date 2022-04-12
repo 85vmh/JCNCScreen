@@ -13,7 +13,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.*
 import screen.uimodel.SimpleCycle
 import usecase.model.*
-import kotlin.math.sqrt
 
 class SimpleCyclesUseCase(
     scope: CoroutineScope,
@@ -75,9 +74,9 @@ class SimpleCyclesUseCase(
                 xEnd = 0.0,
                 zEnd = 0.0,
                 firstPassDepth = 0.2,
-                taper = ThreadingOperation.Taper.AtEnd(1.0),
+                taperAngle = ThreadingOperation.TaperAngle.AtEnd(45.0),
                 depthDegression = ThreadingOperation.DepthDegression.Custom(1.5),
-                compoundSlideAngle = ThreadingOperation.CompoundSlideAngle.Angle300,
+                infeedAngle = ThreadingOperation.InfeedAngle.Angle300,
                 threadPitch = 1.0,
                 springPasses = 1,
                 majorDiameter = 0.0
@@ -128,13 +127,13 @@ class SimpleCyclesUseCase(
         val pitch = parameters.threadPitch.value.stripZeros()
         val zEnd = parameters.zEnd.value.stripZeros()
         val majorDiameter = parameters.majorDiameter.value.stripZeros()
-        val initialDoc = parameters.doc.value.stripZeros()
-        val minorDiameter = parameters.xEnd.value.stripZeros()
+        val firstDoc = parameters.doc.value.stripZeros()
+        val finalDepth = (parameters.majorDiameter.value - parameters.xEnd.value).stripZeros()
         val depthDegression = parameters.depthDegression.value.value
-        val compoundAngle = parameters.compoundSlideAngle.value.value
-        val taper = parameters.taper.value
+        val infeedAngle = parameters.infeedAngle.value.value
+        val taper = parameters.taperAngle.value
         val springPasses = parameters.springPasses.value
-        return "o<od-threading> call [$pitch] [$zEnd] [$majorDiameter] [$initialDoc] [$minorDiameter] [$depthDegression] [$compoundAngle] [${taper.code}] [${taper.length}] [$springPasses]"
+        return "o<od-threading> call [$pitch] [$zEnd] [$majorDiameter] [$firstDoc] [$finalDepth] [$depthDegression] [$infeedAngle] [${taper.code}] [${taper.angle}] [$springPasses]"
     }
 
     suspend fun getCurrentPoint() = statusRepository.cncStatusFlow()

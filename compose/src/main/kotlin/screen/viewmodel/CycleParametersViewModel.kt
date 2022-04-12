@@ -44,18 +44,13 @@ class CycleParametersViewModel(
 
     fun teachInMinorDiameter() {
         (cycleParametersState as? ThreadingParameterState)?.let {
-            it.xEnd.value = calculateMinorDiameter(it.majorDiameter.value, it.threadPitch.value, true)
+            it.xEnd.value = calculateMinorDiameter(it.majorDiameter.value, it.threadPitch.value)
         }
     }
 
-    private fun calculateMinorDiameter(majorDiameter: Double, threadPitch: Double, isExternalThread: Boolean): Double {
+    private fun calculateMinorDiameter(majorDiameter: Double, threadPitch: Double): Double {
         val triangleHeight = sqrt(3.0) / 2 * threadPitch
-        // threadPeak is negative for external threads, positive for internal threads.
-        val amount = when {
-            isExternalThread -> triangleHeight - (triangleHeight / 4)
-            else -> triangleHeight - (triangleHeight / 8)
-        }
-        return majorDiameter - amount
+        return majorDiameter - 2 * 5 / 8 * triangleHeight
     }
 
     fun teachInZEnd() {
