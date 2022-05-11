@@ -7,7 +7,6 @@ import com.mindovercnc.base.data.*
 import extensions.stripZeros
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import usecase.model.*
 
 class ManualTurningUseCase(
     private val scope: CoroutineScope,
@@ -25,7 +24,7 @@ class ManualTurningUseCase(
     private var joystickResetRequired = false
 
     private val isTaperTurning = MutableStateFlow(false)
-    private val taperAngle get() = getTaperState().taperAngle.value
+    private val taperAngle get() = 45.0
 
     enum class JoystickFunction {
         None, Feeding, Jogging
@@ -237,84 +236,23 @@ class ManualTurningUseCase(
         commandRepository.executeMdiCommand(command)
     }
 
-    fun getTaperState() = TaperState(
-        taperAngle = settingsRepository.get(DoubleKey.TaperAngle, 45.0)
-    )
-
-    fun getSpindleState() = SpindleState(
-        defaultControlMode = SpindleControlMode.values()[settingsRepository.get(IntegerKey.SpindleMode, SpindleControlMode.RPM.ordinal)],
-        defaultRpmValue = settingsRepository.get(IntegerKey.RpmValue, 300),
-        defaultCssValue = settingsRepository.get(IntegerKey.CssValue, 230),
-        defaultMaxCssRpm = settingsRepository.get(IntegerKey.MaxCssRpm, 1500),
-        orientedStop = settingsRepository.get(BooleanKey.OrientedStop),
-        defaultStopAngle = settingsRepository.get(DoubleKey.OrientAngle)
-    )
-
-    fun getFeedState() = FeedState(
-        defaultFeedRateMode = FeedRateMode.values()[settingsRepository.get(IntegerKey.FeedMode, FeedRateMode.UNITS_PER_REVOLUTION.ordinal)],
-        defaultUnitsPerRevValue = settingsRepository.get(DoubleKey.FeedPerRev, 0.1),
-        defaultUnitsPerMinValue = settingsRepository.get(DoubleKey.FeedPerMin, 50.0)
-    )
-
-    fun applySpindleSettings(spindleState: SpindleState) {
-        settingsRepository.apply {
-            put(IntegerKey.SpindleMode, spindleState.spindleMode.value.ordinal)
-            put(IntegerKey.RpmValue, spindleState.rpmValue.value)
-            put(IntegerKey.CssValue, spindleState.cssValue.value)
-            put(IntegerKey.MaxCssRpm, spindleState.maxCssRpm.value)
-            put(BooleanKey.OrientedStop, spindleState.orientedStop.value)
-            put(DoubleKey.OrientAngle, spindleState.stopAngle.value.toDouble())
-        }
-    }
-
-    fun applyFeedSettings(feedState: FeedState) {
-        settingsRepository.apply {
-            put(IntegerKey.FeedMode, feedState.feedRateMode.value.ordinal)
-            put(DoubleKey.FeedPerRev, feedState.unitsPerRevValue.value)
-            put(DoubleKey.FeedPerMin, feedState.unitsPerMinValue.value)
-        }
-    }
-
-    fun applyTaperSettings(taperState: TaperState) {
-        settingsRepository.apply {
-            put(DoubleKey.TaperAngle, taperState.taperAngle.value)
-        }
-    }
-
     private val setFeedRate = statusRepository.cncStatusFlow().map { it.taskStatus.setFeedRate }.distinctUntilChanged()
-
-    val feedOverride = statusRepository.cncStatusFlow().map { it.motionStatus.trajectoryStatus.velocityScale }.distinctUntilChanged()
-
-    //TODO: check if this is correct when feeding in mm/min
-    val actualFeedRate = combine(setFeedRate, feedOverride) { feed, scale -> (feed ?: 0.0) * scale / 100 }.distinctUntilChanged()
-
-    val spindleOverride = statusRepository.cncStatusFlow().map { it.motionStatus.spindlesStatus[0].spindleScale }.map { it.toInt() }.distinctUntilChanged()
-
-    val actualSpindleSpeed = halRepository.actualSpindleSpeed().map { it.toInt() }.distinctUntilChanged()
-
-    @OptIn(FlowPreview::class)
-    val handwheelsState = combine(
-        statusRepository.cncStatusFlow().map { it.isInManualMode },
-        halRepository.jogIncrementValue().debounce(200L)
-    ) { isManualMode, jogIncrement -> HandwheelsState(isManualMode, jogIncrement) }
 
     private fun SettingsRepository.getSpindleStartParameters(): String {
         val parameters = StringBuilder()
-        val spindleMode = settingsRepository.get(IntegerKey.SpindleMode, SpindleControlMode.RPM.ordinal)
-        val feedMode = settingsRepository.get(IntegerKey.FeedMode, FeedRateMode.UNITS_PER_REVOLUTION.ordinal)
-        when (SpindleControlMode.values()[spindleMode]) {
-            SpindleControlMode.RPM -> {
+        when (settingsRepository.get(BooleanKey.IsRpmMode)) {
+            true -> {
                 val rpmSpeed = get(IntegerKey.RpmValue, 300)
                 parameters.append(" G97 S$rpmSpeed")
             }
-            SpindleControlMode.CSS -> {
+            else -> {
                 val cssValue = get(IntegerKey.CssValue, 230)
                 val cssMaxRpm = get(IntegerKey.MaxCssRpm, 1500)
                 parameters.append(" G96 D$cssMaxRpm S$cssValue")
             }
         }
-        when (FeedRateMode.values()[feedMode]) {
-            FeedRateMode.UNITS_PER_REVOLUTION -> {
+        when (settingsRepository.get(BooleanKey.IsUnitsPerRevMode)) {
+            true -> {
                 val feedPerRev = settingsRepository.get(DoubleKey.FeedPerRev, 0.1)
                 parameters.append(" G95 F$feedPerRev")
             }

@@ -2,26 +2,27 @@ package usecase
 
 import com.mindovercnc.base.*
 import com.mindovercnc.base.data.*
+import com.mindovercnc.base.data.tools.ToolHolder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 import screen.uimodel.AllowedSpindleDirection
 import screen.uimodel.ToolType
 import usecase.model.AddEditToolState
 
 class ToolsUseCase(
-    private val scope: CoroutineScope,
+    scope: CoroutineScope,
     private val statusRepository: CncStatusRepository,
     private val commandRepository: CncCommandRepository,
     private val messagesRepository: MessagesRepository,
     private val halRepository: HalRepository,
     private val settingsRepository: SettingsRepository,
-    private val toolFileRepository: ToolFileRepository,
+    private val toolsRepository: ToolsRepository,
     private val varFileRepository: VarFileRepository
 ) {
 
     init {
+        //TODO: this should be moved somewhere else, and remove the scope from the useCase
         statusRepository.cncStatusFlow()
             .map { it.isHomed() }
             .filter { it }
@@ -35,29 +36,37 @@ class ToolsUseCase(
             .launchIn(scope)
     }
 
-    fun getTools(): Flow<List<LatheTool>> {
-        return toolFileRepository.getTools()
+    fun getToolHolders(): Flow<List<ToolHolder>> {
+        return flowOf(toolsRepository.getToolHolders())
     }
 
-    fun toolTouchOffX(value: Double) {
+    fun addToolHolder(toolHolder: ToolHolder){
+        toolsRepository.addOrUpdateToolHolder(toolHolder)
+    }
+
+    fun getTools(): Flow<List<LatheTool>> {
+        //return toolsRepository.getTools()
+        return flowOf(emptyList())
+    }
+
+    suspend fun toolTouchOffX(value: Double) {
         toolTouchOff("X$value")
     }
 
-    fun toolTouchOffZ(value: Double) {
+    suspend fun toolTouchOffZ(value: Double) {
         toolTouchOff("Z$value")
     }
 
-    fun loadTool(toolNo: Int) {
-        scope.launch {
-            val initialTaskMode = statusRepository.cncStatusFlow().map { it.taskStatus.taskMode }.first()
-            commandRepository.setTaskMode(TaskMode.TaskModeMDI)
-            commandRepository.executeMdiCommand("M61 Q$toolNo G43")
-            commandRepository.setTaskMode(initialTaskMode)
-        }
+    suspend fun loadTool(toolNo: Int) {
+        val initialTaskMode = statusRepository.cncStatusFlow().map { it.taskStatus.taskMode }.first()
+        commandRepository.setTaskMode(TaskMode.TaskModeMDI)
+        commandRepository.executeMdiCommand("M61 Q$toolNo G43")
+        delay(200)
+        commandRepository.setTaskMode(initialTaskMode)
     }
 
     fun deleteTool(toolNo: Int) {
-        toolFileRepository.removeTool(toolNo)
+        //toolsRepository.removeTool(toolNo)
     }
 
     fun getCurrentToolNo(): Flow<Int> {
@@ -67,28 +76,26 @@ class ToolsUseCase(
             .onEach { settingsRepository.put(IntegerKey.LastToolUsed, it) }
     }
 
-    fun getCurrentTool(): Flow<LatheTool?> {
-        return combine(
-            toolFileRepository.getTools().distinctUntilChanged(),
-            getCurrentToolNo()
-        ) { toolsList, loadedToolNo ->
-            toolsList.find { it.toolNo == loadedToolNo }
-        }
-    }
+//    fun getCurrentTool(): Flow<LatheTool?> {
+//        return combine(
+//            toolsRepository.getTools().distinctUntilChanged(),
+//            getCurrentToolNo()
+//        ) { toolsList, loadedToolNo ->
+//            toolsList.find { it.toolNo == loadedToolNo }
+//        }
+//    }
 
-    private fun toolTouchOff(axisWithValue: String) {
-        scope.launch {
-            val initialTaskMode = statusRepository.cncStatusFlow().map { it.taskStatus.taskMode }.first()
-            val currentTool = statusRepository.cncStatusFlow().map { it.currentToolNo }.first()
-            commandRepository.setTaskMode(TaskMode.TaskModeMDI)
-            commandRepository.executeMdiCommand("G10 L10 P$currentTool $axisWithValue")
-            //TODO: make this based on status channel
-            delay(200)
-            commandRepository.executeMdiCommand("G43")
-            delay(200)
-            commandRepository.setTaskMode(initialTaskMode)
-            commandRepository.setTeleopEnable(true)
-        }
+    private suspend fun toolTouchOff(axisWithValue: String) {
+        val initialTaskMode = statusRepository.cncStatusFlow().map { it.taskStatus.taskMode }.first()
+        val currentTool = statusRepository.cncStatusFlow().map { it.currentToolNo }.first()
+        commandRepository.setTaskMode(TaskMode.TaskModeMDI)
+        commandRepository.executeMdiCommand("G10 L10 P$currentTool $axisWithValue")
+        //TODO: make this based on status channel
+        delay(200)
+        commandRepository.executeMdiCommand("G43")
+        delay(200)
+        commandRepository.setTaskMode(initialTaskMode)
+        commandRepository.setTeleopEnable(true)
     }
 
     val toolState = AddEditToolState(
@@ -103,3 +110,18 @@ class ToolsUseCase(
         orientation = 1
     )
 }
+/**
+ * Ce vreau de la tool:
+ * - Sa pot defini insert si regimuri de aschiere per insert.
+ * - Cutitul are regim de aschiere
+ * - Sa am mai multe cuttere decat holdere
+ * - Sa pot sa definesc un max tool length.
+ *
+ * Insert: tip radius, viteza radiala, depth of cut, feed
+ * LatheCutter: Id, Insert, Orientation
+ * ToolHolder: Id, LatheCutterId?, Stickout
+ *
+ * Tool: Id = ToolHolderId
+ *
+ *
+ */

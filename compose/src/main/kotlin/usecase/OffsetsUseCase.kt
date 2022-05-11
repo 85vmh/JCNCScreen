@@ -2,15 +2,12 @@ package usecase
 
 import com.mindovercnc.base.*
 import com.mindovercnc.base.data.TaskMode
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 import usecase.model.OffsetEntry
 
 class OffsetsUseCase(
-    private val scope: CoroutineScope,
     private val statusRepository: CncStatusRepository,
     private val commandRepository: CncCommandRepository,
     private val varFileRepository: VarFileRepository
@@ -31,26 +28,24 @@ class OffsetsUseCase(
         .map { it.taskStatus.g5xIndex }
         .map { getStringRepresentation(it) }
 
-    fun touchOffX(value: Double) {
+    suspend fun touchOffX(value: Double) {
         executeMdiCommand("G10 L20 P0 X$value")
     }
 
-    fun touchOffZ(value: Double) {
+    suspend fun touchOffZ(value: Double) {
         executeMdiCommand("G10 L20 P0 Z$value")
     }
 
-    fun setActiveOffset(cmd: String) {
+    suspend fun setActiveOffset(cmd: String) {
         executeMdiCommand(cmd)
     }
 
-    private fun executeMdiCommand(cmd: String) {
-        scope.launch {
-            val initialTaskMode = statusRepository.cncStatusFlow().map { it.taskStatus.taskMode }.first()
-            commandRepository.setTaskMode(TaskMode.TaskModeMDI)
-            commandRepository.executeMdiCommand(cmd)
-            commandRepository.setTaskMode(initialTaskMode)
-            commandRepository.setTeleopEnable(true)
-        }
+    private suspend fun executeMdiCommand(cmd: String) {
+        val initialTaskMode = statusRepository.cncStatusFlow().map { it.taskStatus.taskMode }.first()
+        commandRepository.setTaskMode(TaskMode.TaskModeMDI)
+        commandRepository.executeMdiCommand(cmd)
+        commandRepository.setTaskMode(initialTaskMode)
+        commandRepository.setTeleopEnable(true)
     }
 
     private fun getStringRepresentation(index: Int): String {

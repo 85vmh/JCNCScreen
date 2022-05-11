@@ -1,3 +1,6 @@
+import Versions.coroutines
+import Versions.kodein
+
 plugins {
     kotlin("jvm")
 }
@@ -10,6 +13,9 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib"))
-    api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0")
-    implementation("org.kodein.di:kodein-di-framework-compose:7.9.0")
+    api("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines")
+    implementation("org.kodein.di:kodein-di-framework-compose:$kodein")
+
+    implementation(project(":database"))
+    api(project(":model"))
 }

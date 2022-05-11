@@ -28,7 +28,8 @@ private fun NumPadViewPreview() {
 class NumPadState(
     initialValue: Double? = null,
     val numInputParameters: NumInputParameters,
-    val inputType: InputType? = null
+    val inputType: InputType? = null,
+    val onSubmitAction: (Double) -> Unit = {}
 ) {
 //    private val defaultValue = initialValue?.toFixedDigits(numInputParameters.maxDecimalPlaces)
 //        ?: numInputParameters.initialValue.toFixedDigits(numInputParameters.maxDecimalPlaces)

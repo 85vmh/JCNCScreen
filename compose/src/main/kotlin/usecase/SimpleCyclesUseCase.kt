@@ -1,145 +1,177 @@
 package usecase
 
-import codegen.Point
-import codegen.ThreadingOperation
 import com.mindovercnc.base.CncCommandRepository
 import com.mindovercnc.base.CncStatusRepository
 import com.mindovercnc.base.HalRepository
 import com.mindovercnc.base.SettingsRepository
 import com.mindovercnc.base.data.TaskMode
-import com.mindovercnc.base.data.getDisplayablePosition
 import extensions.stripZeros
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import screen.uimodel.SimpleCycle
-import usecase.model.*
+import usecase.model.SimpleCycleParameters
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class SimpleCyclesUseCase(
     scope: CoroutineScope,
     private val statusRepository: CncStatusRepository,
     private val commandRepository: CncCommandRepository,
-    private val halRepository: HalRepository,
+    halRepository: HalRepository,
     private val settingsRepository: SettingsRepository,
 ) {
 
     var isInEditMode = false
-    private val _isSimpleCycleActive = MutableStateFlow(false)
     private val _subroutineToCall = MutableStateFlow("")
+    private val _simpleCycleParameters = MutableStateFlow<SimpleCycleParameters?>(null)
 
-    val isSimpleCycleActive = _isSimpleCycleActive.asStateFlow()
-    val subroutineToCall = _subroutineToCall.asStateFlow()
-    var currentCycle: SimpleCycle? = null
+    private val subroutineToCall = _subroutineToCall.asStateFlow()
+    val simpleCycleParameters = _simpleCycleParameters.asSharedFlow()
 
     init {
         halRepository.getCycleStopStatus()
             .filter { it }
-            .filter { isSimpleCycleActive.value }
+            .filter { _simpleCycleParameters.value != null }
             .onEach {
                 if (isCycleRunning()) {
                     commandRepository.taskAbort()
                     commandRepository.setTaskMode(TaskMode.TaskModeManual)
                 } else {
-                    _isSimpleCycleActive.value = false
+                    _simpleCycleParameters.value = null
+                    _simpleCycleParameters.resetReplayCache()
                 }
             }.launchIn(scope)
 
         halRepository.getCycleStartStatus()
             .filter { it }
-            .filter { isSimpleCycleActive.value && subroutineToCall.value.isNotEmpty() }
+            .filter { _simpleCycleParameters.value != null && subroutineToCall.value.isNotEmpty() }
             .onEach {
                 commandRepository.setTaskMode(TaskMode.TaskModeMDI)
                 commandRepository.executeMdiCommand(subroutineToCall.value)
             }.launchIn(scope)
     }
 
-    fun getInitialParameters(simpleCycle: SimpleCycle): CycleParametersState {
-        this.currentCycle = simpleCycle
+    fun getCycleParameters(simpleCycle: SimpleCycle): SimpleCycleParameters {
+        //if we have parameters for this cycle, return them
+        _simpleCycleParameters.value?.let {
+            if (it.simpleCycle == simpleCycle) {
+                return it
+            }
+        }
+
         return when (simpleCycle) {
-            SimpleCycle.Turning -> TurningParameterState(
+            SimpleCycle.Turning -> SimpleCycleParameters.TurningParameters(
                 xEnd = 0.0,
                 zEnd = 0.0,
                 doc = 1.0
             )
-            SimpleCycle.Boring -> BoringParameterState(
+            SimpleCycle.Boring -> SimpleCycleParameters.BoringParameters(
                 xEnd = 0.0,
                 zEnd = 0.0,
                 doc = 1.0
             )
-            SimpleCycle.Facing -> FacingParameterState(
+            SimpleCycle.Facing -> SimpleCycleParameters.FacingParameters(
                 xEnd = 0.0,
                 zEnd = 0.0,
                 doc = 1.0
             )
-            SimpleCycle.Threading -> ThreadingParameterState(
-                xEnd = 0.0,
+            SimpleCycle.Threading -> SimpleCycleParameters.ThreadingParameters(
+                pitch = 1.0,
                 zEnd = 0.0,
+                majorDiameter = 0.0,
+                minorDiameter = 0.0,
                 firstPassDepth = 0.2,
-                taperAngle = ThreadingOperation.TaperAngle.AtEnd(45.0),
-                depthDegression = ThreadingOperation.DepthDegression.Custom(1.5),
-                infeedAngle = ThreadingOperation.InfeedAngle.Angle300,
-                threadPitch = 1.0,
-                springPasses = 1,
-                majorDiameter = 0.0
+                finalDepth = 0.0
             )
-            else -> DummyParameterState()
+            SimpleCycle.Drilling -> SimpleCycleParameters.DrillingParameters(
+                zEnd = 0.0,
+                retract = 0.0,
+                increment = 0.0,
+                rpm = 0.0,
+                feed = 0.0
+            )
+            SimpleCycle.KeySlot -> SimpleCycleParameters.KeySlotParameters(
+                zEnd = 0.0,
+                xEnd = 0.0,
+                doc = 0.1,
+                feedPerMinute = 50.0
+            )
+            else -> SimpleCycleParameters.DummyParameters
         }
     }
 
-    fun applyParameters(cycleParametersState: CycleParametersState) {
-        val mdiCommand = when (cycleParametersState) {
-            is TurningParameterState -> getTurningCommand(cycleParametersState)
-            is BoringParameterState -> getBoringCommand(cycleParametersState)
-            is FacingParameterState -> getFacingCommand(cycleParametersState)
-            is ThreadingParameterState -> getThreadingCommand(cycleParametersState)
+    fun applyParameters(cycleParameters: SimpleCycleParameters) {
+        val mdiCommand = when (cycleParameters) {
+            is SimpleCycleParameters.TurningParameters -> getTurningCommand(cycleParameters)
+            is SimpleCycleParameters.BoringParameters -> getBoringCommand(cycleParameters)
+            is SimpleCycleParameters.FacingParameters -> getFacingCommand(cycleParameters)
+            is SimpleCycleParameters.ThreadingParameters -> getThreadingCommand(cycleParameters)
+            is SimpleCycleParameters.DrillingParameters -> getDrillingCommand(cycleParameters)
+            is SimpleCycleParameters.KeySlotParameters -> getKeySlotCommand(cycleParameters)
             else -> "Not implemented yet"
         }
         println("---SimpleCycle MDI command: $mdiCommand")
         _subroutineToCall.value = mdiCommand
-        _isSimpleCycleActive.value = true
+        _simpleCycleParameters.value = cycleParameters
     }
 
-    private fun getTurningCommand(parameters: TurningParameterState): String {
-        val xEnd = parameters.xEnd.value.stripZeros()
-        val zEnd = parameters.zEnd.value.stripZeros()
-        val doc = parameters.doc.value.stripZeros()
-        val turnAngle = parameters.turnAngle.value.stripZeros()
-        val filletRadius = parameters.filletRadius.value.stripZeros()
-        return "o<turning> call [$xEnd] [$zEnd] [$doc] [$turnAngle] [$filletRadius]"
+    private fun getTurningCommand(parameters: SimpleCycleParameters.TurningParameters): String {
+        val xEnd = parameters.xEnd.stripZeros()
+        val zEnd = parameters.zEnd.stripZeros()
+        val doc = parameters.doc.stripZeros()
+        val taperAngle = parameters.taperAngle.stripZeros()
+        val filletRadius = parameters.filletRadius.stripZeros()
+        return "o<turning> call [$xEnd] [$zEnd] [$doc] [$taperAngle] [$filletRadius]"
     }
 
-    private fun getBoringCommand(parameters: BoringParameterState): String {
-        val xEnd = parameters.xEnd.value.stripZeros()
-        val zEnd = parameters.zEnd.value.stripZeros()
-        val doc = parameters.doc.value.stripZeros()
-        val turnAngle = parameters.turnAngle.value.stripZeros()
-        val filletRadius = parameters.filletRadius.value.stripZeros()
+    private fun getBoringCommand(parameters: SimpleCycleParameters.BoringParameters): String {
+        val xEnd = parameters.xEnd.stripZeros()
+        val zEnd = parameters.zEnd.stripZeros()
+        val doc = parameters.doc.stripZeros()
+        val turnAngle = parameters.taperAngle.stripZeros()
+        val filletRadius = parameters.filletRadius.stripZeros()
         return "o<boring> call [$xEnd] [$zEnd] [$doc] [$turnAngle] [$filletRadius]"
     }
 
-    private fun getFacingCommand(parameters: FacingParameterState): String {
-        val xEnd = parameters.xEnd.value.stripZeros()
-        val zEnd = parameters.zEnd.value.stripZeros()
-        val doc = parameters.doc.value.stripZeros()
+    private fun getFacingCommand(parameters: SimpleCycleParameters.FacingParameters): String {
+        val xEnd = parameters.xEnd.stripZeros()
+        val zEnd = parameters.zEnd.stripZeros()
+        val doc = parameters.doc.stripZeros()
         return "o<facing> call [$xEnd] [$zEnd] [$doc]"
     }
 
-    private fun getThreadingCommand(parameters: ThreadingParameterState): String {
-        val pitch = parameters.threadPitch.value.stripZeros()
-        val zEnd = parameters.zEnd.value.stripZeros()
-        val majorDiameter = parameters.majorDiameter.value.stripZeros()
-        val firstDoc = parameters.doc.value.stripZeros()
-        val finalDepth = (parameters.majorDiameter.value - parameters.xEnd.value).stripZeros()
-        val depthDegression = parameters.depthDegression.value.value
-        val infeedAngle = parameters.infeedAngle.value.value
-        val taper = parameters.taperAngle.value
-        val springPasses = parameters.springPasses.value
-        return "o<od-threading> call [$pitch] [$zEnd] [$majorDiameter] [$firstDoc] [$finalDepth] [$depthDegression] [$infeedAngle] [${taper.code}] [${taper.angle}] [$springPasses]"
+    private fun getThreadingCommand(parameters: SimpleCycleParameters.ThreadingParameters): String {
+        val pitch = parameters.pitch.stripZeros()
+        val zEnd = parameters.zEnd.stripZeros()
+        val startDiameter = when {
+            parameters.isExternal -> parameters.majorDiameter.stripZeros()
+            else -> parameters.minorDiameter.stripZeros()
+        }
+        val firstPassDoc = parameters.firstPassDepth.stripZeros()
+        val finalDepth = parameters.finalDepth.stripZeros()
+        val depthDegression = 1
+        val infeedAngle = 30
+        val taper = 0
+        val springPasses = 0
+        return "o<threading> call [$pitch] [$zEnd] [$startDiameter] [$firstPassDoc] [$finalDepth] [$depthDegression] [$infeedAngle] [2] [45] [$springPasses]"
     }
 
-    suspend fun getCurrentPoint() = statusRepository.cncStatusFlow()
-        .map { it.getDisplayablePosition() }
-        .map { Point(it.x * 2, it.z) } // *2 due to diameter mode
-        .first()
+    private fun getDrillingCommand(parameters: SimpleCycleParameters.DrillingParameters): String {
+        val zEnd = parameters.zEnd.stripZeros()
+        val retract = parameters.retract.stripZeros()
+        val increment = parameters.increment.stripZeros()
+        val rpm = parameters.rpm.stripZeros()
+        val feed = parameters.feed.stripZeros()
+        return "o<drilling> call [$zEnd] [$retract] [$increment] [$rpm] [$feed]"
+    }
+
+    private fun getKeySlotCommand(parameters: SimpleCycleParameters.KeySlotParameters): String {
+        val xEnd = parameters.xEnd.stripZeros()
+        val zEnd = parameters.zEnd.stripZeros()
+        val doc = parameters.doc.stripZeros()
+        val feed = parameters.feedPerMinute.stripZeros()
+        return "o<keyslot> call [$xEnd] [$zEnd] [$doc] [$feed]"
+    }
 
     private suspend fun isCycleRunning() = statusRepository.cncStatusFlow()
         .map { it.isInMdiMode }

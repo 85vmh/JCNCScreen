@@ -12,7 +12,7 @@ import usecase.model.OdTurningDataState
 
 class OdTurningViewModel(
     private val conversationalUseCase: ConversationalUseCase
-) : ViewModel() {
+) {
 
     private val roughingParams = CuttingParametersState(1, 200, 0.25, 2.0)
     private val finishingParams = CuttingParametersState(1, 200, 0.05, 1.0)

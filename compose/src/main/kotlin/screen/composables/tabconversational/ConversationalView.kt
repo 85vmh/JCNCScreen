@@ -65,7 +65,7 @@ fun Operation(op: ConversationalOperation, modifier: Modifier = Modifier, onClic
         border = BorderStroke(1.dp, SolidColor(Color.DarkGray)),
         shape = shape,
         shadowElevation = 8.dp,
-        interactionSource = interactionSource
+        //interactionSource = interactionSource
     ) {
         Column(
             modifier = Modifier.padding(4.dp),

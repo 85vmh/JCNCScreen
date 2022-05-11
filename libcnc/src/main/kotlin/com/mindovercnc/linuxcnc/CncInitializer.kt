@@ -1,7 +1,7 @@
 package com.mindovercnc.linuxcnc
 
 object CncInitializer {
-    fun initialize() {
+    operator fun invoke() {
         //System.loadLibrary("linuxcncini");
         System.loadLibrary("nml")
         System.loadLibrary("linuxcnchal")

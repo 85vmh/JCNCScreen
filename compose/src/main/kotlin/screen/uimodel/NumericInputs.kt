@@ -109,6 +109,7 @@ object NumericInputs {
             minValue = 0.5,
             maxValue = 10.0,
             initialValue = 1.0,
+            maxDecimalPlaces = 2
         )
         map[InputType.THREAD_X_START] = NumInputParameters(
             valueDescription = "X Start",
@@ -126,6 +127,13 @@ object NumericInputs {
         )
         map[InputType.THREAD_MINOR_DIAMETER] = NumInputParameters(
             valueDescription = "Minor Diameter",
+            minValue = 0.0,
+            maxValue = 300.0,
+            initialValue = 0.0,
+            maxDecimalPlaces = 3
+        )
+        map[InputType.THREAD_FINAL_DEPTH] = NumInputParameters(
+            valueDescription = "Final depth (in radius measurement)",
             minValue = 0.0,
             maxValue = 300.0,
             initialValue = 0.0,
@@ -151,6 +159,19 @@ object NumericInputs {
             maxValue = 20.0,
             initialValue = 3.0,
             maxDecimalPlaces = 3
+        )
+        map[InputType.THREAD_SPRING_PASSES] = NumInputParameters(
+            valueDescription = "Spring Passes",
+            minValue = 0.0,
+            maxValue = 20.0,
+            initialValue = 1.0,
+        )
+        map[InputType.KEY_SLOT_DEPTH] = NumInputParameters(
+            valueDescription = "KeySlot Depth",
+            minValue = 0.0,
+            maxValue = 20.0,
+            initialValue = 1.0,
+            maxDecimalPlaces = 2
         )
         map[InputType.X_START] = NumInputParameters(
             valueDescription = "Initial X",

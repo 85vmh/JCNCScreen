@@ -1,14 +1,12 @@
 package di
 
 import com.mindovercnc.base.*
-import com.mindovercnc.base.data.CncStatus
-import com.mindovercnc.base.data.SystemMessage
+import com.mindovercnc.database.entity.CuttingInsertEntity
 import com.mindovercnc.linuxcnc.*
 import com.mindovercnc.linuxcnc.nml.BuffDescriptor
 import com.mindovercnc.linuxcnc.nml.BuffDescriptorV29
 import com.mindovercnc.linuxcnc.parsing.*
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.emptyFlow
 import org.kodein.di.DI
 import org.kodein.di.bindProvider
 import org.kodein.di.bindSingleton
@@ -26,10 +24,10 @@ val RepositoryModule = DI.Module("repository") {
         val filePath = iniRepo.getIniFile().parameterFile
         VarFileRepositoryImpl(instance("app_scope"), filePath)
     }
-    bindSingleton<ToolFileRepository> {
+    bindSingleton<ToolsRepository> {
         val iniRepo: IniFileRepository = instance()
         val filePath = iniRepo.getIniFile().toolTableFile
-        ToolFileRepositoryImpl(instance("app_scope"), filePath)
+        ToolsRepositoryImpl(instance("app_scope"), filePath)
     }
     bindSingleton<FileSystemRepository> {
         val iniRepo: IniFileRepository = instance()
@@ -38,6 +36,9 @@ val RepositoryModule = DI.Module("repository") {
     }
     bindSingleton { Preferences.userRoot() }
     bindSingleton<SettingsRepository> { SettingsRepositoryImpl(instance()) }
+    bindSingleton<ActiveLimitsRepository> { ActiveLimitsRepository() }
+    bindSingleton<CuttingInsertsRepository> { CuttingInsertsRepositoryImpl() }
+//    bindSingleton<CuttingInsertsRepository> { CuttingInsertsRepositoryImpl() }
 }
 
 fun iniFileModule(filePath: String) = DI.Module("ini") {

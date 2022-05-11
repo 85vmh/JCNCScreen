@@ -1,17 +1,17 @@
 package di
 
-import navigation.AppNavigator
 import org.kodein.di.DI
 import org.kodein.di.bindSingleton
 import org.kodein.di.instance
+import usecase.FeedUseCase
+import usecase.SpindleUseCase
+import usecase.TaperUseCase
 import usecase.*
 
 val UseCaseModule = DI.Module("UseCase") {
     bindSingleton {
         MessagesUseCase(messagesRepository = instance())
     }
-
-    bindSingleton { AppNavigator() }
 
     bindSingleton {
         ManualTurningUseCase(
@@ -43,7 +43,8 @@ val UseCaseModule = DI.Module("UseCase") {
             statusRepository = instance(),
             halRepository = instance(),
             settingsRepository = instance(),
-            iniFileRepository = instance()
+            iniFileRepository = instance(),
+            activeLimitsRepository = instance()
         )
     }
 
@@ -59,7 +60,6 @@ val UseCaseModule = DI.Module("UseCase") {
 
     bindSingleton {
         ManualPositionUseCase(
-            scope = instance(tag = "app_scope"),
             cncStatusRepository = instance(),
         )
     }
@@ -72,14 +72,13 @@ val UseCaseModule = DI.Module("UseCase") {
             messagesRepository = instance(),
             halRepository = instance(),
             settingsRepository = instance(),
-            toolFileRepository = instance(),
+            toolsRepository = instance(),
             varFileRepository = instance()
         )
     }
 
     bindSingleton {
         OffsetsUseCase(
-            scope = instance(tag = "app_scope"),
             statusRepository = instance(),
             commandRepository = instance(),
             varFileRepository = instance()
@@ -101,8 +100,40 @@ val UseCaseModule = DI.Module("UseCase") {
             scope = instance(tag = "app_scope"),
             statusRepository = instance(),
             commandRepository = instance(),
+        )
+    }
+
+    bindSingleton {
+        SpindleUseCase(
             settingsRepository = instance(),
-            fileSystemRepository = instance()
+            statusRepository = instance(),
+            halRepository = instance()
+        )
+    }
+
+    bindSingleton {
+        FeedUseCase(
+            settingsRepository = instance(),
+            statusRepository = instance(),
+        )
+    }
+
+    bindSingleton {
+        HandWheelsUseCase(
+            statusRepository = instance(),
+            halRepository = instance(),
+        )
+    }
+
+    bindSingleton {
+        TaperUseCase(
+            settingsRepository = instance(),
+        )
+    }
+
+    bindSingleton {
+        PositionUseCase(
+            statusRepository = instance(),
         )
     }
 }

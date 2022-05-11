@@ -1,5 +1,7 @@
 package codegen
 
+import com.mindovercnc.base.data.Axis
+import com.mindovercnc.base.data.Direction
 import com.mindovercnc.base.data.G53AxisLimits
 import junit.framework.Assert.assertEquals
 import org.junit.Before
@@ -20,25 +22,25 @@ class ManualTurningHelperTest {
 
     @Test
     fun testFeedXMinus() {
-        val command = testSubject.getStraightTurningCommand(ManualTurningHelper.Axis.X, ManualTurningHelper.Direction.Negative, g53Limits)
+        val command = testSubject.getStraightTurningCommand(Axis.X, Direction.Negative, g53Limits)
         assertEquals("G53 G1 X0", command)
     }
 
     @Test
     fun testFeedXPlus() {
-        val command = testSubject.getStraightTurningCommand(ManualTurningHelper.Axis.X, ManualTurningHelper.Direction.Positive, g53Limits)
+        val command = testSubject.getStraightTurningCommand(Axis.X, Direction.Positive, g53Limits)
         assertEquals("G53 G1 X302", command)
     }
 
     @Test
     fun testFeedZMinus() {
-        val command = testSubject.getStraightTurningCommand(ManualTurningHelper.Axis.Z, ManualTurningHelper.Direction.Negative, g53Limits)
+        val command = testSubject.getStraightTurningCommand(Axis.Z, Direction.Negative, g53Limits)
         assertEquals("G53 G1 Z0", command)
     }
 
     @Test
     fun testFeedZPlus() {
-        val command = testSubject.getStraightTurningCommand(ManualTurningHelper.Axis.Z, ManualTurningHelper.Direction.Positive, g53Limits)
+        val command = testSubject.getStraightTurningCommand(Axis.Z, Direction.Positive, g53Limits)
         assertEquals("G53 G1 Z650", command)
     }
 
@@ -49,8 +51,8 @@ class ManualTurningHelperTest {
             z = 10.0
         )
         val command = testSubject.getTaperTurningCommand(
-            ManualTurningHelper.Axis.X,
-            ManualTurningHelper.Direction.Negative,
+            Axis.X,
+            Direction.Negative,
             g53Limits,
             startPoint,
             angle = 45.0
@@ -65,8 +67,8 @@ class ManualTurningHelperTest {
             z = 10.0
         )
         val command = testSubject.getTaperTurningCommand(
-            ManualTurningHelper.Axis.X,
-            ManualTurningHelper.Direction.Positive,
+            Axis.X,
+            Direction.Positive,
             g53Limits,
             startPoint,
             angle = 45.0
@@ -81,8 +83,8 @@ class ManualTurningHelperTest {
             z = 10.0
         )
         val command = testSubject.getTaperTurningCommand(
-            ManualTurningHelper.Axis.Z,
-            ManualTurningHelper.Direction.Negative,
+            Axis.Z,
+            Direction.Negative,
             g53Limits,
             startPoint,
             angle = 45.0
@@ -97,8 +99,8 @@ class ManualTurningHelperTest {
 //            z = 10.0
 //        )
 //        val command = testSubject.getTaperTurningCommand(
-//            ManualTurningHelper.Axis.Z,
-//            ManualTurningHelper.Direction.Positive,
+//            Axis.Z,
+//            Direction.Positive,
 //            g53Limits,
 //            startPoint,
 //            angle = 45.0

@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.mindovercnc.base.data.LatheTool
+import com.mindovercnc.base.data.tools.TipOrientation
 import screen.composables.tabconversational.InputSetting
 import screen.uimodel.InputType
 import usecase.model.AddEditToolState
@@ -39,26 +40,26 @@ fun ProfilingView(
 
     Column {
         Row {
-            ToolOrientation(LatheTool.Orientation.Position4, false, btnModifier)
-            ToolOrientation(LatheTool.Orientation.Position8, false, btnModifier)
-            ToolOrientation(LatheTool.Orientation.Position3, false, btnModifier)
+            ToolOrientation(TipOrientation.Position4, false, btnModifier)
+            ToolOrientation(TipOrientation.Position8, false, btnModifier)
+            ToolOrientation(TipOrientation.Position3, false, btnModifier)
         }
         Row {
-            ToolOrientation(LatheTool.Orientation.Position5, false, btnModifier)
-            ToolOrientation(LatheTool.Orientation.Position9, false, btnModifier)
-            ToolOrientation(LatheTool.Orientation.Position7, false, btnModifier)
+            ToolOrientation(TipOrientation.Position5, false, btnModifier)
+            ToolOrientation(TipOrientation.Position9, false, btnModifier)
+            ToolOrientation(TipOrientation.Position7, false, btnModifier)
         }
         Row {
-            ToolOrientation(LatheTool.Orientation.Position1, false, btnModifier)
-            ToolOrientation(LatheTool.Orientation.Position6, false, btnModifier)
-            ToolOrientation(LatheTool.Orientation.Position2, true, btnModifier)
+            ToolOrientation(TipOrientation.Position1, false, btnModifier)
+            ToolOrientation(TipOrientation.Position6, false, btnModifier)
+            ToolOrientation(TipOrientation.Position2, true, btnModifier)
         }
     }
 }
 
 @Composable
 fun ToolOrientation(
-    orientation: LatheTool.Orientation,
+    orientation: TipOrientation,
     active: Boolean,
     modifier: Modifier = Modifier
 ) {

@@ -1,8 +1,9 @@
 package screen.composables.tabtools
 
-import androidx.compose.animation.core.*
-import androidx.compose.foundation.*
-import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -14,178 +15,23 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.ExitToApp
-import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.res.loadImageBitmap
-import androidx.compose.ui.res.useResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.mindovercnc.base.data.LatheTool
 import extensions.draggableScroll
 import extensions.toFixedDigitsString
-import navigation.AppNavigator
 import org.kodein.di.compose.rememberInstance
 import screen.composables.LabelWithValue
 import screen.composables.VerticalDivider
 import screen.composables.platform.VerticalScrollbar
-import screen.uimodel.ToolsOffsetsScreen
 import usecase.ToolsUseCase
 
-enum class FabState {
-    Expanded, Collapsed
-}
-
-@Composable
-fun ExpandableFab(
-    modifier: Modifier = Modifier,
-    fabState: FabState,
-    onFabStateChange: (FabState) -> Unit,
-    onChildFabClicked: (ChildFabItem) -> Unit
-) {
-    val transition = updateTransition(targetState = fabState)
-
-    val rotate by transition.animateFloat {
-        if (it == FabState.Expanded) 90f else 0f
-    }
-
-    val fabScale by transition.animateFloat {
-        if (it == FabState.Expanded) 36f else 0f
-    }
-
-    val alpha by transition.animateFloat(transitionSpec = { tween(durationMillis = 50) }) {
-        if (it == FabState.Expanded) 1f else 0f
-    }
-
-    val textShadow by transition.animateDp(transitionSpec = { tween(durationMillis = 50) }) {
-        if (it == FabState.Expanded) 2.dp else 0.dp
-    }
-
-    Column(
-        modifier = modifier.padding(vertical = 32.dp),
-        horizontalAlignment = Alignment.Start
-    ) {
-        if (transition.currentState == FabState.Expanded) {
-            ChildFab(
-                item = ChildFabItem.ToolOffset,
-                onChildFabItemClicked = onChildFabClicked,
-                alpha = alpha,
-                textShadow = textShadow,
-                fabScale = fabScale
-            )
-            Spacer(modifier = Modifier.size(32.dp))
-            ChildFab(
-                item = ChildFabItem.WorkOffset,
-                onChildFabItemClicked = onChildFabClicked,
-                alpha = alpha,
-                textShadow = textShadow,
-                fabScale = fabScale
-            )
-        }
-
-        ExtendedFloatingActionButton(
-            onClick = {
-                onFabStateChange(
-                    if (transition.currentState == FabState.Expanded) {
-                        FabState.Collapsed
-                    } else {
-                        FabState.Expanded
-                    }
-                )
-            },
-            text = { Text("Set Offsets") },
-            icon = {
-                Image(
-                    //bitmap = useResource("center.png") { loadImageBitmap(it) },
-                    imageVector = Icons.Filled.Star,
-                    contentDescription = "",
-                    modifier = Modifier.rotate(rotate)
-                )
-            }
-        )
-    }
-}
-
-enum class ChildFabItem(val icon: ImageBitmap, val label: String) {
-    WorkOffset(useResource("center.png") { loadImageBitmap(it) }, "Work Offset"),
-    ToolOffset(useResource("center.png") { loadImageBitmap(it) }, "Tool Offset")
-}
-
-@Composable
-fun ChildFab(
-    item: ChildFabItem,
-    alpha: Float,
-    textShadow: Dp,
-    fabScale: Float,
-    onChildFabItemClicked: (ChildFabItem) -> Unit
-) {
-    val buttonColor = MaterialTheme.colorScheme.secondary
-    val shadowColor = Color.DarkGray.copy(alpha = .5f)
-
-    Row(
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Canvas(
-            modifier = Modifier.size(24.dp).clickable(
-                interactionSource = MutableInteractionSource(),
-                indication = rememberRipple(
-                    bounded = false,
-                    radius = 20.dp,
-                    color = MaterialTheme.colorScheme.surface
-                ),
-                onClick = { onChildFabItemClicked.invoke(item) }
-            )
-        ) {
-            drawCircle(
-                color = shadowColor,
-                radius = fabScale,
-                center = Offset(
-                    center.x + 2f,
-                    center.y + 2f
-                )
-            )
-
-            drawCircle(
-                color = buttonColor,
-                radius = fabScale
-            )
-
-            drawImage(
-                image = item.icon, topLeft = Offset(
-                    center.x - (item.icon.width / 2),
-                    center.y - (item.icon.height / 2)
-                ),
-                alpha = alpha
-            )
-        }
-        Spacer(modifier = Modifier.size(16.dp))
-        Text(
-            text = item.label,
-            modifier = Modifier
-                .alpha(
-                    animateFloatAsState(
-                        targetValue = alpha,
-                        animationSpec = tween(50)
-                    ).value
-                )
-                .shadow(textShadow)
-                .background(MaterialTheme.colorScheme.background)
-                .padding(8.dp)
-        )
-    }
-
-}
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
 @Composable
@@ -196,11 +42,7 @@ fun ToolLibraryView(
     val scope = rememberCoroutineScope()
     val toolsList by useCase.getTools().collectAsState(emptyList())
     val currentToolNo by useCase.getCurrentToolNo().collectAsState(null)
-    val currentTool by useCase.getCurrentTool().collectAsState(null)
-    val appNavigator by rememberInstance<AppNavigator>()
-    val currentScreen by appNavigator.currentScreen.collectAsState(null)
-
-    var fabState by remember { mutableStateOf(FabState.Collapsed) }
+    //val currentTool by useCase.getCurrentTool().collectAsState(null)
 
     var toolToDelete by remember { mutableStateOf(0) }
 
@@ -235,7 +77,7 @@ fun ToolLibraryView(
                 }
             },
             shape = RoundedCornerShape(32.dp),
-            backgroundColor = androidx.compose.material3.MaterialTheme.colorScheme.secondary,
+            backgroundColor = MaterialTheme.colorScheme.secondary,
         )
     }
 
@@ -257,54 +99,16 @@ fun ToolLibraryView(
                     item = item,
                     isCurrent = item.toolNo == currentToolNo,
                     onEditClicked = {
-                        currentScreen?.let { screen ->
-                            appNavigator.navigate(
-                                ToolsOffsetsScreen.AddEditToolScreen(
-                                    previousScreen = screen as ToolsOffsetsScreen,
-                                    latheTool = it
-                                )
-                            )
-                        }
+
                     },
                     onDeleteClicked = {
                         toolToDelete = it.toolNo
                     },
                     onLoadClicked = {
-                        useCase.loadTool(it.toolNo)
+                        //useCase.loadTool(it.toolNo)
                     }
                 )
                 Divider(color = Color.LightGray, thickness = 0.5.dp)
-            }
-        }
-
-        currentTool?.let { latheTool ->
-            ExpandableFab(
-                modifier = Modifier.align(Alignment.BottomEnd).padding(end = 70.dp, bottom = 50.dp),
-                fabState = fabState,
-                onFabStateChange = { fabState = it }
-            ) {
-                when (it) {
-                    ChildFabItem.ToolOffset -> {
-                        currentScreen?.let { screen ->
-                            appNavigator.navigate(
-                                ToolsOffsetsScreen.ToolOffsetsScreen(
-                                    previousScreen = screen as ToolsOffsetsScreen,
-                                    latheTool = latheTool
-                                )
-                            )
-                        }
-                    }
-                    ChildFabItem.WorkOffset -> {
-                        currentScreen?.let { screen ->
-                            appNavigator.navigate(
-                                ToolsOffsetsScreen.WorkOffsetsScreen(
-                                    previousScreen = screen as ToolsOffsetsScreen,
-                                    latheTool = latheTool
-                                )
-                            )
-                        }
-                    }
-                }
             }
         }
 
@@ -346,12 +150,12 @@ fun ToolsHeader(modifier: Modifier = Modifier) {
             text = "Offset"
         )
         VerticalDivider()
-        Text(
-            modifier = ToolsColumnModifier.Wear.modifier,
-            textAlign = TextAlign.Center,
-            text = "Wear"
-        )
-        VerticalDivider()
+//        Text(
+//            modifier = ToolsColumnModifier.Wear.modifier,
+//            textAlign = TextAlign.Center,
+//            text = "Wear"
+//        )
+//        VerticalDivider()
         Text(
             modifier = ToolsColumnModifier.TipRadius.modifier,
             textAlign = TextAlign.Center,
@@ -409,13 +213,13 @@ fun ToolRow(
             LabelWithValue("Z:", item.zOffset.toFixedDigitsString())
         }
         VerticalDivider()
-        Column(
-            modifier = ToolsColumnModifier.Offset.modifier
-        ) {
-            LabelWithValue("X:", item.xWear.toFixedDigitsString())
-            LabelWithValue("Z:", item.zWear.toFixedDigitsString())
-        }
-        VerticalDivider()
+//        Column(
+//            modifier = ToolsColumnModifier.Offset.modifier
+//        ) {
+//            LabelWithValue("X:", item.xWear.toFixedDigitsString())
+//            LabelWithValue("Z:", item.zWear.toFixedDigitsString())
+//        }
+//        VerticalDivider()
         Text(
             modifier = ToolsColumnModifier.TipRadius.modifier,
             textAlign = TextAlign.Center,
@@ -447,6 +251,7 @@ fun ToolRow(
         VerticalDivider()
         IconButton(
             modifier = Modifier.padding(start = 16.dp, end = 16.dp),
+            enabled = isCurrent.not(),
             onClick = {
                 onLoadClicked.invoke(item)
             }) {

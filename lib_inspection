@@ -840,4 +840,4 @@ nm --demangle --dynamic --defined-only --extern-only libnml.so
 000000000004fec8 V vtable for SHMEM
 000000000004fcc8 V vtable for LOCMEM
 000000000004ffb0 V vtable for TCPMEM
-vasimihalca@vasi:~/Work/JCNCScreen/libcnc/native/lc/lib$ 
+vasimihalca@vasi:~/Work/JCNCScreen/libcnc/native/lc/lib$

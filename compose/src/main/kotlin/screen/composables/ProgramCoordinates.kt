@@ -31,34 +31,33 @@ private enum class CoordinateType(
     SECONDARY(28.sp, 140.dp),
 }
 
-@OptIn(ExperimentalMaterialApi::class)
-@Composable
-fun ProgramCoordinatesView(modifier: Modifier = Modifier) {
-    val programsUseCase: ProgramsUseCase by rememberInstance()
-    val offsetsUseCase: OffsetsUseCase by rememberInstance()
-
-    val currentWcs by offsetsUseCase.currentWcs.collectAsState("--")
-    val model = programsUseCase.uiModel.collectAsState(null).value
-
-    Row(
-        modifier = modifier.fillMaxWidth(),
-    ) {
-        Column {
-            model?.let {
-                CoordinatesHeader(currentWcs)
-                Spacer(modifier = Modifier.height(8.dp))
-                AxisCoordinate(
-                    it.xAxisPos,
-                    it.isDiameterMode
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                AxisCoordinate(
-                    it.zAxisPos
-                )
-            }
-        }
-    }
-}
+//@Composable
+//fun ProgramCoordinatesView(modifier: Modifier = Modifier) {
+//    val programsUseCase: ProgramsUseCase by rememberInstance()
+//    val offsetsUseCase: OffsetsUseCase by rememberInstance()
+//
+//    val currentWcs by offsetsUseCase.currentWcs.collectAsState("--")
+//    val model = programsUseCase.uiModel.collectAsState(null).value
+//
+//    Row(
+//        modifier = modifier.fillMaxWidth(),
+//    ) {
+//        Column {
+//            model?.let {
+//                CoordinatesHeader(currentWcs)
+//                Spacer(modifier = Modifier.height(8.dp))
+//                AxisCoordinate(
+//                    it.xAxisPos,
+//                    it.isDiameterMode
+//                )
+//                Spacer(modifier = Modifier.height(8.dp))
+//                AxisCoordinate(
+//                    it.zAxisPos
+//                )
+//            }
+//        }
+//    }
+//}
 
 @Composable
 private fun CoordinatesHeader(

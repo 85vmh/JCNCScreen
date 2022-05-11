@@ -8,15 +8,14 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
+import com.mindovercnc.database.DbInitializer
 import com.mindovercnc.linuxcnc.CncInitializer
 import di.*
 import kotlinx.coroutines.Dispatchers
+import org.kodein.di.compose.rememberInstance
 import org.kodein.di.compose.withDI
-import screen.BaseScreenView
 import themes.AppTheme
-import vtk.vtkNativeLibrary
 import java.io.File
-import java.lang.IllegalArgumentException
 
 
 fun main(args: Array<String>) {
@@ -33,8 +32,11 @@ fun main(args: Array<String>) {
 //    vtkNativeLibrary.DisableOutputWindow(null)
 
     val iniFilePath = args.firstOrNull()?.takeIf { File(it).exists() } ?: throw IllegalArgumentException(".ini file not found")
+
+    CncInitializer()
+    DbInitializer()
+
     application {
-        CncInitializer.initialize()
         val windowState = rememberWindowState(width = 1024.dp, height = 768.dp)
         MyWindow(windowState, iniFilePath) {
             //process.destroy()
@@ -63,15 +65,17 @@ fun MyWindow(
     withDI(
         iniFileModule(filePath),
         appScopeModule(scope),
-        ViewModelModule,
+        AppModule,
+        ScreenModelModule,
         UseCaseModule,
         RepositoryModule,
         ParseFactoryModule,
         BuffDescriptorModule
     ) {
-
+        val statusWatcher by rememberInstance<StatusWatcher>()
+        statusWatcher.launchIn(scope)
         AppTheme {
-            BaseScreenView()
+            CncApp()
         }
     }
 }

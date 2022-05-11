@@ -3,14 +3,11 @@ package usecase
 import com.mindovercnc.base.CncStatusRepository
 import com.mindovercnc.base.data.Position
 import com.mindovercnc.base.data.getDisplayablePosition
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 import screen.uimodel.AxisPosition
-import screen.uimodel.PositionUiModel
+import screen.uimodel.PositionModel
 
 class ManualPositionUseCase(
-    private val scope: CoroutineScope,
     private val cncStatusRepository: CncStatusRepository
 ) {
     private data class PositionInfo(val position: Position, val xRelative: Boolean, val zRelative: Boolean)
@@ -20,7 +17,7 @@ class ManualPositionUseCase(
     private val xRelativeState = MutableStateFlow(false)
     private val zRelativeState = MutableStateFlow(false)
 
-    val uiModel = combine(
+    fun getPositionModel() = combine(
         getDisplayablePosition(),
         xRelativeState,
         zRelativeState
@@ -35,26 +32,21 @@ class ManualPositionUseCase(
                 true -> AxisPosition(AxisPosition.Axis.Z, it.position.z - zZeroPos, it.position.z, AxisPosition.Units.MM)
                 false -> AxisPosition(AxisPosition.Axis.Z, it.position.z, null, AxisPosition.Units.MM)
             }
-            PositionUiModel(xAxisPosition, zAxisPosition, true)
+            PositionModel(xAxisPosition, zAxisPosition, true)
         }
 
-
-    fun setZeroPosX() {
-        scope.launch {
-            xZeroPos = getDisplayablePosition().map { it.x }.first()
-            xRelativeState.value = true
-        }
+    suspend fun setZeroPosX() {
+        xZeroPos = getDisplayablePosition().map { it.x }.first()
+        xRelativeState.value = true
     }
 
     fun toggleXAbsRel() {
         xRelativeState.value = xRelativeState.value.not()
     }
 
-    fun setZeroPosZ() {
-        scope.launch {
-            zZeroPos = getDisplayablePosition().map { it.z }.first()
-            zRelativeState.value = true
-        }
+    suspend fun setZeroPosZ() {
+        zZeroPos = getDisplayablePosition().map { it.z }.first()
+        zRelativeState.value = true
     }
 
     fun toggleZAbsRel() {
