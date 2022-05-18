@@ -1,6 +1,6 @@
 package com.mindovercnc.base
 
-import com.mindovercnc.base.data.CncStatus
+import com.mindovercnc.linuxcnc.model.CncStatus
 import kotlinx.coroutines.flow.Flow
 
 interface CncStatusRepository {

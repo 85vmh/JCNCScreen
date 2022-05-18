@@ -1,8 +1,8 @@
 package codegen
 
-import com.mindovercnc.base.data.Axis
-import com.mindovercnc.base.data.Direction
-import com.mindovercnc.base.data.G53AxisLimits
+import com.mindovercnc.linuxcnc.model.Axis
+import com.mindovercnc.linuxcnc.model.Direction
+import com.mindovercnc.linuxcnc.model.G53AxisLimits
 import junit.framework.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test

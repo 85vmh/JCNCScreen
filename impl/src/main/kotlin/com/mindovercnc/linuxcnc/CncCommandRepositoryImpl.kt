@@ -1,9 +1,9 @@
 package com.mindovercnc.linuxcnc
 
 import com.mindovercnc.base.CncCommandRepository
-import com.mindovercnc.base.data.JogMode
-import com.mindovercnc.base.data.TaskMode
-import com.mindovercnc.base.data.TaskState
+import com.mindovercnc.linuxcnc.model.JogMode
+import com.mindovercnc.linuxcnc.model.TaskMode
+import com.mindovercnc.linuxcnc.model.TaskState
 
 class CncCommandRepositoryImpl() : CncCommandRepository {
     private val commandWriter = CommandWriter()

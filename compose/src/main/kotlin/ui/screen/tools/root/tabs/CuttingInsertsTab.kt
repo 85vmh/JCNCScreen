@@ -20,7 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.mindovercnc.base.data.tools.CuttingInsert
+import com.mindovercnc.linuxcnc.model.tools.CuttingInsert
 import extensions.draggableScroll
 import extensions.toFixedDigitsString
 import screen.composables.LabelWithValue

@@ -1,8 +1,8 @@
 package com.mindovercnc.base
 
-import com.mindovercnc.base.data.JoystickPosition
-import com.mindovercnc.base.data.JoystickStatus
-import com.mindovercnc.base.data.SpindleSwitchStatus
+import com.mindovercnc.linuxcnc.model.JoystickPosition
+import com.mindovercnc.linuxcnc.model.JoystickStatus
+import com.mindovercnc.linuxcnc.model.SpindleSwitchStatus
 import kotlinx.coroutines.flow.Flow
 
 interface HalRepository {

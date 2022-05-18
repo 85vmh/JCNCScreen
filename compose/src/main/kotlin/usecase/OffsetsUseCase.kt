@@ -1,7 +1,7 @@
 package usecase
 
 import com.mindovercnc.base.*
-import com.mindovercnc.base.data.TaskMode
+import com.mindovercnc.linuxcnc.model.TaskMode
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map

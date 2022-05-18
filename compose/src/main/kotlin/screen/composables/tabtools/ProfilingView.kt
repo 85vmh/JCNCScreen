@@ -9,7 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.mindovercnc.base.data.tools.TipOrientation
+import com.mindovercnc.linuxcnc.model.tools.TipOrientation
 import screen.composables.tabconversational.InputSetting
 import screen.uimodel.InputType
 import usecase.model.AddEditToolState

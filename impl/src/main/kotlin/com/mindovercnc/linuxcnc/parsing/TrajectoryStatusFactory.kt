@@ -1,7 +1,7 @@
 package com.mindovercnc.linuxcnc.parsing
 
-import com.mindovercnc.base.data.MotionMode
-import com.mindovercnc.base.data.TrajectoryStatus
+import com.mindovercnc.linuxcnc.model.MotionMode
+import com.mindovercnc.linuxcnc.model.TrajectoryStatus
 import com.mindovercnc.linuxcnc.nml.BuffDescriptor
 import com.mindovercnc.linuxcnc.nml.Key
 import java.nio.ByteBuffer

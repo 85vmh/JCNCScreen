@@ -1,8 +1,8 @@
 package usecase
 
 import com.mindovercnc.base.MessagesRepository
-import com.mindovercnc.base.data.SystemMessage
-import com.mindovercnc.base.data.UiMessage
+import com.mindovercnc.linuxcnc.model.SystemMessage
+import com.mindovercnc.linuxcnc.model.UiMessage
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach

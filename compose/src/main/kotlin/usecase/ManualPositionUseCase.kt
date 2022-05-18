@@ -1,8 +1,8 @@
 package usecase
 
 import com.mindovercnc.base.CncStatusRepository
-import com.mindovercnc.base.data.Position
-import com.mindovercnc.base.data.getDisplayablePosition
+import com.mindovercnc.linuxcnc.model.Position
+import com.mindovercnc.linuxcnc.model.getDisplayablePosition
 import kotlinx.coroutines.flow.*
 import screen.uimodel.AxisPosition
 import screen.uimodel.PositionModel

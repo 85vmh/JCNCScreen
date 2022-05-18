@@ -1,6 +1,6 @@
 package com.mindovercnc.linuxcnc.parsing
 
-import com.mindovercnc.base.data.CncStatus
+import com.mindovercnc.linuxcnc.model.CncStatus
 import com.mindovercnc.linuxcnc.nml.BuffDescriptor
 import java.nio.ByteBuffer
 

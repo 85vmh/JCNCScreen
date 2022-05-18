@@ -32,14 +32,18 @@ fun main(args: Array<String>) {
     }
     vtkNativeLibrary.DisableOutputWindow(null)
 
-    val iniFilePath = args.firstOrNull()?.takeIf { File(it).exists() } ?: throw IllegalArgumentException(".ini file not found")
+    val iniFilePath = args.firstOrNull() ?: throw IllegalArgumentException(".ini file not found")
+    val iniFile = File(iniFilePath)
+    if (!iniFile.exists()) {
+        throw IllegalArgumentException("$iniFilePath does not exist!")
+    }
 
     CncInitializer()
     DbInitializer()
 
     application {
         val windowState = rememberWindowState(width = 1024.dp, height = 768.dp)
-        MyWindow(windowState, iniFilePath) {
+        MyWindow(windowState, iniFile) {
             //process.destroy()
             //process.waitFor()
             this.exitApplication()
@@ -50,7 +54,7 @@ fun main(args: Array<String>) {
 @Composable
 fun MyWindow(
     windowState: WindowState,
-    filePath: String,
+    iniFile: File,
     onCloseRequest: () -> Unit
 ) = Window(
     onCloseRequest = onCloseRequest,
@@ -64,7 +68,7 @@ fun MyWindow(
         Dispatchers.IO
     }
     withDI(
-        iniFileModule(filePath),
+        iniFileModule(iniFile),
         appScopeModule(scope),
         AppModule,
         ScreenModelModule,

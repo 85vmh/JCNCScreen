@@ -3,6 +3,10 @@ package ui.screen.manual.root
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -24,8 +28,8 @@ import extensions.toFixedDigitsString
 import screen.composables.LabelWithValue
 
 val offsetItemModifier = Modifier
-    .width(170.dp)
-    .padding(horizontal = 8.dp)
+    .width(300.dp)
+    .padding(horizontal = 8.dp, vertical = 4.dp)
 
 @Composable
 fun WcsOffsetsView(
@@ -35,13 +39,15 @@ fun WcsOffsetsView(
     itemModifier: Modifier = offsetItemModifier
 ) {
     val scope = rememberCoroutineScope()
-    val scrollState = rememberLazyListState()
+    //val scrollState = rememberLazyListState()
+    val scrollState = rememberLazyGridState()
 
-    LazyRow(
+    LazyHorizontalGrid(
+        rows = GridCells.Fixed(2),
         state = scrollState,
         modifier = modifier.draggableScroll(scrollState, scope, Orientation.Horizontal)
     ) {
-        items(items = wcs.wcsOffsets) {
+        items(wcs.wcsOffsets) {
             WorkpieceOffset(
                 item = it,
                 isActive = wcs.activeOffset == it.coordinateSystem,
@@ -50,6 +56,20 @@ fun WcsOffsetsView(
             )
         }
     }
+
+//    LazyRow(
+//        state = scrollState,
+//        modifier = modifier.draggableScroll(scrollState, scope, Orientation.Horizontal)
+//    ) {
+//        items(items = wcs.wcsOffsets) {
+//            WorkpieceOffset(
+//                item = it,
+//                isActive = wcs.activeOffset == it.coordinateSystem,
+//                modifier = itemModifier,
+//                wcsSelected = { onOffsetClick(it.coordinateSystem) }
+//            )
+//        }
+//    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

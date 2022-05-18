@@ -1,6 +1,6 @@
 package com.mindovercnc.base
 
-import com.mindovercnc.base.data.tools.CuttingInsert
+import com.mindovercnc.linuxcnc.model.tools.CuttingInsert
 
 interface CuttingInsertsRepository {
     fun insert(cuttingInsert: CuttingInsert)

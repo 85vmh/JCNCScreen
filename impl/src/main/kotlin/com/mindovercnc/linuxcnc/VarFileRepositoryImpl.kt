@@ -1,8 +1,8 @@
 package com.mindovercnc.linuxcnc
 
 import com.mindovercnc.base.VarFileRepository
-import com.mindovercnc.base.data.ParametersState
-import com.mindovercnc.base.data.Position
+import com.mindovercnc.linuxcnc.model.ParametersState
+import com.mindovercnc.linuxcnc.model.Position
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.*
 import java.io.File
@@ -11,7 +11,7 @@ const val numCoordinateSystems = 9
 
 class VarFileRepositoryImpl constructor(
     scope: CoroutineScope,
-    varFilePath: String
+    varFilePath: VarFilePath
 ) : VarFileRepository {
 
     private data class ParsedLine(val paramNumber: Int, val paramValue: Double)
@@ -44,14 +44,14 @@ class VarFileRepositoryImpl constructor(
     }
 
     init {
-        FileWatcher.watchChanges(scope, varFilePath, true) {
+        FileWatcher.watchChanges(scope, varFilePath.file.path, true) {
             parametersState.value = getParametersState(varFilePath)
         }
     }
 
-    private fun getParametersState(varFilePath: String): ParametersState {
+    private fun getParametersState(varFilePath: VarFilePath): ParametersState {
         val builder = ParametersStateBuilder()
-        File(varFilePath).forEachLine { aLine ->
+        varFilePath.file.forEachLine { aLine ->
             with(aLine.split("\t")) {
                 val parsedLine = ParsedLine(this[0].toInt(), this[1].toDouble())
                 when (parsedLine.paramNumber) {

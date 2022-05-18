@@ -23,7 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.mindovercnc.base.data.LinuxCncTool
+import com.mindovercnc.linuxcnc.model.LinuxCncTool
 import extensions.draggableScroll
 import extensions.toFixedDigitsString
 import org.kodein.di.compose.rememberInstance

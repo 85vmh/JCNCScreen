@@ -4,7 +4,7 @@ import com.mindovercnc.base.CncCommandRepository
 import com.mindovercnc.base.CncStatusRepository
 import com.mindovercnc.base.HalRepository
 import com.mindovercnc.base.SettingsRepository
-import com.mindovercnc.base.data.TaskMode
+import com.mindovercnc.linuxcnc.model.TaskMode
 import extensions.stripZeros
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi

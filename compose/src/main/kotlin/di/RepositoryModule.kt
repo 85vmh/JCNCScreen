@@ -18,16 +18,12 @@ val RepositoryModule = DI.Module("repository") {
     bindSingleton<MessagesRepository> { MessagesRepositoryImpl(instance("app_scope")) }
     bindSingleton<CncCommandRepository> { CncCommandRepositoryImpl() }
     bindSingleton<HalRepository> { HalRepositoryImpl(instance("app_scope")) }
-    bindSingleton<IniFileRepository> { IniFileRepositoryImpl(instance("ini")) }
+    bindSingleton<IniFileRepository> { IniFileRepositoryImpl(instance()) }
     bindSingleton<VarFileRepository> {
-        val iniRepo: IniFileRepository = instance()
-        val filePath = iniRepo.getIniFile().parameterFile
-        VarFileRepositoryImpl(instance("app_scope"), filePath)
+        VarFileRepositoryImpl(instance("app_scope"), instance())
     }
     bindSingleton<ToolsRepository> {
-        val iniRepo: IniFileRepository = instance()
-        val filePath = iniRepo.getIniFile().toolTableFile
-        ToolsRepositoryImpl(instance("app_scope"), filePath)
+        ToolsRepositoryImpl(instance("app_scope"), instance())
     }
     bindSingleton<FileSystemRepository> {
         val iniRepo: IniFileRepository = instance()
@@ -39,22 +35,25 @@ val RepositoryModule = DI.Module("repository") {
     bindSingleton<ActiveLimitsRepository> { ActiveLimitsRepository() }
     bindSingleton<CuttingInsertsRepository> { CuttingInsertsRepositoryImpl() }
 
-    bindSingleton<GCodeRepository> {
-        val iniRepo: IniFileRepository = instance()
-        val varFilePath = iniRepo.getIniFile().parameterFile
-        val toolFilePath = iniRepo.getIniFile().toolTableFile
+    bindProvider {
+        ToolFilePath(instance<IniFileRepository>().getIniFile().toolTableFile)
+    }
 
+    bindProvider {
+        VarFilePath(instance<IniFileRepository>().getIniFile().parameterFile)
+    }
+
+    bindSingleton<GCodeRepository> {
         GCodeRepositoryImpl(
-            rs274Path = "/home/vasimihalca/Work/JCNCScreen/libcnc/native/lc/bin/rs274", //TODO: make this dynamic
-            iniFilePath = instance("ini"),
-            toolFilePath = toolFilePath,
-            varFilePath = varFilePath
+            iniFilePath = instance(),
+            toolFilePath = instance(),
+            varFilePath = instance()
         )
     }
 }
 
-fun iniFileModule(filePath: String) = DI.Module("ini") {
-    bindProvider("ini") { filePath }
+fun iniFileModule(iniFile: File) = DI.Module("ini") {
+    bindProvider { IniFilePath(iniFile) }
 }
 
 fun appScopeModule(scope: CoroutineScope) = DI.Module("app_scope") {

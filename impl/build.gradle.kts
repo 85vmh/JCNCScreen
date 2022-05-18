@@ -9,6 +9,7 @@ version = "unspecified"
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib")
     implementation(project(":repository"))
-    implementation(project(":libcnc"))
+//    implementation(project(":libcnc"))
+    implementation("ro.dragossusi.ktlcnc:ktlcnc:0.0.1")
     implementation(project(":database"))
 }

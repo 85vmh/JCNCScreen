@@ -1,7 +1,7 @@
 package com.mindovercnc.linuxcnc
 
 import com.mindovercnc.base.HalRepository
-import com.mindovercnc.base.data.*
+import com.mindovercnc.linuxcnc.model.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.*
 

@@ -1,6 +1,6 @@
 package com.mindovercnc.database
 
-import com.mindovercnc.base.data.tools.*
+import com.mindovercnc.linuxcnc.model.tools.*
 import com.mindovercnc.database.entity.CuttingInsertEntity
 import com.mindovercnc.database.entity.LatheToolEntity
 import com.mindovercnc.database.entity.ToolHolderEntity

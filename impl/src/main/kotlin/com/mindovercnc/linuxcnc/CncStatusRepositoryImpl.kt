@@ -1,8 +1,8 @@
 package com.mindovercnc.linuxcnc
 
 import com.mindovercnc.base.CncStatusRepository
-import com.mindovercnc.base.data.CncStatus
-import com.mindovercnc.base.data.SystemMessage
+import com.mindovercnc.linuxcnc.model.CncStatus
+import com.mindovercnc.linuxcnc.model.SystemMessage
 import com.mindovercnc.linuxcnc.parsing.CncStatusFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.*

@@ -1,10 +1,10 @@
 package usecase
 
 import com.mindovercnc.base.*
-import com.mindovercnc.base.data.*
-import com.mindovercnc.base.data.tools.CuttingInsert
-import com.mindovercnc.base.data.tools.LatheTool
-import com.mindovercnc.base.data.tools.ToolHolder
+import com.mindovercnc.linuxcnc.model.*
+import com.mindovercnc.linuxcnc.model.tools.CuttingInsert
+import com.mindovercnc.linuxcnc.model.tools.LatheTool
+import com.mindovercnc.linuxcnc.model.tools.ToolHolder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*

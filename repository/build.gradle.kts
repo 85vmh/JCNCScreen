@@ -17,5 +17,7 @@ dependencies {
     implementation("org.kodein.di:kodein-di-framework-compose:$kodein")
 
     implementation(project(":database"))
-    api(project(":model"))
+    //api(project(":model"))
+    api("ro.dragossusi.ktlcnc:ktlcnc-model:0.0.1")
+
 }

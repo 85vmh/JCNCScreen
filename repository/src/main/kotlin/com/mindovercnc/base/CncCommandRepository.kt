@@ -1,8 +1,8 @@
 package com.mindovercnc.base
 
-import com.mindovercnc.base.data.JogMode
-import com.mindovercnc.base.data.TaskMode
-import com.mindovercnc.base.data.TaskState
+import com.mindovercnc.linuxcnc.model.JogMode
+import com.mindovercnc.linuxcnc.model.TaskMode
+import com.mindovercnc.linuxcnc.model.TaskState
 
 interface CncCommandRepository {
 

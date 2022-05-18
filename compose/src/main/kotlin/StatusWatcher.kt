@@ -1,6 +1,6 @@
 import com.mindovercnc.base.CncStatusRepository
 import com.mindovercnc.base.MessagesRepository
-import com.mindovercnc.base.data.*
+import com.mindovercnc.linuxcnc.model.*
 import com.mindovercnc.base.handleMessage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job

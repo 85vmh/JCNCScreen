@@ -1,18 +1,15 @@
 package com.mindovercnc.linuxcnc
 
 import com.mindovercnc.base.IniFileRepository
-import com.mindovercnc.base.data.G53AxisLimits
-import com.mindovercnc.base.data.IniFile
-import java.io.BufferedReader
-import java.io.FileNotFoundException
-import java.io.FileReader
-import java.io.IOException
+import com.mindovercnc.linuxcnc.model.G53AxisLimits
+import com.mindovercnc.linuxcnc.model.IniFile
+import java.io.*
 
 class IniFileRepositoryImpl(
-    iniFilePath: String
+    iniFilePath: IniFilePath
 ) : IniFileRepository {
     private var parsedFile: Map<String, Map<String, String>>
-    private val rootPath = iniFilePath.substring(0, iniFilePath.lastIndexOf("/") + 1)
+    private val rootPath = iniFilePath.file.parentFile
 
     private var useCustomLimits: Boolean = false
 
@@ -51,7 +48,7 @@ class IniFileRepositoryImpl(
             parsedFile[Section.RS274NGC.name]?.let { displaySection ->
                 if (displaySection.keys.contains(Parameter.PARAMETER_FILE.name)) {
                     displaySection[Parameter.PARAMETER_FILE.name]?.let {
-                        parameterFile += it
+                        parameterFile = File(parameterFile, it)
                     }
                 }
             }
@@ -60,7 +57,7 @@ class IniFileRepositoryImpl(
             parsedFile[Section.EMCIO.name]?.let { displaySection ->
                 if (displaySection.keys.contains(Parameter.TOOL_TABLE.name)) {
                     displaySection[Parameter.TOOL_TABLE.name]?.let {
-                        toolTableFile += it
+                        toolTableFile = File(toolTableFile, it)
                     }
                 }
             }
@@ -174,11 +171,11 @@ class IniFileRepositoryImpl(
     }
 
 
-    private fun parseIniFile(fileName: String): Map<String, Map<String, String>> {
+    private fun parseIniFile(fileName: IniFilePath): Map<String, Map<String, String>> {
         val properties: MutableMap<String, Map<String, String>> = HashMap()
         var aLn: String?
         try {
-            val buffReader = BufferedReader(FileReader(fileName))
+            val buffReader = BufferedReader(FileReader(fileName.file))
             while (buffReader.readLine().also { aLn = it } != null) {
 
                 var line = aLn?.replace("\t", "")?.trim() ?: ""

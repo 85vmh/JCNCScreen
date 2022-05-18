@@ -4,22 +4,23 @@ import com.mindovercnc.base.GCodeRepository
 import java.io.File
 
 class GCodeRepositoryImpl(
-    private val rs274Path: String,
-    private val iniFilePath: String,
-    private val toolFilePath: String,
-    private val varFilePath: String
+    private val iniFilePath: IniFilePath,
+    private val toolFilePath: ToolFilePath,
+    private val varFilePath: VarFilePath
 ) : GCodeRepository {
+
+    private val rs274Path = File(LinuxCncHome, "bin/rs274")
 
     override fun parseFile(file: File) {
         val pb = ProcessBuilder(
-            rs274Path,
+            rs274Path.path,
             "-g",
             "-v",
-            varFilePath,
+            varFilePath.file.path,
             "-i",
-            iniFilePath,
+            iniFilePath.file.path,
             "-t",
-            toolFilePath,
+            toolFilePath.file.path,
             file.absolutePath
         )
 

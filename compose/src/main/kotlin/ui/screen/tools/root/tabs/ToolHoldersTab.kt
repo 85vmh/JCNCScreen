@@ -25,7 +25,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.mindovercnc.base.data.tools.ToolHolder
+import com.mindovercnc.linuxcnc.model.tools.ToolHolder
 import extensions.draggableScroll
 import extensions.toFixedDigitsString
 import screen.composables.LabelWithValue

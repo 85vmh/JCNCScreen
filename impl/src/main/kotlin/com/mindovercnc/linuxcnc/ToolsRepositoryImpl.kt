@@ -1,8 +1,8 @@
 package com.mindovercnc.linuxcnc
 
 import com.mindovercnc.base.ToolsRepository
-import com.mindovercnc.base.data.LinuxCncTool
-import com.mindovercnc.base.data.tools.*
+import com.mindovercnc.linuxcnc.model.LinuxCncTool
+import com.mindovercnc.linuxcnc.model.tools.*
 import com.mindovercnc.database.entity.CuttingInsertEntity
 import com.mindovercnc.database.entity.LatheToolEntity
 import com.mindovercnc.database.entity.ToolHolderEntity
@@ -23,7 +23,7 @@ import java.io.File
 
 class ToolsRepositoryImpl(
     private val scope: CoroutineScope,
-    private val toolTableFilePath: String
+    private val toolTableFilePath: ToolFilePath
 ) : ToolsRepository {
 
     private val toolList = MutableStateFlow(emptyList<LinuxCncTool>())
@@ -31,7 +31,7 @@ class ToolsRepositoryImpl(
 
     init {
         //when a tool offset is updated, the file is rewritten, so we reload it
-        FileWatcher.watchChanges(scope, toolTableFilePath, true) {
+        FileWatcher.watchChanges(scope, toolTableFilePath.file.path, true) {
             println("---$toolTableFilePath changed, reloading")
             readFile()
         }
@@ -193,7 +193,7 @@ class ToolsRepositoryImpl(
     private fun readFile() {
         val newToolList = mutableListOf<LinuxCncTool>()
         toolMap.clear()
-        File(toolTableFilePath).forEachLine { aLine ->
+        toolTableFilePath.file.forEachLine { aLine ->
             with(parseToolLine(aLine)) {
                 newToolList.add(this)
                 toolMap[this.toolNo] = aLine
@@ -245,7 +245,7 @@ class ToolsRepositoryImpl(
 
     private fun updateToolTableFile() {
         scope.launch(Dispatchers.IO) {
-            File(toolTableFilePath).printWriter().use {
+            toolTableFilePath.file.printWriter().use {
                 toolMap.entries.forEach { line ->
                     it.println(line.value)
                 }

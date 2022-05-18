@@ -1,7 +1,7 @@
 package com.mindovercnc.database.table
 
-import com.mindovercnc.base.data.tools.SpindleDirection
-import com.mindovercnc.base.data.tools.ToolType
+import com.mindovercnc.linuxcnc.model.tools.SpindleDirection
+import com.mindovercnc.linuxcnc.model.tools.ToolType
 import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.sql.ReferenceOption
 

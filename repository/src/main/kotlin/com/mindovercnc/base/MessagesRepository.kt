@@ -1,7 +1,7 @@
 package com.mindovercnc.base
 
-import com.mindovercnc.base.data.MessageBundle
-import com.mindovercnc.base.data.UiMessage
+import com.mindovercnc.linuxcnc.model.MessageBundle
+import com.mindovercnc.linuxcnc.model.UiMessage
 import kotlinx.coroutines.flow.Flow
 
 interface MessagesRepository {

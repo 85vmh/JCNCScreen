@@ -1,7 +1,7 @@
 package com.mindovercnc.base
 
-import com.mindovercnc.base.data.tools.LatheTool
-import com.mindovercnc.base.data.tools.ToolHolder
+import com.mindovercnc.linuxcnc.model.tools.LatheTool
+import com.mindovercnc.linuxcnc.model.tools.ToolHolder
 
 interface ToolsRepository {
 

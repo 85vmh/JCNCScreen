@@ -1,10 +1,10 @@
 package usecase
 
 import com.mindovercnc.base.*
-import com.mindovercnc.base.data.CncStatus
-import com.mindovercnc.base.data.JoystickStatus
-import com.mindovercnc.base.data.SpindleSwitchStatus
-import com.mindovercnc.base.data.UiMessage
+import com.mindovercnc.linuxcnc.model.CncStatus
+import com.mindovercnc.linuxcnc.model.JoystickStatus
+import com.mindovercnc.linuxcnc.model.SpindleSwitchStatus
+import com.mindovercnc.linuxcnc.model.UiMessage
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify

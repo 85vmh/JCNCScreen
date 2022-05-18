@@ -20,11 +20,12 @@ dependencies {
     implementation(compose.material3)
 
     implementation(fileTree(mapOf("dir" to "lib", "include" to listOf("*.jar"))))
-    implementation(project(":libcnc"))
+//    implementation(project(":libcnc"))
+    implementation("ro.dragossusi.ktlcnc:ktlcnc:0.0.1")
     implementation(project(":repository"))
     implementation(project(":database"))
     implementation(project(":impl"))
-    implementation(project(":model"))
+//    implementation(project(":model"))
     implementation("org.kodein.di:kodein-di-framework-compose:${Versions.kodein}")
 
     implementation("cafe.adriel.voyager:voyager-navigator:${Versions.voyager}")

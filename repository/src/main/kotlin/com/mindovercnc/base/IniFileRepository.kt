@@ -1,7 +1,7 @@
 package com.mindovercnc.base
 
-import com.mindovercnc.base.data.G53AxisLimits
-import com.mindovercnc.base.data.IniFile
+import com.mindovercnc.linuxcnc.model.G53AxisLimits
+import com.mindovercnc.linuxcnc.model.IniFile
 
 interface IniFileRepository {
     fun getIniFile(): IniFile

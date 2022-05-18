@@ -2,10 +2,10 @@ package usecase
 
 import codegen.Point
 import com.mindovercnc.base.CncStatusRepository
-import com.mindovercnc.base.data.Position
-import com.mindovercnc.base.data.dtg
-import com.mindovercnc.base.data.g53Position
-import com.mindovercnc.base.data.getDisplayablePosition
+import com.mindovercnc.linuxcnc.model.Position
+import com.mindovercnc.linuxcnc.model.dtg
+import com.mindovercnc.linuxcnc.model.g53Position
+import com.mindovercnc.linuxcnc.model.getDisplayablePosition
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first

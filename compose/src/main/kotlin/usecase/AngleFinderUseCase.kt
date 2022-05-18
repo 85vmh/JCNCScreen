@@ -3,7 +3,7 @@ package usecase
 import codegen.ManualTurningHelper
 import codegen.Point
 import com.mindovercnc.base.*
-import com.mindovercnc.base.data.*
+import com.mindovercnc.linuxcnc.model.*
 import extensions.stripZeros
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

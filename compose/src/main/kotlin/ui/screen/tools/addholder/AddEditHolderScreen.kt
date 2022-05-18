@@ -16,8 +16,8 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.kodein.rememberScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.mindovercnc.base.data.tools.ToolHolder
-import com.mindovercnc.base.data.tools.ToolHolderType
+import com.mindovercnc.linuxcnc.model.tools.ToolHolder
+import com.mindovercnc.linuxcnc.model.tools.ToolHolderType
 import di.rememberScreenModel
 import org.kodein.di.bindProvider
 import screen.composables.DropDownSetting

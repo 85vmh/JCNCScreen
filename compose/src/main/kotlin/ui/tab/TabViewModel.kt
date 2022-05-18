@@ -1,9 +1,9 @@
 import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
 import com.mindovercnc.base.CncStatusRepository
-import com.mindovercnc.base.data.isEstop
-import com.mindovercnc.base.data.isHomed
-import com.mindovercnc.base.data.isOn
+import com.mindovercnc.linuxcnc.model.isEstop
+import com.mindovercnc.linuxcnc.model.isHomed
+import com.mindovercnc.linuxcnc.model.isOn
 import kotlinx.coroutines.flow.*
 
 data class AppState(

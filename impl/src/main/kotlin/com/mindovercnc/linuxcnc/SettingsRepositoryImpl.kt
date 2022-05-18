@@ -1,9 +1,9 @@
 package com.mindovercnc.linuxcnc
 
 import com.mindovercnc.base.SettingsRepository
-import com.mindovercnc.base.data.BooleanKey
-import com.mindovercnc.base.data.DoubleKey
-import com.mindovercnc.base.data.IntegerKey
+import com.mindovercnc.linuxcnc.model.BooleanKey
+import com.mindovercnc.linuxcnc.model.DoubleKey
+import com.mindovercnc.linuxcnc.model.IntegerKey
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
