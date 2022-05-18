@@ -8,7 +8,7 @@ import org.jetbrains.exposed.dao.id.EntityID
 class ToolHolderEntity(id: EntityID<Int>) : IntEntity(id) {
     var holderNumber by ToolHolderTable.holderNumber
     var holderType by ToolHolderTable.holderType
-    var cutter by LatheCutterEntity optionalReferencedOn ToolHolderTable.cutterId
+    var cutter by LatheToolEntity optionalReferencedOn ToolHolderTable.cutterId
     var clampingPosition by ToolHolderTable.clampingPosition
     var xOffset by ToolHolderTable.xOffset
     var zOffset by ToolHolderTable.zOffset

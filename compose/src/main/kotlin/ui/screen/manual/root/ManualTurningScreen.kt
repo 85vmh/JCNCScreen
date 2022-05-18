@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.kodein.rememberScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import screen.composables.AxisCoordinate
 import screen.composables.InputDialogView
@@ -36,8 +37,9 @@ import ui.screen.manual.virtuallimits.VirtualLimitsScreen
 
 class ManualTurningScreen : Manual("Manual Turning") {
 
+    @OptIn(ExperimentalMaterialApi::class)
     override val drawerEnabled: Boolean
-        get() = true
+        get() = !sheetState.isVisible
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
@@ -56,6 +58,7 @@ class ManualTurningScreen : Manual("Manual Turning") {
     @OptIn(ExperimentalMaterialApi::class)
     @Composable
     override fun SheetContent(sheetState: ModalBottomSheetState) {
+        val scope = rememberCoroutineScope()
         val screenModel = rememberScreenModel<ManualTurningScreenModel>()
         val state by screenModel.state.collectAsState()
 
@@ -76,6 +79,10 @@ class ManualTurningScreen : Manual("Manual Turning") {
                     modifier = Modifier.height(200.dp),
                     onOffsetClick = {
                         screenModel.setActiveWcs(it)
+//                        scope.launch {
+//                            delay(500)
+//                            sheetState.hide()
+//                        }
                     }
                 )
             }

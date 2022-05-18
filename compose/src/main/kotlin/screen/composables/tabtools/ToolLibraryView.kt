@@ -23,7 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.mindovercnc.base.data.LatheTool
+import com.mindovercnc.base.data.LinuxCncTool
 import extensions.draggableScroll
 import extensions.toFixedDigitsString
 import org.kodein.di.compose.rememberInstance
@@ -90,26 +90,26 @@ fun ToolLibraryView(
             modifier = Modifier.draggableScroll(scrollState, scope),
             state = scrollState
         ) {
-            stickyHeader {
-                ToolsHeader()
-                Divider(color = Color.LightGray, thickness = 0.5.dp)
-            }
-            items(toolsList) { item ->
-                ToolRow(
-                    item = item,
-                    isCurrent = item.toolNo == currentToolNo,
-                    onEditClicked = {
-
-                    },
-                    onDeleteClicked = {
-                        toolToDelete = it.toolNo
-                    },
-                    onLoadClicked = {
-                        //useCase.loadTool(it.toolNo)
-                    }
-                )
-                Divider(color = Color.LightGray, thickness = 0.5.dp)
-            }
+//            stickyHeader {
+//                ToolsHeader()
+//                Divider(color = Color.LightGray, thickness = 0.5.dp)
+//            }
+//            items(toolsList) { item ->
+//                ToolRow(
+//                    item = item,
+//                    isCurrent = item.toolNo == currentToolNo,
+//                    onEditClicked = {
+//
+//                    },
+//                    onDeleteClicked = {
+//                        toolToDelete = it.toolNo
+//                    },
+//                    onLoadClicked = {
+//                        //useCase.loadTool(it.toolNo)
+//                    }
+//                )
+//                Divider(color = Color.LightGray, thickness = 0.5.dp)
+//            }
         }
 
         VerticalScrollbar(
@@ -174,12 +174,12 @@ fun ToolsHeader(modifier: Modifier = Modifier) {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ToolRow(
-    item: LatheTool,
+    item: LinuxCncTool,
     isCurrent: Boolean,
     modifier: Modifier = Modifier,
-    onEditClicked: (LatheTool) -> Unit,
-    onDeleteClicked: (LatheTool) -> Unit,
-    onLoadClicked: (LatheTool) -> Unit
+    onEditClicked: (LinuxCncTool) -> Unit,
+    onDeleteClicked: (LinuxCncTool) -> Unit,
+    onLoadClicked: (LinuxCncTool) -> Unit
 ) {
     val nonSelectedModifier = modifier.height(60.dp)
     val selectedModifier = nonSelectedModifier.border(BorderStroke(1.dp, Color.Blue))

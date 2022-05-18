@@ -2,6 +2,8 @@ package usecase
 
 import com.mindovercnc.base.*
 import com.mindovercnc.base.data.*
+import com.mindovercnc.base.data.tools.CuttingInsert
+import com.mindovercnc.base.data.tools.LatheTool
 import com.mindovercnc.base.data.tools.ToolHolder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
@@ -18,6 +20,7 @@ class ToolsUseCase(
     private val halRepository: HalRepository,
     private val settingsRepository: SettingsRepository,
     private val toolsRepository: ToolsRepository,
+    private val cuttingInsertsRepository: CuttingInsertsRepository,
     private val varFileRepository: VarFileRepository
 ) {
 
@@ -40,8 +43,28 @@ class ToolsUseCase(
         return flowOf(toolsRepository.getToolHolders())
     }
 
-    fun addToolHolder(toolHolder: ToolHolder){
-        toolsRepository.addOrUpdateToolHolder(toolHolder)
+    fun createToolHolder(toolHolder: ToolHolder) {
+        toolsRepository.createToolHolder(toolHolder)
+    }
+
+    fun updateToolHolder(toolHolder: ToolHolder) {
+        toolsRepository.updateToolHolder(toolHolder)
+    }
+
+    fun getLatheTools(): Flow<List<LatheTool>> {
+        return flowOf(toolsRepository.getLatheTools())
+    }
+
+    fun getCuttingInserts(): Flow<List<CuttingInsert>> {
+        return flowOf(cuttingInsertsRepository.findAll())
+    }
+
+    fun deleteToolHolder(toolHolder: ToolHolder){
+        toolsRepository.deleteToolHolder(toolHolder)
+    }
+
+    fun deleteLatheTool(tool: LatheTool) {
+        toolsRepository.deleteLatheTool(tool)
     }
 
     fun getTools(): Flow<List<LatheTool>> {

@@ -1,11 +1,13 @@
-package com.mindovercnc.linuxcnc
+package com.mindovercnc.base.data
 
-import com.mindovercnc.base.data.TextLines
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.io.*
+import java.io.File
+import java.io.FileInputStream
+import java.io.IOException
+import java.io.RandomAccessFile
 import java.nio.channels.FileChannel
 import java.nio.charset.StandardCharsets
 

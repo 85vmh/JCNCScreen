@@ -15,6 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import org.kodein.di.compose.rememberInstance
 import org.kodein.di.compose.withDI
 import themes.AppTheme
+import vtk.vtkNativeLibrary
 import java.io.File
 
 
@@ -22,14 +23,14 @@ fun main(args: Array<String>) {
     //val process = Runtime.getRuntime().exec("linuxcnc '/home/vasimihalca/Work/linuxcnc-dev/configs/sim/axis/lathe.ini'")
     //Thread.sleep(1000L)
 
-//    if (!vtkNativeLibrary.LoadAllNativeLibraries()) {
-//        for (lib in vtkNativeLibrary.values()) {
-//            if (!lib.IsLoaded()) {
-//                println(lib.GetLibraryName() + " not loaded")
-//            }
-//        }
-//    }
-//    vtkNativeLibrary.DisableOutputWindow(null)
+    if (!vtkNativeLibrary.LoadAllNativeLibraries()) {
+        for (lib in vtkNativeLibrary.values()) {
+            if (!lib.IsLoaded()) {
+                println(lib.GetLibraryName() + " not loaded")
+            }
+        }
+    }
+    vtkNativeLibrary.DisableOutputWindow(null)
 
     val iniFilePath = args.firstOrNull()?.takeIf { File(it).exists() } ?: throw IllegalArgumentException(".ini file not found")
 

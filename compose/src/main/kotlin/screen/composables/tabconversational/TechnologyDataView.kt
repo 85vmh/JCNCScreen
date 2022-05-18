@@ -13,7 +13,7 @@
 //import androidx.compose.ui.unit.dp
 //import screen.composables.CuttingParametersView
 //import screen.composables.DropDownSetting
-//import screen.composables.tabmanual.NumericInputWithUnit
+//import screen.composables.NumericInputWithUnit
 //import screen.uimodel.*
 //import screen.viewmodel.OdTurningViewModel
 //import screen.viewmodel.createViewModel

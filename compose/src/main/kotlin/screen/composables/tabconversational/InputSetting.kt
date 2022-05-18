@@ -8,7 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import screen.composables.tabmanual.NumericInputWithUnit
+import screen.composables.NumericInputWithUnit
 import screen.uimodel.InputType
 import screen.uimodel.NumericInputs
 import usecase.model.TeachInAxis

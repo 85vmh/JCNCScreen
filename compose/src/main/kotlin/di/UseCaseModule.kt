@@ -73,7 +73,8 @@ val UseCaseModule = DI.Module("UseCase") {
             halRepository = instance(),
             settingsRepository = instance(),
             toolsRepository = instance(),
-            varFileRepository = instance()
+            varFileRepository = instance(),
+            cuttingInsertsRepository = instance()
         )
     }
 

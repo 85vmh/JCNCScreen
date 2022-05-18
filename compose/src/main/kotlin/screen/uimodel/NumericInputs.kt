@@ -293,5 +293,10 @@ object NumericInputs {
             allowsNegativeValues = true,
             maxDecimalPlaces = 3
         )
+        map[InputType.TOOL_HOLDER_NO] = NumInputParameters(
+            valueDescription = "Tool Holder #",
+            allowsNegativeValues = false,
+            maxDecimalPlaces = 0
+        )
     }
 }

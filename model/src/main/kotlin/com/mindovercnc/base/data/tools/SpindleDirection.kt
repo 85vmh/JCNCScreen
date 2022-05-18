@@ -1,6 +1,6 @@
 package com.mindovercnc.base.data.tools
 
-enum class AllowedSpindleDirection {
+enum class SpindleDirection {
     Forward,
     Reverse,
     Both,

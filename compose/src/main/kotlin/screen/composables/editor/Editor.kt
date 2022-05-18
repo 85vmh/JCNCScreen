@@ -4,7 +4,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import kotlinx.coroutines.CoroutineScope
 import com.mindovercnc.base.data.EmptyTextLines
-import com.mindovercnc.linuxcnc.readTextLines
+import com.mindovercnc.base.data.readTextLines
 import screen.composables.util.SingleSelection
 import java.io.File
 

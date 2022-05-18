@@ -1,4 +1,4 @@
-package screen.composables.tabmanual
+package screen.composables
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
@@ -8,13 +8,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import extensions.toFixedDigitsString
-import screen.composables.NumericInputField
 import screen.uimodel.InputType
 import screen.uimodel.NumericInputs
 
 @Composable
 fun ValueSetting(
-    settingName: String, value: String, inputType: InputType, onValueChanged: (String) -> Unit
+    settingName: String,
+    value: String,
+    inputType: InputType,
+    onValueChanged: (String) -> Unit
 ) {
     val alignment = Alignment.CenterVertically
     Row(
@@ -36,7 +38,11 @@ fun ValueSetting(
 
 @Composable
 fun NumericInputWithUnit(
-    value: String, inputType: InputType, alignment: Alignment.Vertical, modifier: Modifier = Modifier, onValueChanged: (String) -> Unit
+    value: String,
+    inputType: InputType,
+    alignment: Alignment.Vertical,
+    modifier: Modifier = Modifier,
+    onValueChanged: (String) -> Unit
 ) {
     val params = NumericInputs.entries[inputType]!!
 

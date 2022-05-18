@@ -13,25 +13,26 @@ data class TabItem(val tabTitle: String, val tabView: @Composable () -> Unit)
 
 @Composable
 fun TabbedContentView(
-    modifier: Modifier = Modifier,
-    tabs: List<TabItem>
+    tabs: List<TabItem>,
+    currentTabIndex: Int,
+    onTabSelected: (Int) -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    val tabIndex = remember { mutableStateOf(0) }
     Column(
         modifier = modifier,
     ) {
 
-        TabRow(selectedTabIndex = tabIndex.value) {
+        TabRow(selectedTabIndex = currentTabIndex) {
             tabs.forEachIndexed { index, tabItem ->
-                Tab(selected = tabIndex.value == index,
+                Tab(selected = currentTabIndex == index,
                     onClick = {
-                        tabIndex.value = index
+                        onTabSelected.invoke(index)
                     },
                     text = {
                         Text(text = tabItem.tabTitle)
                     })
             }
         }
-        tabs[tabIndex.value].tabView.invoke()
+        tabs[currentTabIndex].tabView.invoke()
     }
 }

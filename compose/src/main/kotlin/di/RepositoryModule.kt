@@ -1,7 +1,6 @@
 package di
 
 import com.mindovercnc.base.*
-import com.mindovercnc.database.entity.CuttingInsertEntity
 import com.mindovercnc.linuxcnc.*
 import com.mindovercnc.linuxcnc.nml.BuffDescriptor
 import com.mindovercnc.linuxcnc.nml.BuffDescriptorV29
@@ -11,6 +10,7 @@ import org.kodein.di.DI
 import org.kodein.di.bindProvider
 import org.kodein.di.bindSingleton
 import org.kodein.di.instance
+import java.io.File
 import java.util.prefs.Preferences
 
 val RepositoryModule = DI.Module("repository") {
@@ -38,7 +38,19 @@ val RepositoryModule = DI.Module("repository") {
     bindSingleton<SettingsRepository> { SettingsRepositoryImpl(instance()) }
     bindSingleton<ActiveLimitsRepository> { ActiveLimitsRepository() }
     bindSingleton<CuttingInsertsRepository> { CuttingInsertsRepositoryImpl() }
-//    bindSingleton<CuttingInsertsRepository> { CuttingInsertsRepositoryImpl() }
+
+    bindSingleton<GCodeRepository> {
+        val iniRepo: IniFileRepository = instance()
+        val varFilePath = iniRepo.getIniFile().parameterFile
+        val toolFilePath = iniRepo.getIniFile().toolTableFile
+
+        GCodeRepositoryImpl(
+            rs274Path = "/home/vasimihalca/Work/JCNCScreen/libcnc/native/lc/bin/rs274", //TODO: make this dynamic
+            iniFilePath = instance("ini"),
+            toolFilePath = toolFilePath,
+            varFilePath = varFilePath
+        )
+    }
 }
 
 fun iniFileModule(filePath: String) = DI.Module("ini") {

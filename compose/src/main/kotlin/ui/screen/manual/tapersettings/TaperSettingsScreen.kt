@@ -17,7 +17,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import extensions.toFixedDigitsString
 import screen.composables.CardWithTitle
-import screen.composables.tabmanual.ValueSetting
+import screen.composables.ValueSetting
 import screen.uimodel.InputType
 import ui.screen.manual.Manual
 

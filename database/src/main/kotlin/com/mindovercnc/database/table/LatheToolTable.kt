@@ -1,13 +1,15 @@
 package com.mindovercnc.database.table
 
+import com.mindovercnc.base.data.tools.SpindleDirection
+import com.mindovercnc.base.data.tools.ToolType
 import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.sql.ReferenceOption
 
-object LatheCutterTable : IntIdTable() {
+object LatheToolTable : IntIdTable() {
     val insertId = reference("insertId", CuttingInsertTable, onDelete = ReferenceOption.CASCADE).nullable()
-    val type = varchar("type", length = 50)
+    val type = enumeration("type", ToolType::class)
     val tipOrientation = integer("orientation")
-    val spindleDirection = varchar("spindle_direction", length = 50)
+    val spindleDirection = enumeration("spindle_direction", SpindleDirection::class)
     val toolDiameter = double("tool_diameter").nullable()
     val minBoreDiameter = double("min_bore_diameter").nullable()
     val maxZDepth = double("max_z_depth").nullable()

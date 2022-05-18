@@ -13,7 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import screen.composables.DropDownSetting
-import screen.composables.tabmanual.CycleParameter
+import screen.composables.CycleParameter
 import screen.uimodel.InputType
 import usecase.model.SimpleCycleParameters
 

@@ -2,7 +2,7 @@ package com.mindovercnc.base.data
 
 import com.mindovercnc.base.data.tools.TipOrientation
 
-data class LatheTool(
+data class LinuxCncTool(
     val toolNo: Int,
     val pocket: Int = toolNo,
     val orientation: TipOrientation,
@@ -28,7 +28,7 @@ data class LatheTool(
         var tipRadius = 0.0
         var comment = ""
 
-        fun build() = LatheTool(
+        fun build() = LinuxCncTool(
             toolNo = toolNo,
             orientation = orientation,
             xOffset = xOffset,

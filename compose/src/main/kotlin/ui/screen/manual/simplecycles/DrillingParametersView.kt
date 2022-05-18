@@ -4,9 +4,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
-import screen.composables.tabmanual.CycleParameter
+import screen.composables.CycleParameter
 import screen.uimodel.InputType
-import ui.screen.manual.simplecycles.SimpleCyclesScreenModel
 import usecase.model.SimpleCycleParameters
 
 @Composable

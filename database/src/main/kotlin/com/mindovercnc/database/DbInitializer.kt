@@ -1,6 +1,8 @@
 package com.mindovercnc.database
 
-import com.mindovercnc.base.data.tools.ToolHolderType
+import com.mindovercnc.base.data.tools.*
+import com.mindovercnc.database.entity.CuttingInsertEntity
+import com.mindovercnc.database.entity.LatheToolEntity
 import com.mindovercnc.database.entity.ToolHolderEntity
 import com.mindovercnc.database.table.*
 import org.jetbrains.exposed.sql.Database
@@ -26,28 +28,85 @@ object DbInitializer {
         transaction {
             addLogger(StdOutSqlLogger)
             SchemaUtils.create(
-                CuttingInsertTable, WorkpieceMaterialTable, FeedsAndSpeedsTable, LatheCutterTable, ToolHolderTable
+                CuttingInsertTable, WorkpieceMaterialTable, FeedsAndSpeedsTable, LatheToolTable, ToolHolderTable
             )
         }
         transaction {
+            if (CuttingInsertEntity.count() == 0L) {
+                createDummyInserts()
+            }
+            if (LatheToolEntity.count() == 0L) {
+                createDummyTools()
+            }
             if (ToolHolderEntity.count() == 0L) {
                 createDummyHolders()
             }
         }
-
     }
 
     private fun createDummyHolders() {
         val types = ToolHolderType.values()
         repeat(5) {
             ToolHolderEntity.new {
-                holderNumber = it
+                holderNumber = it + 1
                 holderType = types.random()
                 cutter = null
                 clampingPosition = 0
                 xOffset = Random.nextDouble()
                 zOffset = Random.nextDouble()
             }
+        }
+    }
+
+    private fun createDummyTools() {
+        LatheToolEntity.new {
+            insert = getInsertByCode("VCMT")
+            type = ToolType.Turning
+            tipOrientation = TipOrientation.Position7.orient
+            spindleDirection = SpindleDirection.Reverse
+        }
+        LatheToolEntity.new {
+            insert = getInsertByCode("CCMT")
+            type = ToolType.Boring
+            tipOrientation = TipOrientation.Position7.orient
+            spindleDirection = SpindleDirection.Reverse
+            minBoreDiameter = 20.0
+            maxZDepth = 50.0
+        }
+    }
+
+    private fun getInsertByCode(code: String): CuttingInsertEntity {
+        return CuttingInsertEntity.find { CuttingInsertTable.code eq code }.first()
+    }
+
+    private fun createDummyInserts() {
+        CuttingInsertEntity.new {
+            madeOf = MadeOf.Carbide
+            code = "CCMT"
+            radius = 0.8
+            frontAngle = 0.0
+            backAngle = 0.0
+        }
+        CuttingInsertEntity.new {
+            madeOf = MadeOf.Carbide
+            code = "VCMT"
+            radius = 0.8
+            frontAngle = 0.0
+            backAngle = 0.0
+        }
+        CuttingInsertEntity.new {
+            madeOf = MadeOf.Carbide
+            code = "TCMT"
+            radius = 0.8
+            frontAngle = 0.0
+            backAngle = 0.0
+        }
+        CuttingInsertEntity.new {
+            madeOf = MadeOf.Carbide
+            code = "WNMG"
+            radius = 0.8
+            frontAngle = 0.0
+            backAngle = 0.0
         }
     }
 }
