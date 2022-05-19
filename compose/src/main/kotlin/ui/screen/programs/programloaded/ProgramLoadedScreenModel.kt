@@ -3,9 +3,15 @@ package ui.screen.programs.programloaded
 import cafe.adriel.voyager.core.model.StateScreenModel
 import com.mindovercnc.base.FileSystemRepository
 import com.mindovercnc.base.GCodeRepository
+import com.mindovercnc.linuxcnc.LinuxCncHome
 import kotlinx.coroutines.flow.update
+import screen.composables.VtkUiState
 import screen.composables.editor.Editor
 import usecase.model.FileSystemItem
+import vtk.AxesActor
+import vtk.vtkActor
+import vtk.vtkConeSource
+import vtk.vtkPolyDataMapper
 import java.io.File
 
 class ProgramLoadedScreenModel(
@@ -14,10 +20,36 @@ class ProgramLoadedScreenModel(
 
     data class State(
         val currentFolder: FileSystemItem? = null,
-        val editor: Editor? = null
+        val editor: Editor? = null,
+        val vtkUiState: VtkUiState = VtkUiState(createActors())
     )
 
-    init {
-        gCodeRepository.parseFile(File("/home/vasimihalca/Work/linuxcnc-dev/nc_files/conversational/Test_od_turning.ngc"))
+    fun addActor() {
+        mutableState.update {
+            it.copy(
+                vtkUiState = it.vtkUiState + AxesActor()
+            )
+        }
     }
+
+    init {
+        gCodeRepository.parseFile(
+            File(
+                LinuxCncHome,
+                "/nc_files/conversational/Test_od_turning.ngc"
+            )
+        )
+    }
+}
+
+private fun createActors(): List<vtkActor> {
+    val cone = vtkConeSource()
+    cone.SetResolution(8)
+
+    val coneMapper = vtkPolyDataMapper()
+    coneMapper.SetInputConnection(cone.GetOutputPort())
+
+    val coneActor = vtkActor()
+    coneActor.SetMapper(coneMapper)
+    return listOf(coneActor)
 }
