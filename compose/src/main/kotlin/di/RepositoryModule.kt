@@ -17,7 +17,7 @@ val RepositoryModule = DI.Module("repository") {
     bindSingleton<CncStatusRepository> { CncStatusRepositoryImpl(instance("app_scope"), instance()) }
     bindSingleton<MessagesRepository> { MessagesRepositoryImpl(instance("app_scope")) }
     bindSingleton<CncCommandRepository> { CncCommandRepositoryImpl() }
-    bindSingleton<HalRepository> { HalRepositoryImpl(instance("app_scope")) }
+    bindSingleton<HalRepository> { HalRepositoryImpl() }
     bindSingleton<IniFileRepository> { IniFileRepositoryImpl(instance()) }
     bindSingleton<VarFileRepository> {
         VarFileRepositoryImpl(instance("app_scope"), instance())

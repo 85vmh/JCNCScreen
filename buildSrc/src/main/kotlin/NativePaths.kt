@@ -8,8 +8,8 @@ object NativePaths {
         return listOf(
             File(linuxCncHome, "lib").path,
             "/home/vasimihalca/.jdks/openjdk-17.0.1/lib",
-            "/usr/lib"
-//            "/usr/lib/x86_64-linux-gnu/java/vtk-Linux-x86_64"
+            "/usr/lib",
+            "/usr/lib/x86_64-linux-gnu/java/vtk-Linux-x86_64"
         )
     }
 }

@@ -17,7 +17,7 @@ object ArgProcessor {
             shortName = "v",
             fullName = "vtk-enabled",
             description = "Set vtk enabled"
-        ).default(false)
+        ).default(true)
 
         val topBarEnabled by parser.option(
             ArgType.Boolean,
