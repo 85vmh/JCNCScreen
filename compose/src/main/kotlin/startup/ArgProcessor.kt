@@ -14,15 +14,24 @@ object ArgProcessor {
 
         val vtkEnabled by parser.option(
             ArgType.Boolean,
-            shortName = "-v",
+            shortName = "v",
+            fullName = "vtk-enabled",
             description = "Set vtk enabled"
         ).default(false)
+
+        val topBarEnabled by parser.option(
+            ArgType.Boolean,
+            shortName = "tb",
+            fullName = "topbar-enabled",
+            description = "Set topbar enabled"
+        ).default(false)
+
         val iniPath by parser.argument(
             ArgType.String,
             description = "INI file path to load"
         )
 
-        val result = parser.parse(args)
+        parser.parse(args)
 
         val iniFile = createIniFile(iniPath)
         if (!iniFile.exists()) {
@@ -31,7 +40,8 @@ object ArgProcessor {
 
         return StartupArgs(
             IniFilePath(iniFile),
-            VtkEnabled(vtkEnabled)
+            VtkEnabled(vtkEnabled),
+            TopBarEnabled(topBarEnabled)
         )
     }
 
@@ -49,3 +59,6 @@ object ArgProcessor {
 
 @JvmInline
 value class VtkEnabled(val enabled: Boolean)
+
+@JvmInline
+value class TopBarEnabled(val enabled: Boolean)

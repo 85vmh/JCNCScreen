@@ -23,6 +23,7 @@ import screen.composables.editor.EditorEmptyView
 import screen.composables.editor.EditorView
 import ui.screen.programs.Programs
 import ui.screen.programs.programloaded.ProgramLoadedScreen
+import ui.widget.ErrorSnackbar
 import usecase.model.FileSystemItem
 
 class ProgramsRootScreen : Programs("Programs") {
@@ -37,7 +38,11 @@ class ProgramsRootScreen : Programs("Programs") {
             ExtendedFloatingActionButton(
                 text = { Text("Load Program") },
                 onClick = {
-                    navigator.push(ProgramLoadedScreen())
+                    if (state.vtkEnabled.enabled) {
+                        navigator.push(ProgramLoadedScreen())
+                    } else {
+                        screenModel.showError("VTK not enabled")
+                    }
                 },
                 icon = {
                     Icon(
@@ -56,38 +61,44 @@ class ProgramsRootScreen : Programs("Programs") {
 
         val settings = Settings()
 
-        Column {
-            Row(
-                modifier = Modifier.height(50.dp).padding(horizontal = 16.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                state.currentFolder?.let {
-                    BreadcrumbView(it) { clickedPath ->
-                        screenModel.loadFolderContents(clickedPath)
-                    }
-                }
-            }
-            Divider(color = Color.LightGray, thickness = 1.dp)
-            Row(
-                modifier = Modifier
-            ) {
-                Column(
-                    modifier = Modifier
-                        .width(400.dp)
+        Box {
+            Column {
+                Row(
+                    modifier = Modifier.height(50.dp).padding(horizontal = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     state.currentFolder?.let {
-                        FileSystemView(it as FileSystemItem.FolderItem)
+                        BreadcrumbView(it) { clickedPath ->
+                            screenModel.loadFolderContents(clickedPath)
+                        }
                     }
                 }
-                VerticalDivider()
-                if (state.editor != null) {
-                    Column(Modifier.weight(1f)) {
-                        EditorView(state.editor!!, settings)
+                Divider(color = Color.LightGray, thickness = 1.dp)
+                Row(
+                    modifier = Modifier
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .width(400.dp)
+                    ) {
+                        (state.currentFolder as? FileSystemItem.FolderItem)?.let {
+                            FileSystemView(it)
+                        }
                     }
-                } else {
-                    EditorEmptyView()
+                    VerticalDivider()
+                    if (state.editor != null) {
+                        Column(Modifier.weight(1f)) {
+                            EditorView(state.editor!!, settings)
+                        }
+                    } else {
+                        EditorEmptyView()
+                    }
                 }
             }
+            ErrorSnackbar(
+                state.error,
+                onDismiss = screenModel::clearError
+            )
         }
     }
 }

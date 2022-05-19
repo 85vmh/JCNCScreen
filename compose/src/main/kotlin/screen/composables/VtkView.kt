@@ -12,33 +12,39 @@ import java.awt.event.ActionListener
 
 
 @Composable
-fun VtkView(state: VtkState, modifier: Modifier = Modifier) {
-    val actors = state.actors
+fun VtkView(
+    state: VtkUiState,
+    modifier: Modifier = Modifier
+) {
     SwingPanel(
         modifier = modifier,
         factory = { vtkPanel() },
         update = {
             val renderer = it.GetRenderer()
             renderer.GetActors().RemoveAllItems()
-            actors.forEach {
-                print("-----add actor $it")
-                renderer.AddActor(it)
+            state.actors.forEach { actor ->
+                print("-----add actor $actor")
+                renderer.AddActor(actor)
+            }
+            state.axesActors.forEach { axesActor ->
+                print("-----add axes actor $axesActor")
+                renderer.AddActor(axesActor)
             }
         }
     )
 }
 
-class VtkState(vararg initialActors: vtkProp) : ActionListener {
+data class VtkUiState(
+    val actors: List<vtkActor> = emptyList(),
+    val axesActors: List<vtkAxesActor> = emptyList()
+) {
 
-    val actors = mutableStateListOf(*initialActors)
+    operator fun plus(actor: vtkActor) = copy(
+        actors = actors + actor
+    )
 
-    fun addActor(actor: vtkProp) {
-        println("add actor called: ${actor.javaClass.name}")
-        actors += actor
-    }
-
-    override fun actionPerformed(e: ActionEvent?) {
-
-    }
+    operator fun plus(actor: vtkAxesActor) = copy(
+        axesActors = axesActors + actor
+    )
 
 }

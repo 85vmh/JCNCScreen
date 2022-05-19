@@ -22,7 +22,7 @@ fun AppWindow(
     onCloseRequest = onCloseRequest,
     title = "KtCnc",
     focusable = false,
-    undecorated = true,
+    undecorated = !startupArgs.topBarEnabled.enabled,
     state = windowState
 ) {
     val scope = rememberCoroutineScope {

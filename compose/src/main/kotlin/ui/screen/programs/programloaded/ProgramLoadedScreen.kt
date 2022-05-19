@@ -1,6 +1,9 @@
 package ui.screen.programs.programloaded
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Button
@@ -10,18 +13,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.kodein.rememberScreenModel
-import screen.composables.VtkState
 import screen.composables.VtkView
 import ui.screen.programs.Programs
-import vtk.AxesActor
-import vtk.vtkActor
-import vtk.vtkConeSource
-import vtk.vtkPolyDataMapper
 
 class ProgramLoadedScreen : Programs("Program Loaded") {
 
@@ -44,28 +41,19 @@ class ProgramLoadedScreen : Programs("Program Loaded") {
     @Composable
     override fun Content() {
         val screenModel = rememberScreenModel<ProgramLoadedScreenModel>()
-        val ss by screenModel.state.collectAsState()
-
-        val state = remember {
-            val cone = vtkConeSource()
-            cone.SetResolution(8)
-
-            val coneMapper = vtkPolyDataMapper()
-            coneMapper.SetInputConnection(cone.GetOutputPort())
-
-            val coneActor = vtkActor()
-            coneActor.SetMapper(coneMapper)
-            VtkState(coneActor)
-        }
+        val state by screenModel.state.collectAsState()
 
         Box(
             modifier = Modifier.fillMaxSize()
         ) {
-            VtkView(state, modifier = Modifier.fillMaxWidth().height(500.dp))
+            VtkView(
+                state.vtkUiState,
+                modifier = Modifier.fillMaxWidth().height(500.dp)
+            )
             Button(
                 modifier = Modifier.align(Alignment.BottomCenter),
                 onClick = {
-                    state.addActor(AxesActor())
+                    screenModel.addActor()
                 }
             ) {
                 Text("Add Actor")
