@@ -26,31 +26,20 @@ import extensions.draggableScroll
 import screen.uimodel.SimpleCycle
 
 @Composable
-fun DrawerContent(
+fun SimpleCyclesList(
+    items: Array<SimpleCycle>,
     onCycleSelected: (SimpleCycle) -> Unit
 ) {
     val scrollState = rememberLazyListState()
     val scope = rememberCoroutineScope()
 
-    Column(
-        modifier = Modifier.padding(16.dp).fillMaxWidth()
+    LazyColumn(
+        modifier = Modifier.draggableScroll(scrollState, scope),
+        state = scrollState
     ) {
-        Text(
-            modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center,
-            text = "Simple Cycles",
-            style = MaterialTheme.typography.headlineSmall,
-        )
-        Spacer(modifier = Modifier.height(24.dp))
-
-        LazyColumn(
-            modifier = Modifier.draggableScroll(scrollState, scope),
-            state = scrollState
-        ) {
-            items(SimpleCycle.values()) { item ->
-                Cycle(item, Modifier.padding(vertical = 8.dp)) {
-                    onCycleSelected.invoke(item)
-                }
+        items(items) { item ->
+            Cycle(item, Modifier.padding(vertical = 8.dp)) {
+                onCycleSelected.invoke(item)
             }
         }
     }

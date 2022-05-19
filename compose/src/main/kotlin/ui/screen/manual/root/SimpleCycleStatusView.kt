@@ -7,6 +7,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Divider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -23,11 +24,11 @@ fun SimpleCycleStatusView(
     simpleCycleParameters: SimpleCycleParameters? = null,
     modifier: Modifier = Modifier
 ) {
-    Card(
+    Surface(
         shape = RoundedCornerShape(8.dp),
         modifier = modifier,
         border = BorderStroke(1.dp, SolidColor(Color.DarkGray)),
-        elevation = 16.dp
+        shadowElevation = 16.dp
     ) {
 
         Column {

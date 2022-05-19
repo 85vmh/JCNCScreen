@@ -5,34 +5,38 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 
-data class TabItem(val tabTitle: String, val tabView: @Composable () -> Unit)
+enum class ToolsTabItem(val tabTitle: String) {
+    ToolHolders("Tool Holders"),
+    LatheTools("Lathe Tools"),
+    CuttingInserts("Cutting Inserts");
+}
 
 @Composable
-fun TabbedContentView(
-    tabs: List<TabItem>,
+fun <E : Enum<E>> TabbedContentView(
+    tabs: Array<E>,
     currentTabIndex: Int,
     onTabSelected: (Int) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    text: @Composable (E) -> Unit,
+    content: @Composable (E) -> Unit
 ) {
+    val item = tabs[currentTabIndex]
     Column(
         modifier = modifier,
     ) {
-
         TabRow(selectedTabIndex = currentTabIndex) {
             tabs.forEachIndexed { index, tabItem ->
-                Tab(selected = currentTabIndex == index,
+                Tab(
+                    selected = currentTabIndex == index,
                     onClick = {
                         onTabSelected.invoke(index)
                     },
-                    text = {
-                        Text(text = tabItem.tabTitle)
-                    })
+                    text = { text(tabItem) }
+                )
             }
         }
-        tabs[currentTabIndex].tabView.invoke()
+        content(item)
     }
 }

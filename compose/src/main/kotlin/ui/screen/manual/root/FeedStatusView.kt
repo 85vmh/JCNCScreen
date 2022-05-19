@@ -6,6 +6,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Divider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -28,11 +29,11 @@ fun FeedStatusView(
         else -> FeedModeAndUnits("Units per minute", "${uiModel.units}/min")
     }
 
-    Card(
+    Surface(
         shape = RoundedCornerShape(8.dp),
         modifier = modifier,
         border = BorderStroke(1.dp, SolidColor(Color.DarkGray)),
-        elevation = 16.dp
+        shadowElevation = 16.dp
     ) {
         val settingsModifier = Modifier
             .fillMaxWidth()
@@ -61,8 +62,18 @@ fun FeedStatusView(
                 thickness = 1.dp
             )
             SettingStatusRow("Mode:", feed.mode, modifier = settingsModifier)
-            SettingStatusRow("Set feed:", uiModel.setFeed.toFixedDigitsString(), feed.units, modifier = settingsModifier)
-            SettingStatusRow("Actual feed:", uiModel.actualFeed.toFixedDigitsString(), feed.units, modifier = settingsModifier)
+            SettingStatusRow(
+                "Set feed:",
+                uiModel.setFeed.toFixedDigitsString(),
+                feed.units,
+                modifier = settingsModifier
+            )
+            SettingStatusRow(
+                "Actual feed:",
+                uiModel.actualFeed.toFixedDigitsString(),
+                feed.units,
+                modifier = settingsModifier
+            )
         }
     }
 }

@@ -4,11 +4,12 @@ import com.mindovercnc.base.IniFileRepository
 import com.mindovercnc.linuxcnc.model.G53AxisLimits
 import com.mindovercnc.linuxcnc.model.IniFile
 import java.io.*
+import java.nio.file.Paths
 
 class IniFileRepositoryImpl(
-    iniFilePath: IniFilePath
+    private val iniFilePath: IniFilePath
 ) : IniFileRepository {
-    private var parsedFile: Map<String, Map<String, String>>
+    private val parsedFile: Map<String, Map<String, String>>
     private val rootPath = iniFilePath.file.parentFile
 
     private var useCustomLimits: Boolean = false
@@ -69,9 +70,17 @@ class IniFileRepositoryImpl(
             jointParameters.add(it)
         }
 
+        val path = Paths.get(programPrefix)
+        val file = if (path.isAbsolute) {
+            path.toFile()
+        } else {
+            Paths.get(
+                iniFilePath.file.absolutePath + programPrefix
+            ).normalize().toFile()
+        }
         return IniFile(
             subroutinePath = "",
-            programPrefix = programPrefix,
+            programDir = Paths.get(file.absolutePath).normalize().toFile(),
             parameterFile = parameterFile,
             toolTableFile = toolTableFile,
             joints = jointParameters
@@ -153,7 +162,7 @@ class IniFileRepositoryImpl(
 
 
     enum class Section {
-        EMC, DISPLAY, FILTER, TASK, RS274NGC, EMCMOT, EMCIO, HAL, TRAJ, KINS, AXIS_X, AXIS_Y, AXIS_Z, JOINT_0, JOINT_1, JOINT_2, ;
+        EMC, DISPLAY, FILTER, TASK, RS274NGC, EMCMOT, EMCIO, HAL, TRAJ, KINS, AXIS_X, AXIS_Y, AXIS_Z, JOINT_0, JOINT_1, JOINT_2;
     }
 
     enum class ParamType {

@@ -59,11 +59,10 @@ class ProgramsRootScreenModel(
 
     private fun File.toFileSystemItem(loadChildren: Boolean = true): FileSystemItem {
         return if (this.isDirectory) {
-            val absolute = absoluteFile
             FileSystemItem.FolderItem(
-                name = absolute.name,
-                path = absolute.path,
-                lastModified = absolute.lastModified(),
+                name = name,
+                path = absolutePath,
+                lastModified = lastModified(),
                 size = this.length(),
                 children = when {
                     loadChildren -> this.listFiles().orEmpty()
@@ -80,7 +79,7 @@ class ProgramsRootScreenModel(
         } else {
             FileSystemItem.FileItem(
                 name = this.name,
-                path = this.path,
+                path = this.absolutePath,
                 extension = this.extension,
                 lastModified = this.lastModified(),
                 size = this.length()

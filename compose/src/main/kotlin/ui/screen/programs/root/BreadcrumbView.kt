@@ -59,7 +59,9 @@ private class TrapezeShape(private val xOffset: Float = 10f) : Shape {
 @Composable
 fun BreadcrumbView(
     fileSystemItem: FileSystemItem,
-    onFolderSelected: (String) -> Unit
+    onFolderSelected: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(0.dp)
 ) {
 
     val items = fileSystemItem.path
@@ -80,7 +82,8 @@ fun BreadcrumbView(
     val scope = rememberCoroutineScope()
 
     LazyRow(
-        modifier = Modifier.height(36.dp).draggableScroll(scrollState, scope, Orientation.Horizontal)
+        modifier = modifier.draggableScroll(scrollState, scope, Orientation.Horizontal),
+        contentPadding = contentPadding
     ) {
         itemsIndexed(items) { index, item ->
             BreadcrumbItem(

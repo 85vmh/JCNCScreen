@@ -15,8 +15,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,14 +32,21 @@ import screen.composables.platform.VerticalScrollbar
 import ui.screen.tools.addholder.AddEditHolderScreen
 import ui.screen.tools.root.ToolsScreenModel
 
+
+private val itemModifier = Modifier.fillMaxWidth()
+
 @Composable
-fun ToolHoldersContent(screenModel: ToolsScreenModel) {
+fun ToolHoldersContent(
+    state: ToolsScreenModel.State,
+    onDelete: (ToolHolder) -> Unit,
+    onLoad: (ToolHolder) -> Unit,
+    modifier: Modifier = Modifier
+) {
     val navigator = LocalNavigator.currentOrThrow
     val scope = rememberCoroutineScope()
-    val state by screenModel.state.collectAsState()
 
     Box(
-        modifier = Modifier
+        modifier = modifier
     ) {
         val scrollState = rememberLazyListState()
 
@@ -54,8 +59,9 @@ fun ToolHoldersContent(screenModel: ToolsScreenModel) {
                     item = item,
                     isCurrent = item.holderNumber == state.currentTool,
                     onEditClicked = { navigator.push(AddEditHolderScreen(it)) },
-                    onDeleteClicked = screenModel::deleteToolHolder,
-                    onLoadClicked = screenModel::loadToolHolder
+                    onDeleteClicked = onDelete,
+                    onLoadClicked = onLoad,
+                    modifier = itemModifier
                 )
                 Divider(color = Color.LightGray, thickness = 0.5.dp)
             }
@@ -74,10 +80,10 @@ fun ToolHoldersContent(screenModel: ToolsScreenModel) {
 private fun HolderView(
     item: ToolHolder,
     isCurrent: Boolean,
-    modifier: Modifier = Modifier,
     onEditClicked: (ToolHolder) -> Unit,
     onDeleteClicked: (ToolHolder) -> Unit,
-    onLoadClicked: (ToolHolder) -> Unit
+    onLoadClicked: (ToolHolder) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val nonSelectedModifier = modifier.height(60.dp)
     val selectedModifier = nonSelectedModifier.border(BorderStroke(1.dp, Color.Blue))

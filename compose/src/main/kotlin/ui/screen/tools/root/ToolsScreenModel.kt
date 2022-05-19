@@ -82,6 +82,14 @@ class ToolsScreenModel(
 
     }
 
+    fun editCuttingInsert(insert: CuttingInsert) {
+
+    }
+
+    fun deleteCuttingInsert(insert: CuttingInsert) {
+
+    }
+
     fun deleteLatheTool(latheTool: LatheTool) {
         toolsUseCase.deleteLatheTool(latheTool)
     }
