@@ -1,86 +1,43 @@
 // Copyright 2000-2021 JetBrains s.r.o. and contributors. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
 @file:Suppress("FunctionName")
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Window
-import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
-import com.mindovercnc.database.DbInitializer
-import com.mindovercnc.linuxcnc.CncInitializer
-import di.*
-import kotlinx.coroutines.Dispatchers
-import org.kodein.di.compose.rememberInstance
-import org.kodein.di.compose.withDI
-import themes.AppTheme
-import vtk.vtkNativeLibrary
-import java.io.File
+import app.AppWindow
+import com.mindovercnc.linuxcnc.IniFilePath
+import startup.ArgProcessor
+import startup.Initializer
+import startup.LinuxCncStarter
+import startup.StartupArgs
 
 
 fun main(args: Array<String>) {
-    //val process = Runtime.getRuntime().exec("linuxcnc '/home/vasimihalca/Work/linuxcnc-dev/configs/sim/axis/lathe.ini'")
-    //Thread.sleep(1000L)
 
-    if (!vtkNativeLibrary.LoadAllNativeLibraries()) {
-        for (lib in vtkNativeLibrary.values()) {
-            if (!lib.IsLoaded()) {
-                println(lib.GetLibraryName() + " not loaded")
-            }
-        }
-    }
-    vtkNativeLibrary.DisableOutputWindow(null)
+    val startupArgs = ArgProcessor.process(args)
 
-    val iniFilePath = args.firstOrNull() ?: throw IllegalArgumentException(".ini file not found")
-    val iniFile = File(iniFilePath)
-    if (!iniFile.exists()) {
-        throw IllegalArgumentException("$iniFilePath does not exist!")
-    }
+//    val process = LinuxCncStarter(startupArgs.iniFilePath)
+//    Thread.sleep(1000L)
 
-    CncInitializer()
-    DbInitializer()
+    Initializer(startupArgs)
 
-    application {
-        val windowState = rememberWindowState(width = 1024.dp, height = 768.dp)
-        MyWindow(windowState, iniFile) {
-            //process.destroy()
-            //process.waitFor()
-            this.exitApplication()
-        }
+    startApplication(startupArgs) {
+//        process.destroy()
     }
 }
 
-@Composable
-fun MyWindow(
-    windowState: WindowState,
-    iniFile: File,
-    onCloseRequest: () -> Unit
-) = Window(
-    onCloseRequest = onCloseRequest,
-    title = "KtCnc",
-    focusable = false,
-    undecorated = true,
-    state = windowState
+fun startApplication(
+    startupArgs: StartupArgs,
+    onExit: () -> Unit
 ) {
-
-    val scope = rememberCoroutineScope {
-        Dispatchers.IO
-    }
-    withDI(
-        iniFileModule(iniFile),
-        appScopeModule(scope),
-        AppModule,
-        ScreenModelModule,
-        UseCaseModule,
-        RepositoryModule,
-        ParseFactoryModule,
-        BuffDescriptorModule
-    ) {
-        val statusWatcher by rememberInstance<StatusWatcher>()
-        statusWatcher.launchIn(scope)
-        AppTheme {
-            CncApp()
+    application {
+        val windowState = rememberWindowState(width = 1024.dp, height = 768.dp)
+        AppWindow(
+            windowState,
+            startupArgs
+        ) {
+            onExit()
+            this.exitApplication()
         }
     }
 }

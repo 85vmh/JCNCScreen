@@ -11,7 +11,7 @@
       <option name="taskNames">
         <list>
           <option value="run" />
-          <option value="--args=&quot;$PROJECT_DIR$/../linuxcnc-dev/configs/sim/axis/lathe.ini&quot;" />
+          <option value="--args=configs/sim/axis/lathe.ini" />
         </list>
       </option>
       <option name="vmOptions" />

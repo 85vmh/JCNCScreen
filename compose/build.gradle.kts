@@ -14,11 +14,15 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutines}")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:${Versions.coroutines}")
+    implementation("org.jetbrains.kotlinx:kotlinx-cli:${Versions.cli}")
+
+    //compose
     implementation(compose.desktop.currentOs)
     implementation(compose.uiTooling)
     @OptIn(ExperimentalComposeLibrary::class)
     implementation(compose.material3)
 
+    //jars
     implementation(fileTree(mapOf("dir" to "lib", "include" to listOf("*.jar"))))
 //    implementation(project(":libcnc"))
     implementation("ro.dragossusi.ktlcnc:ktlcnc:0.0.1")
@@ -28,6 +32,7 @@ dependencies {
 //    implementation(project(":model"))
     implementation("org.kodein.di:kodein-di-framework-compose:${Versions.kodein}")
 
+    //navigation
     implementation("cafe.adriel.voyager:voyager-navigator:${Versions.voyager}")
     implementation("cafe.adriel.voyager:voyager-bottom-sheet-navigator:${Versions.voyager}")
     implementation("cafe.adriel.voyager:voyager-tab-navigator:${Versions.voyager}")
