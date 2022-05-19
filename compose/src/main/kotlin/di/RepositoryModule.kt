@@ -27,8 +27,8 @@ val RepositoryModule = DI.Module("repository") {
     }
     bindSingleton<FileSystemRepository> {
         val iniRepo: IniFileRepository = instance()
-        val filePath = iniRepo.getIniFile().programPrefix
-        FileSystemRepositoryImpl(instance("app_scope"), filePath)
+        val file = iniRepo.getIniFile().programDir
+        FileSystemRepositoryImpl(instance("app_scope"), file)
     }
     bindSingleton { Preferences.userRoot() }
     bindSingleton<SettingsRepository> { SettingsRepositoryImpl(instance()) }

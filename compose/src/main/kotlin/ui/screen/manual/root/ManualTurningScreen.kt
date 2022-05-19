@@ -10,10 +10,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,16 +21,20 @@ import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.kodein.rememberScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import screen.composables.AxisCoordinate
 import screen.composables.InputDialogView
 import screen.uimodel.InputType
+import screen.uimodel.SimpleCycle
 import ui.screen.manual.Manual
 import ui.screen.manual.simplecycles.SimpleCyclesScreen
 import ui.screen.manual.tapersettings.TaperSettingsScreen
 import ui.screen.manual.turningsettings.TurningSettingsScreen
 import ui.screen.manual.virtuallimits.VirtualLimitsScreen
+
+private val axisItemModifier = Modifier.fillMaxWidth()
+    .height(80.dp)
+    .padding(8.dp)
 
 class ManualTurningScreen : Manual("Manual Turning") {
 
@@ -46,11 +47,23 @@ class ManualTurningScreen : Manual("Manual Turning") {
     override fun DrawerContent(drawerState: DrawerState) {
         val scope = rememberCoroutineScope()
         val navigator = LocalNavigator.currentOrThrow
+        val items = remember { SimpleCycle.values() }
 
-        DrawerContent {
-            scope.launch {
-                drawerState.close()
-                navigator.push(SimpleCyclesScreen(it))
+        Column(
+            modifier = Modifier.padding(16.dp).fillMaxWidth()
+        ) {
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center,
+                text = "Simple Cycles",
+                style = MaterialTheme.typography.headlineSmall,
+            )
+            Spacer(modifier = Modifier.height(24.dp))
+            SimpleCyclesList(items) {
+                scope.launch {
+                    drawerState.close()
+                    navigator.push(SimpleCyclesScreen(it))
+                }
             }
         }
     }
@@ -58,7 +71,6 @@ class ManualTurningScreen : Manual("Manual Turning") {
     @OptIn(ExperimentalMaterialApi::class)
     @Composable
     override fun SheetContent(sheetState: ModalBottomSheetState) {
-        val scope = rememberCoroutineScope()
         val screenModel = rememberScreenModel<ManualTurningScreenModel>()
         val state by screenModel.state.collectAsState()
 
@@ -165,36 +177,35 @@ class ManualTurningScreen : Manual("Manual Turning") {
             horizontalAlignment = Alignment.End,
         ) {
 
-            Row(
+            Column(
                 modifier = Modifier
                     .border(BorderStroke(0.5.dp, SolidColor(Color.DarkGray))),
-                horizontalArrangement = Arrangement.End
             ) {
-                Column(
-                    horizontalAlignment = Alignment.End,
-                ) {
-                    AxisCoordinate(
-                        state.xCoordinateUiModel,
-                        isDiameterMode = true,
-                        zeroPosClicked = { screenModel.setZeroPosX() },
-                        absRelClicked = { screenModel.toggleXAbsRel() },
-                        toolOffsetsClicked = {
-                            screenModel.openNumPad(InputType.TOOL_X_COORDINATE) {
-                                screenModel.setToolOffsetX(it)
-                            }
-                        }
-                    )
-                    AxisCoordinate(
-                        state.zCoordinateUiModel,
-                        zeroPosClicked = { screenModel.setZeroPosZ() },
-                        absRelClicked = { screenModel.toggleZAbsRel() },
-                        toolOffsetsClicked = {
-                            screenModel.openNumPad(InputType.TOOL_Z_COORDINATE) {
-                                screenModel.setToolOffsetZ(it)
-                            }
-                        }
-                    )
-                }
+                AxisCoordinate(
+                    state.xCoordinateUiModel,
+                    isDiameterMode = true,
+                    zeroPosClicked = screenModel::setZeroPosX,
+                    absRelClicked = screenModel::toggleXAbsRel,
+                    toolOffsetsClicked = {
+                        screenModel.openNumPad(
+                            inputType = InputType.TOOL_X_COORDINATE,
+                            onSubmitAction = screenModel::setToolOffsetX
+                        )
+                    },
+                    modifier = axisItemModifier
+                )
+                AxisCoordinate(
+                    state.zCoordinateUiModel,
+                    zeroPosClicked = { screenModel.setZeroPosZ() },
+                    absRelClicked = { screenModel.toggleZAbsRel() },
+                    toolOffsetsClicked = {
+                        screenModel.openNumPad(
+                            inputType = InputType.TOOL_Z_COORDINATE,
+                            onSubmitAction = screenModel::setToolOffsetZ
+                        )
+                    },
+                    modifier = axisItemModifier
+                )
             }
 
             Row(
@@ -217,17 +228,13 @@ class ManualTurningScreen : Manual("Manual Turning") {
                             .clickable(onClick = { navigator.push(TurningSettingsScreen()) })
                     )
                 }
-                Switch(
-                    checked = state.taperTurningActive,
-                    onCheckedChange = { screenModel.setTaperTurningActive(state.taperTurningActive.not()) }
-                )
-            }
-            if (state.taperTurningActive) {
                 TaperStatusView(
                     taperAngle = state.taperTurningAngle,
                     modifier = Modifier.width(380.dp)
                         .padding(8.dp)
-                        .clickable(onClick = { navigator.push(TaperSettingsScreen()) })
+                        .clickable(enabled = state.taperTurningActive, onClick = { navigator.push(TaperSettingsScreen()) }),
+                    expanded = state.taperTurningActive,
+                    onExpandChange = screenModel::setTaperTurningActive
                 )
             }
             state.virtualLimitsUiModel?.let {

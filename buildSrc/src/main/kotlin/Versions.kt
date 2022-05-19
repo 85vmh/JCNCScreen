@@ -7,4 +7,6 @@ object Versions {
     const val voyager = "1.0.0-rc02"
     const val exposed = "0.38.2"
     const val sqliteJdbc = "3.36.0.2"
+
+    const val app = "1.0"
 }

@@ -1,2 +1,2 @@
 #!/bin/bash
-java -Djava.library.path=/home/dragos/Apps/linuxcnc/lib:/home/vasimihalca/.jdks/openjdk-17.0.1/lib:/usr/lib -jar compose-all.jar -base ./lib
+java -Djava.library.path=/home/dragos/Apps/linuxcnc/lib:/home/vasimihalca/.jdks/openjdk-17.0.1/lib:/usr/lib -jar compose-1.0.jar -base ./lib

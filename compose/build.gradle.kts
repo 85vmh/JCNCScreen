@@ -8,7 +8,7 @@ plugins {
     id("org.jetbrains.compose")
 }
 
-version = "1.0"
+version = Versions.app
 
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib")
@@ -61,14 +61,16 @@ tasks.withType<KotlinCompile>().configureEach {
     kotlinOptions.freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
 }
 
-tasks.register("distcnc") {
-    dependsOn(tasks.getByName("createDistributable"))
-    val file = File(projectDir, "KtCnc")
-    file.setWritable(true)
-    file.setExecutable(true)
-    file.writeText(
-        """#!/bin/bash
-java -Djava.library.path=${NativePaths.getNativePaths(rootProject).joinToString(":")} -jar compose-all.jar -base ./lib
-"""
-    )
-}
+//tasks.register("distcnc") {
+//    dependsOn(tasks.getByName("createDistributable"))
+//    val file = File(projectDir, "KtCnc")
+//    file.setWritable(true)
+//    file.setExecutable(true)
+//    val nativePaths = NativePaths.getNativePaths(rootProject).joinToString(":")
+//    file.writeText(
+//        """
+//            #!/bin/bash
+//            java -Djava.library.path=$nativePaths -jar compose-${Versions.app}.jar -base ./lib
+//        """
+//    )
+//}

@@ -12,16 +12,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
 import com.mindovercnc.linuxcnc.model.tools.CuttingInsert
 import com.mindovercnc.linuxcnc.model.tools.LatheTool
 import extensions.draggableScroll
@@ -31,14 +27,17 @@ import screen.composables.VerticalDivider
 import screen.composables.platform.VerticalScrollbar
 import ui.screen.tools.root.ToolsScreenModel
 
+private val itemModifier = Modifier.fillMaxWidth()
+
 @Composable
-fun LatheToolsContent(screenModel: ToolsScreenModel) {
-    val navigator = LocalNavigator.currentOrThrow
+fun LatheToolsContent(
+    state: ToolsScreenModel.State,
+    modifier: Modifier = Modifier
+) {
     val scope = rememberCoroutineScope()
-    val state by screenModel.state.collectAsState()
 
     Box(
-        modifier = Modifier
+        modifier = modifier
     ) {
         val scrollState = rememberLazyListState()
 
@@ -52,31 +51,35 @@ fun LatheToolsContent(screenModel: ToolsScreenModel) {
                         index = index,
                         item = item,
                         onEditClicked = {},
-                        onDeleteClicked = {}
+                        onDeleteClicked = {},
+                        modifier = itemModifier
                     )
                     is LatheTool.Boring -> BoringToolView(
                         index = index,
                         item = item,
                         onEditClicked = {},
-                        onDeleteClicked = {}
+                        onDeleteClicked = {},
+                        modifier = itemModifier
                     )
                     is LatheTool.DrillingReaming -> DrillingReamingToolView(
                         index = index,
                         item = item,
                         onEditClicked = {},
-                        onDeleteClicked = {}
+                        onDeleteClicked = {},
+                        modifier = itemModifier
                     )
                     is LatheTool.Parting -> PartingToolView(
                         index = index,
                         item = item,
                         onEditClicked = {},
-                        onDeleteClicked = {}
+                        onDeleteClicked = {},
+                        modifier = itemModifier
                     )
                     else -> {
                         Text("Not implemented: $item")
                     }
                 }
-                Divider(color = Color.LightGray, thickness = 0.5.dp)
+                HorizontalDivider()
             }
         }
 
@@ -93,9 +96,9 @@ fun LatheToolsContent(screenModel: ToolsScreenModel) {
 private fun TurningToolView(
     index: Int,
     item: LatheTool.Turning,
-    modifier: Modifier = Modifier,
     onEditClicked: (LatheTool) -> Unit,
     onDeleteClicked: (LatheTool) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
 
     Row(
@@ -109,18 +112,13 @@ private fun TurningToolView(
             text = (index + 1).toString()
         )
         VerticalDivider()
-        Column(
-            modifier = Modifier.width(180.dp)
-        ) {
-            with(item.insert) {
-                LabelWithValue("Material:", this.madeOf.name)
-                LabelWithValue("Code:", this.code)
-                LabelWithValue("Tip Radius:", this.tipRadius.toFixedDigitsString(1))
-            }
-        }
+        MaterialDetails(
+            insert = item.insert,
+            modifier = Modifier.weight(1f)
+        )
         VerticalDivider()
         Text(
-            modifier = Modifier.width(100.dp),
+            modifier = Modifier.weight(1f),
             textAlign = TextAlign.Center,
             text = "Tool Type: Turning"
         )
@@ -128,13 +126,13 @@ private fun TurningToolView(
         LabelWithValue("Orientation:", item.tipOrientation.name, modifier = Modifier.width(150.dp))
         VerticalDivider()
         Text(
-            modifier = Modifier.width(80.dp),
+            modifier = Modifier.weight(1f),
             textAlign = TextAlign.Center,
             text = item.spindleDirection.name
         )
         VerticalDivider()
         Column(
-            modifier = Modifier.width(100.dp)
+            modifier = Modifier.weight(1f)
         ) {
             LabelWithValue("Minutes used:", item.minutesUsed.toFixedDigitsString(1))
         }
@@ -178,15 +176,10 @@ private fun BoringToolView(
             text = (index + 1).toString()
         )
         VerticalDivider()
-        Column(
-            modifier = Modifier.width(180.dp)
-        ) {
-            with(item.insert) {
-                LabelWithValue("Material:", this.madeOf.name)
-                LabelWithValue("Code:", this.code)
-                LabelWithValue("Tip Radius:", this.tipRadius.toFixedDigitsString(1))
-            }
-        }
+        MaterialDetails(
+            insert = item.insert,
+            modifier = Modifier.weight(1f)
+        )
         VerticalDivider()
         Text(
             modifier = Modifier.width(100.dp),
@@ -358,4 +351,40 @@ private fun PartingToolView(
         }
         VerticalDivider()
     }
+}
+
+@Composable
+fun MaterialDetails(
+    insert: CuttingInsert,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+    ) {
+        LabelWithValue(
+            label = "Material:",
+            value = insert.madeOf.name,
+            modifier = Modifier.fillMaxWidth()
+        )
+        HorizontalDivider()
+        LabelWithValue(
+            label = "Code:",
+            value = insert.code,
+            modifier = Modifier.fillMaxWidth()
+        )
+        HorizontalDivider()
+        LabelWithValue(
+            "Tip Radius:",
+            insert.tipRadius.toFixedDigitsString(1),
+            modifier = Modifier.fillMaxWidth()
+        )
+    }
+}
+
+@Composable
+private fun HorizontalDivider() {
+    Divider(
+        color = Color.LightGray,
+        thickness = 0.5.dp
+    )
 }

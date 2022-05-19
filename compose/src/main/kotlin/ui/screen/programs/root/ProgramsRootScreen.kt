@@ -63,14 +63,19 @@ class ProgramsRootScreen : Programs("Programs") {
 
         Box {
             Column {
-                Row(
-                    modifier = Modifier.height(50.dp).padding(horizontal = 16.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                Box(
+                    modifier = Modifier.height(50.dp),
+                    contentAlignment = Alignment.CenterStart
                 ) {
                     state.currentFolder?.let {
-                        BreadcrumbView(it) { clickedPath ->
-                            screenModel.loadFolderContents(clickedPath)
-                        }
+                        BreadcrumbView(
+                            it,
+                            onFolderSelected = { clickedPath ->
+                                screenModel.loadFolderContents(clickedPath)
+                            },
+                            modifier = Modifier.height(36.dp),
+                            contentPadding = PaddingValues(horizontal = 16.dp)
+                        )
                     }
                 }
                 Divider(color = Color.LightGray, thickness = 1.dp)
@@ -97,7 +102,8 @@ class ProgramsRootScreen : Programs("Programs") {
             }
             ErrorSnackbar(
                 state.error,
-                onDismiss = screenModel::clearError
+                onDismiss = screenModel::clearError,
+                modifier = Modifier.align(Alignment.BottomEnd)
             )
         }
     }

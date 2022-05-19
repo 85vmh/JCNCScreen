@@ -32,8 +32,7 @@ fun SpindleStatusView(
         modifier = modifier,
         border = BorderStroke(1.dp, SolidColor(Color.DarkGray)),
         shadowElevation = 8.dp,
-    )
-    {
+    ) {
         val settingsModifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
@@ -71,11 +70,21 @@ fun SpindleStatusView(
             * - Stop at:
             * */
 
-            SettingStatusRow("Set ${spModeWithUnits.mode}:", spModeWithUnits.value, spModeWithUnits.units, modifier = settingsModifier)
+            SettingStatusRow(
+                "Set ${spModeWithUnits.mode}:",
+                spModeWithUnits.value,
+                spModeWithUnits.units,
+                modifier = settingsModifier
+            )
             if (uiModel.isRpmMode.not()) {
                 SettingStatusRow("Max RPM:", uiModel.maxRpm.toString(), "rev/min", modifier = settingsModifier)
             }
-            SettingStatusRow("Actual RPM:", kotlin.math.abs(uiModel.actualRpm).toString(), "rev/min", modifier = settingsModifier)
+            SettingStatusRow(
+                "Actual RPM:",
+                kotlin.math.abs(uiModel.actualRpm).toString(),
+                "rev/min",
+                modifier = settingsModifier
+            )
             uiModel.stopAngle?.let {
                 SettingStatusRow("Oriented stop:", it.toString(), "degrees", modifier = settingsModifier)
             }

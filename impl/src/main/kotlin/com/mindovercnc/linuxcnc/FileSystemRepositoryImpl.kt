@@ -8,16 +8,16 @@ import java.io.File
 
 class FileSystemRepositoryImpl(
     private val scope: CoroutineScope,
-    private val ncProgramsPath: String
+    private val ncProgramsDir: File
 ) : FileSystemRepository {
 
     override fun getNcRootAppFile(): File {
-        return File(ncProgramsPath)
+        return ncProgramsDir
     }
 
     override fun writeProgramLines(lines: List<String>, programName: String) {
         scope.launch(Dispatchers.IO) {
-            val conversationalFolder = File("$ncProgramsPath/conversational")
+            val conversationalFolder = File(ncProgramsDir, "conversational")
             if (conversationalFolder.exists().not()) {
                 conversationalFolder.mkdir()
             }

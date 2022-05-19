@@ -12,8 +12,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,13 +26,19 @@ import screen.composables.VerticalDivider
 import screen.composables.platform.VerticalScrollbar
 import ui.screen.tools.root.ToolsScreenModel
 
+private val itemModifier = Modifier.fillMaxWidth()
+
 @Composable
-fun CuttingInsertsContent(screenModel: ToolsScreenModel) {
+fun CuttingInsertsContent(
+    state: ToolsScreenModel.State,
+    onEdit: (CuttingInsert) -> Unit,
+    onDelete: (CuttingInsert) -> Unit,
+    modifier: Modifier = Modifier,
+) {
     val scope = rememberCoroutineScope()
-    val state by screenModel.state.collectAsState()
 
     Box(
-        modifier = Modifier
+        modifier = modifier
     ) {
         val scrollState = rememberLazyListState()
 
@@ -46,8 +50,9 @@ fun CuttingInsertsContent(screenModel: ToolsScreenModel) {
                 LatheToolView(
                     index = index,
                     item = item,
-                    onEditClicked = { },
-                    onDeleteClicked = { },
+                    onEditClicked = onEdit,
+                    onDeleteClicked = onDelete,
+                    modifier = itemModifier
                 )
                 Divider(color = Color.LightGray, thickness = 0.5.dp)
             }
@@ -66,9 +71,9 @@ fun CuttingInsertsContent(screenModel: ToolsScreenModel) {
 private fun LatheToolView(
     index: Int,
     item: CuttingInsert,
-    modifier: Modifier = Modifier,
     onEditClicked: (CuttingInsert) -> Unit,
     onDeleteClicked: (CuttingInsert) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
 
     Row(

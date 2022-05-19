@@ -42,18 +42,20 @@ fun AxisCoordinate(
     toolOffsetsClicked: () -> Unit
 ) {
     Box(
-        modifier = Modifier
-            .height(80.dp)
-            .padding(8.dp),
+        modifier = Modifier,
         contentAlignment = Alignment.Center
     ) {
         Row(
-            modifier = modifier
+            modifier = modifier,
+            horizontalArrangement = Arrangement.Center
         ) {
             ToolOffsets(uiModel) { toolOffsetsClicked.invoke() }
             Position(PositionType.SECONDARY, uiModel, isDiameterMode, modifier = Modifier.alignByBaseline())
             AxisLetter(uiModel)
-            SpacerOrDiameter(uiModel.axis == CoordinateUiModel.Axis.X && isDiameterMode, modifier = Modifier.align(Alignment.CenterVertically))
+            SpacerOrDiameter(
+                uiModel.axis == CoordinateUiModel.Axis.X && isDiameterMode,
+                modifier = Modifier.align(Alignment.CenterVertically)
+            )
             Position(PositionType.PRIMARY, uiModel, isDiameterMode, modifier = Modifier.alignByBaseline())
             Units(uiModel.units, modifier = Modifier.alignByBaseline())
             ZeroPos(uiModel, modifier = Modifier.padding(start = 16.dp)) {
@@ -114,7 +116,12 @@ private fun SpacerOrDiameter(showDiameter: Boolean, modifier: Modifier = Modifie
 }
 
 @Composable
-private fun Position(positionType: PositionType, uiModel: CoordinateUiModel, isDiameterMode: Boolean = false, modifier: Modifier = Modifier) {
+private fun Position(
+    positionType: PositionType,
+    uiModel: CoordinateUiModel,
+    isDiameterMode: Boolean = false,
+    modifier: Modifier = Modifier
+) {
 
     val value = when (positionType) {
         PositionType.PRIMARY -> uiModel.primaryValue
