@@ -39,11 +39,11 @@ class StatusRootScreen : Status("Status") {
         ) {
             stickyHeader {
                 MessagesHeader()
-                androidx.compose.material.Divider(color = Color.LightGray, thickness = 0.5.dp)
+                androidx.compose.material3.Divider(color = Color.LightGray, thickness = 0.5.dp)
             }
             items(state.messages) { item ->
                 MessageRow(item)
-                androidx.compose.material.Divider(color = Color.LightGray, thickness = 0.5.dp)
+                androidx.compose.material3.Divider(color = Color.LightGray, thickness = 0.5.dp)
             }
         }
     }

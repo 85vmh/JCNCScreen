@@ -8,9 +8,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import screen.composables.NumericInputWithUnit
 import screen.uimodel.InputType
 import screen.uimodel.NumericInputs
+import ui.widget.NumericInputWithUnit
 import usecase.model.TeachInAxis
 
 @Composable
@@ -38,9 +38,13 @@ fun InputSetting(
                 text = alternativeLabel ?: params.valueDescription
             )
         }
-        NumericInputWithUnit(value, inputType, alignment, modifier = Modifier.width(170.dp)) {
-            onValueChanged(it)
-        }
+        NumericInputWithUnit(
+            value = value,
+            inputType = inputType,
+            onValueChanged = onValueChanged,
+            modifier = Modifier.width(170.dp),
+            verticalAlignment = alignment
+        )
         teachInAxis?.let {
             Button(onClick = onTeachInClicked) {
                 Text("Teach ${it.name} Pos")

@@ -28,17 +28,23 @@ import screen.uimodel.SimpleCycle
 @Composable
 fun SimpleCyclesList(
     items: Array<SimpleCycle>,
-    onCycleSelected: (SimpleCycle) -> Unit
+    onCycleSelected: (SimpleCycle) -> Unit,
+    modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(0.dp)
 ) {
     val scrollState = rememberLazyListState()
     val scope = rememberCoroutineScope()
 
     LazyColumn(
-        modifier = Modifier.draggableScroll(scrollState, scope),
-        state = scrollState
+        modifier = modifier.draggableScroll(scrollState, scope),
+        state = scrollState,
+        contentPadding = contentPadding
     ) {
         items(items) { item ->
-            Cycle(item, Modifier.padding(vertical = 8.dp)) {
+            Cycle(
+                op = item,
+                modifier = Modifier.padding(vertical = 8.dp)
+            ) {
                 onCycleSelected.invoke(item)
             }
         }

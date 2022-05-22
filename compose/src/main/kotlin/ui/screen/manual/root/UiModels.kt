@@ -48,7 +48,9 @@ data class HandWheelsUiModel(
 data class WcsUiModel(
     val activeOffset: String,
     val wcsOffsets: List<WcsOffset>
-)
+) {
+    val selected = wcsOffsets.firstOrNull { it.coordinateSystem == activeOffset }
+}
 
 data class WcsOffset(
     val coordinateSystem: String,

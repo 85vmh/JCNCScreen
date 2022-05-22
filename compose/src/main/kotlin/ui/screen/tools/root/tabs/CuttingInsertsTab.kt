@@ -7,10 +7,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material3.Divider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -47,13 +44,19 @@ fun CuttingInsertsContent(
             state = scrollState
         ) {
             itemsIndexed(state.cuttingInserts) { index, item ->
-                LatheToolView(
-                    index = index,
-                    item = item,
-                    onEditClicked = onEdit,
-                    onDeleteClicked = onDelete,
-                    modifier = itemModifier
-                )
+                val color = if (index % 2 == 0) MaterialTheme.colorScheme.primary
+                else MaterialTheme.colorScheme.secondary
+                Surface(
+                    color = color
+                ) {
+                    LatheToolView(
+                        index = index,
+                        item = item,
+                        onEditClicked = onEdit,
+                        onDeleteClicked = onDelete,
+                        modifier = itemModifier
+                    )
+                }
                 Divider(color = Color.LightGray, thickness = 0.5.dp)
             }
         }
@@ -75,7 +78,6 @@ private fun LatheToolView(
     onDeleteClicked: (CuttingInsert) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,

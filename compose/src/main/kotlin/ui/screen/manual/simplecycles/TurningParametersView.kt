@@ -4,12 +4,15 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
-import screen.composables.CycleParameter
 import screen.uimodel.InputType
+import ui.widget.CycleParameter
 import usecase.model.SimpleCycleParameters
 
 @Composable
-fun TurningParametersView(viewModel: SimpleCyclesScreenModel, parametersState: SimpleCycleParameters.TurningParameters) {
+fun TurningParametersView(
+    viewModel: SimpleCyclesScreenModel,
+    parametersState: SimpleCycleParameters.TurningParameters
+) {
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
@@ -18,34 +21,34 @@ fun TurningParametersView(viewModel: SimpleCyclesScreenModel, parametersState: S
             inputType = InputType.X_END,
             value = parametersState.xEnd,
             teachInLabel = "TeachIn X",
-            valueChange = { viewModel.setXEnd(it) },
-            teachInClicked = { viewModel.teachInXEnd() }
+            onValueChange = viewModel::setXEnd,
+            teachInClicked = viewModel::teachInXEnd
         )
         CycleParameter(
             parameterLabel = "Z End",
             inputType = InputType.Z_END,
             value = parametersState.zEnd,
             teachInLabel = "TeachIn Z",
-            valueChange = { viewModel.setZEnd(it) },
-            teachInClicked = { viewModel.teachInZEnd() }
+            onValueChange = viewModel::setZEnd,
+            teachInClicked = viewModel::teachInZEnd
         )
         CycleParameter(
             parameterLabel = "Depth of cut",
             inputType = InputType.DOC,
             value = parametersState.doc,
-            valueChange = { viewModel.setDoc(it) },
+            onValueChange = viewModel::setDoc,
         )
         CycleParameter(
             parameterLabel = "Taper Angle",
             inputType = InputType.TAPER_ANGLE,
             value = parametersState.taperAngle,
-            valueChange = { viewModel.setTaperAngle(it) },
+            onValueChange = viewModel::setTaperAngle,
         )
         CycleParameter(
             parameterLabel = "Fillet Radius",
             inputType = InputType.FILLET_RADIUS,
             value = parametersState.filletRadius,
-            valueChange = { viewModel.setFilletRadius(it) },
+            onValueChange = viewModel::setFilletRadius,
         )
     }
 }

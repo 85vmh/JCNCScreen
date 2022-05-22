@@ -7,10 +7,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material3.Divider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -46,37 +43,43 @@ fun LatheToolsContent(
             state = scrollState
         ) {
             itemsIndexed(state.latheTools) { index, item ->
-                when (item) {
-                    is LatheTool.Turning -> TurningToolView(
-                        index = index,
-                        item = item,
-                        onEditClicked = {},
-                        onDeleteClicked = {},
-                        modifier = itemModifier
-                    )
-                    is LatheTool.Boring -> BoringToolView(
-                        index = index,
-                        item = item,
-                        onEditClicked = {},
-                        onDeleteClicked = {},
-                        modifier = itemModifier
-                    )
-                    is LatheTool.DrillingReaming -> DrillingReamingToolView(
-                        index = index,
-                        item = item,
-                        onEditClicked = {},
-                        onDeleteClicked = {},
-                        modifier = itemModifier
-                    )
-                    is LatheTool.Parting -> PartingToolView(
-                        index = index,
-                        item = item,
-                        onEditClicked = {},
-                        onDeleteClicked = {},
-                        modifier = itemModifier
-                    )
-                    else -> {
-                        Text("Not implemented: $item")
+                val color = if (index % 2 == 0) MaterialTheme.colorScheme.primary
+                else MaterialTheme.colorScheme.secondary
+                Surface(
+                    color = color
+                ) {
+                    when (item) {
+                        is LatheTool.Turning -> TurningToolView(
+                            index = index,
+                            item = item,
+                            onEditClicked = {},
+                            onDeleteClicked = {},
+                            modifier = itemModifier
+                        )
+                        is LatheTool.Boring -> BoringToolView(
+                            index = index,
+                            item = item,
+                            onEditClicked = {},
+                            onDeleteClicked = {},
+                            modifier = itemModifier
+                        )
+                        is LatheTool.DrillingReaming -> DrillingReamingToolView(
+                            index = index,
+                            item = item,
+                            onEditClicked = {},
+                            onDeleteClicked = {},
+                            modifier = itemModifier
+                        )
+                        is LatheTool.Parting -> PartingToolView(
+                            index = index,
+                            item = item,
+                            onEditClicked = {},
+                            onDeleteClicked = {},
+                            modifier = itemModifier
+                        )
+                        else -> {
+                            Text("Not implemented: $item")
+                        }
                     }
                 }
                 HorizontalDivider()
