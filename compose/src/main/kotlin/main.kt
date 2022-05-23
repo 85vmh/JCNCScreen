@@ -5,10 +5,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import app.AppWindow
-import com.mindovercnc.linuxcnc.IniFilePath
 import startup.ArgProcessor
 import startup.Initializer
-import startup.LinuxCncStarter
 import startup.StartupArgs
 
 

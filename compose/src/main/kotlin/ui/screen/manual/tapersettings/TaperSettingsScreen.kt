@@ -17,9 +17,9 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import extensions.toFixedDigitsString
 import screen.composables.CardWithTitle
-import screen.composables.ValueSetting
 import screen.uimodel.InputType
 import ui.screen.manual.Manual
+import ui.widget.ValueSetting
 
 class TaperSettingsScreen : Manual("Taper Settings") {
 
@@ -53,11 +53,12 @@ class TaperSettingsScreen : Manual("Taper Settings") {
                 ValueSetting(
                     settingName = "Taper Angle",
                     value = state.angle.toFixedDigitsString(),
-                    inputType = InputType.TAPER_ANGLE
-                ) {
-                    val doubleValue = it.toDoubleOrNull() ?: return@ValueSetting
-                    screenModel.setAngle(doubleValue)
-                }
+                    inputType = InputType.TAPER_ANGLE,
+                    onValueChanged = {
+                        val doubleValue = it.toDoubleOrNull() ?: return@ValueSetting
+                        screenModel.setAngle(doubleValue)
+                    }
+                )
             }
             CardWithTitle("Unknown Angle") {
 //                Row(

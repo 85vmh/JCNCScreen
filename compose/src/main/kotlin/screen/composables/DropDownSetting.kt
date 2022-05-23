@@ -2,10 +2,7 @@ package screen.composables
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,26 +26,29 @@ fun DropDownSetting(
         verticalAlignment = alignment,
         modifier = modifier
     ) {
-        Row(
-            verticalAlignment = alignment,
+        Text(
+            text = settingName,
             modifier = Modifier.weight(1f)
-        ) {
-            Text(
-                text = settingName
-            )
-        }
+        )
         DropDownView(
             items = items,
             selected = selected,
             modifier = Modifier
                 .width(dropDownWidth)
                 .border(border = BorderStroke(1.dp, Color.LightGray), shape = RoundedCornerShape(4.dp)),
-            itemSelected = onValueChanged,
-            closedItemContent = {
-                DropDownClosedItem(it, modifier = Modifier.height(40.dp))
+            onSelected = onValueChanged,
+            closedItemContent = { item ->
+                DropDownClosedItem(
+                    item,
+                    modifier = Modifier.height(40.dp)
+                )
             },
             openedItemContent = {
-                Text(it, modifier = Modifier.padding(8.dp))
+                Text(
+                    it,
+                    modifier = Modifier.width(dropDownWidth)
+                        .padding(8.dp)
+                )
             }
         )
     }

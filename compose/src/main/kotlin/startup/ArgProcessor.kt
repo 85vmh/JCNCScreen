@@ -6,7 +6,6 @@ import kotlinx.cli.ArgParser
 import kotlinx.cli.ArgType
 import kotlinx.cli.default
 import java.io.File
-import java.nio.file.Paths
 
 object ArgProcessor {
     fun process(args: Array<String>): StartupArgs {

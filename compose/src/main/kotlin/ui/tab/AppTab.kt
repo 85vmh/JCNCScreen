@@ -3,16 +3,13 @@ package ui.tab
 import TabViewModel
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.BottomNavigationItem
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.*
-import androidx.compose.material3.DrawerState
-import androidx.compose.material3.DrawerValue
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -80,10 +77,14 @@ abstract class AppTab<S : AppScreen>(
                     sheetState = currentScreen.sheetState,
                     sheetShape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp),
                     sheetContent = {
-                        Box(Modifier.defaultMinSize(minHeight = 1.dp)) {
+                        Box(
+                            Modifier.defaultMinSize(minHeight = 1.dp)
+                        ) {
                             currentScreen.SheetContent(currentScreen.sheetState)
                         }
-                    }
+                    },
+                    sheetBackgroundColor = MaterialTheme.colorScheme.surface,
+                    sheetContentColor = MaterialTheme.colorScheme.onSurface
                 ) {
                     Scaffold(
                         modifier = Modifier.fillMaxSize(),

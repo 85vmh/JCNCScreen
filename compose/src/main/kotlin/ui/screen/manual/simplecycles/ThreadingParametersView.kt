@@ -1,5 +1,6 @@
 package ui.screen.manual.simplecycles
 
+import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,12 +14,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import screen.composables.DropDownSetting
-import screen.composables.CycleParameter
 import screen.uimodel.InputType
+import ui.widget.CycleParameter
 import usecase.model.SimpleCycleParameters
 
 @Composable
-fun ThreadingParametersView(viewModel: SimpleCyclesScreenModel, parametersState: SimpleCycleParameters.ThreadingParameters) {
+fun ThreadingParametersView(
+    viewModel: SimpleCyclesScreenModel,
+    parametersState: SimpleCycleParameters.ThreadingParameters
+) {
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
@@ -49,15 +53,15 @@ fun ThreadingParametersView(viewModel: SimpleCyclesScreenModel, parametersState:
             },
             inputType = InputType.THREAD_PITCH,
             value = parametersState.pitch,
-            valueChange = { viewModel.setThreadPitch(it) },
+            onValueChange = viewModel::setThreadPitch,
         )
         CycleParameter(
             parameterLabel = "Z End",
             inputType = InputType.Z_END,
             value = parametersState.zEnd,
             teachInLabel = "TeachIn Z",
-            valueChange = { viewModel.setZEnd(it) },
-            teachInClicked = { viewModel.teachInZEnd() }
+            onValueChange = viewModel::setZEnd,
+            teachInClicked = viewModel::teachInZEnd
         )
 
         if (parametersState.isExternal) {
@@ -65,58 +69,58 @@ fun ThreadingParametersView(viewModel: SimpleCyclesScreenModel, parametersState:
                 parameterLabel = "Major Diameter",
                 inputType = InputType.THREAD_MAJOR_DIAMETER,
                 value = parametersState.majorDiameter,
-                valueChange = { viewModel.setMajorDiameter(it) },
+                onValueChange = viewModel::setMajorDiameter,
                 teachInLabel = "TeachIn X",
-                teachInClicked = { viewModel.teachInMajorDiameter() }
+                teachInClicked = viewModel::teachInMajorDiameter
             )
             CycleParameter(
                 parameterLabel = "Initial Depth",
                 inputType = InputType.DOC,
                 value = parametersState.firstPassDepth,
-                valueChange = { viewModel.setFirstPassDepth(it) },
+                onValueChange = viewModel::setFirstPassDepth,
             )
             CycleParameter(
                 parameterLabel = "Final Depth",
                 inputType = InputType.THREAD_FINAL_DEPTH,
                 value = parametersState.finalDepth,
-                valueChange = { viewModel.setFinalPassDepth(it) },
+                onValueChange = viewModel::setFinalPassDepth,
                 teachInLabel = "Calculate",
-                teachInClicked = { viewModel.calculateFinalDepth() }
+                teachInClicked = viewModel::calculateFinalDepth
             )
             CycleParameter(
                 parameterLabel = "Minor Diameter",
                 inputType = InputType.THREAD_MINOR_DIAMETER,
                 value = parametersState.minorDiameter,
-                valueChange = { viewModel.setMinorDiameter(it) },
+                onValueChange = viewModel::setMinorDiameter,
             )
         } else {
             CycleParameter(
                 parameterLabel = "Minor Diameter",
                 inputType = InputType.THREAD_MINOR_DIAMETER,
                 value = parametersState.minorDiameter,
-                valueChange = { viewModel.setMinorDiameter(it) },
+                onValueChange = viewModel::setMinorDiameter,
                 teachInLabel = "TeachIn X",
-                teachInClicked = { viewModel.teachInMinorDiameter() }
+                teachInClicked = viewModel::teachInMinorDiameter
             )
             CycleParameter(
                 parameterLabel = "Initial Depth",
                 inputType = InputType.DOC,
                 value = parametersState.firstPassDepth,
-                valueChange = { viewModel.setFirstPassDepth(it) },
+                onValueChange = viewModel::setFirstPassDepth,
             )
             CycleParameter(
                 parameterLabel = "Final Depth",
                 inputType = InputType.THREAD_FINAL_DEPTH,
                 value = parametersState.finalDepth,
-                valueChange = { viewModel.setFinalPassDepth(it) },
+                onValueChange = viewModel::setFinalPassDepth,
                 teachInLabel = "Calculate",
-                teachInClicked = { viewModel.calculateFinalDepth() }
+                teachInClicked = viewModel::calculateFinalDepth
             )
             CycleParameter(
                 parameterLabel = "Major Diameter",
                 inputType = InputType.THREAD_MAJOR_DIAMETER,
                 value = parametersState.majorDiameter,
-                valueChange = { viewModel.setMajorDiameter(it) },
+                onValueChange = viewModel::setMajorDiameter,
             )
         }
 
@@ -124,7 +128,9 @@ fun ThreadingParametersView(viewModel: SimpleCyclesScreenModel, parametersState:
             parameterLabel = "Spring Passes",
             inputType = InputType.THREAD_SPRING_PASSES,
             value = parametersState.springPasses.toDouble(),
-            valueChange = { viewModel.setThreadSpringPasses(it.toInt()) },
+            onValueChange = {
+                viewModel.setThreadSpringPasses(it.toInt())
+            },
         )
     }
 }
@@ -134,10 +140,12 @@ fun ThreadingParametersView(viewModel: SimpleCyclesScreenModel, parametersState:
 @Composable
 fun ThreadLocation(
     isExternalThread: Boolean,
-    onTypeChanged: (Boolean) -> Unit
+    onTypeChanged: (Boolean) -> Unit,
+    modifier: Modifier = Modifier
 ) {
-
-    Row {
+    Row(
+        modifier = modifier
+    ) {
         Row(
             Modifier
                 .width(200.dp)
@@ -172,4 +180,13 @@ fun ThreadLocation(
         }
 
     }
+}
+
+@Composable
+@Preview
+fun ThreadLocationPreview() {
+    ThreadLocation(
+        isExternalThread = true,
+        onTypeChanged = {}
+    )
 }

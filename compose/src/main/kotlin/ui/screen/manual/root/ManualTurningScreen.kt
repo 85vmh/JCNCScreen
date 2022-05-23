@@ -1,6 +1,7 @@
 package ui.screen.manual.root
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -50,21 +51,28 @@ class ManualTurningScreen : Manual("Manual Turning") {
         val items = remember { SimpleCycle.values() }
 
         Column(
-            modifier = Modifier.padding(16.dp).fillMaxWidth()
+            modifier = Modifier.fillMaxSize()
         ) {
             Text(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth()
+                    .padding(vertical = 16.dp),
                 textAlign = TextAlign.Center,
                 text = "Simple Cycles",
                 style = MaterialTheme.typography.headlineSmall,
             )
-            Spacer(modifier = Modifier.height(24.dp))
-            SimpleCyclesList(items) {
-                scope.launch {
-                    drawerState.close()
-                    navigator.push(SimpleCyclesScreen(it))
-                }
-            }
+            Divider(
+                modifier = Modifier.fillMaxWidth()
+            )
+            SimpleCyclesList(
+                items = items,
+                onCycleSelected = {
+                    scope.launch {
+                        drawerState.close()
+                        navigator.push(SimpleCyclesScreen(it))
+                    }
+                },
+                contentPadding = PaddingValues(16.dp)
+            )
         }
     }
 
@@ -74,9 +82,11 @@ class ManualTurningScreen : Manual("Manual Turning") {
         val screenModel = rememberScreenModel<ManualTurningScreenModel>()
         val state by screenModel.state.collectAsState()
 
+        val wcsOffsets: List<WcsOffset> = state.wcsUiModel?.wcsOffsets ?: emptyList()
+        val selected = state.wcsUiModel?.selected
         state.wcsUiModel?.let { wcs ->
             Column(
-                Modifier.height(180.dp).padding(top = 16.dp)
+                Modifier.padding(top = 16.dp).wrapContentHeight()
             ) {
                 Text(
                     modifier = Modifier.fillMaxWidth(),
@@ -87,8 +97,9 @@ class ManualTurningScreen : Manual("Manual Turning") {
                 Spacer(modifier = Modifier.height(24.dp))
 
                 WcsOffsetsView(
-                    wcs = wcs,
-                    modifier = Modifier.height(200.dp),
+                    wcsOffsets = wcsOffsets,
+                    selected = selected,
+                    contentPadding = PaddingValues(8.dp),
                     onOffsetClick = {
                         screenModel.setActiveWcs(it)
 //                        scope.launch {
@@ -232,7 +243,9 @@ class ManualTurningScreen : Manual("Manual Turning") {
                     taperAngle = state.taperTurningAngle,
                     modifier = Modifier.width(380.dp)
                         .padding(8.dp)
-                        .clickable(enabled = state.taperTurningActive, onClick = { navigator.push(TaperSettingsScreen()) }),
+                        .clickable(
+                            enabled = state.taperTurningActive,
+                            onClick = { navigator.push(TaperSettingsScreen()) }),
                     expanded = state.taperTurningActive,
                     onExpandChange = screenModel::setTaperTurningActive
                 )

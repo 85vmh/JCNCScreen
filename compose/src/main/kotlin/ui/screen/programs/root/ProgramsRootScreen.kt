@@ -1,7 +1,7 @@
 package ui.screen.programs.root
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Divider
+import androidx.compose.material3.Divider
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material3.ExtendedFloatingActionButton

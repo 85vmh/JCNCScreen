@@ -1,17 +1,15 @@
 package screen.composables
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.material.AlertDialog
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material.PopupAlertDialogProvider
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.Button
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
@@ -30,7 +28,10 @@ fun InputDialogView(
         onDismissRequest = { },
         text = {
             Column {
-                Text(inputParams.valueDescription)
+                Text(
+                    text = inputParams.valueDescription,
+                    style = MaterialTheme.typography.titleLarge
+                )
                 Spacer(Modifier.height(8.dp))
 
                 OutlinedTextField(
@@ -43,7 +44,7 @@ fun InputDialogView(
                             modifier = Modifier.size(48.dp),
                             onClick = { numPadState.deleteChar() }
                         ) {
-                            Icon(Icons.Default.ArrowBack, contentDescription = null)
+                            Icon(Icons.Default.ArrowBack, contentDescription = "Backspace")
                         }
                     }
                 )
@@ -69,6 +70,8 @@ fun InputDialogView(
                 Text("Cancel")
             }
         },
-        dialogProvider = PopupAlertDialogProvider
+        dialogProvider = PopupAlertDialogProvider,
+        backgroundColor = MaterialTheme.colorScheme.primaryContainer,
+        contentColor = MaterialTheme.colorScheme.onPrimaryContainer
     )
 }

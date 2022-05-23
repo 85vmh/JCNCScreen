@@ -1,27 +1,36 @@
 package screen.composables
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.DropdownMenu
+import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun <T> DropDownView(
     items: List<T>,
     selected: T,
-    modifier: Modifier = Modifier,
-    itemSelected: (T) -> Unit,
+    onSelected: (T) -> Unit,
     closedItemContent: @Composable (T) -> Unit,
-    openedItemContent: @Composable (T) -> Unit
+    openedItemContent: @Composable (T) -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    var isOpen by remember { mutableStateOf(false) } // initial value
+    var isOpen by remember {
+        mutableStateOf(false)
+    }
 
     Surface(
         modifier = modifier,
@@ -35,14 +44,17 @@ fun <T> DropDownView(
             requestToOpen = isOpen,
             list = items,
             onDismiss = { isOpen = false },
-            onSelected = itemSelected,
+            onSelected = onSelected,
             itemContent = openedItemContent
         )
     }
 }
 
 @Composable
-fun DropDownClosedItem(text: String, modifier: Modifier = Modifier) {
+fun DropDownClosedItem(
+    text: String,
+    modifier: Modifier = Modifier
+) {
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
@@ -54,7 +66,8 @@ fun DropDownClosedItem(text: String, modifier: Modifier = Modifier) {
         )
         Icon(
             imageVector = Icons.Default.ArrowDropDown,
-            contentDescription = "")
+            contentDescription = null
+        )
     }
 }
 
@@ -89,5 +102,8 @@ private fun <T> DropDownList(
 @Composable
 @Preview
 private fun Preview() {
-    DropDownClosedItem("A Test", Modifier.size(200.dp))
+    DropDownClosedItem(
+        "A Test",
+        modifier = Modifier.size(200.dp)
+    )
 }
