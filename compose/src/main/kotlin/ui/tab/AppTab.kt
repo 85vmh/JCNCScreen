@@ -10,10 +10,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
@@ -77,8 +74,9 @@ abstract class AppTab<S : AppScreen>(
                     sheetState = currentScreen.sheetState,
                     sheetShape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp),
                     sheetContent = {
-                        Box(
-                            Modifier.defaultMinSize(minHeight = 1.dp)
+                        Surface(
+                            Modifier.defaultMinSize(minHeight = 1.dp),
+                            color = MaterialTheme.colorScheme.surface
                         ) {
                             currentScreen.SheetContent(currentScreen.sheetState)
                         }
@@ -121,18 +119,12 @@ abstract class AppTab<S : AppScreen>(
                             )
                         },
                         bottomBar = {
-                            NavigationBar(
-                                modifier = Modifier.height(60.dp)
-                            ) {
-                                tabs.forEach { tab ->
-                                    TabNavigationItem(
-                                        tab = tab,
-                                        enabled = uiState.isBottomBarEnabled || tab == StatusTab,
-                                        selected = tab == this@AppTab,
-                                        onClick = { tabNavigator.current = tab }
-                                    )
-                                }
-                            }
+                            BottomBar(
+                                modifier = Modifier.height(60.dp),
+                                enabled = uiState.isBottomBarEnabled,
+                                selected = this,
+                                onClick = { tabNavigator.current = it }
+                            )
                         },
                         floatingActionButton = { currentScreen.Fab() }
                     ) {
@@ -151,6 +143,29 @@ abstract class AppTab<S : AppScreen>(
 }
 
 @Composable
+private fun BottomBar(
+    modifier: Modifier = Modifier,
+    enabled: Boolean,
+    selected: AppTab<*>,
+    onClick: (Tab) -> Unit
+) {
+    NavigationBar(
+        modifier = modifier,
+        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+        contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+    ) {
+        tabs.forEach { tab ->
+            TabNavigationItem(
+                tab = tab,
+                enabled = enabled,
+                selected = tab == selected,
+                onClick = onClick
+            )
+        }
+    }
+}
+
+@Composable
 private fun RowScope.TabNavigationItem(
     tab: Tab,
     enabled: Boolean,
@@ -158,9 +173,9 @@ private fun RowScope.TabNavigationItem(
     onClick: (Tab) -> Unit
 ) {
     val tabColor = when {
-        selected -> Color.Green
-        enabled.not() -> Color.LightGray
-        else -> Color.Unspecified
+        selected -> MaterialTheme.colorScheme.primary
+        !enabled -> MaterialTheme.colorScheme.secondary
+        else -> MaterialTheme.colorScheme.onPrimaryContainer
     }
 
     BottomNavigationItem(
@@ -174,7 +189,11 @@ private fun RowScope.TabNavigationItem(
         selected = selected,
         onClick = { onClick(tab) },
         icon = {
-            Icon(painter = tab.options.icon!!, contentDescription = "", tint = tabColor)
+            Icon(
+                painter = tab.options.icon!!,
+                contentDescription = "",
+                tint = tabColor
+            )
         },
     )
 }

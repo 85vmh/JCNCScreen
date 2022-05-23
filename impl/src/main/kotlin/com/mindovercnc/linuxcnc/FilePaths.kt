@@ -2,7 +2,6 @@ package com.mindovercnc.linuxcnc
 
 import java.io.File
 
-//val LinuxCncHome = File("/home/vasimihalca/Work/linuxcnc-dev")
 val LinuxCncHome = File(System.getenv("LINUXCNC_HOME"))
 
 @JvmInline

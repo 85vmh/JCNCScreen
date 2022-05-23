@@ -7,9 +7,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.Divider
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -29,81 +27,102 @@ import java.util.*
 
 @Composable
 fun FileSystemView(
-    fileSystemItem: FileSystemItem.FolderItem
-) = Surface(
-    modifier = Modifier.fillMaxSize()
+    fileSystemItem: FileSystemItem.FolderItem,
+    modifier: Modifier = Modifier
 ) {
-    val scrollState = rememberLazyListState()
-    val scope = rememberCoroutineScope()
+    Surface(
+        modifier = modifier
+    ) {
+        val scrollState = rememberLazyListState()
+        val scope = rememberCoroutineScope()
 
-    Column {
-        Divider(color = Color.LightGray, thickness = 0.5.dp)
-        Row {
-            Box {
-                LazyColumn(
-                    modifier = Modifier.draggableScroll(scrollState, scope),
-                    state = scrollState
-                ) {
-                    items(fileSystemItem.children) { item ->
-                        FileSystemItemView(item)
-                        Divider(color = Color.LightGray, thickness = 0.5.dp)
+        Column {
+            Divider(
+                color = Color.LightGray,
+                thickness = 0.5.dp
+            )
+            Row {
+                Box {
+                    LazyColumn(
+                        modifier = Modifier.draggableScroll(scrollState, scope),
+                        state = scrollState
+                    ) {
+                        items(fileSystemItem.children) { item ->
+                            FileSystemItemView(item)
+                            Divider(
+                                color = Color.LightGray,
+                                thickness = 0.5.dp
+                            )
+                        }
                     }
+                    VerticalScrollbar(
+                        modifier = Modifier.align(Alignment.CenterEnd),
+                        scrollState = scrollState,
+                        itemCount = fileSystemItem.children.size,
+                        averageItemSize = 60.dp
+                    )
                 }
-                VerticalScrollbar(
-                    Modifier.align(Alignment.CenterEnd),
-                    scrollState,
-                    fileSystemItem.children.size,
-                    60.dp
-                )
             }
         }
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun FileSystemItemView(item: FileSystemItem, modifier: Modifier = Modifier) {
-    Row(
-        modifier = modifier
-            .background(Color.White)
-            .clickable {
-                when (item) {
-                    is FileSystemItem.FolderItem -> item.clicked.invoke()
-                    is FileSystemItem.FileItem -> item.clicked.invoke()
-                }
+private fun FileSystemItemView(
+    item: FileSystemItem,
+    modifier: Modifier = Modifier
+) {
+    val color = when(item){
+        is FileSystemItem.FileItem -> MaterialTheme.colorScheme.surfaceVariant
+        is FileSystemItem.FolderItem -> MaterialTheme.colorScheme.tertiaryContainer
+    }
+
+    Surface(
+        color = color,
+        onClick = {
+            when (item) {
+                is FileSystemItem.FolderItem -> item.clicked.invoke()
+                is FileSystemItem.FileItem -> item.clicked.invoke()
             }
-            .padding(start = 8.dp)
-            .fillMaxWidth()
-            .height(60.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Start
-    ) {
-        val resourcePath = when (item) {
-            is FileSystemItem.FolderItem -> "folder-icon.png"
-            is FileSystemItem.FileItem -> "gcode.png"
         }
-        Image(
-            modifier = Modifier
-                .width(40.dp)
-                .height(40.dp),
-            contentDescription = "",
-            bitmap = useResource(resourcePath) { loadImageBitmap(it) }
-        )
-        Column(
-            modifier = Modifier.padding(start = 8.dp),
-            verticalArrangement = Arrangement.SpaceEvenly
+    ) {
+        Row(
+            modifier = modifier
+                .padding(start = 8.dp)
+                .fillMaxWidth()
+                .height(60.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Start
         ) {
-            Text(
-                textAlign = TextAlign.Left,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Medium,
-                text = item.name
+            val resourcePath = when (item) {
+                is FileSystemItem.FolderItem -> "folder-icon.png"
+                is FileSystemItem.FileItem -> "gcode.png"
+            }
+            Image(
+                modifier = Modifier
+                    .width(40.dp)
+                    .height(40.dp),
+                contentDescription = "",
+                bitmap = useResource(resourcePath) { loadImageBitmap(it) }
             )
-            Text(
-                textAlign = TextAlign.Left,
-                fontSize = 10.sp,
-                fontWeight = FontWeight.Light,
-                text = millisToLastModified(item.lastModified)
-            )
+            Column(
+                modifier = Modifier.padding(start = 8.dp),
+                verticalArrangement = Arrangement.SpaceEvenly
+            ) {
+                Text(
+                    textAlign = TextAlign.Left,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Medium,
+                    text = item.name
+                )
+                Text(
+                    textAlign = TextAlign.Left,
+                    fontSize = 10.sp,
+                    fontWeight = FontWeight.Light,
+                    text = millisToLastModified(item.lastModified)
+                )
+            }
         }
     }
 }

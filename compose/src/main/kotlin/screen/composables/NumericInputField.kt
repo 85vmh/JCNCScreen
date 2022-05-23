@@ -7,7 +7,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
@@ -29,16 +31,19 @@ fun NumericInputField(
     val numInputParameters = NumericInputs.entries[inputType]!!
 
     BasicTextField(
-        textStyle = TextStyle(fontSize = 16.sp),
+        textStyle = TextStyle(
+            fontSize = 16.sp,
+            color = LocalContentColor.current
+        ),
         readOnly = true,
         enabled = false,
         value = numericValue.toDouble().toFixedDigitsString(numInputParameters.maxDecimalPlaces),
         singleLine = true,
         modifier = modifier.width(100.dp)
-            .clickable { numPadState = NumPadState(numericValue.toDouble(), numInputParameters) },
-        onValueChange = {
-            valueChanged(it)
-        },
+            .clickable {
+                numPadState = NumPadState(numericValue.toDouble(), numInputParameters)
+            },
+        onValueChange = valueChanged,
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Number
         ),
@@ -48,11 +53,12 @@ fun NumericInputField(
                     .height(40.dp)
                     .fillMaxWidth(1f)
                     .border(BorderStroke(1.dp, Color.LightGray), RoundedCornerShape(4.dp))
-                    .padding(8.dp)
+                    .padding(8.dp),
+                contentAlignment = Alignment.CenterStart
             ) {
                 it()
             }
-        }
+        },
     )
 
     numPadState?.let {

@@ -93,6 +93,7 @@ class ManualTurningScreen : Manual("Manual Turning") {
                     textAlign = TextAlign.Center,
                     text = "Workpiece Coordinate Systems",
                     style = MaterialTheme.typography.headlineSmall,
+                    color = LocalContentColor.current
                 )
                 Spacer(modifier = Modifier.height(24.dp))
 
@@ -187,37 +188,26 @@ class ManualTurningScreen : Manual("Manual Turning") {
             verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.End,
         ) {
-
-            Column(
-                modifier = Modifier
-                    .border(BorderStroke(0.5.dp, SolidColor(Color.DarkGray))),
-            ) {
-                AxisCoordinate(
-                    state.xCoordinateUiModel,
-                    isDiameterMode = true,
-                    zeroPosClicked = screenModel::setZeroPosX,
-                    absRelClicked = screenModel::toggleXAbsRel,
-                    toolOffsetsClicked = {
-                        screenModel.openNumPad(
-                            inputType = InputType.TOOL_X_COORDINATE,
-                            onSubmitAction = screenModel::setToolOffsetX
-                        )
-                    },
-                    modifier = axisItemModifier
-                )
-                AxisCoordinate(
-                    state.zCoordinateUiModel,
-                    zeroPosClicked = { screenModel.setZeroPosZ() },
-                    absRelClicked = { screenModel.toggleZAbsRel() },
-                    toolOffsetsClicked = {
-                        screenModel.openNumPad(
-                            inputType = InputType.TOOL_Z_COORDINATE,
-                            onSubmitAction = screenModel::setToolOffsetZ
-                        )
-                    },
-                    modifier = axisItemModifier
-                )
-            }
+            AxisCoordinates(
+                state.xCoordinateUiModel,
+                state.zCoordinateUiModel,
+                xToolOffsetsClicked = {
+                    screenModel.openNumPad(
+                        inputType = InputType.TOOL_X_COORDINATE,
+                        onSubmitAction = screenModel::setToolOffsetX
+                    )
+                },
+                zToolOffsetsClicked = {
+                    screenModel.openNumPad(
+                        inputType = InputType.TOOL_Z_COORDINATE,
+                        onSubmitAction = screenModel::setToolOffsetZ
+                    )
+                },
+                onZeroPosX = screenModel::setZeroPosX,
+                onZeroPosZ = screenModel::setZeroPosZ,
+                onToggleAbsRelX = screenModel::toggleXAbsRel,
+                onToggleAbsRelZ = screenModel::toggleZAbsRel,
+            )
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -282,6 +272,43 @@ class ManualTurningScreen : Manual("Manual Turning") {
             ) {
                 Text("Set Workpiece Z")
             }
+        }
+    }
+}
+
+@Composable
+private fun AxisCoordinates(
+    xCoordinate: CoordinateUiModel,
+    zCoordinate: CoordinateUiModel,
+    xToolOffsetsClicked: () -> Unit,
+    zToolOffsetsClicked: () -> Unit,
+    onZeroPosX: () -> Unit,
+    onZeroPosZ: () -> Unit,
+    onToggleAbsRelX: () -> Unit,
+    onToggleAbsRelZ: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Surface(
+        modifier = modifier,
+        border = BorderStroke(0.5.dp, SolidColor(Color.DarkGray)),
+        color = MaterialTheme.colorScheme.surfaceVariant
+    ) {
+        Column {
+            AxisCoordinate(
+                xCoordinate,
+                isDiameterMode = true,
+                zeroPosClicked = onZeroPosX,
+                absRelClicked = onToggleAbsRelX,
+                toolOffsetsClicked = xToolOffsetsClicked,
+                modifier = axisItemModifier
+            )
+            AxisCoordinate(
+                zCoordinate,
+                zeroPosClicked = onZeroPosZ,
+                absRelClicked = onToggleAbsRelZ,
+                toolOffsetsClicked = zToolOffsetsClicked,
+                modifier = axisItemModifier
+            )
         }
     }
 }

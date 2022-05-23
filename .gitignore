@@ -20,10 +20,5 @@ app/lib/LCExportHandler.jar
 JCNCScreen-bin.zip
 .gradle/
 .idea/
-app/build/
-compose/build/
-repository/build/
-libcnc/build/
-impl/build/
-dummycnc/build/
-/buildSrc/build/
+
+**/build

@@ -1,5 +1,6 @@
 package startup
 
+import app.DarkMode
 import com.mindovercnc.linuxcnc.IniFilePath
 import com.mindovercnc.linuxcnc.LinuxCncHome
 import kotlinx.cli.ArgParser
@@ -17,6 +18,13 @@ object ArgProcessor {
             fullName = "vtk-enabled",
             description = "Set vtk enabled"
         ).default(false)
+
+        val darkMode by parser.option(
+            ArgType.Choice<DarkMode>(),
+            shortName = "dm",
+            fullName = "dark_mode",
+            description = "Choose dark mode"
+        ).default(DarkMode.SYSTEM)
 
         val topBarEnabled by parser.option(
             ArgType.Boolean,
@@ -38,9 +46,10 @@ object ArgProcessor {
         }
 
         return StartupArgs(
-            IniFilePath(iniFile),
-            VtkEnabled(vtkEnabled),
-            TopBarEnabled(topBarEnabled)
+            iniFilePath = IniFilePath(iniFile),
+            vtkEnabled = VtkEnabled(vtkEnabled),
+            topBarEnabled = TopBarEnabled(topBarEnabled),
+            darkMode = darkMode
         )
     }
 

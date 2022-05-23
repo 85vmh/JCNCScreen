@@ -13,6 +13,7 @@ version = Versions.app
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutines}")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:${Versions.serialization}")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:${Versions.coroutines}")
     implementation("org.jetbrains.kotlinx:kotlinx-cli:${Versions.cli}")
 
@@ -24,12 +25,12 @@ dependencies {
 
     //jars
     implementation(fileTree(mapOf("dir" to "lib", "include" to listOf("*.jar"))))
-//    implementation(project(":libcnc"))
+
     implementation("ro.dragossusi.ktlcnc:ktlcnc:0.0.1")
     implementation(project(":repository"))
     implementation(project(":database"))
     implementation(project(":impl"))
-//    implementation(project(":model"))
+    implementation(project(":editor"))
     implementation("org.kodein.di:kodein-di-framework-compose:${Versions.kodein}")
 
     //navigation
@@ -43,7 +44,7 @@ dependencies {
     implementation("io.github.nsk90:kstatemachine:0.9.4")
 
     testImplementation(compose("org.jetbrains.compose.ui:ui-test-junit4"))
-    testImplementation("io.mockk:mockk:1.12.3")
+    testImplementation("io.mockk:mockk:1.12.4")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.1")
 }
 

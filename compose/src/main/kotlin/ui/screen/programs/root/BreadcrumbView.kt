@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -89,21 +91,30 @@ fun BreadcrumbView(
             BreadcrumbItem(
                 shape = if (index == 0) trapezeShape else parallelogramShape,
                 item = item,
-                onClick = onClick
+                onClick = onClick,
+                modifier = Modifier.fillMaxHeight(),
+                selected = index == items.lastIndex
             )
         }
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun BreadcrumbItem(shape: Shape, item: String, onClick: (String) -> Unit) {
-    val interactionSource = remember { MutableInteractionSource() }
+private fun BreadcrumbItem(
+    shape: Shape,
+    item: String,
+    selected: Boolean,
+    onClick: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
     Surface(
-        modifier = Modifier.fillMaxHeight()
-            .clip(shape)
-            .clickable(interactionSource, indication = LocalIndication.current, onClick = { onClick.invoke(item) }),
+        modifier = modifier,
         border = BorderStroke(width = 1.dp, color = Color.LightGray),
-        shape = shape
+        shape = shape,
+        onClick = { onClick(item) },
+        color = if (selected) MaterialTheme.colorScheme.secondaryContainer
+        else MaterialTheme.colorScheme.surface
     ) {
         Box(
             contentAlignment = Alignment.Center,
