@@ -187,9 +187,13 @@ private fun codeString(
     val punctuation = editorTheme.punctuation.toSpanStyle()
     val value = editorTheme.value.toSpanStyle()
     val comment = editorTheme.comment.toSpanStyle()
+    val variable = editorTheme.variable.toSpanStyle()
+    val gcode = editorTheme.gcode.toSpanStyle()
+
+    val strFormatted = str.replace("\t", "    ")
+
     return buildAnnotatedString {
         withStyle(editorTheme.text.toSpanStyle()) {
-            val strFormatted = str.replace("\t", "    ")
             append(strFormatted)
             addStyle(punctuation, strFormatted, ":")
             addStyle(punctuation, strFormatted, "=")
@@ -198,46 +202,90 @@ private fun codeString(
             addStyle(punctuation, strFormatted, "]")
             addStyle(punctuation, strFormatted, "{")
             addStyle(punctuation, strFormatted, "}")
-            addStyle(keyword, strFormatted, "SUB")
-            addStyle(keyword, strFormatted, "ENDSUB")
-            addStyle(keyword, strFormatted, "G0")
-            addStyle(keyword, strFormatted, "G1")
-            addStyle(keyword, strFormatted, "G2")
-            addStyle(keyword, strFormatted, "G3")
-            addStyle(keyword, strFormatted, "G54")
-            addStyle(keyword, strFormatted, "G18")
-            addStyle(keyword, strFormatted, "G21")
-            addStyle(keyword, strFormatted, "G43")
-            addStyle(keyword, strFormatted, "G71.1")
-            addStyle(keyword, strFormatted, "G71.2")
-            addStyle(keyword, strFormatted, "G70")
-            addStyle(keyword, strFormatted, "G64")
-            addStyle(keyword, strFormatted, "G21")
-            addStyle(keyword, strFormatted, "M")
-            addStyle(keyword, strFormatted, "X")
-            addStyle(keyword, strFormatted, "Y")
-            addStyle(keyword, strFormatted, "Z")
-            addStyle(keyword, strFormatted, "I")
-            addStyle(keyword, strFormatted, "J")
-            addStyle(keyword, strFormatted, "K")
-            addStyle(keyword, strFormatted, "F")
-            addStyle(keyword, strFormatted, "S")
-            addStyle(keyword, strFormatted, "T")
+
+            //gcode
+            addGcodeStyle(gcode, strFormatted)
+
+            //variable
+            addStyle(variable, strFormatted, Regex("[#oO]<(.+)>"))
+
+            //keywords
+            addKeywords(keyword, strFormatted)
+
+            //value
             addStyle(value, strFormatted, "true")
             addStyle(value, strFormatted, "false")
+
+            //number
+            addStyle(value, strFormatted, Regex("(^|\\s+)(-?\\d+.?\\d*)(?=\\s+|\$)"))
+
+
             //addStyle(AppTheme.code.value, strFormatted, Regex("[0-9]*"))
             //addStyle(AppTheme.code.annotation, strFormatted, Regex("^@[a-zA-Z_]*"))
-            addStyle(comment, strFormatted, Regex("^\\s*;.*"))
-            addStyle(comment, strFormatted, Regex("^\\s*\\(.*"))
+            addStyle(comment, strFormatted, Regex("^\\s*; .*"))
+            addStyle(comment, strFormatted, Regex("\\((.*)\\)"))
         }
     }
+}
+
+private fun AnnotatedString.Builder.addKeywords(style: SpanStyle, text: String) {
+    val words = arrayOf(
+        "return",
+        "if",
+        "else",
+        "endif",
+        "while",
+        "endwhile",
+        "sub",
+        "endsub",
+        "repeat",
+        "endrepeat",
+    )
+    words.forEach {
+        addStyle(style, text, Regex("(^|\\s+)($it)(?=\\s+|\$)"))
+        addStyle(style, text, Regex("(^|\\s+)(${it.uppercase()})(?=\\s+|\$)"))
+    }
+}
+
+private fun AnnotatedString.Builder.addGcodeStyle(style: SpanStyle, text: String) {
+    val letters = charArrayOf(
+        'G',
+        'M',
+        'X',
+        'Y',
+        'Z',
+        'I',
+        'J',
+        'K',
+        'F',
+        'S',
+        'T',
+        'P',
+        'L',
+        'Q',
+        'N',
+        'E',
+        'D',
+        'R',
+        'B',
+        'O',
+        'A',
+    )
+    val letterString = letters.joinToString(separator = "", prefix = "[", postfix = "]") {
+        "$it${it.lowercaseChar()}"
+    }
+    addStyle(style, text, Regex("(^|\\s+)($letterString)(-?\\d+\\.?\\d*)(?=\\s+|\$)"))
 }
 
 private fun AnnotatedString.Builder.addStyle(style: SpanStyle, text: String, regexp: String) {
     addStyle(style, text, fromLiteral(regexp))
 }
 
-private fun AnnotatedString.Builder.addStyle(style: SpanStyle, text: String, regexp: Regex) {
+private fun AnnotatedString.Builder.addStyle(
+    style: SpanStyle,
+    text: String,
+    regexp: Regex
+) {
     for (result in regexp.findAll(text)) {
         addStyle(style, result.range.first, result.range.last + 1)
     }

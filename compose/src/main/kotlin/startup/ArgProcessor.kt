@@ -17,7 +17,7 @@ object ArgProcessor {
             shortName = "v",
             fullName = "vtk-enabled",
             description = "Set vtk enabled"
-        ).default(false)
+        ).default(true)
 
         val darkMode by parser.option(
             ArgType.Choice<DarkMode>(),

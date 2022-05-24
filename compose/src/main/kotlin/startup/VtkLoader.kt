@@ -1,5 +1,6 @@
 package startup
 
+import vtk.vtkFileOutputWindow
 import vtk.vtkNativeLibrary
 
 object VtkLoader {
@@ -8,14 +9,13 @@ object VtkLoader {
         if (!vtkNativeLibrary.LoadAllNativeLibraries()) {
             vtkNativeLibrary.values()
                 .filter { !it.IsLoaded() }
-                .forEach {lib->
+                .forEach { lib ->
                     if (!lib.IsLoaded()) {
                         println(lib.GetLibraryName() + " not loaded")
                     }
                 }
-            throw IllegalStateException("some libraries not loaded")
         }
 
-//        vtkNativeLibrary.DisableOutputWindow(null)
+        vtkNativeLibrary.DisableOutputWindow(null)
     }
 }

@@ -1,14 +1,11 @@
 package screen.composables
 
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.awt.SwingPanel
-import androidx.compose.ui.graphics.Color
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.update
-import vtk.*
-import java.awt.event.ActionEvent
-import java.awt.event.ActionListener
+import vtk.vtkActor
+import vtk.vtkAxesActor
+import vtk.vtkPanel
 
 
 @Composable
@@ -18,7 +15,9 @@ fun VtkView(
 ) {
     SwingPanel(
         modifier = modifier,
-        factory = { vtkPanel() },
+        factory = {
+            vtkPanel()
+        },
         update = {
             val renderer = it.GetRenderer()
             renderer.GetActors().RemoveAllItems()

@@ -13,12 +13,16 @@ data class EditorTheme constructor(
     val comment: IntColor,
     @SerialName("value")
     val value: IntColor,
+    @SerialName("variable")
+    val variable: IntColor,
     @SerialName("text")
     val text: IntColor,
     @SerialName("keyword")
     val keyword: IntColor,
     @SerialName("punctuation")
-    val punctuation: IntColor
+    val punctuation: IntColor,
+    @SerialName("gcode")
+    val gcode: IntColor
 )
 
 @JvmInline
