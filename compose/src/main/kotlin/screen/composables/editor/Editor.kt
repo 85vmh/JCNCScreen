@@ -9,6 +9,7 @@ import screen.composables.util.SingleSelection
 import java.io.File
 
 class Editor(
+    val file: File,
     val fileName: String,
     val lines: (backgroundScope: CoroutineScope) -> Lines,
 ) {
@@ -34,6 +35,7 @@ class Editor(
 }
 
 fun Editor(file: File) = Editor(
+    file = file,
     fileName = file.name
 ) { backgroundScope ->
     val textLines = try {

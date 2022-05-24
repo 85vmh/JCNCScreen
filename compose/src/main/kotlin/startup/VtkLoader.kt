@@ -6,6 +6,8 @@ import vtk.vtkNativeLibrary
 object VtkLoader {
     operator fun invoke() {
         //try loading libraries
+        println(System.getProperty("java.library.path"))
+        System.loadLibrary("jawt")
         if (!vtkNativeLibrary.LoadAllNativeLibraries()) {
             vtkNativeLibrary.values()
                 .filter { !it.IsLoaded() }

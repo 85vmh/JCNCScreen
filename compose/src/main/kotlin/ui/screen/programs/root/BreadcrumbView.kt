@@ -85,6 +85,7 @@ fun BreadcrumbView(
 
     LazyRow(
         modifier = modifier.draggableScroll(scrollState, scope, Orientation.Horizontal),
+        state = scrollState,
         contentPadding = contentPadding
     ) {
         itemsIndexed(items) { index, item ->

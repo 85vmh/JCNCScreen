@@ -15,7 +15,8 @@ import vtk.vtkPolyDataMapper
 import java.io.File
 
 class ProgramLoadedScreenModel(
-    private val gCodeRepository: GCodeRepository
+    private val gCodeRepository: GCodeRepository,
+    file: File,
 ) : StateScreenModel<ProgramLoadedScreenModel.State>(State()) {
 
     data class State(
@@ -33,12 +34,7 @@ class ProgramLoadedScreenModel(
     }
 
     init {
-        gCodeRepository.parseFile(
-            File(
-                LinuxCncHome,
-                "/nc_files/conversational/Test_od_turning.ngc"
-            )
-        )
+        gCodeRepository.parseFile(file)
     }
 }
 

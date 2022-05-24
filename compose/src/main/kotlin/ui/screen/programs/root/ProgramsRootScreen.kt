@@ -39,7 +39,7 @@ class ProgramsRootScreen : Programs("Programs") {
                 text = { Text("Load Program") },
                 onClick = {
                     if (state.vtkEnabled.enabled) {
-                        navigator.push(ProgramLoadedScreen())
+                        navigator.push(ProgramLoadedScreen(it.file))
                     } else {
                         screenModel.showError("VTK not enabled")
                     }
