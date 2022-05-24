@@ -43,10 +43,8 @@ fun LatheToolsContent(
             state = scrollState
         ) {
             itemsIndexed(state.latheTools) { index, item ->
-                val color = if (index % 2 == 0) MaterialTheme.colorScheme.primary
-                else MaterialTheme.colorScheme.secondary
                 Surface(
-                    color = color
+                    color = gridRowColorFor(index)
                 ) {
                     when (item) {
                         is LatheTool.Turning -> TurningToolView(

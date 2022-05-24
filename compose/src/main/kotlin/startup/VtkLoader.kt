@@ -1,17 +1,20 @@
 package startup
 
+import vtk.vtkFileOutputWindow
 import vtk.vtkNativeLibrary
 
 object VtkLoader {
     operator fun invoke() {
-        println(System.getProperty("java.library.path"))
-        println(System.getProperty("LD_LIBRARY_PATH"))
-
         //try loading libraries
-        vtkNativeLibrary.values().forEach { lib ->
-            vtkNativeLibrary.LoadNativeLibraries(lib)
+        if (!vtkNativeLibrary.LoadAllNativeLibraries()) {
+            vtkNativeLibrary.values()
+                .filter { !it.IsLoaded() }
+                .forEach { lib ->
+                    if (!lib.IsLoaded()) {
+                        println(lib.GetLibraryName() + " not loaded")
+                    }
+                }
         }
-
 
         vtkNativeLibrary.DisableOutputWindow(null)
     }

@@ -59,9 +59,9 @@ fun Cycle(op: SimpleCycle, modifier: Modifier = Modifier, onClick: () -> Unit) {
         modifier = modifier
             .clip(shape)
             .clickable(interactionSource, indication = LocalIndication.current, onClick = onClick),
-        border = BorderStroke(1.dp, SolidColor(Color.DarkGray)),
         shape = RoundedCornerShape(8.dp),
         shadowElevation = 8.dp,
+        color = MaterialTheme.colorScheme.primaryContainer
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,

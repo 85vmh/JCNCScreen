@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.selection.DisableSelection
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -19,6 +20,7 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import com.mindovercnc.editor.EditorTheme
 import extensions.draggableScroll
 import screen.composables.common.AppTheme
 import screen.composables.common.Fonts
@@ -29,18 +31,21 @@ import screen.composables.util.withoutWidthConstraints
 import kotlin.text.Regex.Companion.fromLiteral
 
 @Composable
-fun EditorView(model: Editor, settings: Settings) = key(model) {
+fun EditorView(
+    model: Editor,
+    settings: Settings,
+    modifier: Modifier = Modifier
+) = key(model) {
+    val editorTheme = LocalEditorTheme.current
     SelectionContainer {
         Surface(
-            Modifier.fillMaxSize(),
-            //color = AppTheme.colors.backgroundLight,
+            modifier = modifier,
+            color = editorTheme.background.toColor(),
         ) {
             val lines by loadableScoped(model.lines)
 
             if (lines != null) {
-                Box {
-                    Lines(lines!!, settings)
-                }
+                Lines(lines!!, settings)
             } else {
                 CircularProgressIndicator(
                     modifier = Modifier
@@ -82,7 +87,12 @@ private fun Lines(lines: Editor.Lines, settings: Settings) = with(LocalDensity.c
                 Box(
                     modifier = Modifier.height(lineHeight)
                 ) {
-                    Line(Modifier.align(Alignment.CenterStart), maxNum, lines[index], settings)
+                    Line(
+                        maxNum = maxNum,
+                        line = lines[index],
+                        settings = settings,
+                        modifier = Modifier.align(Alignment.CenterStart)
+                    )
                 }
             }
         }
@@ -97,15 +107,28 @@ private fun Lines(lines: Editor.Lines, settings: Settings) = with(LocalDensity.c
 }
 
 @Composable
-private fun Line(modifier: Modifier, maxNum: String, line: Editor.Line, settings: Settings) {
+private fun Line(
+    maxNum: String,
+    line: Editor.Line,
+    settings: Settings,
+    modifier: Modifier = Modifier
+) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
     ) {
         DisableSelection {
             Box {
-                LineNumber(maxNum, Modifier.alpha(0f), settings)
-                LineNumber(line.number.toString(), Modifier.align(Alignment.CenterEnd), settings)
+                LineNumber(
+                    number = maxNum,
+                    settings = settings,
+                    modifier = Modifier.alpha(0f).padding(start = 12.dp)
+                )
+                LineNumber(
+                    number = line.number.toString(),
+                    settings = settings,
+                    modifier = Modifier.align(Alignment.CenterEnd).padding(start = 12.dp)
+                )
             }
             LineContent(
                 line.content,
@@ -120,81 +143,149 @@ private fun Line(modifier: Modifier, maxNum: String, line: Editor.Line, settings
 }
 
 @Composable
-private fun LineNumber(number: String, modifier: Modifier, settings: Settings) = Text(
+private fun LineNumber(
+    number: String,
+    settings: Settings,
+    modifier: Modifier = Modifier
+) = Text(
     text = number,
     fontSize = settings.fontSize,
     fontFamily = Fonts.jetbrainsMono(),
-    color = Color.DarkGray.copy(alpha = 0.70f),
-    modifier = modifier.padding(start = 12.dp)
+    color = LocalEditorTheme.current.lineNumber.toColor(),
+    modifier = modifier
 )
 
 @Composable
-private fun LineContent(content: Editor.Content, modifier: Modifier, settings: Settings) = Text(
-    text = if (content.isGCode) {
-        codeString(content.value.value)
-    } else {
-        buildAnnotatedString {
-            withStyle(AppTheme.code.simple) {
-                append(content.value.value)
+private fun LineContent(
+    content: Editor.Content,
+    settings: Settings,
+    modifier: Modifier = Modifier
+) {
+    val editorTheme = LocalEditorTheme.current
+    Text(
+        text = if (content.isGCode) {
+            codeString(editorTheme, content.value.value)
+        } else {
+            buildAnnotatedString {
+                withStyle(editorTheme.text.toSpanStyle()) {
+                    append(content.value.value)
+                }
             }
-        }
-    },
-    fontSize = settings.fontSize,
-    fontFamily = Fonts.jetbrainsMono(),
-    modifier = modifier,
-    softWrap = false
-)
+        },
+        fontSize = settings.fontSize,
+        fontFamily = Fonts.jetbrainsMono(),
+        modifier = modifier,
+        softWrap = false
+    )
+}
 
-private fun codeString(str: String) = buildAnnotatedString {
-    withStyle(AppTheme.code.simple) {
-        val strFormatted = str.replace("\t", "    ")
-        append(strFormatted)
-        addStyle(AppTheme.code.punctuation, strFormatted, ":")
-        addStyle(AppTheme.code.punctuation, strFormatted, "=")
-        addStyle(AppTheme.code.punctuation, strFormatted, "\"")
-        addStyle(AppTheme.code.punctuation, strFormatted, "[")
-        addStyle(AppTheme.code.punctuation, strFormatted, "]")
-        addStyle(AppTheme.code.punctuation, strFormatted, "{")
-        addStyle(AppTheme.code.punctuation, strFormatted, "}")
-        addStyle(AppTheme.code.keyword, strFormatted, "SUB")
-        addStyle(AppTheme.code.keyword, strFormatted, "ENDSUB")
-        addStyle(AppTheme.code.keyword, strFormatted, "G0")
-        addStyle(AppTheme.code.keyword, strFormatted, "G1")
-        addStyle(AppTheme.code.keyword, strFormatted, "G2")
-        addStyle(AppTheme.code.keyword, strFormatted, "G3")
-        addStyle(AppTheme.code.keyword, strFormatted, "G54")
-        addStyle(AppTheme.code.keyword, strFormatted, "G18")
-        addStyle(AppTheme.code.keyword, strFormatted, "G21")
-        addStyle(AppTheme.code.keyword, strFormatted, "G43")
-        addStyle(AppTheme.code.keyword, strFormatted, "G71.1")
-        addStyle(AppTheme.code.keyword, strFormatted, "G71.2")
-        addStyle(AppTheme.code.keyword, strFormatted, "G70")
-        addStyle(AppTheme.code.keyword, strFormatted, "G64")
-        addStyle(AppTheme.code.keyword, strFormatted, "G21")
-        addStyle(AppTheme.code.keyword, strFormatted, "M")
-        addStyle(AppTheme.code.keyword, strFormatted, "X")
-        addStyle(AppTheme.code.keyword, strFormatted, "Y")
-        addStyle(AppTheme.code.keyword, strFormatted, "Z")
-        addStyle(AppTheme.code.keyword, strFormatted, "I")
-        addStyle(AppTheme.code.keyword, strFormatted, "J")
-        addStyle(AppTheme.code.keyword, strFormatted, "K")
-        addStyle(AppTheme.code.keyword, strFormatted, "F")
-        addStyle(AppTheme.code.keyword, strFormatted, "S")
-        addStyle(AppTheme.code.keyword, strFormatted, "T")
-        addStyle(AppTheme.code.value, strFormatted, "true")
-        addStyle(AppTheme.code.value, strFormatted, "false")
-        //addStyle(AppTheme.code.value, strFormatted, Regex("[0-9]*"))
-        //addStyle(AppTheme.code.annotation, strFormatted, Regex("^@[a-zA-Z_]*"))
-        addStyle(AppTheme.code.comment, strFormatted, Regex("^\\s*;.*"))
-        addStyle(AppTheme.code.comment, strFormatted, Regex("^\\s*\\(.*"))
+private fun codeString(
+    editorTheme: EditorTheme,
+    str: String
+): AnnotatedString {
+    val keyword = editorTheme.keyword.toSpanStyle()
+    val punctuation = editorTheme.punctuation.toSpanStyle()
+    val value = editorTheme.value.toSpanStyle()
+    val comment = editorTheme.comment.toSpanStyle()
+    val variable = editorTheme.variable.toSpanStyle()
+    val gcode = editorTheme.gcode.toSpanStyle()
+
+    val strFormatted = str.replace("\t", "    ")
+
+    return buildAnnotatedString {
+        withStyle(editorTheme.text.toSpanStyle()) {
+            append(strFormatted)
+            addStyle(punctuation, strFormatted, ":")
+            addStyle(punctuation, strFormatted, "=")
+            addStyle(punctuation, strFormatted, "\"")
+            addStyle(punctuation, strFormatted, "[")
+            addStyle(punctuation, strFormatted, "]")
+            addStyle(punctuation, strFormatted, "{")
+            addStyle(punctuation, strFormatted, "}")
+
+            //gcode
+            addGcodeStyle(gcode, strFormatted)
+
+            //variable
+            addStyle(variable, strFormatted, Regex("[#oO]<(.+)>"))
+
+            //keywords
+            addKeywords(keyword, strFormatted)
+
+            //value
+            addStyle(value, strFormatted, "true")
+            addStyle(value, strFormatted, "false")
+
+            //number
+            addStyle(value, strFormatted, Regex("(^|\\s+)(-?\\d+.?\\d*)(?=\\s+|\$)"))
+
+
+            //addStyle(AppTheme.code.value, strFormatted, Regex("[0-9]*"))
+            //addStyle(AppTheme.code.annotation, strFormatted, Regex("^@[a-zA-Z_]*"))
+            addStyle(comment, strFormatted, Regex("^\\s*; .*"))
+            addStyle(comment, strFormatted, Regex("\\((.*)\\)"))
+        }
     }
+}
+
+private fun AnnotatedString.Builder.addKeywords(style: SpanStyle, text: String) {
+    val words = arrayOf(
+        "return",
+        "if",
+        "else",
+        "endif",
+        "while",
+        "endwhile",
+        "sub",
+        "endsub",
+        "repeat",
+        "endrepeat",
+    )
+    words.forEach {
+        addStyle(style, text, Regex("(^|\\s+)($it)(?=\\s+|\$)"))
+        addStyle(style, text, Regex("(^|\\s+)(${it.uppercase()})(?=\\s+|\$)"))
+    }
+}
+
+private fun AnnotatedString.Builder.addGcodeStyle(style: SpanStyle, text: String) {
+    val letters = charArrayOf(
+        'G',
+        'M',
+        'X',
+        'Y',
+        'Z',
+        'I',
+        'J',
+        'K',
+        'F',
+        'S',
+        'T',
+        'P',
+        'L',
+        'Q',
+        'N',
+        'E',
+        'D',
+        'R',
+        'B',
+        'O',
+        'A',
+    )
+    val letterString = letters.joinToString(separator = "", prefix = "[", postfix = "]") {
+        "$it${it.lowercaseChar()}"
+    }
+    addStyle(style, text, Regex("(^|\\s+)($letterString)(-?\\d+\\.?\\d*)(?=\\s+|\$)"))
 }
 
 private fun AnnotatedString.Builder.addStyle(style: SpanStyle, text: String, regexp: String) {
     addStyle(style, text, fromLiteral(regexp))
 }
 
-private fun AnnotatedString.Builder.addStyle(style: SpanStyle, text: String, regexp: Regex) {
+private fun AnnotatedString.Builder.addStyle(
+    style: SpanStyle,
+    text: String,
+    regexp: Regex
+) {
     for (result in regexp.findAll(text)) {
         addStyle(style, result.range.first, result.range.last + 1)
     }

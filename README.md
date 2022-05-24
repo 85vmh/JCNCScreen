@@ -2,22 +2,7 @@
 
 ## Features
 
-* _JCNCScreen_ is a frontend application for [linuxcnc](http://linuxcnc.org) which
-  is published according to GPL 2.0 or later. See file COPYING for details.
-
-* _JCNCScreen_ contains a tool-manager with plugins for exporting tooltables for
-  different applications. These Plugins are separate projects.
-
-* _JCNCScreen_ supports up to 9 axis. Screen controls reflect settings from
-  linuxcnc inifile.
-
-* _JCNCScreen_ is build with java-language and swing for gui, so building and
-  installing might be different to usual linux packages.
-
-* Running _JCNCScreen_ might be different for java applications, as linuxcnc
-  uses shared memory buffers for communication. So _JCNCScreen_ contains a
-  little C-stub that handles all shared memory access. That stub needs to be
-  loaded by the java runtime, so starting _JCNCScreen_ needs special parameters.
+TODO
 
 ## Screenshots
 
@@ -34,6 +19,15 @@
 [![screenshot](preview/turning_settings.png)](preview/turning_settings.png)
 
 ## Build
+
+Set the required arguments in `gradle.properties` **or** environment variables.
+
+| Env           | Property      | Description                |
+|---------------|---------------|----------------------------|
+| LINUXCNC_HOME | linuxcnc.home | The linuxcnc home folder   |
+| LINUXCNC_JDK  | linuxcnc.jdk  | The jdk to be used for JNI |
+| VTK_JAR       | vtk.jar       | Path to vtk.jar            |
+| VTK_LIB       | vtk.lib       | Path to vtk so files       |
 
 TODO
 

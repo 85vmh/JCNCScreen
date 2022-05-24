@@ -40,7 +40,7 @@ fun AppWindow(
     ) {
         val statusWatcher by rememberInstance<StatusWatcher>()
         statusWatcher.launchIn(scope)
-        AppTheme {
+        AppTheme(startupArgs.darkMode) {
             CncApp()
         }
     }

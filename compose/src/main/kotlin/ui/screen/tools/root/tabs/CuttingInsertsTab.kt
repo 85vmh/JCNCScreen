@@ -44,10 +44,8 @@ fun CuttingInsertsContent(
             state = scrollState
         ) {
             itemsIndexed(state.cuttingInserts) { index, item ->
-                val color = if (index % 2 == 0) MaterialTheme.colorScheme.primary
-                else MaterialTheme.colorScheme.secondary
                 Surface(
-                    color = color
+                    color = gridRowColorFor(index)
                 ) {
                     LatheToolView(
                         index = index,

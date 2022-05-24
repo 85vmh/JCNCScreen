@@ -1,14 +1,15 @@
 package screen.composables
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ripple.RippleAlpha
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.loadImageBitmap
@@ -31,6 +32,8 @@ private enum class PositionType(
     SECONDARY(18.sp, 110.dp),
 }
 
+private val imageShape = RoundedCornerShape(6.dp)
+
 @Composable
 fun AxisCoordinate(
     uiModel: CoordinateUiModel,
@@ -49,7 +52,19 @@ fun AxisCoordinate(
             modifier = modifier,
             horizontalArrangement = Arrangement.Center
         ) {
-            ToolOffsets(uiModel) { toolOffsetsClicked.invoke() }
+            ToolOffsets(
+                uiModel,
+                modifier = Modifier
+                    .clickable(
+                        onClick = toolOffsetsClicked
+                    )
+                    .width(100.dp)
+                    .height(100.dp)
+                    .background(
+                        color = MaterialTheme.colorScheme.background,
+                        shape = imageShape,
+                    )
+            )
             Position(PositionType.SECONDARY, uiModel, isDiameterMode, modifier = Modifier.alignByBaseline())
             AxisLetter(uiModel)
             SpacerOrDiameter(
@@ -69,20 +84,16 @@ fun AxisCoordinate(
 }
 
 @Composable
-private fun ToolOffsets(uiModel: CoordinateUiModel, onClick: () -> Unit) {
+private fun ToolOffsets(
+    uiModel: CoordinateUiModel,
+    modifier: Modifier = Modifier
+) {
     val image = when (uiModel.axis) {
         CoordinateUiModel.Axis.X -> "x.png"
         CoordinateUiModel.Axis.Z -> "z.png"
     }
     Image(
-        modifier = Modifier
-            .clickable { onClick.invoke() }
-            .width(100.dp)
-            .height(100.dp)
-            .background(
-                color = MaterialTheme.colorScheme.background,
-                shape = RoundedCornerShape(6.dp),
-            ),
+        modifier = modifier,
         contentDescription = "",
         bitmap = useResource(image) { loadImageBitmap(it) }
     )

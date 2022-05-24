@@ -78,22 +78,36 @@ class ProgramsRootScreen : Programs("Programs") {
                         )
                     }
                 }
-                Divider(color = Color.LightGray, thickness = 1.dp)
+                Divider(
+                    color = Color.LightGray,
+                    thickness = 1.dp
+                )
                 Row(
                     modifier = Modifier
                 ) {
-                    Column(
+                    //file explorer
+                    Box(
                         modifier = Modifier
                             .width(400.dp)
                     ) {
                         (state.currentFolder as? FileSystemItem.FolderItem)?.let {
-                            FileSystemView(it)
+                            FileSystemView(
+                                fileSystemItem = it,
+                                modifier = Modifier.fillMaxSize()
+                            )
                         }
                     }
+
                     VerticalDivider()
+
+                    //editor
                     if (state.editor != null) {
                         Column(Modifier.weight(1f)) {
-                            EditorView(state.editor!!, settings)
+                            EditorView(
+                                model = state.editor!!,
+                                settings = settings,
+                                modifier = Modifier.fillMaxSize()
+                            )
                         }
                     } else {
                         EditorEmptyView()

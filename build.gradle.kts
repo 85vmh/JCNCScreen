@@ -14,6 +14,7 @@ buildscript {
 
 plugins {
     kotlin("jvm") version Versions.kotlin apply false
+    kotlin("plugin.serialization") version Versions.kotlin apply false
     //id("org.jetbrains.compose") version "1.0.0-alpha3" apply false
 }
 

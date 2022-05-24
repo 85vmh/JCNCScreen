@@ -9,7 +9,7 @@ class PathCacheActor(private val point: Point) : vtkActor() {
     private val lines = vtkCellArray()
     private val polygonData = vtkPolyData()
     private val polyMapper = vtkPolyDataMapper()
-    private var index = 0
+    private var index = 0L
 
     init {
         points.InsertNextPoint(point.toDoubleArray())
@@ -17,7 +17,7 @@ class PathCacheActor(private val point: Point) : vtkActor() {
         lines.InsertCellPoint(0)
         with(GetProperty()) {
             SetColor(Color.Cyan.toDoubleArray())
-            SetLineWidth(2.5)
+            SetLineWidth(2.5F)
             SetOpacity(0.5)
         }
         SetMapper(polyMapper)
@@ -35,7 +35,7 @@ class PathCacheActor(private val point: Point) : vtkActor() {
         }
         with(lines) {
             InsertNextCell(numPoints)
-            InsertCellPoint(index - 1)
+            InsertCellPoint(index - 1L)
             InsertCellPoint(index)
             Modified()
         }

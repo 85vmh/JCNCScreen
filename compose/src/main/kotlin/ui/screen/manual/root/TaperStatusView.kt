@@ -65,7 +65,8 @@ fun TaperStatusView(
                 SettingStatusRow(
                     settingText = "Taper angle:",
                     settingValue = taperAngle.stripZeros(),
-                    settingUnit = "degrees", modifier = settingsModifier
+                    settingUnit = "degrees",
+                    modifier = settingsModifier
                 )
             }
         }

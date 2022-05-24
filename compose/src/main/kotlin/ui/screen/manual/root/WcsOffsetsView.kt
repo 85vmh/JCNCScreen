@@ -3,18 +3,10 @@ package ui.screen.manual.root
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
-import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Divider
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -28,7 +20,7 @@ import extensions.toFixedDigitsString
 import screen.composables.LabelWithValue
 
 val offsetItemModifier = Modifier.wrapContentHeight()
-    .width(300.dp)
+    .width(250.dp)
     .padding(8.dp)
 
 @Composable
@@ -42,23 +34,6 @@ fun WcsOffsetsView(
 ) {
     val scope = rememberCoroutineScope()
     val scrollState = rememberLazyListState()
-//    val scrollState = rememberLazyGridState()
-//
-//    LazyHorizontalGrid(
-//        rows = GridCells.Fixed(2),
-//        state = scrollState,
-//        modifier = modifier.draggableScroll(scrollState, scope, Orientation.Horizontal),
-//        contentPadding = contentPadding
-//    ) {
-//        items(wcsOffsets) {
-//            WorkpieceOffset(
-//                item = it,
-//                selected = selected == it,
-//                modifier = itemModifier,
-//                onSelected = { onOffsetClick(it.coordinateSystem) }
-//            )
-//        }
-//    }
 
     LazyRow(
         state = scrollState,
@@ -88,7 +63,7 @@ fun WorkpieceOffset(
     Surface(
         color = when {
             selected -> MaterialTheme.colorScheme.primary
-            else -> MaterialTheme.colorScheme.surface
+            else -> MaterialTheme.colorScheme.primaryContainer
         },
         modifier = modifier,
         shape = shape,

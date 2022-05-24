@@ -1,12 +1,13 @@
 package ui.screen.status
 
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.Divider
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -39,62 +40,70 @@ class StatusRootScreen : Status("Status") {
         ) {
             stickyHeader {
                 MessagesHeader()
-                androidx.compose.material3.Divider(color = Color.LightGray, thickness = 0.5.dp)
             }
             items(state.messages) { item ->
                 MessageRow(item)
-                androidx.compose.material3.Divider(color = Color.LightGray, thickness = 0.5.dp)
             }
         }
     }
+}
 
-    @Composable
-    private fun MessagesHeader(modifier: Modifier = Modifier) {
+@Composable
+private fun MessagesHeader(
+    modifier: Modifier = Modifier
+) {
+    Surface(
+        color = MaterialTheme.colorScheme.primaryContainer
+    ) {
         Row(
-            modifier = modifier
-                .background(Color.White)
-                .height(40.dp),
+            modifier = modifier,
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                modifier = Modifier.width(100.dp),
+                modifier = Modifier.width(100.dp)
+                    .border(width = 0.5.dp, Color.LightGray)
+                    .padding(8.dp),
                 textAlign = TextAlign.Center,
                 text = "Type"
             )
-            VerticalDivider()
             Text(
-                modifier = Modifier.weight(1f),
+                modifier = Modifier.weight(1f)
+                    .border(width = 0.5.dp, Color.LightGray)
+                    .padding(8.dp),
                 textAlign = TextAlign.Center,
                 text = "Message"
             )
-            VerticalDivider()
         }
     }
+}
 
-    @Composable
-    private fun MessageRow(item: Message, modifier: Modifier = Modifier) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = modifier
-                .height(60.dp)
-                .clickable {
+@Composable
+private fun MessageRow(
+    item: Message,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = modifier
+            .clickable {
 
-                }
-        ) {
-            Text(
-                modifier = Modifier.width(100.dp),
-                textAlign = TextAlign.Center,
-                text = item.level.name
-            )
-            VerticalDivider()
-            Column(
-                modifier = Modifier.weight(1f),
-            ) {
-                Text(item.text)
             }
-            VerticalDivider()
+    ) {
+        Text(
+            modifier = Modifier.width(100.dp)
+                .border(width = 0.5.dp, Color.LightGray)
+                .padding(8.dp),
+            textAlign = TextAlign.Center,
+            text = item.level.name
+        )
+        Column(
+            modifier = Modifier.weight(1f)
+                .border(width = 0.5.dp, Color.LightGray)
+                .padding(8.dp),
+        ) {
+            Text(item.text)
         }
     }
 }

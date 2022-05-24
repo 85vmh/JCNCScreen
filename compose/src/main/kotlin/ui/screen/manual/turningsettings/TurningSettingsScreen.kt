@@ -138,7 +138,8 @@ class TurningSettingsScreen : Manual("Turning Settings") {
                 selected = state.isUnitPerRevActive,
                 value = state.unitsPerRevValue.toString(),
                 inputType = InputType.FEED_PER_REV,
-                modifier = Modifier.fillMaxWidth().clickable(onClick = { screenModel.setUnitsPerRevActive(true) }).padding(start = 16.dp),
+                modifier = Modifier.fillMaxWidth().clickable(onClick = { screenModel.setUnitsPerRevActive(true) })
+                    .padding(start = 16.dp),
                 onClicked = { screenModel.setUnitsPerRevActive(true) },
                 onValueChanged = {
                     val unitsPerRev = it.toDoubleOrNull() ?: return@RadioBoxSetting
@@ -148,7 +149,8 @@ class TurningSettingsScreen : Manual("Turning Settings") {
                 selected = state.isUnitPerRevActive.not(),
                 value = state.unitsPerMinValue.toString(),
                 inputType = InputType.FEED_PER_MIN,
-                modifier = Modifier.fillMaxWidth().clickable(onClick = { screenModel.setUnitsPerRevActive(false) }).padding(start = 16.dp),
+                modifier = Modifier.fillMaxWidth().clickable(onClick = { screenModel.setUnitsPerRevActive(false) })
+                    .padding(start = 16.dp),
                 onClicked = { screenModel.setUnitsPerRevActive(false) },
                 onValueChanged = {
                     val unitsPerMin = it.toDoubleOrNull() ?: return@RadioBoxSetting
@@ -244,12 +246,17 @@ class TurningSettingsScreen : Manual("Turning Settings") {
 
     @Composable
     private fun NumericInputWithUnit(
-        value: String, inputType: InputType, alignment: Alignment.Vertical, modifier: Modifier = Modifier, onValueChanged: (String) -> Unit
+        value: String,
+        inputType: InputType,
+        alignment: Alignment.Vertical,
+        modifier: Modifier = Modifier,
+        onValueChanged: (String) -> Unit
     ) {
         val params = NumericInputs.entries[inputType]!!
 
         Row(
-            verticalAlignment = alignment, modifier = modifier
+            verticalAlignment = alignment,
+            modifier = modifier
         ) {
             NumericInputField(
                 numericValue = value,

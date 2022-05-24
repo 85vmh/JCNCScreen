@@ -3,13 +3,27 @@ import java.io.File
 
 object NativePaths {
     fun getNativePaths(rootProject: Project): List<String> {
-        val linuxCncHome = System.getenv("LINUXCNC_HOME")
-            ?: throw IllegalStateException("LINUXCNC_HOME not set")
+
+        val linuxCncHome = rootProject.requirePath(
+            "LINUXCNC_HOME",
+            "linuxcnc.home"
+        )
+
+        val linuxCncJdk = rootProject.requirePath(
+            "LINUXCNC_JDK",
+            "linuxcnc.jdk"
+        )
+
+        val vtkLib = rootProject.requirePath(
+            "VTK_LIB",
+            "vtk.lib"
+        )
+
         return listOf(
             File(linuxCncHome, "lib").path,
-            "/home/vasimihalca/.jdks/openjdk-17.0.1/lib",
-            "/usr/lib",
-            "/usr/lib/x86_64-linux-gnu/java/vtk-Linux-x86_64"
+            File(linuxCncJdk, "lib").path,
+            vtkLib
         )
     }
+
 }

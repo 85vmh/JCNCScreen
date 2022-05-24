@@ -56,8 +56,6 @@ fun ToolHoldersContent(
             state = scrollState
         ) {
             itemsIndexed(state.toolHolders) { index, item ->
-                val color = if (index % 2 == 0) MaterialTheme.colorScheme.primary
-                else MaterialTheme.colorScheme.secondary
                 HolderView(
                     item = item,
                     isCurrent = item.holderNumber == state.currentTool,
@@ -65,7 +63,7 @@ fun ToolHoldersContent(
                     onDeleteClicked = onDelete,
                     onLoadClicked = onLoad,
                     modifier = itemModifier,
-                    color = color
+                    color = gridRowColorFor(index)
                 )
                 Divider(color = Color.LightGray, thickness = 0.5.dp)
             }

@@ -57,7 +57,8 @@ class TaperSettingsScreen : Manual("Taper Settings") {
                     onValueChanged = {
                         val doubleValue = it.toDoubleOrNull() ?: return@ValueSetting
                         screenModel.setAngle(doubleValue)
-                    }
+                    },
+                    modifier = Modifier.padding(horizontal = 16.dp)
                 )
             }
             CardWithTitle("Unknown Angle") {
