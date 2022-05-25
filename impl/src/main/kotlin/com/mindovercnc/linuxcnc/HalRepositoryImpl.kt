@@ -2,7 +2,6 @@ package com.mindovercnc.linuxcnc
 
 import com.mindovercnc.base.HalRepository
 import com.mindovercnc.linuxcnc.model.*
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.*
 
 private const val RefreshRate = 5L
@@ -29,9 +28,7 @@ private const val PinAxisLimitXMax = "axis-limits.x-max"
 private const val PinAxisLimitZMin = "axis-limits.z-min"
 private const val PinAxisLimitZMax = "axis-limits.z-max"
 
-class HalRepositoryImpl(
-    private val scope: CoroutineScope
-) : HalRepository {
+class HalRepositoryImpl : HalRepository {
     private val halHandler = HalHandler()
 
     private var halComponent: HalComponent? = null
