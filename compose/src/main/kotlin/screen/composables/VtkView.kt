@@ -3,6 +3,7 @@ package screen.composables
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.awt.SwingPanel
+import androidx.compose.ui.window.AwtWindow
 import vtk.vtkActor
 import vtk.vtkAxesActor
 import vtk.vtkPanel
@@ -22,11 +23,9 @@ fun VtkView(
             val renderer = it.GetRenderer()
             renderer.GetActors().RemoveAllItems()
             state.actors.forEach { actor ->
-                print("-----add actor $actor")
                 renderer.AddActor(actor)
             }
             state.axesActors.forEach { axesActor ->
-                print("-----add axes actor $axesActor")
                 renderer.AddActor(axesActor)
             }
         }

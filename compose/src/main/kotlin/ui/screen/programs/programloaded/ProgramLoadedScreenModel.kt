@@ -1,13 +1,11 @@
 package ui.screen.programs.programloaded
 
 import cafe.adriel.voyager.core.model.StateScreenModel
-import com.mindovercnc.base.FileSystemRepository
 import com.mindovercnc.base.GCodeRepository
 import com.mindovercnc.linuxcnc.LinuxCncHome
 import kotlinx.coroutines.flow.update
 import screen.composables.VtkUiState
 import screen.composables.editor.Editor
-import usecase.model.FileSystemItem
 import vtk.AxesActor
 import vtk.vtkActor
 import vtk.vtkConeSource
@@ -15,11 +13,12 @@ import vtk.vtkPolyDataMapper
 import java.io.File
 
 class ProgramLoadedScreenModel(
-    private val gCodeRepository: GCodeRepository
+    private val gCodeRepository: GCodeRepository,
+    file: File
 ) : StateScreenModel<ProgramLoadedScreenModel.State>(State()) {
 
     data class State(
-        val currentFolder: FileSystemItem? = null,
+        val currentFolder: File? = null,
         val editor: Editor? = null,
         val vtkUiState: VtkUiState = VtkUiState(createActors())
     )
@@ -33,12 +32,7 @@ class ProgramLoadedScreenModel(
     }
 
     init {
-        gCodeRepository.parseFile(
-            File(
-                LinuxCncHome,
-                "/nc_files/conversational/Test_od_turning.ngc"
-            )
-        )
+        gCodeRepository.parseFile(file)
     }
 }
 

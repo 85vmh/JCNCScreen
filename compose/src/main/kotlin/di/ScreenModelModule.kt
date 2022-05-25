@@ -23,7 +23,16 @@ val ScreenModelModule = DI.Module("ScreenModel") {
     }
 
     bindProvider {
-        ManualTurningScreenModel(instance(), instance(), instance(), instance(), instance(), instance(), instance(), instance())
+        ManualTurningScreenModel(
+            instance(),
+            instance(),
+            instance(),
+            instance(),
+            instance(),
+            instance(),
+            instance(),
+            instance()
+        )
     }
 
     bindProvider {
@@ -51,11 +60,11 @@ val ScreenModelModule = DI.Module("ScreenModel") {
     }
 
     bindProvider {
-        ProgramsRootScreenModel(instance(),instance())
+        ProgramsRootScreenModel(instance(), instance())
     }
 
     bindProvider {
-        ProgramLoadedScreenModel(instance())
+        ProgramLoadedScreenModel(instance(), instance())
     }
 
     bindProvider {

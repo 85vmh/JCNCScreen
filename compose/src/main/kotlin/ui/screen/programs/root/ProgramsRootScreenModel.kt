@@ -5,17 +5,21 @@ import com.mindovercnc.base.FileSystemRepository
 import kotlinx.coroutines.flow.update
 import screen.composables.editor.Editor
 import startup.VtkEnabled
-import usecase.model.FileSystemItem
 import java.io.File
 
 class ProgramsRootScreenModel(
     fileSystemRepository: FileSystemRepository,
     vtkEnabled: VtkEnabled
-) : StateScreenModel<ProgramsRootScreenModel.State>(State(vtkEnabled)) {
+) : StateScreenModel<ProgramsRootScreenModel.State>(
+    State(
+        vtkEnabled = vtkEnabled,
+        currentDir = fileSystemRepository.getNcRootAppFile()
+    )
+) {
 
     data class State(
         val vtkEnabled: VtkEnabled,
-        val currentFolder: FileSystemItem? = null,
+        val currentDir: File,
         val editor: Editor? = null,
         val error: String? = null
     )
@@ -38,62 +42,34 @@ class ProgramsRootScreenModel(
 
     private fun setCurrentFolder(file: File) {
         mutableState.update {
-            it.copy(
-                currentFolder = file.toFileSystemItem(),
-            )
+            it.copy(currentDir = file)
         }
     }
 
     private fun setCurrentFile(file: File?) {
         mutableState.update {
             it.copy(
-                editor = if (file != null) Editor(file) else null,
+                editor = if (file != null) Editor(file)
+                else null,
             )
         }
     }
 
-    fun loadFolderContents(path: String) {
-        setCurrentFolder(File(path))
+    fun selectItem(item: File) {
+        when {
+            item.isDirectory -> {
+                println("---Folder clicked: ${item.path}")
+                loadFolderContents(item)
+            }
+            item.isFile -> {
+                setCurrentFile(File(item.path))
+            }
+        }
+    }
+
+    fun loadFolderContents(file: File) {
+        setCurrentFolder(file)
         setCurrentFile(null)
     }
 
-    private fun File.toFileSystemItem(loadChildren: Boolean = true): FileSystemItem {
-        return if (this.isDirectory) {
-            FileSystemItem.FolderItem(
-                name = name,
-                path = absolutePath,
-                lastModified = lastModified(),
-                size = this.length(),
-                children = when {
-                    loadChildren -> this.listFiles().orEmpty()
-                        .filter { it.isDisplayable() }
-                        .map { it.toFileSystemItem(false) }
-                        .sortedWith(compareBy({ it is FileSystemItem.FolderItem }, { it.lastModified }))
-                    else -> emptyList()
-                }
-            ) {
-                println("---Folder clicked: ${this.path}")
-                setCurrentFolder(File(this.path))
-                setCurrentFile(null)
-            }
-        } else {
-            FileSystemItem.FileItem(
-                name = this.name,
-                path = this.absolutePath,
-                extension = this.extension,
-                lastModified = this.lastModified(),
-                size = this.length()
-            ) {
-                setCurrentFile(File(this.path))
-            }
-        }
-    }
-
-    private fun File.isDisplayable(): Boolean {
-        return if (isDirectory) {
-            !isHidden
-        } else {
-            !isHidden && extension.equals("ngc", true)
-        }
-    }
 }

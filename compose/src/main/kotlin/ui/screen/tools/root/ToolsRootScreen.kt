@@ -10,11 +10,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import cafe.adriel.voyager.kodein.rememberScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import screen.composables.ToolsTabItem
+import di.rememberScreenModel
 import screen.composables.TabbedContentView
+import screen.composables.ToolsTabItem
 import ui.screen.tools.Tools
 import ui.screen.tools.addholder.AddEditHolderScreen
 import ui.screen.tools.root.tabs.CuttingInsertsContent

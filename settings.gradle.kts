@@ -4,5 +4,6 @@ include("repository")
 include("database")
 include("impl")
 include("editor")
+include("logger")
 
 //include("localization")

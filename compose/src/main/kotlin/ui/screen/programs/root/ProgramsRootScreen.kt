@@ -1,9 +1,9 @@
 package ui.screen.programs.root
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Divider
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExitToApp
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -14,9 +14,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.kodein.rememberScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import di.rememberScreenModel
 import screen.composables.VerticalDivider
 import screen.composables.common.Settings
 import screen.composables.editor.EditorEmptyView
@@ -24,7 +24,6 @@ import screen.composables.editor.EditorView
 import ui.screen.programs.Programs
 import ui.screen.programs.programloaded.ProgramLoadedScreen
 import ui.widget.ErrorSnackbar
-import usecase.model.FileSystemItem
 
 class ProgramsRootScreen : Programs("Programs") {
 
@@ -34,12 +33,12 @@ class ProgramsRootScreen : Programs("Programs") {
         val state by screenModel.state.collectAsState()
         val navigator = LocalNavigator.currentOrThrow
 
-        state.editor?.let {
+        state.editor?.let { editor ->
             ExtendedFloatingActionButton(
                 text = { Text("Load Program") },
                 onClick = {
                     if (state.vtkEnabled.enabled) {
-                        navigator.push(ProgramLoadedScreen())
+                        navigator.push(ProgramLoadedScreen(editor.file))
                     } else {
                         screenModel.showError("VTK not enabled")
                     }
@@ -67,16 +66,14 @@ class ProgramsRootScreen : Programs("Programs") {
                     modifier = Modifier.height(50.dp),
                     contentAlignment = Alignment.CenterStart
                 ) {
-                    state.currentFolder?.let {
-                        BreadcrumbView(
-                            it,
-                            onFolderSelected = { clickedPath ->
-                                screenModel.loadFolderContents(clickedPath)
-                            },
-                            modifier = Modifier.height(36.dp),
-                            contentPadding = PaddingValues(horizontal = 16.dp)
-                        )
-                    }
+                    BreadcrumbView(
+                        state.currentDir,
+                        onSelect = { file ->
+                            screenModel.loadFolderContents(file)
+                        },
+                        modifier = Modifier.height(36.dp),
+                        contentPadding = PaddingValues(horizontal = 16.dp)
+                    )
                 }
                 Divider(
                     color = Color.LightGray,
@@ -90,12 +87,11 @@ class ProgramsRootScreen : Programs("Programs") {
                         modifier = Modifier
                             .width(400.dp)
                     ) {
-                        (state.currentFolder as? FileSystemItem.FolderItem)?.let {
-                            FileSystemView(
-                                fileSystemItem = it,
-                                modifier = Modifier.fillMaxSize()
-                            )
-                        }
+                        FileSystemView(
+                            file = state.currentDir,
+                            onClick = screenModel::selectItem,
+                            modifier = Modifier.fillMaxSize()
+                        )
                     }
 
                     VerticalDivider()

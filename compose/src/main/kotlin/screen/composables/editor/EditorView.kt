@@ -1,14 +1,13 @@
 package screen.composables.editor
 
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.DisableSelection
 import androidx.compose.foundation.text.selection.SelectionContainer
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -18,7 +17,9 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.mindovercnc.editor.EditorTheme
 import extensions.draggableScroll
@@ -28,6 +29,7 @@ import screen.composables.common.Settings
 import screen.composables.platform.VerticalScrollbar
 import screen.composables.util.loadableScoped
 import screen.composables.util.withoutWidthConstraints
+import java.io.File
 import kotlin.text.Regex.Companion.fromLiteral
 
 @Composable
@@ -45,7 +47,12 @@ fun EditorView(
             val lines by loadableScoped(model.lines)
 
             if (lines != null) {
-                Lines(lines!!, settings)
+                Lines(
+                    file = model.file,
+                    lines = lines!!,
+                    settings = settings,
+                    modifier = Modifier.fillMaxSize()
+                )
             } else {
                 CircularProgressIndicator(
                     modifier = Modifier
@@ -57,8 +64,14 @@ fun EditorView(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun Lines(lines: Editor.Lines, settings: Settings) = with(LocalDensity.current) {
+private fun Lines(
+    file: File,
+    lines: Editor.Lines,
+    settings: Settings,
+    modifier: Modifier = Modifier
+) = with(LocalDensity.current) {
     val maxNum = remember(lines.lineNumberDigitCount) {
         (1..lines.lineNumberDigitCount).joinToString(separator = "") { "9" }
     }
@@ -66,7 +79,7 @@ private fun Lines(lines: Editor.Lines, settings: Settings) = with(LocalDensity.c
     val scope = rememberCoroutineScope()
 
     Box(
-        Modifier.fillMaxSize()
+        modifier = modifier
     ) {
         val scrollState = rememberLazyListState()
         val lineHeight = settings.fontSize.toDp() * 2f
@@ -77,6 +90,17 @@ private fun Lines(lines: Editor.Lines, settings: Settings) = with(LocalDensity.c
                 .draggableScroll(scrollState, scope),
             state = scrollState
         ) {
+            stickyHeader {
+                Surface(
+                    modifier = Modifier.fillMaxWidth(),
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.surfaceVariant)
+                ) {
+                    FileNameHeader(
+                        file,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+            }
             items(lines.size) { index ->
 //                val selectedModifier = when {
 //                    index == 5 -> Modifier.height(lineHeight)
@@ -102,6 +126,36 @@ private fun Lines(lines: Editor.Lines, settings: Settings) = with(LocalDensity.c
             scrollState,
             lines.size,
             lineHeight
+        )
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun FileNameHeader(
+    file: File,
+    modifier: Modifier = Modifier,
+) {
+    TooltipArea(
+        modifier = modifier,
+        tooltip = {
+            Surface(
+                shape = RoundedCornerShape(8.dp),
+                shadowElevation = 3.dp
+            ) {
+                Text(
+                    file.absolutePath,
+                    modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp)
+                )
+            }
+        }
+    ) {
+        Text(
+            modifier = Modifier.fillMaxWidth()
+                .padding(8.dp),
+            text = file.name,
+            style = MaterialTheme.typography.titleSmall,
+            textAlign = TextAlign.Center,
         )
     }
 }
