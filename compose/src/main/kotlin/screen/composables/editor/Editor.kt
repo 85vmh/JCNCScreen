@@ -11,9 +11,10 @@ import java.io.File
 class Editor(
     val file: File,
     val fileName: String,
-    val lines: (backgroundScope: CoroutineScope) -> Lines,
+    val lines: CoroutineScope.() -> Lines,
 ) {
     var close: (() -> Unit)? = null
+
     lateinit var selection: SingleSelection
 
     val isActive: Boolean
@@ -37,9 +38,9 @@ class Editor(
 fun Editor(file: File) = Editor(
     file = file,
     fileName = file.name
-) { backgroundScope ->
+) {
     val textLines = try {
-        file.readTextLines(backgroundScope)
+        file.readTextLines(this)
     } catch (e: Throwable) {
         e.printStackTrace()
         EmptyTextLines

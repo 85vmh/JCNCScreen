@@ -4,20 +4,6 @@
 
 TODO
 
-## Screenshots
-
-[![screenshot](preview/numpad.png)](preview/numpad.png)
-
-[![screenshot](preview/programs.png)](preview/programs.png)
-
-[![screenshot](preview/simple_cycles.png)](preview/simple_cycles.png)
-
-[![screenshot](preview/status.png)](preview/status.png)
-
-[![screenshot](preview/tools_holders.png)](preview/tools_holders.png)
-
-[![screenshot](preview/turning_settings.png)](preview/turning_settings.png)
-
 ## Build
 
 Set the required arguments in `gradle.properties` **or** environment variables.
@@ -50,3 +36,16 @@ Other arguments:
 
 TODO
 
+## Screenshots
+
+[![screenshot](preview/numpad.png)](preview/numpad.png)
+
+[![screenshot](preview/programs.png)](preview/programs.png)
+
+[![screenshot](preview/simple_cycles.png)](preview/simple_cycles.png)
+
+[![screenshot](preview/status.png)](preview/status.png)
+
+[![screenshot](preview/tools_holders.png)](preview/tools_holders.png)
+
+[![screenshot](preview/turning_settings.png)](preview/turning_settings.png)

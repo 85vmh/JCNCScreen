@@ -39,7 +39,7 @@ class VarFileRepositoryImpl constructor(
         return parametersState.filterNotNull()
             .distinctUntilChanged()
             .onEach {
-                println("---emitted new parameters state")
+                println("---New parameters state $it")
             }
     }
 
@@ -57,20 +57,72 @@ class VarFileRepositoryImpl constructor(
                 when (parsedLine.paramNumber) {
                     activeCoordinateSysNumber -> builder.coordinateSysNumber = parsedLine.paramValue.toInt()
 
-                    in g28Home.firstParamNumber..g28Home.lastParamNumber -> parsePositions(builder, parsedLine, g28Home.firstParamNumber)
-                    in g30Home.firstParamNumber..g30Home.lastParamNumber -> parsePositions(builder, parsedLine, g30Home.firstParamNumber)
-                    in toolOffset.firstParamNumber..toolOffset.lastParamNumber -> parsePositions(builder, parsedLine, toolOffset.firstParamNumber)
-                    in g52g92Offset.firstParamNumber..g52g92Offset.lastParamNumber -> parsePositions(builder, parsedLine, g52g92Offset.firstParamNumber)
+                    in g28Home.firstParamNumber..g28Home.lastParamNumber -> parsePositions(
+                        builder,
+                        parsedLine,
+                        g28Home.firstParamNumber
+                    )
+                    in g30Home.firstParamNumber..g30Home.lastParamNumber -> parsePositions(
+                        builder,
+                        parsedLine,
+                        g30Home.firstParamNumber
+                    )
+                    in toolOffset.firstParamNumber..toolOffset.lastParamNumber -> parsePositions(
+                        builder,
+                        parsedLine,
+                        toolOffset.firstParamNumber
+                    )
+                    in g52g92Offset.firstParamNumber..g52g92Offset.lastParamNumber -> parsePositions(
+                        builder,
+                        parsedLine,
+                        g52g92Offset.firstParamNumber
+                    )
 
-                    in g540.firstParamNumber..g540.lastParamNumber -> parsePositions(builder, parsedLine, g540.firstParamNumber)
-                    in g550.firstParamNumber..g550.lastParamNumber -> parsePositions(builder, parsedLine, g550.firstParamNumber)
-                    in g560.firstParamNumber..g560.lastParamNumber -> parsePositions(builder, parsedLine, g560.firstParamNumber)
-                    in g570.firstParamNumber..g570.lastParamNumber -> parsePositions(builder, parsedLine, g570.firstParamNumber)
-                    in g580.firstParamNumber..g580.lastParamNumber -> parsePositions(builder, parsedLine, g580.firstParamNumber)
-                    in g590.firstParamNumber..g590.lastParamNumber -> parsePositions(builder, parsedLine, g590.firstParamNumber)
-                    in g591.firstParamNumber..g591.lastParamNumber -> parsePositions(builder, parsedLine, g591.firstParamNumber)
-                    in g592.firstParamNumber..g592.lastParamNumber -> parsePositions(builder, parsedLine, g592.firstParamNumber)
-                    in g593.firstParamNumber..g593.lastParamNumber -> parsePositions(builder, parsedLine, g593.firstParamNumber)
+                    in g540.firstParamNumber..g540.lastParamNumber -> parsePositions(
+                        builder,
+                        parsedLine,
+                        g540.firstParamNumber
+                    )
+                    in g550.firstParamNumber..g550.lastParamNumber -> parsePositions(
+                        builder,
+                        parsedLine,
+                        g550.firstParamNumber
+                    )
+                    in g560.firstParamNumber..g560.lastParamNumber -> parsePositions(
+                        builder,
+                        parsedLine,
+                        g560.firstParamNumber
+                    )
+                    in g570.firstParamNumber..g570.lastParamNumber -> parsePositions(
+                        builder,
+                        parsedLine,
+                        g570.firstParamNumber
+                    )
+                    in g580.firstParamNumber..g580.lastParamNumber -> parsePositions(
+                        builder,
+                        parsedLine,
+                        g580.firstParamNumber
+                    )
+                    in g590.firstParamNumber..g590.lastParamNumber -> parsePositions(
+                        builder,
+                        parsedLine,
+                        g590.firstParamNumber
+                    )
+                    in g591.firstParamNumber..g591.lastParamNumber -> parsePositions(
+                        builder,
+                        parsedLine,
+                        g591.firstParamNumber
+                    )
+                    in g592.firstParamNumber..g592.lastParamNumber -> parsePositions(
+                        builder,
+                        parsedLine,
+                        g592.firstParamNumber
+                    )
+                    in g593.firstParamNumber..g593.lastParamNumber -> parsePositions(
+                        builder,
+                        parsedLine,
+                        g593.firstParamNumber
+                    )
                 }
             }
         }
@@ -81,7 +133,11 @@ class VarFileRepositoryImpl constructor(
         when (firstParamNumber) {
             g28Home.firstParamNumber -> setPositionProperty(builders.g28Position, parsedLine, firstParamNumber)
             g30Home.firstParamNumber -> setPositionProperty(builders.g30Position, parsedLine, firstParamNumber)
-            toolOffset.firstParamNumber -> setPositionProperty(builders.toolOffsetPosition, parsedLine, firstParamNumber)
+            toolOffset.firstParamNumber -> setPositionProperty(
+                builders.toolOffsetPosition,
+                parsedLine,
+                firstParamNumber
+            )
             g52g92Offset.firstParamNumber -> setPositionProperty(builders.g52G92Position, parsedLine, firstParamNumber)
 
             g540.firstParamNumber -> setPositionProperty(builders.coordinateSystems[0], parsedLine, firstParamNumber)

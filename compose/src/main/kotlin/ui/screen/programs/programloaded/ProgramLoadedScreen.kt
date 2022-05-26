@@ -16,14 +16,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.kodein.rememberScreenModel
 import di.rememberScreenModel
 import org.kodein.di.bindProvider
 import screen.composables.VtkView
 import ui.screen.programs.Programs
 import java.io.File
 
-class ProgramLoadedScreen(private val loadedFile: File) : Programs("Program Loaded") {
+class ProgramLoadedScreen(
+    private val file: File
+) : Programs("Program Loaded") {
 
     @Composable
     override fun Fab() {
@@ -44,7 +45,7 @@ class ProgramLoadedScreen(private val loadedFile: File) : Programs("Program Load
     @Composable
     override fun Content() {
         val screenModel = rememberScreenModel<ProgramLoadedScreenModel> {
-            bindProvider { loadedFile }
+            bindProvider { file }
         }
         val state by screenModel.state.collectAsState()
 

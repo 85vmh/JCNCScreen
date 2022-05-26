@@ -26,7 +26,7 @@ dependencies {
     //jars
     implementation(fileTree(mapOf("dir" to "lib", "include" to listOf("*.jar"))))
 
-    val vtkJarPath = project.requirePath("VTK_JAR","vtk.jar")
+    val vtkJarPath = project.requirePath("VTK_JAR", "vtk.jar")
     implementation(files(vtkJarPath))
 
     implementation("ro.dragossusi.ktlcnc:ktlcnc:0.0.1")
@@ -41,7 +41,6 @@ dependencies {
     implementation("cafe.adriel.voyager:voyager-bottom-sheet-navigator:${Versions.voyager}")
     implementation("cafe.adriel.voyager:voyager-tab-navigator:${Versions.voyager}")
     implementation("cafe.adriel.voyager:voyager-transitions:${Versions.voyager}")
-    implementation("cafe.adriel.voyager:voyager-kodein:${Versions.voyager}")
 
     // State Machine
     implementation("io.github.nsk90:kstatemachine:0.9.4")
