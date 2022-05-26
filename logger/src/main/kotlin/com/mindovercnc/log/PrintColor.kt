@@ -1,4 +1,4 @@
-package print
+package com.mindovercnc.log
 
 enum class PrintColor(
     val color: String

@@ -137,4 +137,10 @@ val UseCaseModule = DI.Module("UseCase") {
             statusRepository = instance(),
         )
     }
+
+    bindSingleton {
+        ActorsUseCase(
+            gCodeRepository = instance(),
+        )
+    }
 }

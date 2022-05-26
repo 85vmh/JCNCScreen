@@ -3,8 +3,8 @@ package com.mindovercnc.linuxcnc
 import com.mindovercnc.base.GCodeRepository
 import com.mindovercnc.base.model.GcodeCommand
 import com.mindovercnc.linuxcnc.parsing.gcode.GcodeParser
-import print.PrintColor
-import print.colored
+import com.mindovercnc.log.PrintColor
+import com.mindovercnc.log.colored
 import java.io.File
 
 class GCodeRepositoryImpl(

@@ -1,8 +1,8 @@
 package com.mindovercnc.linuxcnc.parsing.gcode
 
 import com.mindovercnc.base.model.GcodeCommand
-import print.PrintColor
-import print.colored
+import com.mindovercnc.log.PrintColor
+import com.mindovercnc.log.colored
 
 object GcodeParser {
 
