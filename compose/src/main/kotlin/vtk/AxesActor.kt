@@ -1,6 +1,6 @@
 package vtk
 
-class AxesActor(axisMask: Int = 3) : vtkAxesActor() {
+class AxesActor(axisMask: Int = 5) : vtkAxesActor() {
     init {
         val length = 20.0 //hardcoded from py
 

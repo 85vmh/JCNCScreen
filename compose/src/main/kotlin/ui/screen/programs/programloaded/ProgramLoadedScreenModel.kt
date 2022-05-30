@@ -8,10 +8,7 @@ import kotlinx.coroutines.launch
 import screen.composables.VtkUiState
 import screen.composables.editor.Editor
 import usecase.ActorsUseCase
-import vtk.AxesActor
-import vtk.vtkActor
-import vtk.vtkConeSource
-import vtk.vtkPolyDataMapper
+import vtk.*
 import java.io.File
 
 class ProgramLoadedScreenModel(
@@ -25,13 +22,22 @@ class ProgramLoadedScreenModel(
         val vtkUiState: VtkUiState = VtkUiState(createActors())
     )
 
+    val machineLimits = MachineLimits(
+        xMin = 0.0,
+        xMax = 300.0,
+        yMin = 0.0,
+        yMax = 400.0,
+        zMin = 0.0,
+        zMax = 200.0
+    )
+
     init {
         coroutineScope.launch {
             val lineActors = actorsUseCase.getActors(file)
             mutableState.update {
                 it.copy(
                     //vtkUiState = it.vtkUiState.actors.plus(lineActors)
-                    vtkUiState = it.vtkUiState + lineActors
+                    vtkUiState = it.vtkUiState + lineActors// + MachineActor(machineLimits)
                 )
             }
         }

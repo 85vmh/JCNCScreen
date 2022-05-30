@@ -3,6 +3,8 @@ package vtk
 data class MachineLimits(
     val xMin: Double,
     val xMax: Double,
+    val yMin: Double,
+    val yMax: Double,
     val zMin: Double,
     val zMax: Double
 )
@@ -11,7 +13,9 @@ class MachineActor(machineLimits: MachineLimits) : vtkCubeAxesActor() {
     val units = "mm"
 
     init {
-        SetBounds(machineLimits.xMin, machineLimits.xMax, 0.0, 0.0, machineLimits.zMin, machineLimits.zMax)
+        with(machineLimits){
+            SetBounds(xMin, xMax, yMin, yMax, zMin, zMax)
+        }
         SetXLabelFormat("%6.3f")
         SetYLabelFormat("%6.3f")
         SetZLabelFormat("%6.3f")

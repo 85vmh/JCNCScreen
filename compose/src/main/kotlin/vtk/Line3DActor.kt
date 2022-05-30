@@ -4,9 +4,6 @@ class Line3DActor(val start: Point, val end: Point) : vtkActor() {
     init {
 
         val source = vtkLineSource()
-        //source.SetNumberOfSides(1)
-//        source.SetRadius(0.035)
-//        source.SetCenter(0.0, 0.0, 0.0)
 
         val points = vtkPoints()
         points.InsertNextPoint(start.toDoubleArray())

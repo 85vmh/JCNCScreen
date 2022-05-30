@@ -21,7 +21,7 @@ object GcodeParser {
             println("\t\tArguments:\t\t${arguments}".colored(PrintColor.YELLOW))
         }
 
-        return GcodeCommand(id, commandName, arguments)
+        return GcodeCommand(id, commandName, arguments, line)
     }
 
 }
