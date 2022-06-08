@@ -20,7 +20,7 @@ import extensions.toFixedDigitsString
 import screen.composables.LabelWithValue
 
 val offsetItemModifier = Modifier.wrapContentHeight()
-    .width(250.dp)
+    .width(200.dp)
     .padding(8.dp)
 
 @Composable

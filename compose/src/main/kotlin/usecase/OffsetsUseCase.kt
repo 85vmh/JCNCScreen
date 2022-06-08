@@ -2,9 +2,7 @@ package usecase
 
 import com.mindovercnc.base.*
 import com.mindovercnc.linuxcnc.model.TaskMode
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 import usecase.model.OffsetEntry
 
 class OffsetsUseCase(
@@ -27,6 +25,13 @@ class OffsetsUseCase(
     val currentWcs = statusRepository.cncStatusFlow()
         .map { it.taskStatus.g5xIndex }
         .map { getStringRepresentation(it) }
+
+    val currentOffset = combine(
+        getOffsets(),
+        currentWcs
+    ) { offsets, current ->
+        offsets.find { it.coordinateSystem == current }
+    }.distinctUntilChanged()
 
     suspend fun touchOffX(value: Double) {
         executeMdiCommand("G10 L20 P0 X$value")

@@ -139,7 +139,7 @@ val UseCaseModule = DI.Module("UseCase") {
     }
 
     bindSingleton {
-        ActorsUseCase(
+        GCodeUseCase(
             gCodeRepository = instance(),
         )
     }

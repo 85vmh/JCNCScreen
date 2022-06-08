@@ -14,7 +14,7 @@ class IniFileRepositoryImpl(
 
     private var useCustomLimits: Boolean = false
 
-    private val machineLimits: G53AxisLimits
+    val machineLimits: G53AxisLimits
         get() = with(getIniFile()) {
             return G53AxisLimits(
                 xMinLimit = joints[0].minLimit,

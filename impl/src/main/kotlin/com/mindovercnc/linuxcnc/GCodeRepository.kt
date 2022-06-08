@@ -34,7 +34,7 @@ class GCodeRepositoryImpl(
         println("START GCODE")
         val commands = process.inputReader().useLines {
             it.map { line ->
-                println(line.colored(PrintColor.BLUE))
+                //println(line.colored(PrintColor.BLUE))
                 GcodeParser.parse(line)
             }.toList()
         }

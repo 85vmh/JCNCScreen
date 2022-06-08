@@ -13,27 +13,37 @@ class MachineActor(machineLimits: MachineLimits) : vtkCubeAxesActor() {
     val units = "mm"
 
     init {
-        with(machineLimits){
+        with(machineLimits) {
             SetBounds(xMin, xMax, yMin, yMax, zMin, zMax)
         }
         SetXLabelFormat("%6.3f")
         SetYLabelFormat("%6.3f")
         SetZLabelFormat("%6.3f")
         SetFlyModeToStaticEdges()
-        GetTitleTextProperty(0).SetColor(1.0, 0.0, 0.0)
-        GetLabelTextProperty(0).SetColor(1.0, 0.0, 0.0)
-        GetTitleTextProperty(1).SetColor(0.0, 1.0, 0.0)
-        GetLabelTextProperty(1).SetColor(0.0, 1.0, 0.0)
-        GetTitleTextProperty(2).SetColor(0.0, 0.0, 1.0)
+
+        //Hide the titles
+        GetTitleTextProperty(0).SetOpacity(0.0)
+        GetTitleTextProperty(2).SetOpacity(0.0)
+
+
+        GetLabelTextProperty(0).apply {
+            SetOrientation(90.0)
+            SetColor(0.0, 1.0, 0.0)
+            SetFontFamilyToCourier()
+        }
+
+        GetTitleTextProperty(2).SetOpacity(0.0)
         GetLabelTextProperty(2).SetColor(0.0, 0.0, 1.0)
         SetXUnits(units)
         SetYUnits(units)
         SetZUnits(units)
         DrawXGridlinesOn()
-        DrawYGridlinesOn()
         DrawZGridlinesOn()
-        //SetGridLineLocation(VTK_GRID_LINES_FURTHEST)
-        GetXAxesGridlinesProperty().SetColor(0.0, 0.0, 0.0)
+        GetXAxesGridlinesProperty()
+            .apply {
+                SetColor(0.0, 0.0, 0.0)
+                SetOpacity(0.5)
+            }
         GetYAxesGridlinesProperty().SetColor(0.0, 0.0, 0.0)
         GetZAxesGridlinesProperty().SetColor(0.0, 0.0, 0.0)
     }

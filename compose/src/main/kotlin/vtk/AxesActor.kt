@@ -1,6 +1,6 @@
 package vtk
 
-class AxesActor(axisMask: Int = 5) : vtkAxesActor() {
+class AxesActor : vtkAxesActor() {
     init {
         val length = 20.0 //hardcoded from py
 
@@ -8,14 +8,25 @@ class AxesActor(axisMask: Int = 5) : vtkAxesActor() {
         transform.Translate(0.0, 0.0, 0.0)
 
         SetUserTransform(transform)
-        AxisLabelsOff()
-        SetShaftTypeToLine()
-        SetTipTypeToCone()
-
-        when (axisMask) {
-            3 -> SetTotalLength(length, length, 0.0)
-            5 -> SetTotalLength(length, 0.0, length)
-            6 -> SetTotalLength(0.0, length, length)
+        AxisLabelsOn()
+        GetXAxisShaftProperty().apply {
+            SetColor(0.0, 255.0, 0.0)
+//            SetOpacity(0.5)
+            SetLineWidth(2.0)
         }
+        GetXAxisTipProperty().apply {
+            SetColor(0.0, 255.0, 0.0)
+        }
+        GetXAxisCaptionActor2D().GetTextActor().GetTextProperty().apply {
+            BoldOff()
+            ItalicOff()
+        }
+        GetZAxisCaptionActor2D().GetTextActor().GetTextProperty().apply {
+            BoldOff()
+            ItalicOff()
+        }
+        SetYAxisLabelText("")
+        SetShaftTypeToLine()
+        SetTotalLength(length, 0.0, length)
     }
 }

@@ -64,7 +64,7 @@ val ScreenModelModule = DI.Module("ScreenModel") {
     }
 
     bindProvider {
-        ProgramLoadedScreenModel(instance(), instance())
+        ProgramLoadedScreenModel(instance(), instance(), instance(), instance(), instance())
     }
 
     bindProvider {

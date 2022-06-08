@@ -41,7 +41,7 @@ fun FileSystemView(
     val items = remember(file) {
         file.listFiles().orEmpty()
             .filter { it.isDisplayable() }
-            .sortedWith(compareBy({ it.isDirectory }, { it.lastModified() }))
+            .sortedWith(compareBy({ it.isDirectory }, { it.name }))
     }
     Surface(
         modifier = modifier

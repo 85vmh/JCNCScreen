@@ -7,8 +7,6 @@ class PathActor(
     multiplicationFactor: Double = 1.0
 ) : vtkActor() {
 
-    private val axesActor = AxesActor()
-
     private data class PathColor(
         val alpha: Int,
         val red: Int,
@@ -31,7 +29,6 @@ class PathActor(
     private val rapidColor = PathColor(100, 255, 255, 255)
 
     init {
-        axesActor.SetTotalLength(length, 0.0, length)
         val multiPolyData = vtkAppendPolyData()
 
         val linesPolyData = vtkPolyData()
@@ -39,7 +36,7 @@ class PathActor(
         val points = vtkPoints()
 
         pathElements.forEach {
-            println("----$it")
+            //println("----$it")
             when (it) {
                 is Line -> {
                     val startId = points.InsertNextPoint(it.startPoint.toDoubleArray(multiplicationFactor))
