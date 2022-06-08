@@ -1,8 +1,6 @@
 package com.mindovercnc.linuxcnc
 
 import com.mindovercnc.base.ToolsRepository
-import com.mindovercnc.linuxcnc.model.LinuxCncTool
-import com.mindovercnc.linuxcnc.model.tools.*
 import com.mindovercnc.database.entity.CuttingInsertEntity
 import com.mindovercnc.database.entity.LatheToolEntity
 import com.mindovercnc.database.entity.ToolHolderEntity
@@ -10,17 +8,26 @@ import com.mindovercnc.database.table.CuttingInsertTable
 import com.mindovercnc.database.table.LatheToolTable
 import com.mindovercnc.database.table.ToolHolderTable
 import com.mindovercnc.database.table.ToolHolderTable.holderNumber
+import com.mindovercnc.linuxcnc.model.LinuxCncTool
+import com.mindovercnc.linuxcnc.model.tools.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
-import java.io.File
 
+
+fun CuttingInsertEntity.toCuttingInsert(): CuttingInsert {
+    return CuttingInsert(
+        madeOf = madeOf,
+        code = code,
+        tipRadius = tipRadius,
+        tipAngle = tipAngle,
+    )
+}
 class ToolsRepositoryImpl(
     private val scope: CoroutineScope,
     private val toolTableFilePath: ToolFilePath
@@ -107,16 +114,6 @@ class ToolsRepositoryImpl(
             )
             else -> null
         }
-    }
-
-    private fun CuttingInsertEntity.toCuttingInsert(): CuttingInsert {
-        return CuttingInsert(
-            madeOf = madeOf,
-            code = code,
-            tipRadius = radius,
-            frontAngle = frontAngle,
-            backAngle = backAngle
-        )
     }
 
     override fun createToolHolder(toolHolder: ToolHolder) {

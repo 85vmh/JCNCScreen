@@ -1,15 +1,23 @@
 package vtk
 
 class ToolActor : vtkActor() {
-    val toolOffset = Point(0.0, 0.0, 0.0)
-    val diamondLength = 4
-    val diamondOffset = 2
+    private val toolOffset = Point(0.0, 0.0, 0.0)
+    private val diamondLength = 4
+    private val diamondOffset = 2
+
+    var currentPoint: Point = Point(0.0, 0.0, 0.0)
+        set(value) {
+            if (field != value) {
+                field = value
+                translateToPoint(value)
+            }
+        }
 
     init {
         val points = vtkPoints().apply {
             InsertNextPoint(-toolOffset.x, 0.0, -toolOffset.z)
             InsertNextPoint(-toolOffset.x, 0.0, -toolOffset.z - diamondLength)
-            InsertNextPoint(-toolOffset.x + diamondLength, 0.0, -toolOffset.z -diamondLength - diamondOffset)
+            InsertNextPoint(-toolOffset.x + diamondLength, 0.0, -toolOffset.z - diamondLength - diamondOffset)
             InsertNextPoint(-toolOffset.x + diamondLength, 0.0, -toolOffset.z - diamondOffset)
         }
 

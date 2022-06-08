@@ -10,7 +10,7 @@ class GCodeUseCase(
     private val gCodeRepository: GCodeRepository
 ) {
 
-    suspend fun getPathActor(file: File): PathActor = withContext(Dispatchers.IO) {
+    suspend fun getPathElements(file: File): List<PathElement> = withContext(Dispatchers.IO) {
         val pathElements = mutableListOf<PathElement>()
         var lastPoint: Point? = null
 
@@ -72,6 +72,6 @@ class GCodeUseCase(
                 else -> {}
             }
         }
-        PathActor(pathElements)
+        pathElements
     }
 }

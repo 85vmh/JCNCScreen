@@ -1,6 +1,15 @@
 package vtk
 
 class AxesActor : vtkAxesActor() {
+
+    var currentPoint: Point = Point(0.0, 0.0, 0.0)
+        set(value) {
+            if (field != value) {
+                field = value
+                translateToPoint(value)
+            }
+        }
+
     init {
         val length = 20.0 //hardcoded from py
 

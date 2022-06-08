@@ -1,6 +1,5 @@
 package ui.screen.programs.programloaded
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
@@ -43,17 +42,9 @@ class ProgramLoadedScreen(
         }
         val state by screenModel.state.collectAsState()
 
-        Box(
-            modifier = Modifier.fillMaxSize()
-        ) {
-            state.vtkState?.let {
-                VtkView(
-                    state = it,
-                    modifier = Modifier.fillMaxSize(),
-                    setView1 = screenModel::setView1,
-                    setView2 = screenModel::updatePosition
-                )
-            }
-        }
+        VtkView(
+            state = state.vtkUiState,
+            modifier = Modifier.fillMaxSize(),
+        )
     }
 }

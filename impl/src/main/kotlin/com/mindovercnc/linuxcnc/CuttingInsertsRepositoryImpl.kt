@@ -11,22 +11,15 @@ class CuttingInsertsRepositoryImpl : CuttingInsertsRepository {
         CuttingInsertEntity.new {
             madeOf = cuttingInsert.madeOf
             code = cuttingInsert.code
-            radius = cuttingInsert.tipRadius
-            frontAngle = cuttingInsert.frontAngle
-            backAngle = cuttingInsert.backAngle
+            tipRadius = cuttingInsert.tipRadius
+            tipAngle = cuttingInsert.tipAngle
         }
     }
 
     override fun findAll(): List<CuttingInsert> {
         return transaction {
             CuttingInsertEntity.all().map {
-                CuttingInsert(
-                    madeOf = it.madeOf,
-                    code = it.code,
-                    tipRadius = it.radius,
-                    frontAngle = it.frontAngle,
-                    backAngle = it.backAngle
-                )
+                it.toCuttingInsert()
             }
         }
     }

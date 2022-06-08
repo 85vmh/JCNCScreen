@@ -83,30 +83,26 @@ object DbInitializer {
         CuttingInsertEntity.new {
             madeOf = MadeOf.Carbide
             code = "CCMT"
-            radius = 0.8
-            frontAngle = 0.0
-            backAngle = 0.0
+            tipRadius = 0.8
+            tipAngle = 0.0
         }
         CuttingInsertEntity.new {
             madeOf = MadeOf.Carbide
             code = "VCMT"
-            radius = 0.8
-            frontAngle = 0.0
-            backAngle = 0.0
+            tipRadius = 0.8
+            tipAngle = 0.0
         }
         CuttingInsertEntity.new {
             madeOf = MadeOf.Carbide
             code = "TCMT"
-            radius = 0.8
-            frontAngle = 0.0
-            backAngle = 0.0
+            tipRadius = 0.8
+            tipAngle = 0.0
         }
         CuttingInsertEntity.new {
             madeOf = MadeOf.Carbide
             code = "WNMG"
-            radius = 0.8
-            frontAngle = 0.0
-            backAngle = 0.0
+            tipRadius = 0.8
+            tipAngle = 0.0
         }
     }
 }

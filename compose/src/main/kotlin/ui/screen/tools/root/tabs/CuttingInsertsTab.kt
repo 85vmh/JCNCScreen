@@ -108,8 +108,8 @@ private fun LatheToolView(
         Column(
             modifier = Modifier.width(300.dp)
         ) {
-            LabelWithValue("Front Angle:", item.frontAngle.toFixedDigitsString(1))
-            LabelWithValue("Back Angle:", item.backAngle.toFixedDigitsString(1))
+            LabelWithValue("Tip Angle:", item.tipAngle.toFixedDigitsString(1))
+//            LabelWithValue("Back Angle:", item.backAngle.toFixedDigitsString(1))
         }
         VerticalDivider()
         IconButton(

@@ -2,10 +2,7 @@ package vtk
 
 const val length = 2.5 //taken from py
 
-class PathActor(
-    pathElements: List<PathElement>,
-    multiplicationFactor: Double = 1.0
-) : vtkActor() {
+class PathActor : vtkActor() {
 
     private data class PathColor(
         val alpha: Int,
@@ -13,6 +10,12 @@ class PathActor(
         val green: Int,
         val blue: Int
     )
+
+    private val multiPolyData: vtkAppendPolyData = vtkAppendPolyData()
+    private val linesPolyData = vtkPolyData()
+    private val lines = vtkCellArray()
+    private val points = vtkPoints()
+
     private val lineColors = vtkUnsignedCharArray().apply {
         SetNumberOfComponents(4)
     }
@@ -28,12 +31,47 @@ class PathActor(
     private val feedColor = PathColor(255, 255, 255, 255)
     private val rapidColor = PathColor(100, 255, 255, 255)
 
-    init {
-        val multiPolyData = vtkAppendPolyData()
+    var pathElements: List<PathElement> = emptyList()
+        set(value) {
+            if (field != value) {
+                field = value
+                setData(field)
+                Modified()
+            }
+        }
 
-        val linesPolyData = vtkPolyData()
-        val lines = vtkCellArray()
-        val points = vtkPoints()
+    var currentPoint: Point = Point(0.0, 0.0, 0.0)
+        set(value) {
+            if (field != value) {
+                field = value
+                translateToPoint(value)
+            }
+        }
+
+    init {
+        linesPolyData.apply {
+            GetCellData().SetScalars(lineColors)
+            SetPoints(points)
+            SetLines(lines)
+            Modified()
+        }
+        multiPolyData.AddInputData(linesPolyData)
+
+        val dataMapper = vtkPolyDataMapper().apply {
+            SetInputConnection(multiPolyData.GetOutputPort())
+            SetColorModeToDirectScalars()
+            SetScalarModeToUseCellData()
+            Update()
+        }
+        SetMapper(dataMapper)
+    }
+
+    private fun setData(
+        pathElements: List<PathElement>,
+        multiplicationFactor: Double = 1.0
+    ) {
+        lines.Reset()
+        points.Reset()
 
         pathElements.forEach {
             //println("----$it")
@@ -68,21 +106,5 @@ class PathActor(
                 }
             }
         }
-
-        linesPolyData.apply {
-            GetCellData().SetScalars(lineColors)
-            SetPoints(points)
-            SetLines(lines)
-            Modified()
-        }
-        multiPolyData.AddInputData(linesPolyData)
-
-        val dataMapper = vtkPolyDataMapper().apply {
-            SetInputConnection(multiPolyData.GetOutputPort())
-            SetColorModeToDirectScalars()
-            SetScalarModeToUseCellData()
-            Update()
-        }
-        SetMapper(dataMapper)
     }
 }

@@ -8,9 +8,8 @@ import org.jetbrains.exposed.dao.id.EntityID
 class CuttingInsertEntity(id: EntityID<Int>) : IntEntity(id) {
     var madeOf by CuttingInsertTable.madeOf
     var code by CuttingInsertTable.code
-    var radius by CuttingInsertTable.radius
-    var frontAngle by CuttingInsertTable.frontAngle
-    var backAngle by CuttingInsertTable.backAngle
+    var tipRadius by CuttingInsertTable.tipRadius
+    var tipAngle by CuttingInsertTable.tipAngle
 
     companion object : IntEntityClass<CuttingInsertEntity>(CuttingInsertTable)
 }
