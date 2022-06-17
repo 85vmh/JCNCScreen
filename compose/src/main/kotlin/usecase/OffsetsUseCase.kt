@@ -1,6 +1,6 @@
 package usecase
 
-import com.mindovercnc.base.*
+import com.mindovercnc.repository.*
 import com.mindovercnc.linuxcnc.model.TaskMode
 import kotlinx.coroutines.flow.*
 import usecase.model.OffsetEntry

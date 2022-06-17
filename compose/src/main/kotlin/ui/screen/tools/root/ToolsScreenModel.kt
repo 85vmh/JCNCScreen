@@ -2,9 +2,9 @@ package ui.screen.tools.root
 
 import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
-import com.mindovercnc.linuxcnc.model.tools.CuttingInsert
-import com.mindovercnc.linuxcnc.model.tools.LatheTool
-import com.mindovercnc.linuxcnc.model.tools.ToolHolder
+import com.mindovercnc.model.CuttingInsert
+import com.mindovercnc.model.LatheTool
+import com.mindovercnc.model.ToolHolder
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update

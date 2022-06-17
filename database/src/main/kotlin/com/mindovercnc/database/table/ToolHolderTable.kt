@@ -1,6 +1,6 @@
 package com.mindovercnc.database.table
 
-import com.mindovercnc.linuxcnc.model.tools.ToolHolderType
+import com.mindovercnc.model.ToolHolderType
 import org.jetbrains.exposed.dao.id.IntIdTable
 
 object ToolHolderTable : IntIdTable() {

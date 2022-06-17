@@ -1,6 +1,6 @@
 package com.mindovercnc.linuxcnc
 
-import com.mindovercnc.base.FileSystemRepository
+import com.mindovercnc.repository.FileSystemRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

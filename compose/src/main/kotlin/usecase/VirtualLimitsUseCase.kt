@@ -1,8 +1,8 @@
 package usecase
 
 import codegen.Point
-import com.mindovercnc.base.*
-import com.mindovercnc.linuxcnc.model.*
+import com.mindovercnc.repository.*
+import com.mindovercnc.model.*
 import extensions.toFixedDigits
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.*

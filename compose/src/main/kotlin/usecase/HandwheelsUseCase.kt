@@ -1,7 +1,7 @@
 package usecase
 
-import com.mindovercnc.base.CncStatusRepository
-import com.mindovercnc.base.HalRepository
+import com.mindovercnc.repository.CncStatusRepository
+import com.mindovercnc.repository.HalRepository
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce

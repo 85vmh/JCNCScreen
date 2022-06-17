@@ -2,10 +2,6 @@ package ui.screen.manual.virtuallimits
 
 import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
-import codegen.Point
-import com.mindovercnc.base.CncStatusRepository
-import com.mindovercnc.linuxcnc.model.g53Position
-import com.mindovercnc.linuxcnc.model.getDisplayablePosition
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import usecase.PositionUseCase

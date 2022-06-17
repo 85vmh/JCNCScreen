@@ -1,6 +1,6 @@
 package com.mindovercnc.linuxcnc
 
-import com.mindovercnc.base.CncCommandRepository
+import com.mindovercnc.repository.CncCommandRepository
 import com.mindovercnc.linuxcnc.model.JogMode
 import com.mindovercnc.linuxcnc.model.TaskMode
 import com.mindovercnc.linuxcnc.model.TaskState

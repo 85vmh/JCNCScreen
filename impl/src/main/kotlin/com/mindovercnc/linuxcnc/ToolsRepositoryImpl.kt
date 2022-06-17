@@ -1,15 +1,19 @@
 package com.mindovercnc.linuxcnc
 
-import com.mindovercnc.base.ToolsRepository
+import com.mindovercnc.repository.ToolsRepository
 import com.mindovercnc.database.entity.CuttingInsertEntity
 import com.mindovercnc.database.entity.LatheToolEntity
 import com.mindovercnc.database.entity.ToolHolderEntity
+import com.mindovercnc.model.CuttingInsert
+import com.mindovercnc.model.LatheTool
+import com.mindovercnc.model.TipOrientation
+import com.mindovercnc.model.ToolHolder
+import com.mindovercnc.model.ToolType
 import com.mindovercnc.database.table.CuttingInsertTable
 import com.mindovercnc.database.table.LatheToolTable
 import com.mindovercnc.database.table.ToolHolderTable
 import com.mindovercnc.database.table.ToolHolderTable.holderNumber
-import com.mindovercnc.linuxcnc.model.LinuxCncTool
-import com.mindovercnc.linuxcnc.model.tools.*
+import com.mindovercnc.model.LinuxCncTool
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -64,12 +68,16 @@ class ToolsRepositoryImpl(
                 toolId = id.value,
                 insert = insert!!.toCuttingInsert(),
                 tipOrientation = TipOrientation.getOrientation(tipOrientation),
+                frontAngle = frontAngle!!,
+                backAngle = backAngle!!,
                 spindleDirection = spindleDirection,
             )
             ToolType.Boring -> LatheTool.Boring(
                 toolId = id.value,
                 insert = insert!!.toCuttingInsert(),
                 tipOrientation = TipOrientation.getOrientation(tipOrientation),
+                frontAngle = frontAngle!!,
+                backAngle = backAngle!!,
                 spindleDirection = spindleDirection,
                 minBoreDiameter = minBoreDiameter ?: 0.0,
                 maxZDepth = maxZDepth ?: 0.0

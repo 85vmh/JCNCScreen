@@ -9,6 +9,8 @@ class LatheToolEntity(id: EntityID<Int>) : IntEntity(id) {
     var insert by CuttingInsertEntity optionalReferencedOn LatheToolTable.insertId
     var type by LatheToolTable.type
     var tipOrientation by LatheToolTable.tipOrientation
+    var frontAngle by LatheToolTable.frontAngle
+    var backAngle by LatheToolTable.backAngle
     var spindleDirection by LatheToolTable.spindleDirection
     var toolDiameter by LatheToolTable.toolDiameter
     var minBoreDiameter by LatheToolTable.minBoreDiameter

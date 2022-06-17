@@ -1,12 +1,12 @@
 package usecase
 
-import codegen.ManualTurningHelper
 import codegen.Point
-import com.mindovercnc.base.*
-import com.mindovercnc.linuxcnc.model.*
+import com.mindovercnc.repository.*
+import com.mindovercnc.linuxcnc.model.TaskMode
+import com.mindovercnc.model.UiMessage
+import com.mindovercnc.model.getDisplayablePosition
 import extensions.stripZeros
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import usecase.model.AngleFinderState

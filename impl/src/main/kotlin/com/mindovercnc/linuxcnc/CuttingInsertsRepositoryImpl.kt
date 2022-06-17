@@ -1,7 +1,7 @@
 package com.mindovercnc.linuxcnc
 
-import com.mindovercnc.base.CuttingInsertsRepository
-import com.mindovercnc.linuxcnc.model.tools.CuttingInsert
+import com.mindovercnc.repository.CuttingInsertsRepository
+import com.mindovercnc.model.CuttingInsert
 import com.mindovercnc.database.entity.CuttingInsertEntity
 import org.jetbrains.exposed.sql.transactions.transaction
 

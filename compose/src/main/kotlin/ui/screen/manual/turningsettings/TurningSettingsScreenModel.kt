@@ -1,10 +1,10 @@
 package ui.screen.manual.turningsettings
 
 import cafe.adriel.voyager.core.model.StateScreenModel
-import com.mindovercnc.base.SettingsRepository
-import com.mindovercnc.linuxcnc.model.BooleanKey
-import com.mindovercnc.linuxcnc.model.DoubleKey
-import com.mindovercnc.linuxcnc.model.IntegerKey
+import com.mindovercnc.repository.SettingsRepository
+import com.mindovercnc.model.BooleanKey
+import com.mindovercnc.model.DoubleKey
+import com.mindovercnc.model.IntegerKey
 import kotlinx.coroutines.flow.update
 
 class TurningSettingsScreenModel(

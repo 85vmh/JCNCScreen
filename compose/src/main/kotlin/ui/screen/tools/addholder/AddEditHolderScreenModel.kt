@@ -2,11 +2,9 @@ package ui.screen.tools.addholder
 
 import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
-import com.mindovercnc.base.SettingsRepository
-import com.mindovercnc.linuxcnc.model.DoubleKey
-import com.mindovercnc.linuxcnc.model.tools.LatheTool
-import com.mindovercnc.linuxcnc.model.tools.ToolHolder
-import com.mindovercnc.linuxcnc.model.tools.ToolHolderType
+import com.mindovercnc.model.LatheTool
+import com.mindovercnc.model.ToolHolder
+import com.mindovercnc.model.ToolHolderType
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update

@@ -1,14 +1,13 @@
 package com.mindovercnc.linuxcnc
 
-import com.mindovercnc.base.SettingsRepository
-import com.mindovercnc.linuxcnc.model.BooleanKey
-import com.mindovercnc.linuxcnc.model.DoubleKey
-import com.mindovercnc.linuxcnc.model.IntegerKey
+import com.mindovercnc.repository.SettingsRepository
+import com.mindovercnc.model.BooleanKey
+import com.mindovercnc.model.DoubleKey
+import com.mindovercnc.model.IntegerKey
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
-import java.util.prefs.PreferenceChangeEvent
 import java.util.prefs.PreferenceChangeListener
 import java.util.prefs.Preferences
 

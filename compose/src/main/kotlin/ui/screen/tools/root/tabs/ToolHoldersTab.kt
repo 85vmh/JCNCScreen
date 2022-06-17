@@ -2,11 +2,9 @@ package ui.screen.tools.root.tabs
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
@@ -23,8 +21,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.mindovercnc.linuxcnc.model.tools.ToolHolder
-import com.mindovercnc.linuxcnc.model.tools.ToolHolderType
+import com.mindovercnc.model.ToolHolder
+import com.mindovercnc.model.ToolHolderType
 import extensions.draggableScroll
 import extensions.toFixedDigitsString
 import screen.composables.LabelWithValue

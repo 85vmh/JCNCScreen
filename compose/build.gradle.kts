@@ -34,6 +34,7 @@ dependencies {
     implementation(project(":database"))
     implementation(project(":impl"))
     implementation(project(":editor"))
+    implementation(project(":model"))
     implementation("org.kodein.di:kodein-di-framework-compose:${Versions.kodein}")
 
     //navigation

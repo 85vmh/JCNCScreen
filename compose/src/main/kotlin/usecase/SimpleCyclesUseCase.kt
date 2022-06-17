@@ -1,9 +1,9 @@
 package usecase
 
-import com.mindovercnc.base.CncCommandRepository
-import com.mindovercnc.base.CncStatusRepository
-import com.mindovercnc.base.HalRepository
-import com.mindovercnc.base.SettingsRepository
+import com.mindovercnc.repository.CncCommandRepository
+import com.mindovercnc.repository.CncStatusRepository
+import com.mindovercnc.repository.HalRepository
+import com.mindovercnc.repository.SettingsRepository
 import com.mindovercnc.linuxcnc.model.TaskMode
 import extensions.stripZeros
 import kotlinx.coroutines.CoroutineScope

@@ -1,6 +1,6 @@
 package usecase
 
-import com.mindovercnc.base.GCodeRepository
+import com.mindovercnc.repository.GCodeRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import vtk.*

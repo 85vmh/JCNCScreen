@@ -2,7 +2,7 @@ package ui.screen.programs.programloaded
 
 import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
-import com.mindovercnc.base.IniFileRepository
+import com.mindovercnc.repository.IniFileRepository
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach

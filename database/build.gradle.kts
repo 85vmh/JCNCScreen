@@ -23,7 +23,7 @@ dependencies {
     api("org.jetbrains.exposed:exposed-jdbc:$exposed")
 
     implementation("org.xerial:sqlite-jdbc:$sqliteJdbc")
-//    implementation(project(":model"))
+    implementation(project(":model"))
     implementation("ro.dragossusi.ktlcnc:ktlcnc-model:0.0.1")
 
 }

@@ -1,10 +1,10 @@
 package usecase
 
-import com.mindovercnc.base.CncCommandRepository
-import com.mindovercnc.base.CncStatusRepository
+import com.mindovercnc.repository.CncCommandRepository
+import com.mindovercnc.repository.CncStatusRepository
 import com.mindovercnc.linuxcnc.model.Position
-import com.mindovercnc.linuxcnc.model.dtg
-import com.mindovercnc.linuxcnc.model.getDisplayablePosition
+import com.mindovercnc.model.dtg
+import com.mindovercnc.model.getDisplayablePosition
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.*
 import screen.uimodel.AxisPosition

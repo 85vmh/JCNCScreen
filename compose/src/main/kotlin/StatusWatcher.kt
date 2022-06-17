@@ -1,7 +1,7 @@
-import com.mindovercnc.base.CncStatusRepository
-import com.mindovercnc.base.MessagesRepository
-import com.mindovercnc.linuxcnc.model.*
-import com.mindovercnc.base.handleMessage
+import com.mindovercnc.repository.CncStatusRepository
+import com.mindovercnc.repository.MessagesRepository
+import com.mindovercnc.repository.handleMessage
+import com.mindovercnc.model.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.distinctUntilChanged

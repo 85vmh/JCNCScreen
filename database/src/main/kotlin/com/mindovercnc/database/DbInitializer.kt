@@ -1,10 +1,10 @@
 package com.mindovercnc.database
 
-import com.mindovercnc.linuxcnc.model.tools.*
 import com.mindovercnc.database.entity.CuttingInsertEntity
 import com.mindovercnc.database.entity.LatheToolEntity
 import com.mindovercnc.database.entity.ToolHolderEntity
 import com.mindovercnc.database.table.*
+import com.mindovercnc.model.*
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.StdOutSqlLogger
@@ -63,12 +63,16 @@ object DbInitializer {
             insert = getInsertByCode("VCMT")
             type = ToolType.Turning
             tipOrientation = TipOrientation.Position7.orient
+            frontAngle = 0.0
+            backAngle = 0.0
             spindleDirection = SpindleDirection.Reverse
         }
         LatheToolEntity.new {
             insert = getInsertByCode("CCMT")
             type = ToolType.Boring
             tipOrientation = TipOrientation.Position7.orient
+            frontAngle = 0.0
+            backAngle = 0.0
             spindleDirection = SpindleDirection.Reverse
             minBoreDiameter = 20.0
             maxZDepth = 50.0

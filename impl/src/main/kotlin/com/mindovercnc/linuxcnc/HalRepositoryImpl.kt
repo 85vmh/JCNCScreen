@@ -1,7 +1,10 @@
 package com.mindovercnc.linuxcnc
 
-import com.mindovercnc.base.HalRepository
+import com.mindovercnc.repository.HalRepository
 import com.mindovercnc.linuxcnc.model.*
+import com.mindovercnc.model.JoystickPosition
+import com.mindovercnc.model.JoystickStatus
+import com.mindovercnc.model.SpindleSwitchStatus
 import kotlinx.coroutines.flow.*
 
 private const val RefreshRate = 5L

@@ -12,4 +12,5 @@ dependencies {
     implementation(project(":logger"))
     implementation("ro.dragossusi.ktlcnc:ktlcnc:0.0.1")
     implementation(project(":database"))
+    implementation(project(":model"))
 }

@@ -1,8 +1,8 @@
 package codegen
 
-import com.mindovercnc.linuxcnc.model.Axis
-import com.mindovercnc.linuxcnc.model.Direction
-import com.mindovercnc.linuxcnc.model.G53AxisLimits
+import com.mindovercnc.model.Axis
+import com.mindovercnc.model.Direction
+import com.mindovercnc.model.G53AxisLimits
 import extensions.stripZeros
 import kotlin.math.abs
 import kotlin.math.tan

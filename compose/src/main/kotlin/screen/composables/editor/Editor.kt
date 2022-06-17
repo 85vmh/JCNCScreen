@@ -3,8 +3,8 @@ package screen.composables.editor
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import kotlinx.coroutines.CoroutineScope
-import com.mindovercnc.linuxcnc.model.EmptyTextLines
-import com.mindovercnc.linuxcnc.model.readTextLines
+import com.mindovercnc.model.EmptyTextLines
+import com.mindovercnc.model.readTextLines
 import screen.composables.util.SingleSelection
 import java.io.File
 

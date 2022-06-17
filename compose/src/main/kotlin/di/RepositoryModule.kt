@@ -1,7 +1,7 @@
 package di
 
 import startup.StartupArgs
-import com.mindovercnc.base.*
+import com.mindovercnc.repository.*
 import com.mindovercnc.linuxcnc.*
 import com.mindovercnc.linuxcnc.nml.BuffDescriptor
 import com.mindovercnc.linuxcnc.nml.BuffDescriptorV29

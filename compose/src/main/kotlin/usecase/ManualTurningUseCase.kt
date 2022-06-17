@@ -2,8 +2,9 @@ package usecase
 
 import codegen.ManualTurningHelper
 import codegen.Point
-import com.mindovercnc.base.*
+import com.mindovercnc.repository.*
 import com.mindovercnc.linuxcnc.model.*
+import com.mindovercnc.model.*
 import extensions.stripZeros
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*

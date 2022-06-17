@@ -2,10 +2,10 @@ package usecase
 
 import codegen.ConversationalProgram
 import codegen.TurningOperation
-import com.mindovercnc.base.CncCommandRepository
-import com.mindovercnc.base.CncStatusRepository
-import com.mindovercnc.base.FileSystemRepository
-import com.mindovercnc.base.SettingsRepository
+import com.mindovercnc.repository.CncCommandRepository
+import com.mindovercnc.repository.CncStatusRepository
+import com.mindovercnc.repository.FileSystemRepository
+import com.mindovercnc.repository.SettingsRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

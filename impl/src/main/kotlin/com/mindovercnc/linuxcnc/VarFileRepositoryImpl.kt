@@ -1,11 +1,10 @@
 package com.mindovercnc.linuxcnc
 
-import com.mindovercnc.base.VarFileRepository
-import com.mindovercnc.linuxcnc.model.ParametersState
+import com.mindovercnc.repository.VarFileRepository
 import com.mindovercnc.linuxcnc.model.Position
+import com.mindovercnc.model.ParametersState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.*
-import java.io.File
 
 const val numCoordinateSystems = 9
 

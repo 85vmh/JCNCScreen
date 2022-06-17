@@ -1,9 +1,9 @@
 package com.mindovercnc.linuxcnc
 
-import com.mindovercnc.base.MessagesRepository
-import com.mindovercnc.linuxcnc.model.MessageBundle
+import com.mindovercnc.repository.MessagesRepository
+import com.mindovercnc.model.MessageBundle
 import com.mindovercnc.linuxcnc.model.SystemMessage
-import com.mindovercnc.linuxcnc.model.UiMessage
+import com.mindovercnc.model.UiMessage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*

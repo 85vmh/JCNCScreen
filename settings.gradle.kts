@@ -5,5 +5,6 @@ include("database")
 include("impl")
 include("editor")
 include("logger")
+include("model")
 
 //include("localization")

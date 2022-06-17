@@ -1,8 +1,8 @@
 package com.mindovercnc.linuxcnc
 
-import com.mindovercnc.base.IniFileRepository
-import com.mindovercnc.linuxcnc.model.G53AxisLimits
-import com.mindovercnc.linuxcnc.model.IniFile
+import com.mindovercnc.repository.IniFileRepository
+import com.mindovercnc.model.G53AxisLimits
+import com.mindovercnc.model.IniFile
 import java.io.*
 import java.nio.file.Paths
 

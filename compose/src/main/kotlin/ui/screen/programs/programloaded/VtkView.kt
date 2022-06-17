@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.awt.SwingPanel
 import androidx.compose.ui.unit.dp
+import vtk.LatheVtkPanel
 import vtk.MachineLimits
 import vtk.PathElement
 import vtk.Point
