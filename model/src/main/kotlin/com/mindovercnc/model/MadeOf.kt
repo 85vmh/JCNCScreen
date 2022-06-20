@@ -1,5 +1,5 @@
 package com.mindovercnc.model
 
 enum class MadeOf {
-    Hss, HssCo, Carbide, Cbn, Diamond
+    Hss, HssCo, Carbide, Ceramic, Cbn, Diamond
 }

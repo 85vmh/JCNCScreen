@@ -77,6 +77,21 @@ object DbInitializer {
             minBoreDiameter = 20.0
             maxZDepth = 50.0
         }
+        LatheToolEntity.new {
+            insert = getInsertByCode("CCMT")
+            tipOrientation = TipOrientation.Position7.orient
+            spindleDirection = SpindleDirection.Reverse
+            type = ToolType.Parting
+            bladeWidth = 2.0
+            maxXDepth = 20.0
+        }
+        LatheToolEntity.new {
+            type = ToolType.DrillingReaming
+            tipOrientation = TipOrientation.Position7.orient
+            spindleDirection = SpindleDirection.Reverse
+            toolDiameter = 8.0
+            maxZDepth = 80.0
+        }
     }
 
     private fun getInsertByCode(code: String): CuttingInsertEntity {

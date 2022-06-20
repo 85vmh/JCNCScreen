@@ -36,6 +36,7 @@ import kotlin.text.Regex.Companion.fromLiteral
 fun EditorView(
     model: Editor,
     settings: Settings,
+    showFileName: Boolean = true,
     modifier: Modifier = Modifier
 ) = key(model) {
     val editorTheme = LocalEditorTheme.current
@@ -50,6 +51,7 @@ fun EditorView(
                 Lines(
                     file = model.file,
                     lines = lines!!,
+                    showFileName = showFileName,
                     settings = settings,
                     modifier = Modifier.fillMaxSize()
                 )
@@ -69,6 +71,7 @@ fun EditorView(
 private fun Lines(
     file: File,
     lines: Editor.Lines,
+    showFileName: Boolean,
     settings: Settings,
     modifier: Modifier = Modifier
 ) = with(LocalDensity.current) {
@@ -90,15 +93,17 @@ private fun Lines(
                 .draggableScroll(scrollState, scope),
             state = scrollState
         ) {
-            stickyHeader {
-                Surface(
-                    modifier = Modifier.fillMaxWidth(),
-                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.surfaceVariant)
-                ) {
-                    FileNameHeader(
-                        file,
-                        modifier = Modifier.fillMaxWidth()
-                    )
+            if (showFileName) {
+                stickyHeader {
+                    Surface(
+                        modifier = Modifier.fillMaxWidth(),
+                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.surfaceVariant)
+                    ) {
+                        FileNameHeader(
+                            file,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
                 }
             }
             items(lines.size) { index ->
@@ -122,7 +127,7 @@ private fun Lines(
         }
 
         VerticalScrollbar(
-            Modifier.align(Alignment.CenterEnd),
+            Modifier.align(Alignment.CenterEnd).width(20.dp),
             scrollState,
             lines.size,
             lineHeight

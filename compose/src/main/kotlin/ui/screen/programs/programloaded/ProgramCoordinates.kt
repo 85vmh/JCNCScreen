@@ -1,12 +1,9 @@
-package screen.composables
+package ui.screen.programs.programloaded
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -17,11 +14,9 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import extensions.toFixedDigitsString
-import org.kodein.di.compose.rememberInstance
 import screen.uimodel.AxisPosition
+import screen.uimodel.PositionModel
 import themes.ComposeFonts
-import usecase.OffsetsUseCase
-import usecase.ProgramsUseCase
 
 private enum class CoordinateType(
     val fontSize: TextUnit,
@@ -31,33 +26,30 @@ private enum class CoordinateType(
     SECONDARY(28.sp, 140.dp),
 }
 
-//@Composable
-//fun ProgramCoordinatesView(modifier: Modifier = Modifier) {
-//    val programsUseCase: ProgramsUseCase by rememberInstance()
-//    val offsetsUseCase: OffsetsUseCase by rememberInstance()
-//
-//    val currentWcs by offsetsUseCase.currentWcs.collectAsState("--")
-//    val model = programsUseCase.uiModel.collectAsState(null).value
-//
-//    Row(
-//        modifier = modifier.fillMaxWidth(),
-//    ) {
-//        Column {
-//            model?.let {
-//                CoordinatesHeader(currentWcs)
-//                Spacer(modifier = Modifier.height(8.dp))
-//                AxisCoordinate(
-//                    it.xAxisPos,
-//                    it.isDiameterMode
-//                )
-//                Spacer(modifier = Modifier.height(8.dp))
-//                AxisCoordinate(
-//                    it.zAxisPos
-//                )
-//            }
-//        }
-//    }
-//}
+@Composable
+fun ProgramCoordinatesView(
+    currentWcs: String,
+    positionModel: PositionModel,
+    modifier: Modifier = Modifier
+) {
+
+    Row(
+        modifier = modifier.fillMaxWidth(),
+    ) {
+        Column {
+            CoordinatesHeader(currentWcs)
+            Spacer(modifier = Modifier.height(8.dp))
+            AxisCoordinate(
+                positionModel.xAxisPos,
+                positionModel.isDiameterMode
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            AxisCoordinate(
+                positionModel.zAxisPos
+            )
+        }
+    }
+}
 
 @Composable
 private fun CoordinatesHeader(
@@ -75,7 +67,8 @@ private fun CoordinatesHeader(
         Text(
             modifier = Modifier.padding(end = 32.dp),
             text = "DTG",
-            fontSize = 24.sp)
+            fontSize = 24.sp
+        )
     }
 }
 

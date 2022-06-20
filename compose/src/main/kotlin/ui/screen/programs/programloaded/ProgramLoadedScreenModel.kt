@@ -2,16 +2,15 @@ package ui.screen.programs.programloaded
 
 import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
+import com.mindovercnc.linuxcnc.model.ActiveCodes
+import com.mindovercnc.repository.CncStatusRepository
 import com.mindovercnc.repository.IniFileRepository
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import screen.composables.editor.Editor
-import usecase.GCodeUseCase
-import usecase.OffsetsUseCase
-import usecase.PositionUseCase
+import screen.uimodel.PositionModel
+import usecase.*
+import usecase.model.ActiveCode
 import vtk.MachineLimits
 import vtk.Point
 import java.io.File
@@ -21,13 +20,19 @@ class ProgramLoadedScreenModel(
     private val gCodeUseCase: GCodeUseCase,
     offsetsUseCase: OffsetsUseCase,
     positionUseCase: PositionUseCase,
+    private val activeCodesUseCase: ActiveCodesUseCase,
+    private val programsUseCase: ProgramsUseCase,
     iniFileRepository: IniFileRepository
-) : StateScreenModel<ProgramLoadedScreenModel.State>(State()) {
+) : StateScreenModel<ProgramLoadedScreenModel.State>(State(editor = Editor(file))) {
 
     data class State(
+        val positionModel: PositionModel? = null,
+        val currentWcs: String = "--",
         val currentFolder: File? = null,
-        val editor: Editor? = null,
+        val editor: Editor,
         val vtkUiState: VtkUiState = VtkUiState(),
+        val activeCodes: List<ActiveCode> = emptyList(),
+        val machineStatus: MachineStatus = MachineStatus()
     )
 
     init {
@@ -55,7 +60,8 @@ class ProgramLoadedScreenModel(
                     it.copy(
                         vtkUiState = it.vtkUiState.copy(
                             wcsPosition = Point(wcs.xOffset, 0.0, wcs.zOffset)
-                        )
+                        ),
+                        currentWcs = wcs.coordinateSystem
                     )
                 }
             }
@@ -83,5 +89,28 @@ class ProgramLoadedScreenModel(
                 }
             }
             .launchIn(coroutineScope)
+
+        activeCodesUseCase.getActiveCodes()
+            .onEach { codes ->
+                mutableState.update {
+                    it.copy(
+                        activeCodes = codes
+                    )
+                }
+            }
+            .launchIn(coroutineScope)
+
+        programsUseCase.uiModel
+            .onEach { model ->
+                mutableState.update {
+                    it.copy(
+                        positionModel = model
+                    )
+                }
+            }.launchIn(coroutineScope)
+    }
+
+    fun onActiveCodeClicked(activeCode: ActiveCode) {
+        activeCodesUseCase.getCodeDescription(activeCode)
     }
 }

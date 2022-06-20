@@ -5,13 +5,11 @@ import com.mindovercnc.repository.CncStatusRepository
 import com.mindovercnc.linuxcnc.model.Position
 import com.mindovercnc.model.dtg
 import com.mindovercnc.model.getDisplayablePosition
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.*
 import screen.uimodel.AxisPosition
 import screen.uimodel.PositionModel
 
 class ProgramsUseCase(
-    private val scope: CoroutineScope,
     private val statusRepository: CncStatusRepository,
     private val commandRepository: CncCommandRepository,
 ) {

@@ -2,6 +2,7 @@ package ui.screen.tools.root.tabs
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -18,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
@@ -34,6 +36,15 @@ import ui.screen.tools.root.ToolsScreenModel
 
 private val itemModifier = Modifier.fillMaxWidth()
 
+private enum class ToolHolderColumn(val text: String, val size: Dp = Dp.Unspecified) {
+    Id("ID", 50.dp),
+    HolderType("Type", 100.dp),
+    Offsets("Tool Offsets", 120.dp),
+    ToolInfo("Mounted Tool"),
+    Actions("Actions", 210.dp)
+}
+
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ToolHoldersContent(
     state: ToolsScreenModel.State,
@@ -53,15 +64,18 @@ fun ToolHoldersContent(
             modifier = Modifier.draggableScroll(scrollState, scope),
             state = scrollState
         ) {
+            stickyHeader {
+                ToolHolderHeader(modifier = Modifier.height(40.dp))
+            }
             itemsIndexed(state.toolHolders) { index, item ->
-                HolderView(
+                ToolHolderView(
                     item = item,
                     isCurrent = item.holderNumber == state.currentTool,
                     onEditClicked = { navigator.push(AddEditHolderScreen(it)) },
                     onDeleteClicked = onDelete,
                     onLoadClicked = onLoad,
                     modifier = itemModifier,
-                    color = gridRowColorFor(index)
+                    //color = gridRowColorFor(index)
                 )
                 Divider(color = Color.LightGray, thickness = 0.5.dp)
             }
@@ -77,7 +91,36 @@ fun ToolHoldersContent(
 }
 
 @Composable
-private fun HolderView(
+fun ToolHolderHeader(
+    modifier: Modifier = Modifier
+) {
+    Surface(
+        color = MaterialTheme.colorScheme.primaryContainer
+    ) {
+        Row(
+            modifier = modifier,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            ToolHolderColumn.values().forEach {
+                val textModifier = when (it.size) {
+                    Dp.Unspecified -> Modifier.weight(1f)
+                    else -> Modifier.width(it.size)
+                }
+                Text(
+                    modifier = textModifier,
+                    textAlign = TextAlign.Center,
+                    text = it.text
+                )
+                if (it != ToolHolderColumn.values().last()) {
+                    VerticalDivider(color = Color.LightGray)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun ToolHolderView(
     item: ToolHolder,
     isCurrent: Boolean,
     onEditClicked: (ToolHolder) -> Unit,
@@ -99,19 +142,19 @@ private fun HolderView(
             modifier = if (isCurrent) selectedModifier else nonSelectedModifier
         ) {
             Text(
-                modifier = Modifier.width(50.dp),
+                modifier = Modifier.width(ToolHolderColumn.Id.size),
                 textAlign = TextAlign.Center,
                 text = item.holderNumber.toString()
             )
             VerticalDivider()
             Text(
-                modifier = Modifier.width(100.dp),
+                modifier = Modifier.width(ToolHolderColumn.HolderType.size),
                 textAlign = TextAlign.Center,
                 text = item.type.name
             )
             VerticalDivider()
             Column(
-                modifier = Modifier.width(120.dp)
+                modifier = Modifier.width(ToolHolderColumn.Offsets.size),
             ) {
                 item.xOffset?.let {
                     LabelWithValue("X:", it.toFixedDigitsString())
@@ -122,7 +165,9 @@ private fun HolderView(
             }
             VerticalDivider()
             Column(
-                modifier = Modifier.width(300.dp)
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(horizontal = 8.dp)
             ) {
                 Text(
                     textAlign = TextAlign.Center,
@@ -131,35 +176,40 @@ private fun HolderView(
                 Text(text = item.latheTool.toString())
             }
             VerticalDivider()
-            IconButton(
-                modifier = Modifier.padding(start = 16.dp, end = 16.dp),
-                onClick = {
-                    onEditClicked.invoke(item)
-                }
+            Row(
+                modifier = Modifier.width(ToolHolderColumn.Actions.size),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                Icon(Icons.Default.Edit, contentDescription = "")
-            }
-            VerticalDivider()
-            IconButton(
-                modifier = Modifier.padding(start = 16.dp, end = 16.dp),
-                enabled = isCurrent.not(),
-                onClick = {
-                    onDeleteClicked.invoke(item)
+                IconButton(
+                    modifier = Modifier,
+                    onClick = {
+                        onEditClicked.invoke(item)
+                    }
+                ) {
+                    Icon(Icons.Default.Edit, contentDescription = "")
                 }
-            ) {
-                Icon(Icons.Default.Delete, contentDescription = "")
-            }
-            VerticalDivider()
-            IconButton(
-                modifier = Modifier.padding(start = 16.dp, end = 16.dp),
-                enabled = isCurrent.not(),
-                onClick = {
-                    onLoadClicked.invoke(item)
+                VerticalDivider()
+                IconButton(
+                    modifier = Modifier,
+                    enabled = isCurrent.not(),
+                    onClick = {
+                        onDeleteClicked.invoke(item)
+                    }
+                ) {
+                    Icon(Icons.Default.Delete, contentDescription = "")
                 }
-            ) {
-                Icon(Icons.Default.ExitToApp, contentDescription = "")
+                VerticalDivider()
+                IconButton(
+                    modifier = Modifier,
+                    enabled = isCurrent.not(),
+                    onClick = {
+                        onLoadClicked.invoke(item)
+                    }
+                ) {
+                    Icon(Icons.Default.ExitToApp, contentDescription = "")
+                }
             }
-            VerticalDivider()
         }
     }
 }
@@ -167,7 +217,7 @@ private fun HolderView(
 @Composable
 @Preview
 fun HolderViewPreview() {
-    HolderView(
+    ToolHolderView(
         ToolHolder(holderNumber = 1, type = ToolHolderType.DrillHolder),
         true,
         {},

@@ -1,5 +1,6 @@
 package ui.screen.tools.root.tabs
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -14,17 +15,27 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.mindovercnc.model.CuttingInsert
 import extensions.draggableScroll
 import extensions.toFixedDigitsString
-import screen.composables.LabelWithValue
 import screen.composables.VerticalDivider
 import screen.composables.platform.VerticalScrollbar
 import ui.screen.tools.root.ToolsScreenModel
 
 private val itemModifier = Modifier.fillMaxWidth()
 
+private enum class CuttingInsertsColumns(val text: String, val size: Dp = Dp.Unspecified) {
+    Id("ID", 50.dp),
+    MadeOf("Made Of"),
+    Code("Code"),
+    TipRadius("Tip Radius"),
+    TipAngle("Tip Angle"),
+    Actions("Actions", 140.dp),
+}
+
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CuttingInsertsContent(
     state: ToolsScreenModel.State,
@@ -43,11 +54,14 @@ fun CuttingInsertsContent(
             modifier = Modifier.draggableScroll(scrollState, scope),
             state = scrollState
         ) {
+            stickyHeader {
+                CuttingInsertHeader(modifier = Modifier.height(40.dp))
+            }
             itemsIndexed(state.cuttingInserts) { index, item ->
                 Surface(
-                    color = gridRowColorFor(index)
+                    //color = gridRowColorFor(index)
                 ) {
-                    LatheToolView(
+                    CuttingInsertView(
                         index = index,
                         item = item,
                         onEditClicked = onEdit,
@@ -69,7 +83,36 @@ fun CuttingInsertsContent(
 }
 
 @Composable
-private fun LatheToolView(
+fun CuttingInsertHeader(
+    modifier: Modifier = Modifier
+) {
+    Surface(
+        color = MaterialTheme.colorScheme.primaryContainer
+    ) {
+        Row(
+            modifier = modifier,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            CuttingInsertsColumns.values().forEach {
+                val textModifier = when (it.size) {
+                    Dp.Unspecified -> Modifier.weight(1f)
+                    else -> Modifier.width(it.size)
+                }
+                Text(
+                    modifier = textModifier,
+                    textAlign = TextAlign.Center,
+                    text = it.text
+                )
+                if (it != CuttingInsertsColumns.values().last()) {
+                    VerticalDivider(color = Color.LightGray)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun CuttingInsertView(
     index: Int,
     item: CuttingInsert,
     onEditClicked: (CuttingInsert) -> Unit,
@@ -82,51 +125,55 @@ private fun LatheToolView(
         modifier = modifier.height(60.dp)
     ) {
         Text(
-            modifier = Modifier.width(50.dp),
+            modifier = Modifier.width(CuttingInsertsColumns.Id.size),
             textAlign = TextAlign.Center,
             text = (index + 1).toString()
         )
         VerticalDivider()
         Text(
-            modifier = Modifier.width(120.dp),
+            modifier = Modifier.weight(1f),
             textAlign = TextAlign.Center,
             text = item.madeOf.toString()
         )
         VerticalDivider()
         Text(
-            modifier = Modifier.width(80.dp),
+            modifier = Modifier.weight(1f),
             textAlign = TextAlign.Center,
             text = item.code
         )
         VerticalDivider()
         Text(
-            modifier = Modifier.width(50.dp),
+            modifier = Modifier.weight(1f),
             textAlign = TextAlign.Center,
             text = item.tipRadius.toFixedDigitsString(1)
         )
         VerticalDivider()
-        Column(
-            modifier = Modifier.width(300.dp)
+        Text(
+            modifier = Modifier.weight(1f),
+            textAlign = TextAlign.Center,
+            text = item.tipAngle.toFixedDigitsString(1)
+        )
+        VerticalDivider()
+        Row(
+            modifier = Modifier.width(CuttingInsertsColumns.Actions.size),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            LabelWithValue("Tip Angle:", item.tipAngle.toFixedDigitsString(1))
-//            LabelWithValue("Back Angle:", item.backAngle.toFixedDigitsString(1))
+            IconButton(
+                modifier = Modifier,
+                onClick = {
+                    onEditClicked.invoke(item)
+                }) {
+                Icon(Icons.Default.Edit, contentDescription = "")
+            }
+            VerticalDivider()
+            IconButton(
+                modifier = Modifier,
+                onClick = {
+                    onDeleteClicked.invoke(item)
+                }) {
+                Icon(Icons.Default.Delete, contentDescription = "")
+            }
         }
-        VerticalDivider()
-        IconButton(
-            modifier = Modifier.padding(start = 16.dp, end = 16.dp),
-            onClick = {
-                onEditClicked.invoke(item)
-            }) {
-            Icon(Icons.Default.Edit, contentDescription = "")
-        }
-        VerticalDivider()
-        IconButton(
-            modifier = Modifier.padding(start = 16.dp, end = 16.dp),
-            onClick = {
-                onDeleteClicked.invoke(item)
-            }) {
-            Icon(Icons.Default.Delete, contentDescription = "")
-        }
-        VerticalDivider()
     }
 }

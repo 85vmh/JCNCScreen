@@ -98,7 +98,6 @@ val UseCaseModule = DI.Module("UseCase") {
 
     bindSingleton {
         ProgramsUseCase(
-            scope = instance(tag = "app_scope"),
             statusRepository = instance(),
             commandRepository = instance(),
         )
@@ -141,6 +140,12 @@ val UseCaseModule = DI.Module("UseCase") {
     bindSingleton {
         GCodeUseCase(
             gCodeRepository = instance(),
+        )
+    }
+
+    bindSingleton {
+        ActiveCodesUseCase(
+            instance(),
         )
     }
 }
