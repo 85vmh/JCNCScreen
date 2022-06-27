@@ -1,25 +1,29 @@
 package vtk
 
-interface PathElement
-
-data class Line(
-    val startPoint: Point,
-    val endPoint: Point,
-    val type: Type
-) : PathElement {
-    enum class Type {
-        Traverse, Feed
+sealed class PathElement(
+    open val startPoint: Point3D,
+    open val endPoint: Point3D,
+) {
+    data class Line(
+        override val startPoint: Point3D,
+        override val endPoint: Point3D,
+        val type: Type
+    ) : PathElement(startPoint, endPoint) {
+        enum class Type {
+            Traverse, Feed
+        }
     }
-}
 
-data class Arc(
-    val startPoint: Point,
-    val endPoint: Point,
-    val centerPoint: Point,
-    val direction: Direction
-) : PathElement{
-    enum class Direction{
-        Clockwise,
-        CounterClockwise
+    data class Arc(
+        override val startPoint: Point3D,
+        override val endPoint: Point3D,
+        val centerPoint: Point3D,
+        val direction: Direction
+    ) : PathElement(
+        startPoint, endPoint
+    ){
+        enum class Direction{
+            Clockwise, CounterClockwise
+        }
     }
 }

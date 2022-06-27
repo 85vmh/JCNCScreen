@@ -12,14 +12,14 @@ class GCodeUseCase(
 
     suspend fun getPathElements(file: File): List<PathElement> = withContext(Dispatchers.IO) {
         val pathElements = mutableListOf<PathElement>()
-        var lastPoint: Point? = null
+        var lastPoint: Point3D? = null
 
         gCodeRepository.parseFile(file).forEach { command ->
             when (command.name) {
                 "STRAIGHT_TRAVERSE",
                 "STRAIGHT_FEED" -> {
                     val args = command.arguments.split(", ")
-                    val current = Point(
+                    val current = Point3D(
                         x = args[0].toDouble(),
                         y = args[1].toDouble(),
                         z = args[2].toDouble(),
@@ -29,12 +29,12 @@ class GCodeUseCase(
                         null -> lastPoint = current
                         else -> {
                             pathElements.add(
-                                Line(
+                                PathElement.Line(
                                     startPoint = lastPoint!!,
                                     endPoint = current,
                                     type = when (command.name) {
-                                        "STRAIGHT_FEED" -> Line.Type.Feed
-                                        else -> Line.Type.Traverse
+                                        "STRAIGHT_FEED" -> PathElement.Line.Type.Feed
+                                        else -> PathElement.Line.Type.Traverse
                                     }
                                 )
                             )
@@ -44,12 +44,12 @@ class GCodeUseCase(
                 }
                 "ARC_FEED" -> {
                     val args = command.arguments.split(", ")
-                    val current = Point(
+                    val current = Point3D(
                         x = args[1].toDouble(),
                         y = 0.0,
                         z = args[0].toDouble(),
                     )
-                    val center = Point(
+                    val center = Point3D(
                         x = args[3].toDouble(),
                         y = 0.0,
                         z = args[2].toDouble(),
@@ -58,11 +58,11 @@ class GCodeUseCase(
                         null -> lastPoint = current
                         else -> {
                             pathElements.add(
-                                Arc(
+                                PathElement.Arc(
                                     startPoint = lastPoint!!,
                                     endPoint = current,
                                     centerPoint = center,
-                                    direction = if (args[4].toInt() > 0) Arc.Direction.Clockwise else Arc.Direction.CounterClockwise
+                                    direction = if (args[4].toInt() > 0) PathElement.Arc.Direction.Clockwise else PathElement.Arc.Direction.CounterClockwise
                                 )
                             )
                             lastPoint = current

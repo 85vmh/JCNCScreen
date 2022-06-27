@@ -1,6 +1,6 @@
 object Versions {
     const val kotlin = "1.6.21"
-    const val compose = "1.2.0-alpha01-dev686"
+    const val compose = "1.2.0-alpha01-dev724"
     const val coroutines = "1.6.1"
     const val serialization = "1.3.2"
     const val cli = "0.3.4"

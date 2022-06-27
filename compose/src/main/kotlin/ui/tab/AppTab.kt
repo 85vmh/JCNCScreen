@@ -13,8 +13,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.navigator.CurrentScreen
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
@@ -88,7 +88,12 @@ abstract class AppTab<S : AppScreen>(
                         modifier = Modifier.fillMaxSize(),
                         topBar = {
                             CenterAlignedTopAppBar(
-                                title = { Text(currentScreen.title.value) },
+                                title = {
+                                    when (currentScreen.hasCustomTitle) {
+                                        true -> currentScreen.Title()
+                                        false -> Text(currentScreen.title.value)
+                                    }
+                                },
                                 navigationIcon = {
                                     when {
                                         currentScreen.drawerEnabled -> {
@@ -123,6 +128,7 @@ abstract class AppTab<S : AppScreen>(
                                 modifier = Modifier.height(60.dp),
                                 enabled = uiState.isBottomBarEnabled,
                                 selected = this,
+                                currentTool = uiState.currentTool,
                                 onClick = { tabNavigator.current = it }
                             )
                         },
@@ -146,6 +152,7 @@ abstract class AppTab<S : AppScreen>(
 private fun BottomBar(
     modifier: Modifier = Modifier,
     enabled: Boolean,
+    currentTool: Int,
     selected: AppTab<*>,
     onClick: (Tab) -> Unit
 ) {
@@ -157,6 +164,10 @@ private fun BottomBar(
         tabs.forEach { tab ->
             TabNavigationItem(
                 tab = tab,
+                badgeValue = when (tab) {
+                    is ToolsTab -> "T$currentTool"
+                    else -> null
+                },
                 enabled = enabled,
                 selected = tab == selected,
                 onClick = onClick
@@ -168,6 +179,7 @@ private fun BottomBar(
 @Composable
 private fun RowScope.TabNavigationItem(
     tab: Tab,
+    badgeValue: String? = null,
     enabled: Boolean,
     selected: Boolean,
     onClick: (Tab) -> Unit
@@ -189,11 +201,32 @@ private fun RowScope.TabNavigationItem(
         selected = selected,
         onClick = { onClick(tab) },
         icon = {
-            Icon(
-                painter = tab.options.icon!!,
-                contentDescription = "",
-                tint = tabColor
-            )
+            if (badgeValue != null) {
+                BadgedBox(
+                    badge = {
+                        Badge(
+                            containerColor = MaterialTheme.colorScheme.secondary
+                        ) {
+                            Text(
+                                text = badgeValue,
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                        }
+                    }
+                ) {
+                    Icon(
+                        painter = tab.options.icon!!,
+                        contentDescription = "",
+                        tint = tabColor
+                    )
+                }
+            } else {
+                Icon(
+                    painter = tab.options.icon!!,
+                    contentDescription = "",
+                    tint = tabColor
+                )
+            }
         },
     )
 }

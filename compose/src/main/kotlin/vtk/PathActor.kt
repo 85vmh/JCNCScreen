@@ -40,7 +40,7 @@ class PathActor : vtkActor() {
             }
         }
 
-    var currentPoint: Point = Point(0.0, 0.0, 0.0)
+    var currentPoint: Point3D = Point3D(0.0, 0.0, 0.0)
         set(value) {
             if (field != value) {
                 field = value
@@ -76,12 +76,12 @@ class PathActor : vtkActor() {
         pathElements.forEach {
             //println("----$it")
             when (it) {
-                is Line -> {
+                is PathElement.Line -> {
                     val startId = points.InsertNextPoint(it.startPoint.toDoubleArray(multiplicationFactor))
                     val endId = points.InsertNextPoint(it.endPoint.toDoubleArray(multiplicationFactor))
                     when (it.type) {
-                        Line.Type.Traverse -> lineColors.addPathColor(rapidColor)
-                        Line.Type.Feed -> lineColors.addPathColor(feedColor)
+                        PathElement.Line.Type.Traverse -> lineColors.addPathColor(rapidColor)
+                        PathElement.Line.Type.Feed -> lineColors.addPathColor(feedColor)
                     }
                     val line = vtkLine().apply {
                         GetPointIds().SetId(0, startId)
@@ -90,7 +90,7 @@ class PathActor : vtkActor() {
                     lines.InsertNextCell(line)
                     Modified()
                 }
-                is Arc -> {
+                is PathElement.Arc -> {
                     arcColors.addPathColor(feedColor)
                     val arc = vtkArcSource().apply {
                         SetPoint1(it.startPoint.toDoubleArray(multiplicationFactor))

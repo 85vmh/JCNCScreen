@@ -16,9 +16,11 @@ fun StatusView(
     machineStatus: MachineStatus,
     modifier: Modifier = Modifier
 ) {
-    Column(modifier = modifier) {
+    Column(
+        modifier = modifier
+    ) {
         Text("Spindle Override: ${machineStatus.spindleOverride} %")
-        Text("Actual Speed: ${machineStatus.actualSpindleSpeed} rpm")
+        Text("Actual Speed: ${machineStatus.actualSpindleSpeed} RPM")
         Text("Feed Override: ${machineStatus.feedOverride} %")
     }
 }

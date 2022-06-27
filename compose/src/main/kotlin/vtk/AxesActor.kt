@@ -2,7 +2,7 @@ package vtk
 
 class AxesActor : vtkAxesActor() {
 
-    var currentPoint: Point = Point(0.0, 0.0, 0.0)
+    var currentPoint: Point3D = Point3D(0.0, 0.0, 0.0)
         set(value) {
             if (field != value) {
                 field = value

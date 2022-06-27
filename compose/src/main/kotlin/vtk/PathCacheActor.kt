@@ -3,7 +3,7 @@ package vtk
 import androidx.compose.ui.graphics.Color
 
 
-class PathCacheActor(private val point: Point) : vtkActor() {
+class PathCacheActor(private val point: Point3D) : vtkActor() {
     private val numPoints = 2
     private val points = vtkPoints()
     private val lines = vtkCellArray()
@@ -27,7 +27,7 @@ class PathCacheActor(private val point: Point) : vtkActor() {
         }
     }
 
-    fun addLinePoint(point: Point) {
+    fun addLinePoint(point: Point3D) {
         index++
         with(points) {
             InsertNextPoint(point.toDoubleArray())

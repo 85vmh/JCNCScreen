@@ -1,6 +1,6 @@
 package vtk
 
-fun vtkActor.translateToPoint(point: Point){
+fun vtkActor.translateToPoint(point: Point3D){
     val transform = vtkTransform().apply {
         Translate(point.x, point.y, point.z)
     }
@@ -8,7 +8,7 @@ fun vtkActor.translateToPoint(point: Point){
     Modified()
 }
 
-fun vtkAxesActor.translateToPoint(point: Point){
+fun vtkAxesActor.translateToPoint(point: Point3D){
     val transform = vtkTransform().apply {
         Translate(point.x, point.y, point.z)
     }

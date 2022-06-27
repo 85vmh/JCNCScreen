@@ -22,6 +22,13 @@ abstract class AppScreen(title: String = "") : Screen {
     @OptIn(ExperimentalMaterialApi::class)
     val sheetState: ModalBottomSheetState = ModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
 
+    val hasCustomTitle = title == ""
+
+    @Composable
+    open fun Title() {
+        //by default, use the string title
+    }
+
     @Composable
     open fun Actions() {
         //by default, no actions

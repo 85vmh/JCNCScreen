@@ -6,12 +6,12 @@ import androidx.compose.ui.awt.SwingPanel
 import vtk.LatheVtkPanel
 import vtk.MachineLimits
 import vtk.PathElement
-import vtk.Point
+import vtk.Point3D
 
 data class VtkUiState(
     val machineLimits: MachineLimits? = null,
-    val toolPosition: Point = Point(0.0, 0.0, 0.0),
-    val wcsPosition: Point = Point(0.0, 0.0, 0.0),
+    val toolPosition: Point3D = Point3D(0.0, 0.0, 0.0),
+    val wcsPosition: Point3D = Point3D(0.0, 0.0, 0.0),
     val pathElements: List<PathElement> = emptyList(),
 )
 

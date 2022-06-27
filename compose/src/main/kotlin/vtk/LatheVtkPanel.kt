@@ -35,7 +35,7 @@ class LatheVtkPanel : vtkPanel() {
         pathActor.pathElements = pathElements
     }
 
-    fun setToolPosition(toolPosition: Point) {
+    fun setToolPosition(toolPosition: Point3D) {
         toolActor.currentPoint = toolPosition
     }
 
@@ -45,7 +45,7 @@ class LatheVtkPanel : vtkPanel() {
         }
     }
 
-    fun setWcsPosition(wcsPosition: Point) {
+    fun setWcsPosition(wcsPosition: Point3D) {
         pathActor.currentPoint = wcsPosition
         axesActor.currentPoint = wcsPosition
     }
