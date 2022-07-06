@@ -1,4 +1,6 @@
-package vtk
+package usecase.model
+
+import vtk.Point3D
 
 sealed class PathElement(
     open val startPoint: Point3D,
@@ -21,8 +23,8 @@ sealed class PathElement(
         val direction: Direction
     ) : PathElement(
         startPoint, endPoint
-    ){
-        enum class Direction{
+    ) {
+        enum class Direction {
             Clockwise, CounterClockwise
         }
     }

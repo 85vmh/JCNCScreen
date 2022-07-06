@@ -1,7 +1,6 @@
 package ui.screen.programs.programloaded
 
 import androidx.compose.foundation.gestures.detectDragGestures
-import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -14,7 +13,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -180,10 +178,9 @@ class ProgramLoadedScreen(
                     activeCodes = state.activeCodes,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(80.dp)
-                ) {
-                    screenModel.onActiveCodeClicked(it)
-                }
+                        .height(80.dp),
+                    onCodeClicked = screenModel::onActiveCodeClicked
+                )
             }
         }
     }

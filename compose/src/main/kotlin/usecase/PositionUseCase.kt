@@ -1,6 +1,6 @@
 package usecase
 
-import codegen.Point
+import canvas.Point2D
 import com.mindovercnc.repository.CncStatusRepository
 import com.mindovercnc.linuxcnc.model.*
 import com.mindovercnc.model.dtg
@@ -16,13 +16,13 @@ class PositionUseCase(
 ) {
     suspend fun getCurrentPoint() = statusRepository.cncStatusFlow()
         .map { it.getDisplayablePosition() }
-        .map { Point(it.x * 2, it.z) } // *2 due to diameter mode
+        .map { Point2D(it.x * 2, it.z) } // *2 due to diameter mode
         .first()
 
-    fun getToolActorPosition(): Flow<Point> {
+    fun getToolPosition(): Flow<Point2D> {
         return statusRepository.cncStatusFlow()
             .map { it.g53Position }
-            .map { Point(it.x, it.z) }
+            .map { Point2D(it.x, it.z) }
             .distinctUntilChanged()
     }
 

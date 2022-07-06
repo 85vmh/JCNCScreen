@@ -4,6 +4,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Path
 import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
+import canvas.Point2D
 import canvas.addArc
 import canvas.addLine
 import com.mindovercnc.repository.IniFileRepository
@@ -15,12 +16,10 @@ import kotlinx.coroutines.launch
 import screen.composables.editor.Editor
 import screen.uimodel.PositionModel
 import usecase.*
-import usecase.model.ActiveCode
-import usecase.model.VisualTurningState
-import vtk.MachineLimits
-import vtk.PathElement
+import usecase.model.*
 import vtk.Point3D
 import java.io.File
+import kotlin.math.min
 
 class ProgramLoadedScreenModel(
     private val file: File,
@@ -47,20 +46,26 @@ class ProgramLoadedScreenModel(
         val useVtk: Boolean = false
     )
 
+    private val screenWidth = 600
+    private val screenHeight = 400
+    private val toolTrace = mutableListOf<Point2D>()
+
     init {
-        programsUseCase.loadProgram(file)
-        val iniLimits = iniFileRepository.getActiveLimits()
-        val machineLimits = MachineLimits(
-            xMin = iniLimits.xMinLimit!!,
-            xMax = iniLimits.xMaxLimit!!,
-            yMin = 0.0,
-            yMax = 0.0,
-            zMin = iniLimits.zMinLimit!!,
-            zMax = iniLimits.zMaxLimit!!
-        )
+//        programsUseCase.loadProgram(file)
+        val machineLimits = with(iniFileRepository.getActiveLimits()) {
+            MachineLimits(
+                xMin = xMinLimit!!,
+                xMax = xMaxLimit!!,
+                zMin = zMinLimit!!,
+                zMax = zMaxLimit!!
+            )
+        }
         mutableState.update {
             it.copy(
                 vtkUiState = it.vtkUiState.copy(
+                    machineLimits = machineLimits
+                ),
+                visualTurningState = it.visualTurningState.copy(
                     machineLimits = machineLimits
                 )
             )
@@ -74,7 +79,11 @@ class ProgramLoadedScreenModel(
                         vtkUiState = it.vtkUiState.copy(
                             wcsPosition = Point3D(wcs.xOffset, 0.0, wcs.zOffset)
                         ),
-                        currentWcs = wcs.coordinateSystem
+                        currentWcs = wcs.coordinateSystem,
+                        visualTurningState = it.visualTurningState.copy(
+                            currentWcs = wcs.coordinateSystem,
+                            wcsPosition = Point2D(wcs.xOffset, wcs.zOffset)
+                        )
                     )
                 }
             }
@@ -82,22 +91,35 @@ class ProgramLoadedScreenModel(
 
         coroutineScope.launch {
             val pathElements = gCodeUseCase.getPathElements(file)
+            val initialProgramData = pathElements.toProgramData()
+            val defaultPixelsPerUnit = calculateDefaultPxPerUnit(programSize = initialProgramData.programSize)
+            val scaledProgramData = pathElements.toProgramData(defaultPixelsPerUnit)
+            val scaledProgramSize = scaledProgramData.programSize
             mutableState.update {
                 it.copy(
                     vtkUiState = it.vtkUiState.copy(
                         pathElements = pathElements,
                     ),
-                    visualTurningState = pathElements.toProgramPaths()
+                    visualTurningState = it.visualTurningState.copy(
+                        pathElements = pathElements,
+                        programData = scaledProgramData,
+                        defaultPixelsPerUnit = defaultPixelsPerUnit,
+                        translate = Offset(scaledProgramSize.width / 2f, scaledProgramSize.height / 2f)
+                    )
                 )
             }
         }
 
-        positionUseCase.getToolActorPosition()
+        positionUseCase.getToolPosition()
             .onEach { point ->
+                toolTrace.add(point)
                 mutableState.update {
                     it.copy(
                         vtkUiState = it.vtkUiState.copy(
                             toolPosition = Point3D(point.x, 0.0, point.z)
+                        ),
+                        visualTurningState = it.visualTurningState.copy(
+                            toolPosition = point,
                         )
                     )
                 }
@@ -147,53 +169,29 @@ class ProgramLoadedScreenModel(
             }.launchIn(coroutineScope)
     }
 
-    private fun List<PathElement>.toProgramPaths(): VisualTurningState {
-        val scale = 12f
-
-        val feedPath = Path()
-        val traversePath = Path()
-
-        forEach {
-            when (it) {
-                is PathElement.Line -> {
-                    when (it.type) {
-                        PathElement.Line.Type.Feed -> feedPath.addLine(it, scale)
-                        PathElement.Line.Type.Traverse -> traversePath.addLine(it, scale)
-                    }
-                }
-                is PathElement.Arc -> feedPath.addArc(it, scale)
-            }
-        }
-        feedPath.close()
-        traversePath.close()
-
-        return VisualTurningState(
-            feedPath = feedPath,
-            traversePath = traversePath
-        )
+    fun zoomOut() {
+        setNewScale(mutableState.value.visualTurningState.scale / 1.1f)
     }
 
-    fun zoomOut(){
+    fun zoomIn() {
+        setNewScale(mutableState.value.visualTurningState.scale * 1.1f)
+    }
+
+    private fun setNewScale(newScale: Float) {
         mutableState.update {
+            val pixelPerUnit = it.visualTurningState.defaultPixelsPerUnit * newScale
+            val programData = it.visualTurningState.pathElements.toProgramData(pixelPerUnit)
             it.copy(
                 visualTurningState = it.visualTurningState.copy(
-                    scale = it.visualTurningState.scale / 1.1f
+                    scale = newScale,
+                    programData = programData,
+                    //translate = programData.getProgramSize()
                 )
             )
         }
     }
 
-    fun zoomIn(){
-        mutableState.update {
-            it.copy(
-                visualTurningState = it.visualTurningState.copy(
-                    scale = it.visualTurningState.scale * 1.1f
-                )
-            )
-        }
-    }
-
-    fun translate(offset: Offset){
+    fun translate(offset: Offset) {
         mutableState.update {
             it.copy(
                 visualTurningState = it.visualTurningState.copy(
@@ -201,6 +199,7 @@ class ProgramLoadedScreenModel(
                 )
             )
         }
+        println("Translate: ${mutableState.value.visualTurningState.translate}")
     }
 
     fun runProgram() {
@@ -242,5 +241,53 @@ class ProgramLoadedScreenModel(
 
     fun onActiveCodeClicked(activeCode: ActiveCode) {
         activeCodesUseCase.getCodeDescription(activeCode)
+    }
+
+    private fun calculateDefaultPxPerUnit(programSize: ProgramData.ProgramSize): Float {
+        val extraSpacePercentage = 15
+        val spacedWidth = screenWidth - (screenWidth * extraSpacePercentage / 100)
+        val spacedHeight = screenHeight - (screenHeight * extraSpacePercentage / 100)
+        val widthRatio = spacedWidth.div(programSize.width)
+        val heightRatio = spacedHeight.div(programSize.height)
+        return min(widthRatio, heightRatio)
+    }
+
+    private fun List<PathElement>.toProgramData(pixelPerUnit: Float = 1f): ProgramData {
+        val fp = Path()
+        val tp = Path()
+        forEach {
+            when (it) {
+                is PathElement.Line -> {
+                    when (it.type) {
+                        PathElement.Line.Type.Feed -> fp.addLine(it, pixelPerUnit)
+                        PathElement.Line.Type.Traverse -> tp.addLine(it, pixelPerUnit)
+                    }
+                }
+                is PathElement.Arc -> fp.addArc(it, pixelPerUnit)
+            }
+        }
+        fp.close()
+        tp.close()
+
+        return ProgramData(
+            feedPath = fp,
+            traversePath = tp
+        )
+    }
+
+    private fun List<Point2D>.toPath(pixelPerUnit: Float): Path {
+        val path = Path()
+        val previousPoint = firstOrNull()
+        if (previousPoint != null) {
+            with(previousPoint.toOffset(pixelPerUnit)) {
+                path.moveTo(x, y)
+            }
+            this.forEach {
+                with(it.toOffset(pixelPerUnit)) {
+                    path.lineTo(x, y)
+                }
+            }
+        }
+        return path
     }
 }

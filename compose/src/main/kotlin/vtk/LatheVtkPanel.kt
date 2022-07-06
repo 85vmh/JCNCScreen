@@ -1,5 +1,8 @@
 package vtk
 
+import usecase.model.MachineLimits
+import usecase.model.PathElement
+
 class LatheVtkPanel : vtkPanel() {
     private val machineActor: MachineActor = MachineActor()
     private val toolActor: ToolActor = ToolActor()

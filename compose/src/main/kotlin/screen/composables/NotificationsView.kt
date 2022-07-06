@@ -57,6 +57,7 @@ fun NotificationsView() {
 //
 //                    }
                 }
+                else -> Unit
             }
         }
     }

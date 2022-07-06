@@ -176,6 +176,7 @@ class ToolsRepositoryImpl(
                 minBoreDiameter = latheTool.minBoreDiameter
                 maxZDepth = latheTool.maxZDepth
             }
+            else -> Unit
         }
     }
 

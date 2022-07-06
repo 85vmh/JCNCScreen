@@ -3,6 +3,7 @@ package usecase
 import com.mindovercnc.repository.GCodeRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import usecase.model.PathElement
 import vtk.*
 import java.io.File
 

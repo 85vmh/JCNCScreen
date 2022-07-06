@@ -1,5 +1,7 @@
 package vtk
 
+import usecase.model.PathElement
+
 const val length = 2.5 //taken from py
 
 class PathActor : vtkActor() {

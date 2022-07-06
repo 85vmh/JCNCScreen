@@ -1,13 +1,7 @@
 package vtk
 
-data class MachineLimits(
-    val xMin: Double = 0.0,
-    val xMax: Double = 0.0,
-    val yMin: Double = 0.0,
-    val yMax: Double = 0.0,
-    val zMin: Double = 0.0,
-    val zMax: Double = 0.0
-)
+import usecase.model.MachineLimits
+
 
 class MachineActor : vtkCubeAxesActor() {
     val units = "mm"
@@ -16,7 +10,7 @@ class MachineActor : vtkCubeAxesActor() {
         set(value) {
             if (field != value) {
                 field = value
-                SetBounds(value.xMin, value.xMax, value.yMin, value.yMax, value.zMin, value.zMax)
+                SetBounds(value.xMin, value.xMax, 0.0, 0.0, value.zMin, value.zMax)
                 Modified()
             }
         }

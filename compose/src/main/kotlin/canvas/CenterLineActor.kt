@@ -4,7 +4,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.PathEffect
 
 class CenterLineActor(
-    centerLineYCoordinate: Float,
+    centerLineYCoordinate: Float = 0f,
     lineLength: Float,
     xStartPoint: Float = 0f,
 ) : LineActor(

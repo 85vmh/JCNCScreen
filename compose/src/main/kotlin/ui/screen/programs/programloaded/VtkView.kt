@@ -3,9 +3,9 @@ package ui.screen.programs.programloaded
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.awt.SwingPanel
+import usecase.model.MachineLimits
+import usecase.model.PathElement
 import vtk.LatheVtkPanel
-import vtk.MachineLimits
-import vtk.PathElement
 import vtk.Point3D
 
 data class VtkUiState(

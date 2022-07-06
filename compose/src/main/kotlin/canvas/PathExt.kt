@@ -3,7 +3,7 @@ package canvas
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Path
-import vtk.PathElement
+import usecase.model.PathElement
 import java.awt.geom.Point2D
 import kotlin.math.acos
 import kotlin.math.pow
@@ -27,10 +27,10 @@ fun Path.addArc(arcElement: PathElement.Arc, scale: Float = 1f) {
     val startAngle = angleBetweenThreePoints(referencePoint, center, start)
     val endAngle = angleBetweenThreePoints(referencePoint, center, end)
 
-    val arcAngle = angleBetweenThreePoints(start, center, end)
-    println("Arc angle is: $arcAngle")
-    println("Start angle is: $startAngle")
-    println("End angle is: $endAngle")
+//    val arcAngle = angleBetweenThreePoints(start, center, end)
+//    println("Arc angle is: $arcAngle")
+//    println("Start angle is: $startAngle")
+//    println("End angle is: $endAngle")
 
     addArc(
         oval = Rect(center, radiusLength.toFloat()),
