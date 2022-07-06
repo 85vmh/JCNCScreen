@@ -2,6 +2,7 @@ package ui.screen.programs.programloaded
 
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.unit.IntSize
 import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
 import canvas.Point2D
@@ -46,8 +47,8 @@ class ProgramLoadedScreenModel(
         val useVtk: Boolean = false
     )
 
-    private val screenWidth = 600
-    private val screenHeight = 400
+    //how much free space to have around the drawing
+    private val viewportPadding = 70 //px
     private val toolTrace = mutableListOf<Point2D>()
 
     init {
@@ -92,9 +93,11 @@ class ProgramLoadedScreenModel(
         coroutineScope.launch {
             val pathElements = gCodeUseCase.getPathElements(file)
             val initialProgramData = pathElements.toProgramData()
-            val defaultPixelsPerUnit = calculateDefaultPxPerUnit(programSize = initialProgramData.programSize)
+            val defaultPixelsPerUnit = calculateDefaultPxPerUnit(
+                viewportSize = mutableState.value.visualTurningState.viewportSize,
+                programSize = initialProgramData.programSize,
+            )
             val scaledProgramData = pathElements.toProgramData(defaultPixelsPerUnit)
-            val scaledProgramSize = scaledProgramData.programSize
             mutableState.update {
                 it.copy(
                     vtkUiState = it.vtkUiState.copy(
@@ -104,7 +107,9 @@ class ProgramLoadedScreenModel(
                         pathElements = pathElements,
                         programData = scaledProgramData,
                         defaultPixelsPerUnit = defaultPixelsPerUnit,
-                        translate = Offset(scaledProgramSize.width / 2f, scaledProgramSize.height / 2f)
+                        translate = scaledProgramData.getInitialTranslate(
+                            viewportSize = it.visualTurningState.viewportSize
+                        )
                     )
                 )
             }
@@ -180,12 +185,14 @@ class ProgramLoadedScreenModel(
     private fun setNewScale(newScale: Float) {
         mutableState.update {
             val pixelPerUnit = it.visualTurningState.defaultPixelsPerUnit * newScale
-            val programData = it.visualTurningState.pathElements.toProgramData(pixelPerUnit)
+            val scaledProgramData = it.visualTurningState.pathElements.toProgramData(pixelPerUnit)
             it.copy(
                 visualTurningState = it.visualTurningState.copy(
                     scale = newScale,
-                    programData = programData,
-                    //translate = programData.getProgramSize()
+                    programData = scaledProgramData,
+                    translate = scaledProgramData.getInitialTranslate(
+                        viewportSize = it.visualTurningState.viewportSize
+                    )
                 )
             )
         }
@@ -200,6 +207,16 @@ class ProgramLoadedScreenModel(
             )
         }
         println("Translate: ${mutableState.value.visualTurningState.translate}")
+    }
+
+    fun setViewportSize(size: IntSize) {
+        mutableState.update {
+            it.copy(
+                visualTurningState = it.visualTurningState.copy(
+                    viewportSize = size
+                )
+            )
+        }
     }
 
     fun runProgram() {
@@ -243,12 +260,14 @@ class ProgramLoadedScreenModel(
         activeCodesUseCase.getCodeDescription(activeCode)
     }
 
-    private fun calculateDefaultPxPerUnit(programSize: ProgramData.ProgramSize): Float {
-        val extraSpacePercentage = 15
-        val spacedWidth = screenWidth - (screenWidth * extraSpacePercentage / 100)
-        val spacedHeight = screenHeight - (screenHeight * extraSpacePercentage / 100)
-        val widthRatio = spacedWidth.div(programSize.width)
-        val heightRatio = spacedHeight.div(programSize.height)
+    private fun calculateDefaultPxPerUnit(
+        viewportSize: IntSize,
+        programSize: ProgramData.ProgramSize,
+    ): Float {
+        val drawableWidth = viewportSize.width - viewportPadding
+        val drawableHeight = viewportSize.height - viewportPadding
+        val widthRatio = drawableWidth.div(programSize.width)
+        val heightRatio = drawableHeight.div(programSize.height)
         return min(widthRatio, heightRatio)
     }
 

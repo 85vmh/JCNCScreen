@@ -1,6 +1,7 @@
 package usecase.model
 
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.unit.IntSize
 import canvas.Point2D
 
 const val extraAxisLength = 20 //add another 30 px for the tip of the arrow to exit the path
@@ -15,6 +16,7 @@ data class VisualTurningState(
     val translate: Offset = Offset.Zero,
     val pathElements: List<PathElement> = emptyList(),
     val programData: ProgramData = ProgramData(),
+    val viewportSize: IntSize = IntSize.Zero
 ) {
     val pixelPerUnit: Float
         get() {

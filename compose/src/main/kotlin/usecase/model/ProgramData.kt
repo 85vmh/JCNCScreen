@@ -1,6 +1,8 @@
 package usecase.model
 
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.unit.IntSize
 import kotlin.math.abs
 
 data class ProgramData(
@@ -24,4 +26,13 @@ data class ProgramData(
     val xAxisLength get() = feedPath.getBounds().bottom
 
     val zAxisLength get() = feedPath.getBounds().right
+
+    fun getInitialTranslate(
+        viewportSize: IntSize
+    ): Offset {
+        val freeHorizontalSpace = viewportSize.width - programSize.width
+        val xOffset = abs(feedPath.getBounds().left) + freeHorizontalSpace / 2
+        val yOffset = (viewportSize.height - programSize.height) / 2
+        return Offset(xOffset, yOffset)
+    }
 }
