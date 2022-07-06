@@ -1,6 +1,6 @@
 package usecase
 
-import canvas.Point2D
+import usecase.model.Point2D
 import com.mindovercnc.repository.CncStatusRepository
 import com.mindovercnc.linuxcnc.model.*
 import com.mindovercnc.model.dtg

@@ -26,9 +26,6 @@ dependencies {
     //jars
     implementation(fileTree(mapOf("dir" to "lib", "include" to listOf("*.jar"))))
 
-    val vtkJarPath = project.requirePath("VTK_JAR", "vtk.jar")
-    implementation(files(vtkJarPath))
-
     implementation("ro.dragossusi.ktlcnc:ktlcnc:0.0.1")
     implementation(project(":repository"))
     implementation(project(":database"))

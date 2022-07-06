@@ -5,7 +5,7 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.unit.IntSize
 import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
-import canvas.Point2D
+import usecase.model.Point2D
 import canvas.addArc
 import canvas.addLine
 import com.mindovercnc.repository.IniFileRepository
@@ -18,7 +18,6 @@ import screen.composables.editor.Editor
 import screen.uimodel.PositionModel
 import usecase.*
 import usecase.model.*
-import vtk.Point3D
 import java.io.File
 import kotlin.math.min
 
@@ -39,12 +38,10 @@ class ProgramLoadedScreenModel(
         val currentWcs: String = "--",
         val currentFolder: File? = null,
         val editor: Editor,
-        val vtkUiState: VtkUiState = VtkUiState(),
         val visualTurningState: VisualTurningState = VisualTurningState(),
         val activeCodes: List<ActiveCode> = emptyList(),
         val machineStatus: MachineStatus = MachineStatus(),
         val toolChangeModel: ToolChangeModel? = null,
-        val useVtk: Boolean = false
     )
 
     //how much free space to have around the drawing
@@ -63,9 +60,6 @@ class ProgramLoadedScreenModel(
         }
         mutableState.update {
             it.copy(
-                vtkUiState = it.vtkUiState.copy(
-                    machineLimits = machineLimits
-                ),
                 visualTurningState = it.visualTurningState.copy(
                     machineLimits = machineLimits
                 )
@@ -77,9 +71,6 @@ class ProgramLoadedScreenModel(
             .onEach { wcs ->
                 mutableState.update {
                     it.copy(
-                        vtkUiState = it.vtkUiState.copy(
-                            wcsPosition = Point3D(wcs.xOffset, 0.0, wcs.zOffset)
-                        ),
                         currentWcs = wcs.coordinateSystem,
                         visualTurningState = it.visualTurningState.copy(
                             currentWcs = wcs.coordinateSystem,
@@ -100,9 +91,6 @@ class ProgramLoadedScreenModel(
             val scaledProgramData = pathElements.toProgramData(defaultPixelsPerUnit)
             mutableState.update {
                 it.copy(
-                    vtkUiState = it.vtkUiState.copy(
-                        pathElements = pathElements,
-                    ),
                     visualTurningState = it.visualTurningState.copy(
                         pathElements = pathElements,
                         programData = scaledProgramData,
@@ -120,9 +108,6 @@ class ProgramLoadedScreenModel(
                 toolTrace.add(point)
                 mutableState.update {
                     it.copy(
-                        vtkUiState = it.vtkUiState.copy(
-                            toolPosition = Point3D(point.x, 0.0, point.z)
-                        ),
                         visualTurningState = it.visualTurningState.copy(
                             toolPosition = point,
                         )
@@ -244,14 +229,6 @@ class ProgramLoadedScreenModel(
         mutableState.update {
             it.copy(
                 toolChangeModel = null
-            )
-        }
-    }
-
-    fun setVtkState(useVtk: Boolean) {
-        mutableState.update {
-            it.copy(
-                useVtk = useVtk
             )
         }
     }

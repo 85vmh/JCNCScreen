@@ -1,7 +1,5 @@
 package usecase.model
 
-import canvas.Point2D
-
 data class MachineLimits(
     val xMin: Double = 0.0,
     val xMax: Double = 0.0,

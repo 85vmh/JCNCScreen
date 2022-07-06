@@ -54,7 +54,6 @@ val RepositoryModule = DI.Module("repository") {
 
 fun startupModule(startupArgs: StartupArgs) = DI.Module("startup") {
     bindSingleton { startupArgs.iniFilePath }
-    bindSingleton { startupArgs.vtkEnabled }
 }
 
 fun appScopeModule(scope: CoroutineScope) = DI.Module("app_scope") {

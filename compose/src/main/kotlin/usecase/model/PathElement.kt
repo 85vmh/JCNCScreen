@@ -1,14 +1,13 @@
 package usecase.model
 
-import vtk.Point3D
 
 sealed class PathElement(
-    open val startPoint: Point3D,
-    open val endPoint: Point3D,
+    open val startPoint: Point2D,
+    open val endPoint: Point2D,
 ) {
     data class Line(
-        override val startPoint: Point3D,
-        override val endPoint: Point3D,
+        override val startPoint: Point2D,
+        override val endPoint: Point2D,
         val type: Type
     ) : PathElement(startPoint, endPoint) {
         enum class Type {
@@ -17,9 +16,9 @@ sealed class PathElement(
     }
 
     data class Arc(
-        override val startPoint: Point3D,
-        override val endPoint: Point3D,
-        val centerPoint: Point3D,
+        override val startPoint: Point2D,
+        override val endPoint: Point2D,
+        val centerPoint: Point2D,
         val direction: Direction
     ) : PathElement(
         startPoint, endPoint

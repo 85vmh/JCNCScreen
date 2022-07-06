@@ -14,16 +14,9 @@ object NativePaths {
             "linuxcnc.jdk"
         )
 
-        val vtkLib = rootProject.requirePath(
-            "VTK_LIB",
-            "vtk.lib"
-        )
-
         return listOf(
             File(linuxCncHome, "lib").path,
             File(linuxCncJdk, "lib").path,
-            vtkLib
         )
     }
-
 }

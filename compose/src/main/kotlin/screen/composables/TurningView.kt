@@ -125,7 +125,7 @@ fun VisualTurning(
             )
                 .translateTo(state.translate)
                 .rotateBy(30f, state.translate)
-                .translateTo(state.toolPosition.minus(state.wcsPosition).toOffset(state.pixelPerUnit))
+                .translateTo(state.toolPositionInCurrentWcs)
         )
 
         clipRect {

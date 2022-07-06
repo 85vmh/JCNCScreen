@@ -1,4 +1,4 @@
-package canvas
+package usecase.model
 
 import androidx.compose.ui.geometry.Offset
 
