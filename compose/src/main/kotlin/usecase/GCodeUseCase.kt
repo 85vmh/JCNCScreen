@@ -1,10 +1,10 @@
 package usecase
 
-import usecase.model.Point2D
 import com.mindovercnc.repository.GCodeRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import usecase.model.PathElement
+import vtk.*
 import java.io.File
 
 class GCodeUseCase(
@@ -13,15 +13,16 @@ class GCodeUseCase(
 
     suspend fun getPathElements(file: File): List<PathElement> = withContext(Dispatchers.IO) {
         val pathElements = mutableListOf<PathElement>()
-        var lastPoint: Point2D? = null
+        var lastPoint: Point3D? = null
 
         gCodeRepository.parseFile(file).forEach { command ->
             when (command.name) {
                 "STRAIGHT_TRAVERSE",
                 "STRAIGHT_FEED" -> {
                     val args = command.arguments.split(", ")
-                    val current = Point2D(
+                    val current = Point3D(
                         x = args[0].toDouble(),
+                        y = args[1].toDouble(),
                         z = args[2].toDouble(),
                     )
 
@@ -44,12 +45,14 @@ class GCodeUseCase(
                 }
                 "ARC_FEED" -> {
                     val args = command.arguments.split(", ")
-                    val current = Point2D(
+                    val current = Point3D(
                         x = args[1].toDouble(),
+                        y = 0.0,
                         z = args[0].toDouble(),
                     )
-                    val center = Point2D(
+                    val center = Point3D(
                         x = args[3].toDouble(),
+                        y = 0.0,
                         z = args[2].toDouble(),
                     )
                     when (lastPoint) {

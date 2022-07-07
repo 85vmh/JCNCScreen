@@ -12,6 +12,8 @@ Set the required arguments in `gradle.properties` **or** environment variables.
 |---------------|---------------|----------------------------|
 | LINUXCNC_HOME | linuxcnc.home | The linuxcnc home folder   |
 | LINUXCNC_JDK  | linuxcnc.jdk  | The jdk to be used for JNI |
+| VTK_JAR       | vtk.jar       | Path to vtk.jar            |
+| VTK_LIB       | vtk.lib       | Path to vtk so files       |
 
 TODO
 
@@ -28,6 +30,7 @@ Other arguments:
 | command | description                |
 |---------|----------------------------|
 | tb      | disable system top app bar |
+| v       | disable vtk                |
 
 ## Usage
 

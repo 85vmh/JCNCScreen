@@ -4,17 +4,21 @@ import cafe.adriel.voyager.core.model.StateScreenModel
 import com.mindovercnc.repository.FileSystemRepository
 import kotlinx.coroutines.flow.update
 import screen.composables.editor.Editor
+import startup.VtkEnabled
 import java.io.File
 
 class ProgramsRootScreenModel(
     fileSystemRepository: FileSystemRepository,
+    vtkEnabled: VtkEnabled
 ) : StateScreenModel<ProgramsRootScreenModel.State>(
     State(
+        vtkEnabled = vtkEnabled,
         currentDir = fileSystemRepository.getNcRootAppFile()
     )
 ) {
 
     data class State(
+        val vtkEnabled: VtkEnabled,
         val currentDir: File,
         val editor: Editor? = null,
         val error: String? = null

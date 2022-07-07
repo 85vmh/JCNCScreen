@@ -37,7 +37,11 @@ class ProgramsRootScreen : Programs("Programs") {
             ExtendedFloatingActionButton(
                 text = { Text("Load Program") },
                 onClick = {
-                    navigator.push(ProgramLoadedScreen(editor.file))
+                    if (state.vtkEnabled.enabled) {
+                        navigator.push(ProgramLoadedScreen(editor.file))
+                    } else {
+                        screenModel.showError("VTK not enabled")
+                    }
                 },
                 icon = {
                     Icon(

@@ -2,6 +2,7 @@ package usecase.model
 
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.unit.IntSize
+import canvas.Point2D
 
 const val extraAxisLength = 20 //add another 30 px for the tip of the arrow to exit the path
 
@@ -26,17 +27,6 @@ data class VisualTurningState(
         get() {
             return machineLimits.toWcsLimits(wcsPosition)
         }
-
-    val toolPositionInCurrentWcs: Offset
-        get() = toolPosition.minus(wcsPosition).toOffset(pixelPerUnit)
-
-//    private val viewportRect: Rect
-//        get() = Rect(Offset.Zero, Size(viewportSize.width.toFloat(), viewportSize.height.toFloat()))
-//
-//    val toolIsVisible: Boolean
-//        get() {
-//            return viewportRect.contains(toolPositionInCurrentWcs)
-//        }
 
     val xAxisLength: Float
         get() = programData.xAxisLength + extraAxisLength

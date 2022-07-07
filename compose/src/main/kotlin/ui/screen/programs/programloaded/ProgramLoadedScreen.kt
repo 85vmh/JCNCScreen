@@ -7,10 +7,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -84,6 +81,10 @@ class ProgramLoadedScreen(
                 contentDescription = "",
             )
         }
+        Switch(
+            checked = state.useVtk,
+            onCheckedChange = { screenModel.setVtkState(!state.useVtk) }
+        )
     }
 
     @Composable
@@ -98,6 +99,12 @@ class ProgramLoadedScreen(
             Column(
                 modifier = Modifier.weight(1f)
             ) {
+                if (state.useVtk) {
+                    VtkView(
+                        state = state.vtkUiState,
+                        Modifier.fillMaxWidth().height(400.dp)
+                    )
+                } else {
                     Box {
                         VisualTurning(
                             state = state.visualTurningState,
@@ -139,7 +146,7 @@ class ProgramLoadedScreen(
                                     contentDescription = "",
                                 )
                             }
-
+                        }
                     }
                 }
                 EditorView(
