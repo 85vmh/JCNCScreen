@@ -1,6 +1,7 @@
-package vtk
+package com.mindovercnc.vtk
 
-import usecase.model.MachineLimits
+import com.mindovercnc.model.MachineLimits
+import vtk.vtkCubeAxesActor
 
 
 class MachineActor : vtkCubeAxesActor() {

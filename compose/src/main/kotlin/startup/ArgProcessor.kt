@@ -12,13 +12,6 @@ object ArgProcessor {
     fun process(args: Array<String>): StartupArgs {
         val parser = ArgParser("KTCNC")
 
-        val vtkEnabled by parser.option(
-            ArgType.Boolean,
-            shortName = "v",
-            fullName = "vtk-enabled",
-            description = "Set vtk enabled"
-        ).default(true)
-
         val darkMode by parser.option(
             ArgType.Choice<DarkMode>(),
             shortName = "dm",
@@ -47,7 +40,6 @@ object ArgProcessor {
 
         return StartupArgs(
             iniFilePath = IniFilePath(iniFile),
-            vtkEnabled = VtkEnabled(vtkEnabled),
             topBarEnabled = TopBarEnabled(topBarEnabled),
             darkMode = darkMode
         )
@@ -64,9 +56,6 @@ object ArgProcessor {
         return file
     }
 }
-
-@JvmInline
-value class VtkEnabled(val enabled: Boolean)
 
 @JvmInline
 value class TopBarEnabled(val enabled: Boolean)

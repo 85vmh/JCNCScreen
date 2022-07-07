@@ -1,6 +1,5 @@
-package startup
+package com.mindovercnc.vtk
 
-import vtk.vtkFileOutputWindow
 import vtk.vtkNativeLibrary
 
 object VtkLoader {

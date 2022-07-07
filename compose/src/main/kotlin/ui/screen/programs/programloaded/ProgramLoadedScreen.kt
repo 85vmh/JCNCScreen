@@ -7,7 +7,10 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material3.*
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -81,10 +84,6 @@ class ProgramLoadedScreen(
                 contentDescription = "",
             )
         }
-        Switch(
-            checked = state.useVtk,
-            onCheckedChange = { screenModel.setVtkState(!state.useVtk) }
-        )
     }
 
     @Composable
@@ -99,53 +98,46 @@ class ProgramLoadedScreen(
             Column(
                 modifier = Modifier.weight(1f)
             ) {
-                if (state.useVtk) {
-                    VtkView(
-                        state = state.vtkUiState,
-                        Modifier.fillMaxWidth().height(400.dp)
+                Box {
+                    VisualTurning(
+                        state = state.visualTurningState,
+                        Modifier
+                            .fillMaxWidth()
+                            .height(400.dp)
+                            .onSizeChanged {
+                                screenModel.setViewportSize(it)
+                            }
+                            .pointerInput(Unit) {
+                                detectDragGestures { change, dragAmount ->
+                                    change.consume()
+                                    screenModel.translate(dragAmount)
+                                }
+                            }
                     )
-                } else {
-                    Box {
-                        VisualTurning(
-                            state = state.visualTurningState,
-                            Modifier
-                                .fillMaxWidth()
-                                .height(400.dp)
-                                .onSizeChanged {
-                                    screenModel.setViewportSize(it)
-                                }
-                                .pointerInput(Unit) {
-                                    detectDragGestures { change, dragAmount ->
-                                        change.consume()
-                                        screenModel.translate(dragAmount)
-                                    }
-                                }
-                        )
-                        Row(
-                            modifier = Modifier.align(Alignment.BottomCenter),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(16.dp)
-                        ) {
-                            IconButton(
-                                modifier = iconButtonModifier,
-                                onClick = {
-                                    screenModel.zoomOut()
-                                }) {
-                                Icon(
-                                    imageVector = Icons.Default.KeyboardArrowDown,
-                                    contentDescription = "",
-                                )
-                            }
-                            IconButton(
-                                modifier = iconButtonModifier,
-                                onClick = {
-                                    screenModel.zoomIn()
-                                }) {
-                                Icon(
-                                    imageVector = Icons.Default.KeyboardArrowUp,
-                                    contentDescription = "",
-                                )
-                            }
+                    Row(
+                        modifier = Modifier.align(Alignment.BottomCenter),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        IconButton(
+                            modifier = iconButtonModifier,
+                            onClick = {
+                                screenModel.zoomOut()
+                            }) {
+                            Icon(
+                                imageVector = Icons.Default.KeyboardArrowDown,
+                                contentDescription = "",
+                            )
+                        }
+                        IconButton(
+                            modifier = iconButtonModifier,
+                            onClick = {
+                                screenModel.zoomIn()
+                            }) {
+                            Icon(
+                                imageVector = Icons.Default.KeyboardArrowUp,
+                                contentDescription = "",
+                            )
                         }
                     }
                 }

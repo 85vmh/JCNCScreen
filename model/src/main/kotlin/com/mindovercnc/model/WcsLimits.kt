@@ -1,4 +1,4 @@
-package usecase.model
+package com.mindovercnc.model
 
 data class WcsLimits(
     val xMin: Double = 0.0,

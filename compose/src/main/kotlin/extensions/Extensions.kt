@@ -3,6 +3,8 @@ package extensions
 import androidx.compose.foundation.gestures.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import com.mindovercnc.model.Point2D
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
@@ -38,3 +40,8 @@ fun Modifier.draggableScroll(
         }
     }, orientation = orientation)
 }
+
+fun Point2D.toOffset(multiplicationFactor: Float = 1f) = Offset(
+    x = (z * multiplicationFactor).toFloat(),
+    y = (x * multiplicationFactor).toFloat()
+)

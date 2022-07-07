@@ -1,11 +1,11 @@
 package usecase
 
-import canvas.Point2D
-import com.mindovercnc.repository.CncStatusRepository
-import com.mindovercnc.linuxcnc.model.*
+import com.mindovercnc.linuxcnc.model.Position
+import com.mindovercnc.model.Point2D
 import com.mindovercnc.model.dtg
 import com.mindovercnc.model.g53Position
 import com.mindovercnc.model.getDisplayablePosition
+import com.mindovercnc.repository.CncStatusRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first

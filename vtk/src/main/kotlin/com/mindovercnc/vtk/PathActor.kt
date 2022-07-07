@@ -1,6 +1,8 @@
-package vtk
+package com.mindovercnc.vtk
 
-import usecase.model.PathElement
+import com.mindovercnc.model.PathElement
+import com.mindovercnc.model.Point2D
+import vtk.*
 
 const val length = 2.5 //taken from py
 
@@ -42,7 +44,7 @@ class PathActor : vtkActor() {
             }
         }
 
-    var currentPoint: Point3D = Point3D(0.0, 0.0, 0.0)
+    var currentPoint: Point2D = Point2D(0.0, 0.0)
         set(value) {
             if (field != value) {
                 field = value

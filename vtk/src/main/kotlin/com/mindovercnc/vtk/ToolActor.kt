@@ -1,11 +1,14 @@
-package vtk
+package com.mindovercnc.vtk
+
+import com.mindovercnc.model.Point2D
+import vtk.*
 
 class ToolActor : vtkActor() {
-    private val toolOffset = Point3D(0.0, 0.0, 0.0)
+    private val toolOffset = Point2D(0.0, 0.0)
     private val diamondLength = 4
     private val diamondOffset = 2
 
-    var currentPoint: Point3D = Point3D(0.0, 0.0, 0.0)
+    var currentPoint: Point2D = Point2D(0.0, 0.0)
         set(value) {
             if (field != value) {
                 field = value

@@ -1,7 +1,11 @@
-package vtk
+package com.mindovercnc.vtk
 
-import usecase.model.MachineLimits
-import usecase.model.PathElement
+import com.mindovercnc.model.MachineLimits
+import com.mindovercnc.model.PathElement
+import com.mindovercnc.model.Point2D
+import vtk.vtkCamera
+import vtk.vtkPanel
+import vtk.vtkTransform
 
 class LatheVtkPanel : vtkPanel() {
     private val machineActor: MachineActor = MachineActor()
@@ -38,7 +42,7 @@ class LatheVtkPanel : vtkPanel() {
         pathActor.pathElements = pathElements
     }
 
-    fun setToolPosition(toolPosition: Point3D) {
+    fun setToolPosition(toolPosition: Point2D) {
         toolActor.currentPoint = toolPosition
     }
 
@@ -48,7 +52,7 @@ class LatheVtkPanel : vtkPanel() {
         }
     }
 
-    fun setWcsPosition(wcsPosition: Point3D) {
+    fun setWcsPosition(wcsPosition: Point2D) {
         pathActor.currentPoint = wcsPosition
         axesActor.currentPoint = wcsPosition
     }

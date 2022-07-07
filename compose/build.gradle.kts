@@ -26,15 +26,13 @@ dependencies {
     //jars
     implementation(fileTree(mapOf("dir" to "lib", "include" to listOf("*.jar"))))
 
-    val vtkJarPath = project.requirePath("VTK_JAR", "vtk.jar")
-    implementation(files(vtkJarPath))
-
     implementation("ro.dragossusi.ktlcnc:ktlcnc:0.0.1")
     implementation(project(":repository"))
     implementation(project(":database"))
     implementation(project(":impl"))
     implementation(project(":editor"))
     implementation(project(":model"))
+//    implementation(project(":vtk"))
     implementation("org.kodein.di:kodein-di-framework-compose:${Versions.kodein}")
 
     //navigation

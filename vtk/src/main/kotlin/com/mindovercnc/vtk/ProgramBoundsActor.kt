@@ -1,4 +1,6 @@
-package vtk
+package com.mindovercnc.vtk
+
+import vtk.vtkCubeAxesActor
 
 class ProgramBoundsActor(pathActor: PathActor) : vtkCubeAxesActor() {
     init {

@@ -1,8 +1,12 @@
-package vtk
+package com.mindovercnc.vtk
+
+import com.mindovercnc.model.Point2D
+import vtk.vtkAxesActor
+import vtk.vtkTransform
 
 class AxesActor : vtkAxesActor() {
 
-    var currentPoint: Point3D = Point3D(0.0, 0.0, 0.0)
+    var currentPoint: Point2D = Point2D(0.0, 0.0)
         set(value) {
             if (field != value) {
                 field = value

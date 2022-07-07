@@ -1,17 +1,16 @@
-package ui.screen.programs.programloaded
+package com.mindovercnc.vtk
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.awt.SwingPanel
-import usecase.model.MachineLimits
-import usecase.model.PathElement
-import vtk.LatheVtkPanel
-import vtk.Point3D
+import com.mindovercnc.model.MachineLimits
+import com.mindovercnc.model.PathElement
+import com.mindovercnc.model.Point2D
 
 data class VtkUiState(
     val machineLimits: MachineLimits? = null,
-    val toolPosition: Point3D = Point3D(0.0, 0.0, 0.0),
-    val wcsPosition: Point3D = Point3D(0.0, 0.0, 0.0),
+    val toolPosition: Point2D = Point2D(0.0, 0.0),
+    val wcsPosition: Point2D = Point2D(0.0, 0.0),
     val pathElements: List<PathElement> = emptyList(),
 )
 

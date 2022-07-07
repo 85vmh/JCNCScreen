@@ -1,16 +1,16 @@
 package di
 
-import startup.StartupArgs
-import com.mindovercnc.repository.*
 import com.mindovercnc.linuxcnc.*
 import com.mindovercnc.linuxcnc.nml.BuffDescriptor
 import com.mindovercnc.linuxcnc.nml.BuffDescriptorV29
 import com.mindovercnc.linuxcnc.parsing.*
+import com.mindovercnc.repository.*
 import kotlinx.coroutines.CoroutineScope
 import org.kodein.di.DI
 import org.kodein.di.bindProvider
 import org.kodein.di.bindSingleton
 import org.kodein.di.instance
+import startup.StartupArgs
 import java.util.prefs.Preferences
 
 val RepositoryModule = DI.Module("repository") {
@@ -54,7 +54,6 @@ val RepositoryModule = DI.Module("repository") {
 
 fun startupModule(startupArgs: StartupArgs) = DI.Module("startup") {
     bindSingleton { startupArgs.iniFilePath }
-    bindSingleton { startupArgs.vtkEnabled }
 }
 
 fun appScopeModule(scope: CoroutineScope) = DI.Module("app_scope") {

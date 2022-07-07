@@ -3,7 +3,7 @@ package canvas
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Path
-import usecase.model.PathElement
+import com.mindovercnc.model.PathElement
 import java.awt.geom.Point2D
 import kotlin.math.acos
 import kotlin.math.pow

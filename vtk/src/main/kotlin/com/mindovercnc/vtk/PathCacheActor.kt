@@ -1,9 +1,10 @@
-package vtk
+package com.mindovercnc.vtk
 
-import androidx.compose.ui.graphics.Color
+import com.mindovercnc.model.Point2D
+import vtk.*
 
 
-class PathCacheActor(private val point: Point3D) : vtkActor() {
+class PathCacheActor(private val point: Point2D) : vtkActor() {
     private val numPoints = 2
     private val points = vtkPoints()
     private val lines = vtkCellArray()
@@ -16,7 +17,7 @@ class PathCacheActor(private val point: Point3D) : vtkActor() {
         lines.InsertNextCell(1)
         lines.InsertCellPoint(0)
         with(GetProperty()) {
-            SetColor(Color.Cyan.toDoubleArray())
+            //SetColor(Color.Cyan.toDoubleArray())
             SetLineWidth(2.5)
             SetOpacity(0.5)
         }
@@ -27,7 +28,7 @@ class PathCacheActor(private val point: Point3D) : vtkActor() {
         }
     }
 
-    fun addLinePoint(point: Point3D) {
+    fun addLinePoint(point: Point2D) {
         index++
         with(points) {
             InsertNextPoint(point.toDoubleArray())
@@ -41,7 +42,7 @@ class PathCacheActor(private val point: Point3D) : vtkActor() {
         }
     }
 
-    private fun Color.toDoubleArray() =
-        doubleArrayOf(this.red.toDouble(), this.green.toDouble(), this.blue.toDouble())
+//    private fun Color.toDoubleArray() =
+//        doubleArrayOf(this.red.toDouble(), this.green.toDouble(), this.blue.toDouble())
 
 }

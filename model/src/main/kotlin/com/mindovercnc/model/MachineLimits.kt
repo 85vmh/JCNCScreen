@@ -1,6 +1,4 @@
-package usecase.model
-
-import canvas.Point2D
+package com.mindovercnc.model
 
 data class MachineLimits(
     val xMin: Double = 0.0,
