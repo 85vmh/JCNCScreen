@@ -6,6 +6,7 @@ data class CuttingInsert(
     val code: String,
     val tipRadius: Double,
     val tipAngle: Double,
+    val size: Double
 ){
     enum class Type{
         Positive, Negative

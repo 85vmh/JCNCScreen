@@ -22,9 +22,9 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun <T> DropDownView(
     items: List<T>,
-    selected: T,
+    selected: T?,
     onSelected: (T) -> Unit,
-    closedItemContent: @Composable (T) -> Unit,
+    closedItemContent: @Composable (T?) -> Unit,
     openedItemContent: @Composable (T) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -52,18 +52,15 @@ fun <T> DropDownView(
 
 @Composable
 fun DropDownClosedItem(
-    text: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit
 ) {
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.End
     ) {
-        Text(
-            textAlign = TextAlign.Center,
-            text = text,
-        )
+        content.invoke()
         Icon(
             imageVector = Icons.Default.ArrowDropDown,
             contentDescription = null
@@ -103,7 +100,11 @@ private fun <T> DropDownList(
 @Preview
 private fun Preview() {
     DropDownClosedItem(
-        "A Test",
         modifier = Modifier.size(200.dp)
-    )
+    ) {
+        Text(
+            textAlign = TextAlign.Center,
+            text = "A Test",
+        )
+    }
 }

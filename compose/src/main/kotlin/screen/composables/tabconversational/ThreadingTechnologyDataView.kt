@@ -43,7 +43,7 @@ fun ThreadingTechnologyData() {
             settingName = "Work Offset",
             items = workOffsets,
             dropDownWidth = 90.dp,
-            selected = state.workOffset.value,
+            selectedItem = state.workOffset.value,
             onValueChanged = {
                 state.workOffset.value = it
             }
@@ -69,7 +69,7 @@ fun ThreadingTechnologyData() {
             settingName = "Thread Type",
             items = threadType,
             dropDownWidth = 90.dp,
-            selected = state.threadType.value,
+            selectedItem = state.threadType.value,
             onValueChanged = {
                 state.threadType.value = it
             }

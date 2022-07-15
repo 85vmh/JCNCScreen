@@ -10,6 +10,7 @@ class CuttingInsertEntity(id: EntityID<Int>) : IntEntity(id) {
     var code by CuttingInsertTable.code
     var tipRadius by CuttingInsertTable.tipRadius
     var tipAngle by CuttingInsertTable.tipAngle
+    var size by CuttingInsertTable.size
 
     companion object : IntEntityClass<CuttingInsertEntity>(CuttingInsertTable)
 }

@@ -30,7 +30,7 @@ import extensions.toFixedDigitsString
 import screen.composables.LabelWithValue
 import screen.composables.VerticalDivider
 import screen.composables.platform.VerticalScrollbar
-import ui.screen.tools.addholder.AddEditHolderScreen
+import ui.screen.tools.root.tabs.toolholder.AddEditHolderScreen
 import ui.screen.tools.root.ToolsScreenModel
 
 
@@ -50,6 +50,7 @@ fun ToolHoldersContent(
     state: ToolsScreenModel.State,
     onDelete: (ToolHolder) -> Unit,
     onLoad: (ToolHolder) -> Unit,
+    onHolderChanged: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val navigator = LocalNavigator.currentOrThrow
@@ -71,7 +72,11 @@ fun ToolHoldersContent(
                 ToolHolderView(
                     item = item,
                     isCurrent = item.holderNumber == state.currentTool,
-                    onEditClicked = { navigator.push(AddEditHolderScreen(it)) },
+                    onEditClicked = {
+                        navigator.push(AddEditHolderScreen(it) {
+                            onHolderChanged.invoke()
+                        })
+                    },
                     onDeleteClicked = onDelete,
                     onLoadClicked = onLoad,
                     modifier = itemModifier,
@@ -156,12 +161,8 @@ private fun ToolHolderView(
             Column(
                 modifier = Modifier.width(ToolHolderColumn.Offsets.size),
             ) {
-                item.xOffset?.let {
-                    LabelWithValue("X:", it.toFixedDigitsString())
-                }
-                item.zOffset?.let {
-                    LabelWithValue("Z:", it.toFixedDigitsString())
-                }
+                LabelWithValue("X:", item.xOffset?.toFixedDigitsString() ?: "Not set")
+                LabelWithValue("Z:", item.zOffset?.toFixedDigitsString() ?: "Not set")
             }
             VerticalDivider()
             Column(
@@ -169,11 +170,13 @@ private fun ToolHolderView(
                     .weight(1f)
                     .padding(horizontal = 8.dp)
             ) {
-                Text(
-                    textAlign = TextAlign.Center,
-                    text = "Tool Info"
-                )
-                Text(text = item.latheTool.toString())
+                if (item.latheTool != null) {
+                    Text(text = item.latheTool.toString())
+                } else {
+                    Button(onClick = {}) {
+                        Text("Mount a Tool")
+                    }
+                }
             }
             VerticalDivider()
             Row(

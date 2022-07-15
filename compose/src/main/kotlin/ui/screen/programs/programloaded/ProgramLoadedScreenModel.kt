@@ -35,7 +35,8 @@ class ProgramLoadedScreenModel(
     private val programsUseCase: ProgramsUseCase,
     spindleUseCase: SpindleUseCase,
     feedUseCase: FeedUseCase,
-    iniFileRepository: IniFileRepository
+    iniFileRepository: IniFileRepository,
+    private val manualToolChangeUseCase: ManualToolChangeUseCase,
 ) : StateScreenModel<ProgramLoadedScreenModel.State>(State(editor = Editor(file))) {
 
     data class State(
@@ -54,7 +55,7 @@ class ProgramLoadedScreenModel(
     private val toolTrace = mutableListOf<Point2D>()
 
     init {
-//        programsUseCase.loadProgram(file)
+        //programsUseCase.loadProgram(file)
         val machineLimits = with(iniFileRepository.getActiveLimits()) {
             MachineLimits(
                 xMin = xMinLimit!!,
@@ -162,6 +163,19 @@ class ProgramLoadedScreenModel(
                     )
                 }
             }.launchIn(coroutineScope)
+
+        manualToolChangeUseCase.toolToChange
+            .onEach { toolNo ->
+                println("---update state: $toolNo")
+                mutableState.update {
+                    it.copy(
+                        toolChangeModel = when {
+                            toolNo != null -> ToolChangeModel(toolNo)
+                            else -> null
+                        }
+                    )
+                }
+            }.launchIn(coroutineScope)
     }
 
     fun zoomOut() {
@@ -210,12 +224,7 @@ class ProgramLoadedScreenModel(
     }
 
     fun runProgram() {
-//        programsUseCase.runProgram()
-        mutableState.update {
-            it.copy(
-                toolChangeModel = ToolChangeModel(10)
-            )
-        }
+        programsUseCase.runProgram()
     }
 
     fun stopProgram() {
@@ -223,19 +232,13 @@ class ProgramLoadedScreenModel(
     }
 
     fun confirmToolChanged() {
-        mutableState.update {
-            it.copy(
-                toolChangeModel = null
-            )
+        coroutineScope.launch {
+            manualToolChangeUseCase.confirmToolChange()
         }
     }
 
     fun cancelToolChange() {
-        mutableState.update {
-            it.copy(
-                toolChangeModel = null
-            )
-        }
+        manualToolChangeUseCase.cancelToolChange()
     }
 
     fun onActiveCodeClicked(activeCode: ActiveCode) {

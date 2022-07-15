@@ -1,4 +1,4 @@
-package ui.screen.programs.programloaded
+package ui.screen.tools.root
 
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.AlertDialog
@@ -10,16 +10,17 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.mindovercnc.model.LatheTool
 
-data class ToolChangeModel(
-    val requestedTool: Int
+data class LatheToolDeleteModel(
+    val latheTool: LatheTool
 )
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun ToolChangeDialog(
-    toolChangeModel: ToolChangeModel,
-    confirmationClick: () -> Unit,
+fun LatheToolDeleteDialog(
+    deleteModel: LatheToolDeleteModel,
+    deleteClick: (LatheTool) -> Unit,
     abortClick: () -> Unit
 ) {
 
@@ -28,21 +29,21 @@ fun ToolChangeDialog(
         onDismissRequest = { },
         title = {
             Text(
-                text = "Tool Change Required",
+                text = "Delete Lathe Tool",
                 style = MaterialTheme.typography.titleLarge
             )
         },
         text = {
             Text(
-                text = "Clamp tool holder ${toolChangeModel.requestedTool}, then press Continue",
-                style = MaterialTheme.typography.bodySmall
+                text = "Tool: ${deleteModel.latheTool}",
+                style = MaterialTheme.typography.bodyMedium
             )
         },
         confirmButton = {
             Button(
-                onClick = confirmationClick,
+                onClick = { deleteClick.invoke(deleteModel.latheTool) },
             ) {
-                Text("Continue")
+                Text("Delete")
             }
         },
         dismissButton = {

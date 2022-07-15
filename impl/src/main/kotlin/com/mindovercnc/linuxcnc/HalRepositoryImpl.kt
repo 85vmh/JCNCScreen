@@ -5,6 +5,7 @@ import com.mindovercnc.linuxcnc.model.*
 import com.mindovercnc.model.JoystickPosition
 import com.mindovercnc.model.JoystickStatus
 import com.mindovercnc.model.SpindleSwitchStatus
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 
 private const val RefreshRate = 5L
@@ -187,8 +188,10 @@ class HalRepositoryImpl : HalRepository {
         return pinToolChangeToolNo?.valueFlow(RefreshRate)?.distinctUntilChanged() ?: flowOf(0)
     }
 
-    override fun setToolChangedResponse() {
+    override suspend fun setToolChangedResponse() {
         pinToolChangeResponse?.setPinValue(true)
+        delay(100L)
+        pinToolChangeResponse?.setPinValue(false)
     }
 
     override fun setAxisLimitXMin(value: Double) {

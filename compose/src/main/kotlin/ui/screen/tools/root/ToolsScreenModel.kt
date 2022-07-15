@@ -8,6 +8,7 @@ import com.mindovercnc.model.ToolHolder
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import usecase.ToolsUseCase
 
 class ToolsScreenModel(
@@ -20,6 +21,8 @@ class ToolsScreenModel(
         val latheTools: List<LatheTool> = emptyList(),
         val cuttingInserts: List<CuttingInsert> = emptyList(),
         val currentTool: Int = 0,
+        val toolHolderDeleteModel: ToolHolderDeleteModel? = null,
+        val latheToolDeleteModel: LatheToolDeleteModel? = null
     )
 
     init {
@@ -32,6 +35,12 @@ class ToolsScreenModel(
                 }
             }.launchIn(coroutineScope)
 
+        loadToolHolders()
+        loadLatheTools()
+        loadCuttingInserts()
+    }
+
+    fun loadToolHolders() {
         toolsUseCase.getToolHolders()
             .onEach { toolList ->
                 mutableState.update {
@@ -40,7 +49,9 @@ class ToolsScreenModel(
                     )
                 }
             }.launchIn(coroutineScope)
+    }
 
+    fun loadLatheTools() {
         toolsUseCase.getLatheTools()
             .onEach { latheTools ->
                 mutableState.update {
@@ -49,8 +60,9 @@ class ToolsScreenModel(
                     )
                 }
             }.launchIn(coroutineScope)
+    }
 
-
+    fun loadCuttingInserts() {
         toolsUseCase.getCuttingInserts()
             .onEach { insertsList ->
                 mutableState.update {
@@ -69,17 +81,36 @@ class ToolsScreenModel(
         }
     }
 
-
     fun editToolHolder(toolHolder: ToolHolder) {
 
     }
 
+    fun requestDeleteToolHolder(toolHolder: ToolHolder) {
+        mutableState.update {
+            it.copy(
+                toolHolderDeleteModel = ToolHolderDeleteModel(toolHolder),
+            )
+        }
+    }
+
+    fun cancelDeleteToolHolder() {
+        mutableState.update {
+            it.copy(
+                toolHolderDeleteModel = null,
+            )
+        }
+    }
+
     fun deleteToolHolder(toolHolder: ToolHolder) {
         toolsUseCase.deleteToolHolder(toolHolder)
+        cancelDeleteToolHolder()
+        loadToolHolders()
     }
 
     fun loadToolHolder(toolHolder: ToolHolder) {
-
+        coroutineScope.launch {
+            toolsUseCase.loadTool(toolHolder.holderNumber)
+        }
     }
 
     fun editCuttingInsert(insert: CuttingInsert) {
@@ -90,7 +121,25 @@ class ToolsScreenModel(
 
     }
 
+    fun requestDeleteLatheTool(latheTool: LatheTool) {
+        mutableState.update {
+            it.copy(
+                latheToolDeleteModel = LatheToolDeleteModel(latheTool),
+            )
+        }
+    }
+
+    fun cancelDeleteLatheTool() {
+        mutableState.update {
+            it.copy(
+                latheToolDeleteModel = null,
+            )
+        }
+    }
+
     fun deleteLatheTool(latheTool: LatheTool) {
         toolsUseCase.deleteLatheTool(latheTool)
+        cancelDeleteLatheTool()
+        loadLatheTools()
     }
 }

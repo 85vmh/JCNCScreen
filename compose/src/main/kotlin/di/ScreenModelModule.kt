@@ -14,7 +14,8 @@ import ui.screen.manual.virtuallimits.VirtualLimitsScreenModel
 import ui.screen.programs.programloaded.ProgramLoadedScreenModel
 import ui.screen.programs.root.ProgramsRootScreenModel
 import ui.screen.status.StatusRootScreenModel
-import ui.screen.tools.addholder.AddEditHolderScreenModel
+import ui.screen.tools.root.tabs.lathetool.AddEditLatheToolScreenModel
+import ui.screen.tools.root.tabs.toolholder.AddEditToolHolderScreenModel
 import ui.screen.tools.root.ToolsScreenModel
 
 val ScreenModelModule = DI.Module("ScreenModel") {
@@ -64,7 +65,7 @@ val ScreenModelModule = DI.Module("ScreenModel") {
     }
 
     bindProvider {
-        ProgramLoadedScreenModel(instance(), instance(), instance(), instance(), instance(), instance(), instance(), instance(), instance())
+        ProgramLoadedScreenModel(instance(), instance(), instance(), instance(), instance(), instance(), instance(), instance(), instance(), instance())
     }
 
     bindProvider {
@@ -72,8 +73,15 @@ val ScreenModelModule = DI.Module("ScreenModel") {
     }
 
     bindProvider {
-        AddEditHolderScreenModel(
+        AddEditToolHolderScreenModel(
             toolHolder = instanceOrNull(),
+            toolsUseCase = instance()
+        )
+    }
+
+    bindProvider {
+        AddEditLatheToolScreenModel(
+            latheTool = instanceOrNull(),
             toolsUseCase = instance()
         )
     }

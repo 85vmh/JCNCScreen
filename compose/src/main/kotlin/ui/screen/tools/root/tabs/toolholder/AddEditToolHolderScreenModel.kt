@@ -1,4 +1,4 @@
-package ui.screen.tools.addholder
+package ui.screen.tools.root.tabs.toolholder
 
 import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
@@ -10,10 +10,10 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import usecase.ToolsUseCase
 
-class AddEditHolderScreenModel(
+class AddEditToolHolderScreenModel(
     val toolHolder: ToolHolder? = null,
     val toolsUseCase: ToolsUseCase
-) : StateScreenModel<AddEditHolderScreenModel.State>(State()) {
+) : StateScreenModel<AddEditToolHolderScreenModel.State>(State()) {
 
     data class State(
         val holderNumber: Int? = null,

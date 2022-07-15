@@ -16,7 +16,8 @@ import di.rememberScreenModel
 import screen.composables.TabbedContentView
 import screen.composables.ToolsTabItem
 import ui.screen.tools.Tools
-import ui.screen.tools.addholder.AddEditHolderScreen
+import ui.screen.tools.root.tabs.lathetool.AddEditLatheToolScreen
+import ui.screen.tools.root.tabs.toolholder.AddEditHolderScreen
 import ui.screen.tools.root.tabs.CuttingInsertsContent
 import ui.screen.tools.root.tabs.LatheToolsContent
 import ui.screen.tools.root.tabs.ToolHoldersContent
@@ -35,7 +36,9 @@ class ToolsRootScreen : Tools("Tools") {
             0 -> ExtendedFloatingActionButton(
                 text = { Text("New Holder") },
                 onClick = {
-                    navigator.push(AddEditHolderScreen())
+                    navigator.push(AddEditHolderScreen {
+                        screenModel.loadToolHolders()
+                    })
                 },
                 icon = {
                     Icon(
@@ -47,7 +50,9 @@ class ToolsRootScreen : Tools("Tools") {
             1 -> ExtendedFloatingActionButton(
                 text = { Text("New Tool") },
                 onClick = {
-                    //navigator.push(AddEditHolderScreen())
+                    navigator.push(AddEditLatheToolScreen {
+                        screenModel.loadLatheTools()
+                    })
                 },
                 icon = {
                     Icon(
@@ -69,8 +74,6 @@ class ToolsRootScreen : Tools("Tools") {
                 }
             )
         }
-
-
     }
 
     @Composable
@@ -87,12 +90,15 @@ class ToolsRootScreen : Tools("Tools") {
             when (it) {
                 ToolsTabItem.ToolHolders -> ToolHoldersContent(
                     state = state,
-                    onDelete = screenModel::deleteToolHolder,
+                    onDelete = screenModel::requestDeleteToolHolder,
                     onLoad = screenModel::loadToolHolder,
+                    onHolderChanged = screenModel::loadToolHolders,
                     modifier = tabContentModifier
                 )
                 ToolsTabItem.LatheTools -> LatheToolsContent(
                     state,
+                    onDelete = screenModel::requestDeleteLatheTool,
+                    onToolChanged = screenModel::loadLatheTools,
                     modifier = tabContentModifier
                 )
                 ToolsTabItem.CuttingInserts -> CuttingInsertsContent(
@@ -102,6 +108,21 @@ class ToolsRootScreen : Tools("Tools") {
                     modifier = tabContentModifier
                 )
             }
+        }
+
+        state.toolHolderDeleteModel?.let {
+            ToolHolderDeleteDialog(
+                deleteModel = it,
+                deleteClick = screenModel::deleteToolHolder,
+                abortClick = screenModel::cancelDeleteToolHolder
+            )
+        }
+        state.latheToolDeleteModel?.let {
+            LatheToolDeleteDialog(
+                deleteModel = it,
+                deleteClick = screenModel::deleteLatheTool,
+                abortClick = screenModel::cancelDeleteLatheTool
+            )
         }
     }
 }

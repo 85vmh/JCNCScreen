@@ -30,8 +30,10 @@ fun CuttingInsertEntity.toCuttingInsert(): CuttingInsert {
         code = code,
         tipRadius = tipRadius,
         tipAngle = tipAngle,
+        size = size
     )
 }
+
 class ToolsRepositoryImpl(
     private val scope: CoroutineScope,
     private val toolTableFilePath: ToolFilePath
@@ -82,7 +84,13 @@ class ToolsRepositoryImpl(
                 minBoreDiameter = minBoreDiameter ?: 0.0,
                 maxZDepth = maxZDepth ?: 0.0
             )
-            ToolType.DrillingReaming -> LatheTool.DrillingReaming(
+            ToolType.Drilling -> LatheTool.DrillingReaming(
+                toolId = id.value,
+                insert = null,
+                toolDiameter = toolDiameter!!,
+                maxZDepth = maxZDepth ?: 0.0
+            )
+            ToolType.Reaming -> LatheTool.DrillingReaming(
                 toolId = id.value,
                 insert = null,
                 toolDiameter = toolDiameter!!,

@@ -3,16 +3,10 @@ package screen.composables.tabtools
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.WindowPosition
-import androidx.compose.ui.window.rememberDialogState
 import org.kodein.di.compose.rememberInstance
 import screen.composables.DropDownSetting
 import screen.composables.tabconversational.InputSetting
@@ -44,7 +38,7 @@ fun AddEditToolView(
             settingName = "Tool Type",
             items = ToolType.values().map { it.text },
             dropDownWidth = 150.dp,
-            selected = toolState.toolType.value.text,
+            selectedItem = toolState.toolType.value.text,
             onValueChanged = {
                 toolState.toolType.value = ToolType.fromString(it)!!
             }
@@ -55,7 +49,7 @@ fun AddEditToolView(
             settingName = "Allowed Spindle Direction",
             items = AllowedSpindleDirection.values().map { it.text },
             dropDownWidth = 100.dp,
-            selected = toolState.spindleDirection.value.text,
+            selectedItem = toolState.spindleDirection.value.text,
             onValueChanged = {
                 toolState.spindleDirection.value = AllowedSpindleDirection.fromString(it)!!
             }

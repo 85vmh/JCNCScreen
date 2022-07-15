@@ -32,6 +32,7 @@ private enum class CuttingInsertsColumns(val text: String, val size: Dp = Dp.Uns
     Code("Code"),
     TipRadius("Tip Radius"),
     TipAngle("Tip Angle"),
+    Size("Size"),
     Actions("Actions", 140.dp),
 }
 
@@ -152,6 +153,12 @@ private fun CuttingInsertView(
             modifier = Modifier.weight(1f),
             textAlign = TextAlign.Center,
             text = item.tipAngle.toFixedDigitsString(1)
+        )
+        VerticalDivider()
+        Text(
+            modifier = Modifier.weight(1f),
+            textAlign = TextAlign.Center,
+            text = item.size.toFixedDigitsString(1)
         )
         VerticalDivider()
         Row(

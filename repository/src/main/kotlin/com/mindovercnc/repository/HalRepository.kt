@@ -30,7 +30,7 @@ interface HalRepository {
 
     fun getToolChangeRequest(): Flow<Boolean>
 
-    fun setToolChangedResponse()
+    suspend fun setToolChangedResponse()
 
     fun setAxisLimitXMin(value: Double)
 

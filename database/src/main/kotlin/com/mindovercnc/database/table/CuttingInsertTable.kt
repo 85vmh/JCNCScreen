@@ -8,4 +8,5 @@ object CuttingInsertTable : IntIdTable() {
     val code = varchar("code", 50)
     val tipRadius = double("tip_radius")
     val tipAngle = double("tip_angle")
+    val size = double("size")
 }

@@ -1,4 +1,4 @@
-package ui.screen.tools.addholder
+package ui.screen.tools.root.tabs.toolholder
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.*
@@ -19,12 +19,14 @@ import com.mindovercnc.model.ToolHolderType
 import di.rememberScreenModel
 import org.kodein.di.bindProvider
 import screen.composables.DropDownSetting
+import screen.composables.DropDownTools
 import screen.uimodel.InputType
 import ui.screen.manual.Manual
 import ui.widget.ValueSetting
 
 class AddEditHolderScreen(
-    private val toolHolder: ToolHolder? = null
+    private val toolHolder: ToolHolder? = null,
+    private val onChanges: () -> Unit
 ) : Manual(
     when (toolHolder) {
         null -> "Add Tool Holder"
@@ -34,7 +36,7 @@ class AddEditHolderScreen(
 
     @Composable
     override fun Actions() {
-        val screenModel: AddEditHolderScreenModel = when (toolHolder) {
+        val screenModel: AddEditToolHolderScreenModel = when (toolHolder) {
             null -> rememberScreenModel()
             else -> rememberScreenModel { bindProvider { toolHolder } }
         }
@@ -44,6 +46,7 @@ class AddEditHolderScreen(
             modifier = iconButtonModifier,
             onClick = {
                 screenModel.applyChanges()
+                onChanges.invoke()
                 navigator.pop()
             }) {
             Icon(
@@ -55,7 +58,7 @@ class AddEditHolderScreen(
 
     @Composable
     override fun Content() {
-        val screenModel: AddEditHolderScreenModel = when (toolHolder) {
+        val screenModel: AddEditToolHolderScreenModel = when (toolHolder) {
             null -> rememberScreenModel()
             else -> rememberScreenModel { bindProvider { toolHolder } }
         }
@@ -72,7 +75,7 @@ class AddEditHolderScreen(
 
 @Composable
 private fun AddEditHolderContent(
-    state: AddEditHolderScreenModel.State,
+    state: AddEditToolHolderScreenModel.State,
     onHolderNumber: (Int) -> Unit,
     onHolderType: (ToolHolderType) -> Unit,
     onLatheTool: (LatheTool) -> Unit
@@ -96,34 +99,29 @@ private fun AddEditHolderContent(
             settingName = "Holder Type",
             items = ToolHolderType.values().map { it.name },
             dropDownWidth = 150.dp,
-            selected = state.type.name,
+            selectedItem = state.type.name,
             onValueChanged = {
                 onHolderType(ToolHolderType.valueOf(it))
             }
         )
         if (state.latheToolsList.isNotEmpty()) {
-            DropDownSetting(
+            DropDownTools(
                 modifier = Modifier.width(300.dp),
                 settingName = "Lathe Tool",
-                items = state.latheToolsList.map { it.toolId.toString() },
+                items = state.latheToolsList,
+                selected = state.latheTool,
                 dropDownWidth = 300.dp,
-                selected = state.latheToolsList.first().toolId.toString(),
-                onValueChanged = { it ->
-                    val doubleValue = it.toDouble()
-                    val tool = state.latheToolsList.first { it.toolId == doubleValue.toInt() }
-                    onLatheTool(tool)
-                }
+                onValueChanged = onLatheTool
             )
         }
     }
-
 }
 
 @Composable
 @Preview
 fun AddEditHolderContentPreview() {
     AddEditHolderContent(
-        AddEditHolderScreenModel.State(),
+        AddEditToolHolderScreenModel.State(),
         {},
         {},
         {}

@@ -36,7 +36,7 @@ fun ThreadingParametersView(
             settingName = "Thread Type",
             items = SimpleCycleParameters.ThreadingParameters.ThreadType.values().map { it.name },
             dropDownWidth = 90.dp,
-            selected = parametersState.threadType.name,
+            selectedItem = parametersState.threadType.name,
             onValueChanged = { selectedValue ->
                 SimpleCycleParameters.ThreadingParameters.ThreadType.values()
                     .find { it.name == selectedValue }

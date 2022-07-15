@@ -11,15 +11,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.mindovercnc.model.LatheTool
 
 @Composable
-fun <T> DropDownSetting(
+fun DropDownTools(
     settingName: String,
-    items: List<T>,
-    selectedItem: T?,
+    items: List<LatheTool>,
+    selected: LatheTool?,
     dropDownWidth: Dp,
     modifier: Modifier = Modifier,
-    onValueChanged: (T) -> Unit
+    onValueChanged: (LatheTool) -> Unit
 ) {
     val alignment = Alignment.CenterVertically
     Row(
@@ -32,7 +33,7 @@ fun <T> DropDownSetting(
         )
         DropDownView(
             items = items,
-            selected = selectedItem,
+            selected = selected,
             modifier = Modifier
                 .width(dropDownWidth)
                 .border(border = BorderStroke(1.dp, Color.LightGray), shape = RoundedCornerShape(4.dp)),
@@ -42,15 +43,15 @@ fun <T> DropDownSetting(
                     modifier = Modifier.height(40.dp)
                 ) {
                     val text = when {
-                        it != null -> it.toString()
-                        else -> "Select Item"
+                        it != null -> "Tool #${it.toolId}"
+                        else -> "Select Tool"
                     }
-                    Text(text = text)
+                    Text(text)
                 }
             },
             openedItemContent = {
                 Text(
-                    it.toString(),
+                    text = "Tool #${it.toolId}",
                     modifier = Modifier.width(dropDownWidth)
                         .padding(8.dp)
                 )

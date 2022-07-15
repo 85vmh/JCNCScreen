@@ -19,6 +19,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import com.mindovercnc.model.CuttingInsert
 import com.mindovercnc.model.LatheTool
 import extensions.draggableScroll
@@ -26,6 +28,7 @@ import extensions.toFixedDigitsString
 import screen.composables.LabelWithValue
 import screen.composables.VerticalDivider
 import screen.composables.platform.VerticalScrollbar
+import ui.screen.tools.root.tabs.lathetool.AddEditLatheToolScreen
 import ui.screen.tools.root.ToolsScreenModel
 
 private val itemModifier = Modifier.fillMaxWidth()
@@ -44,9 +47,12 @@ private enum class LatheToolColumns(val text: String, val size: Dp = Dp.Unspecif
 @Composable
 fun LatheToolsContent(
     state: ToolsScreenModel.State,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onDelete: (LatheTool) -> Unit,
+    onToolChanged: () -> Unit
 ) {
     val scope = rememberCoroutineScope()
+    val navigator = LocalNavigator.currentOrThrow
 
     Box(
         modifier = modifier
@@ -67,8 +73,12 @@ fun LatheToolsContent(
                     GenericToolView(
                         index = index,
                         item = item,
-                        onEditClicked = {},
-                        onDeleteClicked = {},
+                        onEditClicked = {
+                            navigator.push(AddEditLatheToolScreen(it) {
+                                onToolChanged.invoke()
+                            })
+                        },
+                        onDeleteClicked = onDelete,
                         modifier = itemModifier
                     ) {
                         when (item) {

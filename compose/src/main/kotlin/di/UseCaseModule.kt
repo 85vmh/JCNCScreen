@@ -79,6 +79,14 @@ val UseCaseModule = DI.Module("UseCase") {
     }
 
     bindSingleton {
+        ManualToolChangeUseCase(
+            scope = instance(tag = "app_scope"),
+            statusRepository = instance(),
+            halRepository = instance(),
+        )
+    }
+
+    bindSingleton {
         OffsetsUseCase(
             statusRepository = instance(),
             commandRepository = instance(),

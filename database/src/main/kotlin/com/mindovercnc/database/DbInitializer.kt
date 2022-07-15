@@ -60,9 +60,17 @@ object DbInitializer {
 
     private fun createDummyTools() {
         LatheToolEntity.new {
+            insert = getInsertByCode("DCMT")
+            type = ToolType.Turning
+            tipOrientation = TipOrientation.Position2.orient
+            frontAngle = 0.0
+            backAngle = 0.0
+            spindleDirection = SpindleDirection.Reverse
+        }
+        LatheToolEntity.new {
             insert = getInsertByCode("VCMT")
             type = ToolType.Turning
-            tipOrientation = TipOrientation.Position7.orient
+            tipOrientation = TipOrientation.Position2.orient
             frontAngle = 0.0
             backAngle = 0.0
             spindleDirection = SpindleDirection.Reverse
@@ -70,7 +78,7 @@ object DbInitializer {
         LatheToolEntity.new {
             insert = getInsertByCode("CCMT")
             type = ToolType.Boring
-            tipOrientation = TipOrientation.Position7.orient
+            tipOrientation = TipOrientation.Position3.orient
             frontAngle = 0.0
             backAngle = 0.0
             spindleDirection = SpindleDirection.Reverse
@@ -78,7 +86,7 @@ object DbInitializer {
             maxZDepth = 50.0
         }
         LatheToolEntity.new {
-            insert = getInsertByCode("CCMT")
+            insert = getInsertByCode("VCMT")
             tipOrientation = TipOrientation.Position7.orient
             spindleDirection = SpindleDirection.Reverse
             type = ToolType.Parting
@@ -86,7 +94,7 @@ object DbInitializer {
             maxXDepth = 20.0
         }
         LatheToolEntity.new {
-            type = ToolType.DrillingReaming
+            type = ToolType.Drilling
             tipOrientation = TipOrientation.Position7.orient
             spindleDirection = SpindleDirection.Reverse
             toolDiameter = 8.0
@@ -103,25 +111,29 @@ object DbInitializer {
             madeOf = MadeOf.Carbide
             code = "CCMT"
             tipRadius = 0.8
-            tipAngle = 0.0
+            tipAngle = 80.0
+            size = 9.5
+        }
+        CuttingInsertEntity.new {
+            madeOf = MadeOf.Carbide
+            code = "DCMT"
+            tipRadius = 0.8
+            tipAngle = 55.0
+            size = 9.5
         }
         CuttingInsertEntity.new {
             madeOf = MadeOf.Carbide
             code = "VCMT"
             tipRadius = 0.8
-            tipAngle = 0.0
+            tipAngle = 35.0
+            size = 9.5
         }
         CuttingInsertEntity.new {
             madeOf = MadeOf.Carbide
             code = "TCMT"
             tipRadius = 0.8
-            tipAngle = 0.0
-        }
-        CuttingInsertEntity.new {
-            madeOf = MadeOf.Carbide
-            code = "WNMG"
-            tipRadius = 0.8
-            tipAngle = 0.0
+            tipAngle = 60.0
+            size = 13.0
         }
     }
 }
