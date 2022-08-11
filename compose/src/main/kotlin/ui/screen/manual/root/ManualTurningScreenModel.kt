@@ -18,7 +18,8 @@ class ManualTurningScreenModel(
     private val manualPositionUseCase: ManualPositionUseCase,
     private val toolsUseCase: ToolsUseCase,
     private val offsetsUseCase: OffsetsUseCase,
-    private val virtualLimitsUseCase: VirtualLimitsUseCase
+    private val virtualLimitsUseCase: VirtualLimitsUseCase,
+    simpleCyclesUseCase: SimpleCyclesUseCase
 ) : StateScreenModel<ManualTurningScreenModel.State>(State()) {
 
     data class State(
@@ -111,6 +112,18 @@ class ManualTurningScreenModel(
             .onEach {
                 mutableState.update { currentState ->
                     currentState.copy(xCoordinateUiModel = it.first, zCoordinateUiModel = it.second)
+                }
+            }.launchIn(coroutineScope)
+
+        simpleCyclesUseCase.simpleCycleParameters
+            .onEach { cycleParams ->
+                mutableState.update {
+                    it.copy(
+                        simpleCycleUiModel = when {
+                            cycleParams != null -> SimpleCycleUiModel(cycleParams)
+                            else -> null
+                        }
+                    )
                 }
             }.launchIn(coroutineScope)
     }

@@ -21,6 +21,7 @@ import ui.screen.tools.root.tabs.toolholder.AddEditHolderScreen
 import ui.screen.tools.root.tabs.CuttingInsertsContent
 import ui.screen.tools.root.tabs.LatheToolsContent
 import ui.screen.tools.root.tabs.ToolHoldersContent
+import ui.screen.tools.root.tabs.cuttinginsert.AddEditCuttingInsertScreen
 
 private val tabContentModifier = Modifier.fillMaxWidth()
 
@@ -47,6 +48,7 @@ class ToolsRootScreen : Tools("Tools") {
                     )
                 }
             )
+
             1 -> ExtendedFloatingActionButton(
                 text = { Text("New Tool") },
                 onClick = {
@@ -61,10 +63,13 @@ class ToolsRootScreen : Tools("Tools") {
                     )
                 }
             )
+
             2 -> ExtendedFloatingActionButton(
                 text = { Text("New Insert") },
                 onClick = {
-                    //navigator.push(AddEditHolderScreen())
+                    navigator.push(AddEditCuttingInsertScreen {
+                        screenModel.loadCuttingInserts()
+                    })
                 },
                 icon = {
                     Icon(
@@ -95,16 +100,18 @@ class ToolsRootScreen : Tools("Tools") {
                     onHolderChanged = screenModel::loadToolHolders,
                     modifier = tabContentModifier
                 )
+
                 ToolsTabItem.LatheTools -> LatheToolsContent(
                     state,
                     onDelete = screenModel::requestDeleteLatheTool,
                     onToolChanged = screenModel::loadLatheTools,
                     modifier = tabContentModifier
                 )
+
                 ToolsTabItem.CuttingInserts -> CuttingInsertsContent(
                     state,
-                    onEdit = screenModel::editCuttingInsert,
                     onDelete = screenModel::deleteCuttingInsert,
+                    onInsertChanged = screenModel::loadCuttingInserts,
                     modifier = tabContentModifier
                 )
             }

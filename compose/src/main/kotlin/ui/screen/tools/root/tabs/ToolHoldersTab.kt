@@ -114,6 +114,7 @@ fun ToolHolderHeader(
                 Text(
                     modifier = textModifier,
                     textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.titleSmall,
                     text = it.text
                 )
                 if (it != ToolHolderColumn.values().last()) {

@@ -28,7 +28,15 @@ sealed class LatheTool(
         override val secondsUsed: Double = 0.0
     ) : LatheTool(toolId, tipOrientation, spindleDirection, secondsUsed)
 
-    data class DrillingReaming(
+    data class Drilling(
+        override val toolId: Int? = null,
+        val insert: CuttingInsert? = null,
+        val toolDiameter: Double,
+        val maxZDepth: Double,
+        override val secondsUsed: Double = 0.0
+    ) : LatheTool(toolId, TipOrientation.Position7, SpindleDirection.Reverse, secondsUsed)
+
+    data class Reaming(
         override val toolId: Int? = null,
         val insert: CuttingInsert? = null,
         val toolDiameter: Double,
@@ -67,6 +75,7 @@ sealed class LatheTool(
         val insert: CuttingInsert,
         val minPitch: Double,
         val maxPitch: Double,
+        val maxZDepth: Double? = null,
         override val secondsUsed: Double = 0.0
     ) : LatheTool(toolId, TipOrientation.Position8, SpindleDirection.Reverse, secondsUsed)
 

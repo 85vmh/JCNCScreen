@@ -247,12 +247,14 @@ class ManualTurningScreen : Manual("Manual Turning") {
                 )
             }
             state.simpleCycleUiModel?.let {
-                SimpleCycleStatusView(
-                    null,
-                    Modifier.width(380.dp)
-                        .padding(8.dp)
-                        .clickable(onClick = { })
-                )
+                with(it.simpleCycleParameters) {
+                    SimpleCycleStatusView(
+                        simpleCycleParameters = this,
+                        modifier = Modifier.width(380.dp)
+                            .padding(8.dp)
+                            .clickable(onClick = { navigator.push(SimpleCyclesScreen(simpleCycle)) })
+                    )
+                }
             }
             Row(
                 modifier = Modifier.height(60.dp)

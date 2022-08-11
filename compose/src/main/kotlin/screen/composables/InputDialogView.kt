@@ -3,15 +3,18 @@ package screen.composables
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material.PopupAlertDialogProvider
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -33,21 +36,34 @@ fun InputDialogView(
                     style = MaterialTheme.typography.titleLarge
                 )
                 Spacer(Modifier.height(8.dp))
-
                 OutlinedTextField(
+                    singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
                     value = valueAsString,
+                    textStyle = TextStyle(
+                        fontSize = 24.sp,
+                        textAlign = TextAlign.End
+                    ),
                     onValueChange = {},
                     readOnly = true,
+                    leadingIcon = {
+                        IconButton(
+                            modifier = Modifier.size(48.dp),
+                            onClick = { numPadState.clearAll() }
+                        ) {
+                            Icon(Icons.Default.Delete, contentDescription = "")
+                        }
+                    },
                     trailingIcon = {
                         IconButton(
                             modifier = Modifier.size(48.dp),
                             onClick = { numPadState.deleteChar() }
                         ) {
-                            Icon(Icons.Default.ArrowBack, contentDescription = "Backspace")
+                            Icon(Icons.Default.ArrowBack, contentDescription = "")
                         }
                     }
                 )
+                Spacer(Modifier.height(8.dp))
                 NumPadView(
                     modifier = Modifier.fillMaxWidth(),
                     state = numPadState
@@ -57,8 +73,7 @@ fun InputDialogView(
         confirmButton = {
             Button(
                 onClick = {
-                    val xx = valueAsString.toDouble()
-                    onSubmit(xx)
+                    onSubmit(valueAsString.toDouble())
                 },
                 enabled = valueAsString.toDoubleOrNull() != null
             ) {

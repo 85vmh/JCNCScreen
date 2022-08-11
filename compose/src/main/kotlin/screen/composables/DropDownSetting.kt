@@ -14,10 +14,11 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun <T> DropDownSetting(
-    settingName: String,
+    settingName: String? = null,
     items: List<T>,
     selectedItem: T?,
     dropDownWidth: Dp,
+    nothingSelectedString: String = "Select Item",
     modifier: Modifier = Modifier,
     onValueChanged: (T) -> Unit
 ) {
@@ -26,10 +27,12 @@ fun <T> DropDownSetting(
         verticalAlignment = alignment,
         modifier = modifier
     ) {
-        Text(
-            text = settingName,
-            modifier = Modifier.weight(1f)
-        )
+        settingName?.let {
+            Text(
+                text = it,
+                modifier = Modifier.weight(1f)
+            )
+        }
         DropDownView(
             items = items,
             selected = selectedItem,
@@ -43,7 +46,7 @@ fun <T> DropDownSetting(
                 ) {
                     val text = when {
                         it != null -> it.toString()
-                        else -> "Select Item"
+                        else -> nothingSelectedString
                     }
                     Text(text = text)
                 }

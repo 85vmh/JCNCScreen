@@ -1,10 +1,13 @@
 package ui.screen.tools.root.tabs
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Delete
@@ -28,8 +31,10 @@ import extensions.toFixedDigitsString
 import screen.composables.LabelWithValue
 import screen.composables.VerticalDivider
 import screen.composables.platform.VerticalScrollbar
-import ui.screen.tools.root.tabs.lathetool.AddEditLatheToolScreen
 import ui.screen.tools.root.ToolsScreenModel
+import ui.screen.tools.root.tabs.lathetool.AddEditLatheToolScreen
+import ui.screen.tools.root.tabs.lathetool.DirectionItem
+import ui.screen.tools.root.tabs.lathetool.TipOrientation
 
 private val itemModifier = Modifier.fillMaxWidth()
 
@@ -37,8 +42,8 @@ private enum class LatheToolColumns(val text: String, val size: Dp = Dp.Unspecif
     Id("ID", 50.dp),
     ToolType("Type", 100.dp),
     Details("Tool Details"),
-    Orientation("Orientation", 100.dp),
-    Rotation("Rotation", 100.dp),
+    Orientation("Orient", 60.dp),
+    Rotation("Spindle", 60.dp),
     Usage("Usage", 100.dp),
     Actions("Actions", 140.dp),
 }
@@ -90,7 +95,7 @@ fun LatheToolsContent(
                                 item = item,
                                 modifier = itemModifier
                             )
-                            is LatheTool.DrillingReaming -> DrillingReamingToolView(
+                            is LatheTool.Drilling -> DrillingToolView(
                                 item = item,
                                 modifier = itemModifier
                             )
@@ -136,6 +141,7 @@ fun LatheToolHeader(
                 Text(
                     modifier = textModifier,
                     textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.titleSmall,
                     text = it.text
                 )
                 if (it != LatheToolColumns.values().last()) {
@@ -183,19 +189,25 @@ private fun GenericToolView(
             content.invoke()
         }
         VerticalDivider()
-        Text(
-            text = item.tipOrientation.name,
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier.width(LatheToolColumns.Orientation.size)
-        )
+        Row(
+            modifier = Modifier.width(LatheToolColumns.Orientation.size),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            TipOrientation(
+                orientation = item.tipOrientation,
+                modifier = Modifier
+                    .padding(8.dp)
+                    .border(border = BorderStroke(1.dp, Color.LightGray), shape = RoundedCornerShape(4.dp))
+                    .padding(8.dp)
+            )
+        }
         VerticalDivider()
-        Text(
-            text = item.spindleDirection.name,
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier.width(LatheToolColumns.Rotation.size)
-        )
+        Row(
+            modifier = Modifier.width(LatheToolColumns.Rotation.size).padding(8.dp),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            DirectionItem(spindleDirection = item.spindleDirection)
+        }
         VerticalDivider()
         UsageTime(
             seconds = item.secondsUsed,
@@ -262,8 +274,8 @@ private fun BoringToolView(
 }
 
 @Composable
-private fun DrillingReamingToolView(
-    item: LatheTool.DrillingReaming,
+private fun DrillingToolView(
+    item: LatheTool.Drilling,
     modifier: Modifier = Modifier,
 ) {
     LabelWithValue(
@@ -318,7 +330,7 @@ fun CutterProperties(
         )
 
         Text(
-            text = insert.code,
+            text = insert.code ?: "--",
             style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.Bold
         )

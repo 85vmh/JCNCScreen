@@ -15,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
@@ -26,7 +27,8 @@ fun <T> DropDownView(
     onSelected: (T) -> Unit,
     closedItemContent: @Composable (T?) -> Unit,
     openedItemContent: @Composable (T) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    dropDownListModifier: Modifier = Modifier
 ) {
     var isOpen by remember {
         mutableStateOf(false)
@@ -40,7 +42,7 @@ fun <T> DropDownView(
     ) {
         closedItemContent(selected)
         DropDownList(
-            modifier = Modifier,
+            modifier = dropDownListModifier,
             requestToOpen = isOpen,
             list = items,
             onDismiss = { isOpen = false },
@@ -63,6 +65,7 @@ fun DropDownClosedItem(
         content.invoke()
         Icon(
             imageVector = Icons.Default.ArrowDropDown,
+            tint = Color.LightGray,
             contentDescription = null
         )
     }
@@ -71,6 +74,7 @@ fun DropDownClosedItem(
 @Composable
 private fun <T> DropDownList(
     modifier: Modifier = Modifier,
+    columnModifier: Modifier = Modifier,
     requestToOpen: Boolean = false,
     list: List<T>,
     onDismiss: () -> Unit,
@@ -78,7 +82,7 @@ private fun <T> DropDownList(
     itemContent: @Composable (T) -> Unit
 ) {
     DropdownMenu(
-        modifier = modifier,
+        modifier = columnModifier,
         expanded = requestToOpen,
         onDismissRequest = onDismiss,
     ) {

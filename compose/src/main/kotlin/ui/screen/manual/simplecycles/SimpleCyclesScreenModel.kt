@@ -38,11 +38,9 @@ class SimpleCyclesScreenModel(
     }
 
     fun applyChanges() {
-        coroutineScope.launch {
-            mutableState.value.simpleCycleParameters?.let {
-                simpleCyclesUseCase.applyParameters(it)
-                simpleCyclesUseCase.isInEditMode = false
-            }
+        mutableState.value.simpleCycleParameters?.let {
+            simpleCyclesUseCase.applyParameters(it)
+            simpleCyclesUseCase.isInEditMode = false
         }
     }
 

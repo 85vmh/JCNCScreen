@@ -1,5 +1,9 @@
 package com.mindovercnc.model
 
+/**
+ * This represents a 1:1 mapping with a line from tool.tbl file.
+ * This file is the one used by linuxcnc to get awareness about the tool.
+ */
 data class LinuxCncTool(
     val toolNo: Int,
     val pocket: Int = toolNo,

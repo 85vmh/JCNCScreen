@@ -1,5 +1,7 @@
 package ui.screen.manual.root
 
+import usecase.model.SimpleCycleParameters
+
 data class CoordinateUiModel(
     val axis: Axis,
     val primaryValue: Double,
@@ -58,4 +60,6 @@ data class WcsOffset(
     val zOffset: Double
 )
 
-interface SimpleCycleUiModel
+data class SimpleCycleUiModel(
+    val simpleCycleParameters: SimpleCycleParameters
+)

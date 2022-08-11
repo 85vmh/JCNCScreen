@@ -16,6 +16,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import extensions.toFixedDigits
+import extensions.toFixedDigitsString
 import screen.uimodel.InputType
 import screen.uimodel.NumInputParameters
 import screen.uimodel.NumericInputs
@@ -64,10 +66,10 @@ class NumPadState(
     val inputType: InputType? = null,
     val onSubmitAction: (Double) -> Unit = {}
 ) {
-//    private val defaultValue = initialValue?.toFixedDigits(numInputParameters.maxDecimalPlaces)
-//        ?: numInputParameters.initialValue.toFixedDigits(numInputParameters.maxDecimalPlaces)
+    private val defaultValue = initialValue?.toFixedDigitsString(numInputParameters.maxDecimalPlaces)
+        ?: numInputParameters.initialValue.toFixedDigitsString(numInputParameters.maxDecimalPlaces)
 
-    val stringValueState = mutableStateOf(initialValue?.toString() ?: "")
+    val stringValueState = mutableStateOf(defaultValue)
 
     val signKey: String
         get() = if (numInputParameters.allowsNegativeValues) "+/-" else ""
@@ -95,11 +97,15 @@ class NumPadState(
             stringValueState.value = stringValueState.value.dropLast(1)
         }
     }
+
+    fun clearAll() {
+        stringValueState.value = ""
+    }
 }
 
 private val numPadKeyModifier = Modifier
-    .padding(horizontal = 16.dp, vertical = 16.dp)
-    .size(50.dp)
+    .padding(16.dp)
+    .size(60.dp)
 
 @Composable
 fun NumPadRow(
@@ -118,7 +124,7 @@ fun NumPadRow(
                     modifier = numPadKeyModifier
                 )
             } else {
-                Spacer(modifier = modifier)
+                Spacer(modifier = numPadKeyModifier)
             }
         }
     }
@@ -137,13 +143,14 @@ fun NumPadKey(
         onClick = {
             onClick(key)
         },
-        shadowElevation = 8.dp,
+        shadowElevation = 16.dp,
         color = MaterialTheme.colorScheme.secondary
     ) {
         Text(
             modifier = Modifier.fillMaxSize()
                 .wrapContentSize(),
             text = key,
+            style = MaterialTheme.typography.titleMedium,
             textAlign = TextAlign.Center
         )
     }

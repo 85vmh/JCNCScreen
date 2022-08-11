@@ -11,14 +11,12 @@ import org.jetbrains.skia.Paint
 open class RulerActor(
     private val placement: Placement,
     private val pixelPerUnit: Float,
-    private val start: Offset,
     private val minValue: Double,
     private val maxValue: Double,
     private val diameterMode: Boolean = false,
     private val thickness: Float = 1f,
     private val shortLineLength: Float = 6f,
     private val longLineLength: Float = 12f,
-    private val pathEffect: PathEffect? = null,
     private val lineColor: Color = Color.Black,
     private val lastTickColor: Color = Color.Red,
 ) : CanvasActor {
@@ -33,9 +31,6 @@ open class RulerActor(
             pixelPerUnit in 4f..20f -> 1
             else -> 1
         }
-
-        var firstTickStartOffset: Offset? = null
-        var lastTickStartOffset: Offset? = null
 
         //values are in mm, but the range of a tick will be from 10mm to 0.1mm with default being 1mm
         val rangeStart = (minValue).toInt()
@@ -71,10 +66,10 @@ open class RulerActor(
         }
 
         val tickStartOffset = when (placement) {
-            Placement.Top -> Offset(start.x + aValue * pixelPerUnit, start.y)
-            Placement.Bottom -> Offset(start.x + aValue * pixelPerUnit, start.y)
-            Placement.Left -> Offset(start.x, start.y + aValue * pixelPerUnit)
-            Placement.Right -> Offset(start.x, start.y + aValue * pixelPerUnit)
+            Placement.Top -> Offset(aValue * pixelPerUnit, 0f)
+            Placement.Bottom -> Offset(aValue * pixelPerUnit, drawScope.size.height)
+            Placement.Left -> Offset(0f, aValue * pixelPerUnit)
+            Placement.Right -> Offset(drawScope.size.width, aValue * pixelPerUnit)
         }
 
         val tickEndOffset = when (placement) {
@@ -83,15 +78,6 @@ open class RulerActor(
             Placement.Left -> tickStartOffset.plus(Offset(x = tickLength, y = 0f))
             Placement.Right -> tickStartOffset.minus(Offset(x = tickLength, y = 0f))
         }
-
-        //Draw the connecting line
-//        drawScope.drawLine(
-//            start = firstTickStartOffset,
-//            end = lastTickStartOffset,
-//            color = lineColor,
-//            strokeWidth = thickness,
-//            pathEffect = pathEffect
-//        )
 
         drawScope.drawLine(
             start = tickStartOffset,

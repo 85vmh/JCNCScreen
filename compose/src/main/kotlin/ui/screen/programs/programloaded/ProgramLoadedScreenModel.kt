@@ -1,15 +1,11 @@
 package ui.screen.programs.programloaded
 
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.unit.IntSize
 import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
-import canvas.addArc
-import canvas.addLine
-import canvas.toOffset
+import canvas.PathActor
 import com.mindovercnc.model.MachineLimits
-import com.mindovercnc.model.PathElement
 import com.mindovercnc.model.Point2D
 import com.mindovercnc.repository.IniFileRepository
 import kotlinx.coroutines.flow.filterNotNull
@@ -21,6 +17,7 @@ import screen.composables.editor.Editor
 import screen.uimodel.PositionModel
 import usecase.*
 import usecase.model.ActiveCode
+import usecase.model.PathUiState
 import usecase.model.ProgramData
 import usecase.model.VisualTurningState
 import java.io.File
@@ -78,10 +75,7 @@ class ProgramLoadedScreenModel(
                 mutableState.update {
                     it.copy(
                         currentWcs = wcs.coordinateSystem,
-                        visualTurningState = it.visualTurningState.copy(
-                            currentWcs = wcs.coordinateSystem,
-                            wcsPosition = Point2D(wcs.xOffset, wcs.zOffset)
-                        )
+                        visualTurningState = it.visualTurningState.copyWithWcs(wcs)
                     )
                 }
             }
@@ -89,19 +83,21 @@ class ProgramLoadedScreenModel(
 
         coroutineScope.launch {
             val pathElements = gCodeUseCase.getPathElements(file)
-            val initialProgramData = pathElements.toProgramData()
+            val initialPathActor = PathActor(pathElements)
             val defaultPixelsPerUnit = calculateDefaultPxPerUnit(
                 viewportSize = mutableState.value.visualTurningState.viewportSize,
-                programSize = initialProgramData.programSize,
+                programSize = initialPathActor.programSize,
             )
-            val scaledProgramData = pathElements.toProgramData(defaultPixelsPerUnit)
+            val pathActor = initialPathActor.rescaled(defaultPixelsPerUnit)
+            val pathUiState = PathUiState(pathActor)
             mutableState.update {
+                val rulers = it.visualTurningState.programRulers.rescaled(defaultPixelsPerUnit)
                 it.copy(
                     visualTurningState = it.visualTurningState.copy(
-                        pathElements = pathElements,
-                        programData = scaledProgramData,
+                        pathUiState = pathUiState,
+                        programRulers = rulers,
                         defaultPixelsPerUnit = defaultPixelsPerUnit,
-                        translate = scaledProgramData.getInitialTranslate(
+                        translate = pathUiState.getInitialTranslate(
                             viewportSize = it.visualTurningState.viewportSize
                         )
                     )
@@ -178,23 +174,21 @@ class ProgramLoadedScreenModel(
             }.launchIn(coroutineScope)
     }
 
-    fun zoomOut() {
-        setNewScale(mutableState.value.visualTurningState.scale / 1.1f)
-    }
+    fun zoomOut() = setNewScale(mutableState.value.visualTurningState.scale / 1.1f)
 
-    fun zoomIn() {
-        setNewScale(mutableState.value.visualTurningState.scale * 1.1f)
-    }
+    fun zoomIn() = setNewScale(mutableState.value.visualTurningState.scale * 1.1f)
 
     private fun setNewScale(newScale: Float) {
         mutableState.update {
             val pixelPerUnit = it.visualTurningState.defaultPixelsPerUnit * newScale
-            val scaledProgramData = it.visualTurningState.pathElements.toProgramData(pixelPerUnit)
+            val pathUiState = it.visualTurningState.pathUiState.rescaled(pixelPerUnit)
+            val rulers = it.visualTurningState.programRulers.rescaled(pixelPerUnit)
             it.copy(
                 visualTurningState = it.visualTurningState.copy(
                     scale = newScale,
-                    programData = scaledProgramData,
-                    translate = scaledProgramData.getInitialTranslate(
+                    pathUiState = pathUiState,
+                    programRulers = rulers,
+                    translate = pathUiState.getInitialTranslate(
                         viewportSize = it.visualTurningState.viewportSize
                     )
                 )
@@ -210,7 +204,7 @@ class ProgramLoadedScreenModel(
                 )
             )
         }
-        println("Translate: ${mutableState.value.visualTurningState.translate}")
+        //println("Translate: ${mutableState.value.visualTurningState.translate}")
     }
 
     fun setViewportSize(size: IntSize) {
@@ -254,44 +248,5 @@ class ProgramLoadedScreenModel(
         val widthRatio = drawableWidth.div(programSize.width)
         val heightRatio = drawableHeight.div(programSize.height)
         return min(widthRatio, heightRatio)
-    }
-
-    private fun List<PathElement>.toProgramData(pixelPerUnit: Float = 1f): ProgramData {
-        val fp = Path()
-        val tp = Path()
-        forEach {
-            when (it) {
-                is PathElement.Line -> {
-                    when (it.type) {
-                        PathElement.Line.Type.Feed -> fp.addLine(it, pixelPerUnit)
-                        PathElement.Line.Type.Traverse -> tp.addLine(it, pixelPerUnit)
-                    }
-                }
-                is PathElement.Arc -> fp.addArc(it, pixelPerUnit)
-            }
-        }
-        fp.close()
-        tp.close()
-
-        return ProgramData(
-            feedPath = fp,
-            traversePath = tp
-        )
-    }
-
-    private fun List<Point2D>.toPath(pixelPerUnit: Float): Path {
-        val path = Path()
-        val previousPoint = firstOrNull()
-        if (previousPoint != null) {
-            with(previousPoint.toOffset(pixelPerUnit)) {
-                path.moveTo(x, y)
-            }
-            this.forEach {
-                with(it.toOffset(pixelPerUnit)) {
-                    path.lineTo(x, y)
-                }
-            }
-        }
-        return path
     }
 }

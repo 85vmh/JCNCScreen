@@ -10,7 +10,7 @@ fun DrillingReamingView(
     toolState: AddEditToolState
 ) {
 
-    InputSetting(inputType = InputType.DIAMETER, value = toolState.diameter.value.toString()) {
+    InputSetting(inputType = InputType.TOOL_DIAMETER, value = toolState.diameter.value.toString()) {
         toolState.diameter.value = it.toDouble()
     }
 }

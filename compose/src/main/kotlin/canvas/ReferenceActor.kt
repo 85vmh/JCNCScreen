@@ -9,8 +9,8 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.toArgb
 import org.jetbrains.skia.Paint
 
-open class ReferenceActor(
-    private val radius: Float,
+data class ReferenceActor(
+    private val radius: Float = 10f,
     private val text: String? = null,
     private val textOffset: Offset = Offset.Zero,
     private val thickness: Float = 1f,

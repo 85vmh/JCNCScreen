@@ -1,10 +1,10 @@
 package usecase
 
+import com.mindovercnc.linuxcnc.model.TaskMode
 import com.mindovercnc.repository.CncCommandRepository
 import com.mindovercnc.repository.CncStatusRepository
 import com.mindovercnc.repository.HalRepository
 import com.mindovercnc.repository.SettingsRepository
-import com.mindovercnc.linuxcnc.model.TaskMode
 import extensions.stripZeros
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -12,7 +12,6 @@ import kotlinx.coroutines.flow.*
 import screen.uimodel.SimpleCycle
 import usecase.model.SimpleCycleParameters
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class SimpleCyclesUseCase(
     scope: CoroutineScope,
     private val statusRepository: CncStatusRepository,
@@ -38,7 +37,6 @@ class SimpleCyclesUseCase(
                     commandRepository.setTaskMode(TaskMode.TaskModeManual)
                 } else {
                     _simpleCycleParameters.value = null
-                    _simpleCycleParameters.resetReplayCache()
                 }
             }.launchIn(scope)
 
@@ -174,6 +172,6 @@ class SimpleCyclesUseCase(
     }
 
     private suspend fun isCycleRunning() = statusRepository.cncStatusFlow()
-        .map { it.isInMdiMode }
+        .map { it.isInMdiMode } //TODO: check also the interpreter state
         .first()
 }

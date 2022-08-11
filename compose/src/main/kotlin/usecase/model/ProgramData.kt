@@ -23,9 +23,9 @@ data class ProgramData(
             height = feedPath.getBounds().bottom //we consider it from center line which is always 0
         )
 
-    val xAxisLength get() = feedPath.getBounds().bottom
+    val xPlusExtents get() = feedPath.getBounds().bottom
 
-    val zAxisLength get() = feedPath.getBounds().right
+    val zPlusExtents get() = feedPath.getBounds().right
 
     fun getInitialTranslate(
         viewportSize: IntSize

@@ -17,6 +17,7 @@ import ui.screen.status.StatusRootScreenModel
 import ui.screen.tools.root.tabs.lathetool.AddEditLatheToolScreenModel
 import ui.screen.tools.root.tabs.toolholder.AddEditToolHolderScreenModel
 import ui.screen.tools.root.ToolsScreenModel
+import ui.screen.tools.root.tabs.cuttinginsert.AddEditCuttingInsertScreenModel
 
 val ScreenModelModule = DI.Module("ScreenModel") {
     bindProvider {
@@ -25,6 +26,7 @@ val ScreenModelModule = DI.Module("ScreenModel") {
 
     bindProvider {
         ManualTurningScreenModel(
+            instance(),
             instance(),
             instance(),
             instance(),
@@ -82,6 +84,13 @@ val ScreenModelModule = DI.Module("ScreenModel") {
     bindProvider {
         AddEditLatheToolScreenModel(
             latheTool = instanceOrNull(),
+            toolsUseCase = instance()
+        )
+    }
+
+    bindProvider {
+        AddEditCuttingInsertScreenModel(
+            cuttingInsert = instanceOrNull(),
             toolsUseCase = instance()
         )
     }

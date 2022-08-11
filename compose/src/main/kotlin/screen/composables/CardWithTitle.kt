@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Divider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -14,14 +15,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 
 @Composable
 fun CardWithTitle(
     cardTitle: String,
-    titleSize: TextUnit = 20.sp,
     contentSpacing: Dp = 8.dp,
     modifier: Modifier = Modifier,
     borderColor: Color = Color.DarkGray,
@@ -42,7 +40,7 @@ fun CardWithTitle(
             Text(
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally),
-                fontSize = titleSize,
+                style = MaterialTheme.typography.titleMedium,
                 text = cardTitle
             )
             Divider(

@@ -42,4 +42,25 @@ sealed class InsertShape {
                 addOval(Rect(Offset.Zero, radius))
             }
     }
+
+    data class Drill(
+        val diameter: Float,
+        val visibleLength: Float = diameter * 3,
+        val tipAngle: Float = 118f
+    ) : InsertShape() {
+
+        val radius = diameter / 2
+        private val adjacentLength = radius / abs(tan(Math.toRadians(tipAngle / 2.toDouble()))).toFloat()
+
+        override val path: Path
+            get() = Path().apply {
+                moveTo(x = 0f, y = 0f)
+                lineTo(x = adjacentLength, y = -radius)
+                lineTo(x = visibleLength - adjacentLength, y = -radius)
+                lineTo(x = visibleLength - adjacentLength, y = radius)
+                lineTo(x = adjacentLength, y = radius)
+                close()
+            }
+
+    }
 }

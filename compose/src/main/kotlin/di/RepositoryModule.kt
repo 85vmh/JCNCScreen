@@ -22,9 +22,12 @@ val RepositoryModule = DI.Module("repository") {
     bindSingleton<VarFileRepository> {
         VarFileRepositoryImpl(instance("app_scope"), instance())
     }
-    bindSingleton<ToolsRepository> {
-        ToolsRepositoryImpl(instance("app_scope"), instance())
-    }
+
+    bindSingleton<ToolHolderRepository> { ToolHolderRepositoryImpl() }
+    bindSingleton<LatheToolsRepository> { LatheToolsRepositoryImpl() }
+    bindSingleton<CuttingInsertsRepository> { CuttingInsertsRepositoryImpl() }
+    bindSingleton<WorkpieceMaterialRepository> { WorkpieceMaterialRepositoryImpl() }
+
     bindSingleton<FileSystemRepository> {
         val iniRepo: IniFileRepository = instance()
         val file = iniRepo.getIniFile().programDir
@@ -33,8 +36,7 @@ val RepositoryModule = DI.Module("repository") {
     bindSingleton { Preferences.userRoot() }
     bindSingleton<SettingsRepository> { SettingsRepositoryImpl(instance()) }
     bindSingleton<ActiveLimitsRepository> { ActiveLimitsRepository() }
-    bindSingleton<CuttingInsertsRepository> { CuttingInsertsRepositoryImpl() }
-
+    
     bindProvider {
         ToolFilePath(instance<IniFileRepository>().getIniFile().toolTableFile)
     }

@@ -30,7 +30,7 @@ fun SimpleCycleStatusView(
         shadowElevation = 16.dp
     ) {
 
-        Column {
+        Column(modifier) {
             Text(
                 modifier = Modifier.align(Alignment.CenterHorizontally),
                 style = MaterialTheme.typography.titleMedium,

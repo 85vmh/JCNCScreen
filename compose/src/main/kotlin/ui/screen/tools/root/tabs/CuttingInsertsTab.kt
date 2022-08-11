@@ -17,12 +17,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import com.mindovercnc.model.CuttingInsert
 import extensions.draggableScroll
 import extensions.toFixedDigitsString
 import screen.composables.VerticalDivider
 import screen.composables.platform.VerticalScrollbar
 import ui.screen.tools.root.ToolsScreenModel
+import ui.screen.tools.root.tabs.cuttinginsert.AddEditCuttingInsertScreen
+import ui.screen.tools.root.tabs.lathetool.AddEditLatheToolScreen
 
 private val itemModifier = Modifier.fillMaxWidth()
 
@@ -33,6 +37,7 @@ private enum class CuttingInsertsColumns(val text: String, val size: Dp = Dp.Uns
     TipRadius("Tip Radius"),
     TipAngle("Tip Angle"),
     Size("Size"),
+    Materials("Materials", 400.dp),
     Actions("Actions", 140.dp),
 }
 
@@ -40,11 +45,12 @@ private enum class CuttingInsertsColumns(val text: String, val size: Dp = Dp.Uns
 @Composable
 fun CuttingInsertsContent(
     state: ToolsScreenModel.State,
-    onEdit: (CuttingInsert) -> Unit,
+    onInsertChanged: () -> Unit,
     onDelete: (CuttingInsert) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val scope = rememberCoroutineScope()
+    val navigator = LocalNavigator.currentOrThrow
 
     Box(
         modifier = modifier
@@ -65,7 +71,11 @@ fun CuttingInsertsContent(
                     CuttingInsertView(
                         index = index,
                         item = item,
-                        onEditClicked = onEdit,
+                        onEditClicked = {
+                            navigator.push(AddEditCuttingInsertScreen(it) {
+                                onInsertChanged.invoke()
+                            })
+                        },
                         onDeleteClicked = onDelete,
                         modifier = itemModifier
                     )
@@ -102,6 +112,7 @@ fun CuttingInsertHeader(
                 Text(
                     modifier = textModifier,
                     textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.titleSmall,
                     text = it.text
                 )
                 if (it != CuttingInsertsColumns.values().last()) {
@@ -128,37 +139,50 @@ private fun CuttingInsertView(
         Text(
             modifier = Modifier.width(CuttingInsertsColumns.Id.size),
             textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.bodyMedium,
             text = (index + 1).toString()
         )
         VerticalDivider()
         Text(
             modifier = Modifier.weight(1f),
             textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.bodyMedium,
             text = item.madeOf.toString()
         )
         VerticalDivider()
         Text(
             modifier = Modifier.weight(1f),
             textAlign = TextAlign.Center,
-            text = item.code
+            style = MaterialTheme.typography.bodyMedium,
+            text = item.code ?: "--"
         )
         VerticalDivider()
         Text(
             modifier = Modifier.weight(1f),
             textAlign = TextAlign.Center,
-            text = item.tipRadius.toFixedDigitsString(1)
+            text = item.tipRadius.toFixedDigitsString(1),
+            style = MaterialTheme.typography.bodyMedium,
         )
         VerticalDivider()
         Text(
             modifier = Modifier.weight(1f),
             textAlign = TextAlign.Center,
-            text = item.tipAngle.toFixedDigitsString(1)
+            text = "${item.tipAngle.toFixedDigitsString(0)}°",
+            style = MaterialTheme.typography.bodyMedium,
         )
         VerticalDivider()
         Text(
             modifier = Modifier.weight(1f),
             textAlign = TextAlign.Center,
-            text = item.size.toFixedDigitsString(1)
+            text = item.size.toFixedDigitsString(1),
+            style = MaterialTheme.typography.bodyMedium,
+        )
+        VerticalDivider()
+        Text(
+            modifier = Modifier.width(CuttingInsertsColumns.Materials.size),
+            textAlign = TextAlign.Center,
+            text = "Materials here",
+            style = MaterialTheme.typography.bodyMedium,
         )
         VerticalDivider()
         Row(

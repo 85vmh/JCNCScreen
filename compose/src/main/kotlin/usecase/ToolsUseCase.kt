@@ -17,7 +17,8 @@ class ToolsUseCase(
     private val messagesRepository: MessagesRepository,
     private val halRepository: HalRepository,
     private val settingsRepository: SettingsRepository,
-    private val toolsRepository: ToolsRepository,
+    private val toolHolderRepository: ToolHolderRepository,
+    private val latheToolsRepository: LatheToolsRepository,
     private val cuttingInsertsRepository: CuttingInsertsRepository,
     private val varFileRepository: VarFileRepository
 ) {
@@ -37,32 +38,30 @@ class ToolsUseCase(
             .launchIn(scope)
     }
 
-    fun getToolHolders(): Flow<List<ToolHolder>> {
-        return flowOf(toolsRepository.getToolHolders())
-    }
+    fun getToolHolders(): Flow<List<ToolHolder>> = flowOf(toolHolderRepository.getToolHolders())
 
-    fun createToolHolder(toolHolder: ToolHolder) {
-        toolsRepository.createToolHolder(toolHolder)
-    }
+    fun createToolHolder(toolHolder: ToolHolder) = toolHolderRepository.createToolHolder(toolHolder)
 
-    fun updateToolHolder(toolHolder: ToolHolder) {
-        toolsRepository.updateToolHolder(toolHolder)
-    }
+    fun updateToolHolder(toolHolder: ToolHolder) = toolHolderRepository.updateToolHolder(toolHolder)
 
-    fun getLatheTools(): Flow<List<LatheTool>> {
-        return flowOf(toolsRepository.getLatheTools())
-    }
+    fun getLatheTools(): Flow<List<LatheTool>> = flowOf(latheToolsRepository.getLatheTools())
 
-    fun getCuttingInserts(): Flow<List<CuttingInsert>> {
-        return flowOf(cuttingInsertsRepository.findAll())
-    }
+    fun createLatheTool(latheTool: LatheTool) = latheToolsRepository.createLatheTool(latheTool)
 
-    fun deleteToolHolder(toolHolder: ToolHolder){
-        toolsRepository.deleteToolHolder(toolHolder)
+    fun updateLatheTool(latheTool: LatheTool) = latheToolsRepository.updateLatheTool(latheTool)
+
+    fun createCuttingInsert(cuttingInsert: CuttingInsert) = cuttingInsertsRepository.insert(cuttingInsert)
+
+    fun updateCuttingInsert(cuttingInsert: CuttingInsert) = cuttingInsertsRepository.update(cuttingInsert)
+
+    fun getCuttingInserts(): Flow<List<CuttingInsert>> = flowOf(cuttingInsertsRepository.findAll())
+
+    fun deleteToolHolder(toolHolder: ToolHolder) {
+        toolHolderRepository.deleteToolHolder(toolHolder)
     }
 
     fun deleteLatheTool(tool: LatheTool) {
-        toolsRepository.deleteLatheTool(tool)
+        latheToolsRepository.deleteLatheTool(tool)
     }
 
     fun getTools(): Flow<List<LatheTool>> {
@@ -131,18 +130,3 @@ class ToolsUseCase(
         orientation = 1
     )
 }
-/**
- * Ce vreau de la tool:
- * - Sa pot defini insert si regimuri de aschiere per insert.
- * - Cutitul are regim de aschiere
- * - Sa am mai multe cuttere decat holdere
- * - Sa pot sa definesc un max tool length.
- *
- * Insert: tip radius, viteza radiala, depth of cut, feed
- * LatheCutter: Id, Insert, Orientation
- * ToolHolder: Id, LatheCutterId?, Stickout
- *
- * Tool: Id = ToolHolderId
- *
- *
- */

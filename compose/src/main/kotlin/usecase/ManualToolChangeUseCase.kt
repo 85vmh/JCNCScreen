@@ -1,28 +1,23 @@
 package usecase
 
-import com.mindovercnc.repository.CncStatusRepository
 import com.mindovercnc.repository.HalRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.*
 
 class ManualToolChangeUseCase(
     scope: CoroutineScope,
-    statusRepository: CncStatusRepository,
     private val halRepository: HalRepository,
 ) {
     private val _toolNo = MutableStateFlow<Int?>(null)
 
     init {
-        combine(
-            halRepository.getToolChangeRequest().distinctUntilChanged(),
-            statusRepository.cncStatusFlow().map { it.isInAutoMode }.distinctUntilChanged(),
-            halRepository.getToolChangeToolNumber().distinctUntilChanged(),
-        ) { _, isAuto, toolNo ->
-            when {
-                isAuto -> requestManualToolChange(toolNo)
-                else -> confirmToolChange()
+        halRepository.getToolChangeRequest()
+            .distinctUntilChanged()
+            .filter { it }
+            .onEach {
+                requestManualToolChange(halRepository.getToolChangeToolNumber().first())
             }
-        }.launchIn(scope)
+            .launchIn(scope)
     }
 
     val toolToChange = _toolNo.asSharedFlow().distinctUntilChanged()

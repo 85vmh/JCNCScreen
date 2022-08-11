@@ -237,7 +237,14 @@ object NumericInputs {
             minValue = 0.0,
             maxValue = 20.0,
             initialValue = 0.0,
-            maxDecimalPlaces = 3
+            maxDecimalPlaces = 1
+        )
+        map[InputType.TIP_ANGLE] = NumInputParameters(
+            valueDescription = "Tip Angle",
+            unit = "mm",
+            minValue = 0.0,
+            maxValue = 20.0,
+            initialValue = 0.0,
         )
         map[InputType.BLADE_WIDTH] = NumInputParameters(
             valueDescription = "Blade Width",
@@ -247,7 +254,15 @@ object NumericInputs {
             initialValue = 0.0,
             maxDecimalPlaces = 3
         )
-        map[InputType.DIAMETER] = NumInputParameters(
+        map[InputType.INSERT_SIZE] = NumInputParameters(
+            valueDescription = "Insert Size",
+            unit = "mm",
+            minValue = 0.0,
+            maxValue = 20.0,
+            initialValue = 0.0,
+            maxDecimalPlaces = 1
+        )
+        map[InputType.TOOL_DIAMETER] = NumInputParameters(
             valueDescription = "Diameter",
             unit = "mm",
             minValue = 0.0,
@@ -297,6 +312,53 @@ object NumericInputs {
             valueDescription = "Tool Holder #",
             allowsNegativeValues = false,
             maxDecimalPlaces = 0
+        )
+        map[InputType.TOOL_ID] = NumInputParameters(
+            valueDescription = "Tool Id",
+            allowsNegativeValues = false,
+            maxDecimalPlaces = 0
+        )
+        map[InputType.FRONT_ANGLE] = NumInputParameters(
+            valueDescription = "Front Angle",
+            allowsNegativeValues = false,
+            maxDecimalPlaces = 0,
+//            unit = "degrees"
+        )
+        map[InputType.BACK_ANGLE] = NumInputParameters(
+            valueDescription = "Back Angle",
+            allowsNegativeValues = false,
+            maxDecimalPlaces = 0,
+//            unit = "degrees"
+        )
+        map[InputType.MIN_BORE_DIAMETER] = NumInputParameters(
+            valueDescription = "Min Bore Diameter",
+            allowsNegativeValues = false,
+            maxDecimalPlaces = 0,
+//            unit = "degrees"
+        )
+        map[InputType.MAX_X_DEPTH] = NumInputParameters(
+            valueDescription = "Max X Depth",
+            allowsNegativeValues = false,
+            maxDecimalPlaces = 1,
+//            unit = "degrees"
+        )
+        map[InputType.MAX_Z_DEPTH] = NumInputParameters(
+            valueDescription = "Max Z Depth",
+            allowsNegativeValues = false,
+            maxDecimalPlaces = 1,
+//            unit = "degrees"
+        )
+        map[InputType.THREADING_MIN_PITCH] = NumInputParameters(
+            valueDescription = "Min Pitch",
+            allowsNegativeValues = false,
+            maxDecimalPlaces = 2,
+//            unit = "degrees"
+        )
+        map[InputType.THREADING_MAX_PITCH] = NumInputParameters(
+            valueDescription = "Max Pitch",
+            allowsNegativeValues = false,
+            maxDecimalPlaces = 2,
+//            unit = "degrees"
         )
     }
 }

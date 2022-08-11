@@ -72,16 +72,16 @@ val UseCaseModule = DI.Module("UseCase") {
             messagesRepository = instance(),
             halRepository = instance(),
             settingsRepository = instance(),
-            toolsRepository = instance(),
-            varFileRepository = instance(),
-            cuttingInsertsRepository = instance()
+            toolHolderRepository = instance(),
+            latheToolsRepository = instance(),
+            cuttingInsertsRepository = instance(),
+            varFileRepository = instance()
         )
     }
 
     bindSingleton {
         ManualToolChangeUseCase(
             scope = instance(tag = "app_scope"),
-            statusRepository = instance(),
             halRepository = instance(),
         )
     }
