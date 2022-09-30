@@ -58,9 +58,16 @@ class AddEditCuttingInsertScreenModel(
 
     fun setInsertShape(value: InsertShape) {
         mutableState.update {
-            it.copy(
-                insertShape = value,
-            )
+            when {
+                value.angle != null -> it.copy(
+                    insertShape = value,
+                    tipAngle = value.angle!!
+                )
+
+                else -> it.copy(
+                    insertShape = value,
+                )
+            }
         }
     }
 

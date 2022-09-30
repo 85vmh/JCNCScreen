@@ -56,13 +56,11 @@ class ToolsUseCase(
 
     fun getCuttingInserts(): Flow<List<CuttingInsert>> = flowOf(cuttingInsertsRepository.findAll())
 
-    fun deleteToolHolder(toolHolder: ToolHolder) {
-        toolHolderRepository.deleteToolHolder(toolHolder)
-    }
+    fun deleteToolHolder(toolHolder: ToolHolder) = toolHolderRepository.deleteToolHolder(toolHolder)
 
-    fun deleteLatheTool(tool: LatheTool) {
-        latheToolsRepository.deleteLatheTool(tool)
-    }
+    fun deleteLatheTool(tool: LatheTool) = latheToolsRepository.deleteLatheTool(tool)
+
+    fun deleteCuttingInsert(insert: CuttingInsert) = cuttingInsertsRepository.delete(insert)
 
     fun getTools(): Flow<List<LatheTool>> {
         //return toolsRepository.getTools()

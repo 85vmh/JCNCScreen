@@ -22,7 +22,8 @@ class ToolsScreenModel(
         val cuttingInserts: List<CuttingInsert> = emptyList(),
         val currentTool: Int = 0,
         val toolHolderDeleteModel: ToolHolderDeleteModel? = null,
-        val latheToolDeleteModel: LatheToolDeleteModel? = null
+        val latheToolDeleteModel: LatheToolDeleteModel? = null,
+        val cuttingInsertDeleteModel: CuttingInsertDeleteModel? = null,
     )
 
     init {
@@ -81,10 +82,6 @@ class ToolsScreenModel(
         }
     }
 
-    fun editToolHolder(toolHolder: ToolHolder) {
-
-    }
-
     fun requestDeleteToolHolder(toolHolder: ToolHolder) {
         mutableState.update {
             it.copy(
@@ -113,12 +110,10 @@ class ToolsScreenModel(
         }
     }
 
-    fun editCuttingInsert(insert: CuttingInsert) {
-
-    }
-
     fun deleteCuttingInsert(insert: CuttingInsert) {
-
+        toolsUseCase.deleteCuttingInsert(insert)
+        cancelDeleteCuttingInsert()
+        loadCuttingInserts()
     }
 
     fun requestDeleteLatheTool(latheTool: LatheTool) {
@@ -141,5 +136,21 @@ class ToolsScreenModel(
         toolsUseCase.deleteLatheTool(latheTool)
         cancelDeleteLatheTool()
         loadLatheTools()
+    }
+
+    fun requestDeleteCuttingInsert(cuttingInsert: CuttingInsert) {
+        mutableState.update {
+            it.copy(
+                cuttingInsertDeleteModel = CuttingInsertDeleteModel(cuttingInsert),
+            )
+        }
+    }
+
+    fun cancelDeleteCuttingInsert() {
+        mutableState.update {
+            it.copy(
+                cuttingInsertDeleteModel = null,
+            )
+        }
     }
 }

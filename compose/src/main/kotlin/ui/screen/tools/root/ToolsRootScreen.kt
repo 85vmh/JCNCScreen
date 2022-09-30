@@ -1,31 +1,44 @@
 package ui.screen.tools.root
 
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.ExtendedFloatingActionButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import di.rememberScreenModel
-import screen.composables.TabbedContentView
+import screen.composables.ToolTabsView
 import screen.composables.ToolsTabItem
 import ui.screen.tools.Tools
-import ui.screen.tools.root.tabs.lathetool.AddEditLatheToolScreen
-import ui.screen.tools.root.tabs.toolholder.AddEditHolderScreen
 import ui.screen.tools.root.tabs.CuttingInsertsContent
 import ui.screen.tools.root.tabs.LatheToolsContent
 import ui.screen.tools.root.tabs.ToolHoldersContent
 import ui.screen.tools.root.tabs.cuttinginsert.AddEditCuttingInsertScreen
+import ui.screen.tools.root.tabs.lathetool.AddEditLatheToolScreen
+import ui.screen.tools.root.tabs.toolholder.AddEditHolderScreen
 
 private val tabContentModifier = Modifier.fillMaxWidth()
 
-class ToolsRootScreen : Tools("Tools") {
+class ToolsRootScreen : Tools() {
+
+    @Composable
+    override fun Title() {
+        val screenModel = rememberScreenModel<ToolsScreenModel>()
+        val state by screenModel.state.collectAsState()
+
+        ToolTabsView(
+            modifier = Modifier.width(450.dp).height(32.dp),
+            currentTabIndex = state.currentTabIndex,
+            onTabSelected = screenModel::selectTabWithIndex
+        )
+    }
 
     @Composable
     override fun Fab() {
@@ -86,35 +99,28 @@ class ToolsRootScreen : Tools("Tools") {
         val screenModel = rememberScreenModel<ToolsScreenModel>()
         val state by screenModel.state.collectAsState()
 
-        TabbedContentView(
-            tabs = ToolsTabItem.values(),
-            currentTabIndex = state.currentTabIndex,
-            onTabSelected = screenModel::selectTabWithIndex,
-            text = { Text(it.tabTitle) }
-        ) {
-            when (it) {
-                ToolsTabItem.ToolHolders -> ToolHoldersContent(
-                    state = state,
-                    onDelete = screenModel::requestDeleteToolHolder,
-                    onLoad = screenModel::loadToolHolder,
-                    onHolderChanged = screenModel::loadToolHolders,
-                    modifier = tabContentModifier
-                )
+        when (ToolsTabItem.values()[state.currentTabIndex]) {
+            ToolsTabItem.ToolHolders -> ToolHoldersContent(
+                state = state,
+                onDelete = screenModel::requestDeleteToolHolder,
+                onLoad = screenModel::loadToolHolder,
+                onHolderChanged = screenModel::loadToolHolders,
+                modifier = tabContentModifier
+            )
 
-                ToolsTabItem.LatheTools -> LatheToolsContent(
-                    state,
-                    onDelete = screenModel::requestDeleteLatheTool,
-                    onToolChanged = screenModel::loadLatheTools,
-                    modifier = tabContentModifier
-                )
+            ToolsTabItem.LatheTools -> LatheToolsContent(
+                state,
+                onDelete = screenModel::requestDeleteLatheTool,
+                onToolChanged = screenModel::loadLatheTools,
+                modifier = tabContentModifier
+            )
 
-                ToolsTabItem.CuttingInserts -> CuttingInsertsContent(
-                    state,
-                    onDelete = screenModel::deleteCuttingInsert,
-                    onInsertChanged = screenModel::loadCuttingInserts,
-                    modifier = tabContentModifier
-                )
-            }
+            ToolsTabItem.CuttingInserts -> CuttingInsertsContent(
+                state,
+                onDelete = screenModel::requestDeleteCuttingInsert,
+                onInsertChanged = screenModel::loadCuttingInserts,
+                modifier = tabContentModifier
+            )
         }
 
         state.toolHolderDeleteModel?.let {
@@ -129,6 +135,13 @@ class ToolsRootScreen : Tools("Tools") {
                 deleteModel = it,
                 deleteClick = screenModel::deleteLatheTool,
                 abortClick = screenModel::cancelDeleteLatheTool
+            )
+        }
+        state.cuttingInsertDeleteModel?.let {
+            CuttingInsertDeleteDialog(
+                deleteModel = it,
+                deleteClick = screenModel::deleteCuttingInsert,
+                abortClick = screenModel::cancelDeleteCuttingInsert
             )
         }
     }

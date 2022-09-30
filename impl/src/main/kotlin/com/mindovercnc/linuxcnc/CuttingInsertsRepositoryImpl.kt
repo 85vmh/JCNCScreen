@@ -2,8 +2,11 @@ package com.mindovercnc.linuxcnc
 
 import com.mindovercnc.database.entity.CuttingInsertEntity
 import com.mindovercnc.database.table.CuttingInsertTable
+import com.mindovercnc.database.table.LatheToolTable
 import com.mindovercnc.model.CuttingInsert
 import com.mindovercnc.repository.CuttingInsertsRepository
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
 
@@ -38,6 +41,12 @@ class CuttingInsertsRepositoryImpl : CuttingInsertsRepository {
             CuttingInsertEntity.all().map {
                 it.toCuttingInsert()
             }
+        }
+    }
+
+    override fun delete(cuttingInsert: CuttingInsert) {
+        return transaction {
+            CuttingInsertTable.deleteWhere { CuttingInsertTable.id eq cuttingInsert.id } != 0
         }
     }
 }
